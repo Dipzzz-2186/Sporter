@@ -1,0 +1,25 @@
+extends ../layout/main
+
+block content
+  .container
+    .row.mb-4
+      .col-lg-8
+        h1.fw-bold.text-danger= sport.name
+        if sport.description
+          p.text-secondary= sport.description
+        else
+          p.text-secondary Belum ada deskripsi untuk cabang olahraga ini.
+      .col-lg-4.text-lg-end
+        a.btn.btn-outline-danger.mt-2(href="/sports")
+          i.bi.bi-arrow-left.me-1
+          | Kembali ke daftar sports
+
+    //- Nanti di sini bisa ditambah:
+    //- - list event
+    //- - jadwal pertandingan
+    //- - berita terkait sport ini
+    .alert.alert-light.border
+      | Di halaman ini nanti akan tampil daftar event & jadwal khusus 
+      strong= ' ' + sport.name
+      | .
+    

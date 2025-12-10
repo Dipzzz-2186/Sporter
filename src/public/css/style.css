@@ -1,0 +1,114 @@
+/* ========== GLOBAL ========== */
+
+body {
+  background: #f8f9fa;
+  color: #111827;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+main {
+  min-height: 70vh;
+}
+
+/* Navbar */
+
+.navbar {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.navbar-brand {
+  letter-spacing: 0.04em;
+}
+
+/* HERO */
+
+.sporter-hero {
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #fef2f2 45%,
+    #ffffff 100%
+  );
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sporter-hero-illustration {
+  max-width: 320px;
+  padding: 2rem 1.5rem;
+  border-radius: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+}
+
+/* FEATURE CARDS */
+
+.sporter-feature-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb !important;
+  transition: 0.2s ease;
+}
+
+.sporter-feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16);
+}
+
+/* SPORTS CARDS */
+
+.sporter-sport-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb;
+  transition: 0.18s ease;
+}
+
+.sporter-sport-card:hover {
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.16);
+}
+
+/* Utility */
+
+.hover-up:hover {
+  transform: translateY(-3px);
+}
+
+.bg-danger-subtle {
+  background-color: #fee2e2 !important;
+}
+
+.bg-secondary-subtle {
+  background-color: #e5e7eb !important;
+}
+
+/* Banner utama ala DBL */
+.sporter-main-banner {
+  background: linear-gradient(135deg, #dc2626 0%, #1d4ed8 60%, #0f172a 100%);
+  color: #f9fafb;
+}
+
+.banner-text-wrapper {
+  min-height: 260px;
+}
+
+.banner-image-placeholder {
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid rgba(248, 250, 252, 0.25);
+  color: #e5e7eb;
+}
+
+/* Kartu event */
+.sporter-event-card {
+  border-radius: 1rem;
+  background: #ffffff;
+  transition: 0.18s ease;
+}
+
+.sporter-event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+}

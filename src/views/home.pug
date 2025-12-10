@@ -1,0 +1,62 @@
+extends layout/main
+
+block content
+  // HERO SECTION
+  .sporter-hero.py-5
+    .container
+      .row.align-items-center.gy-4
+        .col-lg-7
+          span.badge.bg-danger-subtle.text-danger.mb-2.fw-semibold
+            i.bi.bi-flag-fill.me-2
+            | Platform Olahraga Indonesia
+          h1.display-5.fw-bold.mb-3
+            | Jadwal, Skor, dan Berita 
+            span.text-danger Terupdate
+          p.lead.text-secondary.mb-4
+            | SPORTER mengumpulkan informasi olahraga Indonesia: event,
+            | jadwal pertandingan, skor, klasemen, livestream, dan tiket
+            | dalam satu platform.
+          .d-flex.flex-wrap.gap-3
+            a.btn.btn-danger.btn-lg.shadow-sm(href="/sports")
+              i.bi.bi-collection-play.me-2
+              | Jelajahi Cabang Olahraga
+            a.btn.btn-outline-danger.btn-lg(href="#features")
+              i.bi.bi-eye.me-2
+              | Lihat Fitur
+        .col-lg-5.text-center
+          //- placeholder ilustrasi, nanti diganti gambar beneran
+          .sporter-hero-illustration.mx-auto
+            i.bi.bi-trophy-fill.display-4.text-danger.mb-3
+            p.mb-0.text-secondary.small
+              | Statistik, skor, dan jadwal dalam satu dashboard yang rapi.
+
+  // FEATURE SECTION
+  #features.py-4
+    .container
+      .row.mb-4
+        .col-lg-8
+          h2.fw-bold.text-danger Fitur Utama SPORTER
+          p.text-secondary
+            | Semua kebutuhan informasi olahraga dalam satu platform: dari jadwal sampai tiket.
+      .row.g-4
+        .col-md-4
+          .card.border-0.shadow-sm.sporter-feature-card
+            .card-body
+              i.bi.bi-calendar-event.fs-3.text-danger.mb-3
+              h5.fw-semibold Jadwal & Event
+              p.text-muted.small.mb-0
+                | Lihat daftar event dan jadwal pertandingan per cabang olahraga.
+        .col-md-4
+          .card.border-0.shadow-sm.sporter-feature-card
+            .card-body
+              i.bi.bi-clipboard2-data.fs-3.text-danger.mb-3
+              h5.fw-semibold Skor & Klasemen
+              p.text-muted.small.mb-0
+                | Pantau skor pertandingan dan klasemen yang selalu terbarui.
+        .col-md-4
+          .card.border-0.shadow-sm.sporter-feature-card
+            .card-body
+              i.bi.bi-broadcast.fs-3.text-danger.mb-3
+              h5.fw-semibold Livestream & Video
+              p.text-muted.small.mb-0
+                | Livestream dan rekaman pertandingan dalam satu platform.

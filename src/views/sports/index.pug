@@ -1,11 +1,36 @@
 extends ../layout/main
 
 block content
-  h1 Daftar Cabang Olahraga
+  .container
+    .row.mb-4.align-items-center
+      .col-lg-8
+        h1.fw-bold.text-danger.mb-2 Cabang Olahraga
+        p.text-secondary.mb-0
+          | Pilih cabang olahraga untuk melihat event, jadwal, skor, dan berita.
+      .col-lg-4.text-lg-end.mt-3.mt-lg-0
+        span.badge.bg-danger-subtle.text-danger.me-2
+          i.bi.bi-lightning-charge-fill.me-1
+          | Multi Sports
+        span.badge.bg-secondary-subtle.text-secondary
+          i.bi.bi-geo-alt-fill.me-1
+          | Indonesia
 
-  if sports.length
-    ul
-      each s in sports
-        li= s.name
-  else
-    p Tidak ada data.
+    if sports && sports.length
+      .row.g-4
+        each s in sports
+          .col-md-6.col-lg-3
+            a.text-decoration-none.text-dark(href=`/sports/${s.slug}`)
+              .card.h-100.border-0.shadow-sm.sporter-sport-card.hover-up
+                .card-body.d-flex.flex-column
+                  h5.fw-semibold.text-danger.mb-1= s.name
+                  if s.description
+                    p.text-muted.small.mb-3= s.description
+                  else
+                    p.text-muted.small.mb-3 Cabang olahraga resmi di SPORTER.
+                  .mt-auto
+                    span.badge.bg-danger-subtle.text-danger.small
+                      i.bi.bi-arrow-right-short.me-1
+                      | Lihat detail
+    else
+      .alert.alert-info.mt-4
+        | Belum ada data cabang olahraga.
