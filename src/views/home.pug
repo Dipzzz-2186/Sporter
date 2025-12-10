@@ -24,7 +24,6 @@ block content
               i.bi.bi-eye.me-2
               | Lihat Fitur
         .col-lg-5.text-center
-          //- placeholder ilustrasi, nanti diganti gambar beneran
           .sporter-hero-illustration.mx-auto
             i.bi.bi-trophy-fill.display-4.text-danger.mb-3
             p.mb-0.text-secondary.small
@@ -60,3 +59,41 @@ block content
               h5.fw-semibold Livestream & Video
               p.text-muted.small.mb-0
                 | Livestream dan rekaman pertandingan dalam satu platform.
+
+  // EVENT SECTION DI HOME
+  .py-4
+    .container
+      .row.mb-3.mt-2
+        .col-lg-8
+          h2.fw-bold.text-danger.mb-1 Event & Turnamen Terbaru
+          p.text-secondary.mb-0
+            | Jelajahi event olahraga yang sedang dan akan berlangsung.
+        .col-lg-4.text-lg-end.mt-3.mt-lg-0
+          //- nanti bisa diarahkan ke /events kalau sudah ada
+          a.btn.btn-outline-danger.btn-sm(href="#")
+            | Lihat semua event →
+
+      if latestEvents && latestEvents.length
+        .row.g-4
+          each e in latestEvents
+            .col-md-6.col-lg-3
+              .card.border-0.shadow-sm.sporter-event-card.h-100
+                .card-body.d-flex.flex-column
+                  if e.start_date_formatted
+                    span.badge.bg-danger-subtle.text-danger.small.mb-2
+                      = e.start_date_formatted
+                  h5.fw-semibold.mb-2= e.title
+                  if e.venue_name
+                    p.text-muted.small.mb-2
+                      i.bi.bi-geo-alt.me-1
+                      = e.venue_name
+                  if e.description
+                    p.text-muted.small.mb-3= e.description.substring(0, 80) + '...'
+                  .mt-auto.d-flex.flex-wrap.gap-2
+                    a.btn.btn-sm.btn-outline-danger(href=`/events/${e.slug || ''}`)
+                      | Detail
+                    a.btn.btn-sm.btn-danger(href=`/tickets/${e.id}`)
+                      | Beli Tiket
+      else
+        .alert.alert-light.border.mt-3
+          | Belum ada event yang terdaftar.

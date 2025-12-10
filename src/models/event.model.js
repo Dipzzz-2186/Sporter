@@ -1,6 +1,6 @@
 const db = require("../config/db");
 
-// event utama (misal 1–3 teratas)
+// Event untuk home (yang akan datang & sedang berlangsung)
 exports.getFeaturedEvents = async () => {
   const [rows] = await db.query(
     `SELECT e.id, e.title, e.slug, e.start_date, e.end_date,
@@ -14,7 +14,7 @@ exports.getFeaturedEvents = async () => {
   return rows;
 };
 
-// event lain untuk list
+// Event terbaru (untuk list di home)
 exports.getLatestEvents = async () => {
   const [rows] = await db.query(
     `SELECT e.id, e.title, e.slug, e.start_date, e.end_date,
