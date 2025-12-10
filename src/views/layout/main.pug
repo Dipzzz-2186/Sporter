@@ -520,7 +520,7 @@ html(lang="id")
                   aria-expanded="false"
                 )
                   i.bi.bi-person-circle.me-2
-                  = currentUser.name || 'User'
+                  = currentUser.name || currentUser.email || currentUser.role.toUpperCase()
                 ul.dropdown-menu.dropdown-menu-end
                   li
                     a.dropdown-item(href="/profile")
