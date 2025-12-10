@@ -427,6 +427,10 @@ block content
               a.btn(href="/")
                 i.bi.bi-house-door.me-2
                 | Lihat Website
+              if currentUser && currentUser.role === 'admin'
+                a.btn.btn-primary.btn-sm.ms-2(href="/admin/subadmins")
+                  i.bi.bi-people-fill.me-1
+                  | Manage Subadmins
 
       //- Stats Cards
       .row.g-3.g-lg-4.mb-4
