@@ -1,0 +1,36 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    h2.mb-3 Manage SubAdmin
+    if flash.error && flash.error.length
+      each msg in flash.error
+        .alert.alert-danger= msg
+    if flash.success && flash.success.length
+      each msg in flash.success
+        .alert.alert-success= msg
+
+    a.btn.btn-primary.mb-3(href="/admin/subadmins/create") + Buat SubAdmin Baru
+    if subadmins && subadmins.length
+      table.table.table-striped
+        thead
+          tr
+            th ID
+            th Nama
+            th Email
+            th Sports
+            th Created
+            th Aksi
+        tbody
+          each s in subadmins
+            tr
+              td= s.id
+              td= s.name
+              td= s.email
+              td= s.sports || '-'
+              td= s.created_at
+              td
+                form.d-inline(method="post" action=`/admin/subadmins/${s.id}/delete` onsubmit="return confirm('Hapus subadmin ini?');")
+                  button.btn.btn-sm.btn-danger(type="submit") Hapus
+    else
+      p.text-muted Belum ada SubAdmin.

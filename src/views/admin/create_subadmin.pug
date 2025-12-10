@@ -1,0 +1,31 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    h2.mb-3 Buat SubAdmin
+    if flash.error && flash.error.length
+      each msg in flash.error
+        .alert.alert-danger= msg
+    if flash.success && flash.success.length
+      each msg in flash.success
+        .alert.alert-success= msg
+
+    form(method="post" action="/admin/subadmins/create")
+      .mb-3
+        label.form-label Nama lengkap
+        input.form-control(type="text" name="name" required)
+      .mb-3
+        label.form-label Email
+        input.form-control(type="email" name="email" required)
+      .mb-3
+        label.form-label Password
+        input.form-control(type="password" name="password" required)
+      .mb-3
+        label.form-label Pilih Cabang Olahraga (assign)
+        .mb-2
+          each sport in sports
+            .form-check
+              input.form-check-input(type="checkbox" name="sport_ids" id="sport-"+sport.id value=sport.id)
+              label.form-check-label(for="sport-"+sport.id)= sport.name
+      button.btn.btn-primary(type="submit") Buat SubAdmin
+      a.btn.btn-secondary.ms-2(href="/admin") Batal
