@@ -3,7 +3,8 @@ html(lang="id")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title #{title || 'Sporter - Sports Platform'}
+    title #{title || 'Sporter - Platform Olahraga Indonesia'}
+    meta(name="description" content="Platform olahraga terlengkap di Indonesia - Cabang olahraga, event, berita, dan komunitas")
 
     // Bootstrap
     link(
@@ -23,61 +24,618 @@ html(lang="id")
     link(rel="preconnect", href="https://fonts.googleapis.com")
     link(rel="preconnect", href="https://fonts.gstatic.com" crossorigin)
     link(
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap"
       rel="stylesheet"
     )
 
     // Custom CSS
     link(rel="stylesheet", href="/css/style.css")
+    
+    style.
+      :root {
+        --sport-primary: #FF3B30;
+        --sport-secondary: #FF9500;
+        --sport-dark: #1C1C1E;
+        --sport-light: #F2F2F7;
+        --sport-success: #34C759;
+        --sport-blue: #007AFF;
+      }
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      /* Navbar Styles */
+      .sport-navbar {
+        background: linear-gradient(135deg, var(--sport-dark) 0%, #2c2c2e 100%);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        animation: slideDown 0.5s ease-out;
+      }
+      
+      @keyframes slideDown {
+        from {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      
+      .navbar-brand {
+        font-family: 'Bebas Neue', cursive;
+        font-size: 2rem;
+        letter-spacing: 2px;
+        background: linear-gradient(135deg, var(--sport-primary) 0%, var(--sport-secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 900;
+        transition: all 0.3s ease;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+      }
+      
+      .navbar-brand:hover {
+        transform: scale(1.05);
+        text-shadow: 0 0 20px rgba(255, 59, 48, 0.5);
+      }
+      
+      .navbar-brand i {
+        color: var(--sport-primary);
+        margin-right: 0.5rem;
+        font-size: 1.8rem;
+        animation: bounce 2s infinite;
+      }
+      
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+      }
+      
+      .nav-link {
+        color: rgba(255, 255, 255, 0.85) !important;
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 0.8rem 1.2rem !important;
+        margin: 0 0.2rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .nav-link::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--sport-primary), var(--sport-secondary));
+        transform: translateX(-50%);
+        transition: width 0.3s ease;
+      }
+      
+      .nav-link:hover {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+      }
+      
+      .nav-link:hover::before {
+        width: 80%;
+      }
+      
+      .nav-link.active {
+        background: linear-gradient(135deg, var(--sport-primary) 0%, var(--sport-secondary) 100%);
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4);
+      }
+      
+      .navbar-toggler {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+      
+      .navbar-toggler:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--sport-primary);
+      }
+      
+      .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.25rem rgba(255, 59, 48, 0.25);
+      }
+      
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      }
+      
+      .user-menu-dropdown {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      
+      .user-menu-dropdown:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+      }
+      
+      .dropdown-menu {
+        background: white;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      
+      .dropdown-item {
+        border-radius: 8px;
+        padding: 0.7rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .dropdown-item:hover {
+        background: linear-gradient(135deg, var(--sport-primary) 0%, var(--sport-secondary) 100%);
+        color: white;
+        transform: translateX(5px);
+      }
+      
+      .dropdown-item i {
+        font-size: 1.1rem;
+      }
+      
+      .dropdown-divider {
+        margin: 0.5rem 0;
+        border-top: 1px solid #e0e0e0;
+      }
+      
+      /* Main Content */
+      main {
+        flex: 1;
+        animation: fadeIn 0.6s ease-out;
+      }
+      
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      /* Footer Styles */
+      .sport-footer {
+        background: linear-gradient(135deg, var(--sport-dark) 0%, #2c2c2e 100%);
+        color: rgba(255, 255, 255, 0.85);
+        padding: 3rem 0 1.5rem;
+        margin-top: 4rem;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+      }
+      
+      .footer-brand {
+        font-family: 'Bebas Neue', cursive;
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, var(--sport-primary) 0%, var(--sport-secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 2px;
+        margin-bottom: 1rem;
+      }
+      
+      .footer-links {
+        list-style: none;
+        padding: 0;
+      }
+      
+      .footer-links li {
+        margin-bottom: 0.75rem;
+      }
+      
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .footer-links a:hover {
+        color: var(--sport-primary);
+        transform: translateX(5px);
+      }
+      
+      .footer-links a i {
+        font-size: 1.1rem;
+        transition: transform 0.3s ease;
+      }
+      
+      .footer-links a:hover i {
+        transform: scale(1.2);
+      }
+      
+      .social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+      
+      .social-link {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        font-size: 1.3rem;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+      
+      .social-link:hover {
+        background: linear-gradient(135deg, var(--sport-primary) 0%, var(--sport-secondary) 100%);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(255, 59, 48, 0.4);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      
+      .footer-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        margin: 2rem 0 1.5rem;
+      }
+      
+      .footer-bottom {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.9rem;
+      }
+      
+      .footer-bottom i {
+        color: var(--sport-primary);
+        animation: pulse 2s infinite;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+      }
+      
+      /* Stats Badge */
+      .stats-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-top: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      
+      .stats-badge i {
+        color: var(--sport-success);
+        font-size: 1.1rem;
+      }
+      
+      /* Scroll to Top Button */
+      .scroll-top-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--sport-primary) 0%, var(--sport-secondary) 100%);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 999;
+        opacity: 0;
+      }
+      
+      .scroll-top-btn.visible {
+        display: flex;
+        opacity: 1;
+        animation: slideInUp 0.3s ease-out;
+      }
+      
+      @keyframes slideInUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      
+      .scroll-top-btn:hover {
+        transform: translateY(-5px) scale(1.1);
+        box-shadow: 0 8px 25px rgba(255, 59, 48, 0.6);
+      }
+      
+      /* Responsive */
+      @media (max-width: 991px) {
+        .navbar-brand {
+          font-size: 1.6rem;
+        }
+        
+        .navbar-brand i {
+          font-size: 1.5rem;
+        }
+        
+        .nav-link {
+          padding: 0.7rem 1rem !important;
+          margin: 0.2rem 0;
+        }
+        
+        .navbar-collapse {
+          background: rgba(0, 0, 0, 0.1);
+          padding: 1rem;
+          border-radius: 12px;
+          margin-top: 1rem;
+          backdrop-filter: blur(10px);
+        }
+        
+        .footer-brand {
+          font-size: 2rem;
+        }
+        
+        .social-links {
+          justify-content: center;
+        }
+        
+        .scroll-top-btn {
+          bottom: 1rem;
+          right: 1rem;
+          width: 45px;
+          height: 45px;
+        }
+      }
+      
+      @media (max-width: 576px) {
+        .navbar-brand {
+          font-size: 1.4rem;
+        }
+        
+        .sport-footer {
+          padding: 2rem 0 1rem;
+        }
+        
+        .footer-brand {
+          font-size: 1.8rem;
+        }
+        
+        .social-link {
+          width: 40px;
+          height: 40px;
+          font-size: 1.1rem;
+        }
+      }
 
-  body.bg-light.text-dark
+  body
     // NAVBAR
-    nav.navbar.navbar-expand-lg.navbar-light.bg-white.shadow-sm
+    nav.sport-navbar.navbar.navbar-expand-lg
       .container
-        a.navbar-brand.fw-bold.text-danger(href="/")
+        a.navbar-brand(href="/")
+          i.bi.bi-trophy-fill
           | SPORTER
         button.navbar-toggler(
           type="button",
           data-bs-toggle="collapse",
-          data-bs-target="#navMain"
+          data-bs-target="#navMain",
+          aria-controls="navMain",
+          aria-expanded="false",
+          aria-label="Toggle navigation"
         )
           span.navbar-toggler-icon
+        
         #navMain.collapse.navbar-collapse
-          ul.navbar-nav.ms-auto
+          ul.navbar-nav.ms-auto.align-items-lg-center
             li.nav-item
-                a.nav-link(href="/") Beranda
+              a.nav-link(href="/" class=currentPage === 'home' ? 'active' : '')
+                i.bi.bi-house-door-fill.me-2
+                | Beranda
             li.nav-item
-                a.nav-link(href="/sports") Cabang Olahraga
+              a.nav-link(href="/sports" class=currentPage === 'sports' ? 'active' : '')
+                i.bi.bi-dribbble.me-2
+                | Cabang Olahraga
             li.nav-item
-                a.nav-link(href="/news") Berita
-
-        if !currentUser
+              a.nav-link(href="/events" class=currentPage === 'events' ? 'active' : '')
+                i.bi.bi-calendar-event.me-2
+                | Event
             li.nav-item
-            a.nav-link(href="/login")
-                i.bi.bi-box-arrow-in-right.me-1
-                | Login
-        else
-            if currentUser.role === 'admin' || currentUser.role === 'subadmin'
-            li.nav-item
-                a.nav-link(href="/admin")
-                i.bi.bi-speedometer2.me-1
-                | Dashboard
-
-            li.nav-item
-            a.nav-link(href="/logout")
-                i.bi.bi-box-arrow-right.me-1
-                | Logout
-
-            //- nanti bisa tambah /events /news dll
+              a.nav-link(href="/news" class=currentPage === 'news' ? 'active' : '')
+                i.bi.bi-newspaper.me-2
+                | Berita
+            
+            if !currentUser
+              li.nav-item
+                a.nav-link(href="/login")
+                  i.bi.bi-box-arrow-in-right.me-2
+                  | Login
+            else
+              li.nav-item.dropdown
+                a.nav-link.dropdown-toggle.user-menu-dropdown(
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                )
+                  i.bi.bi-person-circle.me-2
+                  = currentUser.name || 'User'
+                ul.dropdown-menu.dropdown-menu-end
+                  li
+                    a.dropdown-item(href="/profile")
+                      i.bi.bi-person-fill
+                      | Profile
+                  
+                  if currentUser.role === 'admin' || currentUser.role === 'subadmin'
+                    li
+                      hr.dropdown-divider
+                    li
+                      a.dropdown-item(href="/admin")
+                        i.bi.bi-speedometer2
+                        | Dashboard Admin
+                  
+                  li
+                    hr.dropdown-divider
+                  li
+                    a.dropdown-item(href="/logout")
+                      i.bi.bi-box-arrow-right
+                      | Logout
 
     // MAIN CONTENT
     main.py-4
       block content
 
     // FOOTER
-    footer.bg-white.border-top.mt-5.py-3
-      .container.text-center.text-muted.small
-        | © 2025 SPORTER — Platform Olahraga Indonesia
+    footer.sport-footer
+      .container
+        .row.g-4
+          .col-lg-4.col-md-6
+            .footer-brand
+              i.bi.bi-trophy-fill.me-2
+              | SPORTER
+            p.mb-3.text-white-50
+              | Platform olahraga terlengkap di Indonesia. Temukan berbagai cabang olahraga, event menarik, dan bergabung dengan komunitas atlet.
+            .stats-badge
+              i.bi.bi-people-fill
+              span
+                strong 10,000+
+                |  Pengguna Aktif
+            .social-links
+              a.social-link(href="#" title="Facebook")
+                i.bi.bi-facebook
+              a.social-link(href="#" title="Instagram")
+                i.bi.bi-instagram
+              a.social-link(href="#" title="Twitter")
+                i.bi.bi-twitter-x
+              a.social-link(href="#" title="YouTube")
+                i.bi.bi-youtube
+          
+          .col-lg-2.col-md-6
+            h5.text-white.fw-bold.mb-3 Menu
+            ul.footer-links
+              li
+                a(href="/")
+                  i.bi.bi-chevron-right
+                  | Beranda
+              li
+                a(href="/sports")
+                  i.bi.bi-chevron-right
+                  | Cabang Olahraga
+              li
+                a(href="/events")
+                  i.bi.bi-chevron-right
+                  | Event
+              li
+                a(href="/news")
+                  i.bi.bi-chevron-right
+                  | Berita
+          
+          .col-lg-3.col-md-6
+            h5.text-white.fw-bold.mb-3 Cabang Populer
+            ul.footer-links
+              li
+                a(href="/sports/sepakbola")
+                  i.bi.bi-dribbble
+                  | Sepak Bola
+              li
+                a(href="/sports/basket")
+                  i.bi.bi-basketball
+                  | Basket
+              li
+                a(href="/sports/badminton")
+                  i.bi.bi-lightning-fill
+                  | Badminton
+              li
+                a(href="/sports/voli")
+                  i.bi.bi-circle-fill
+                  | Voli
+          
+          .col-lg-3.col-md-6
+            h5.text-white.fw-bold.mb-3 Kontak
+            ul.footer-links
+              li
+                a(href="mailto:info@sporter.id")
+                  i.bi.bi-envelope-fill
+                  | info@sporter.id
+              li
+                a(href="tel:+628123456789")
+                  i.bi.bi-telephone-fill
+                  | +62 812-3456-7890
+              li
+                a(href="#")
+                  i.bi.bi-geo-alt-fill
+                  | Jakarta, Indonesia
+              li
+                a(href="/contact")
+                  i.bi.bi-chat-dots-fill
+                  | Hubungi Kami
+        
+        .footer-divider
+        
+        .footer-bottom
+          p.mb-0
+            | © 2025 
+            strong SPORTER
+            |  — Platform Olahraga Indonesia 
+            i.bi.bi-heart-fill
+            br.d-md-none
+            span.d-none.d-md-inline  | 
+            | Made with passion for Indonesian sports
+
+    // Scroll to Top Button
+    button.scroll-top-btn#scrollTopBtn(aria-label="Scroll to top")
+      i.bi.bi-arrow-up
 
     // Bootstrap JS
     script(
@@ -85,4 +643,90 @@ html(lang="id")
       integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
       crossorigin="anonymous"
     )
+    
+    // Custom JS
+    script.
+      (function() {
+        // Scroll to Top Button
+        var scrollBtn = document.getElementById('scrollTopBtn');
+        
+        window.addEventListener('scroll', function() {
+          if (window.scrollY > 300) {
+            scrollBtn.classList.add('visible');
+          } else {
+            scrollBtn.classList.remove('visible');
+          }
+        });
+        
+        scrollBtn.addEventListener('click', function() {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+        
+        // Active nav link on scroll
+        var sections = document.querySelectorAll('section[id]');
+        var navLinks = document.querySelectorAll('.nav-link');
+        
+        window.addEventListener('scroll', function() {
+          var scrollY = window.scrollY;
+          
+          sections.forEach(function(section) {
+            var sectionHeight = section.offsetHeight;
+            var sectionTop = section.offsetTop - 100;
+            var sectionId = section.getAttribute('id');
+            
+            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+              navLinks.forEach(function(link) {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + sectionId) {
+                  link.classList.add('active');
+                }
+              });
+            }
+          });
+        });
+        
+        // Navbar background on scroll
+        var navbar = document.querySelector('.sport-navbar');
+        window.addEventListener('scroll', function() {
+          if (window.scrollY > 50) {
+            navbar.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.25)';
+          } else {
+            navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
+          }
+        });
+        
+        // Close mobile menu when clicking nav link
+        var navbarCollapse = document.getElementById('navMain');
+        var navbarToggler = document.querySelector('.navbar-toggler');
+        
+        if (navbarCollapse && navbarToggler) {
+          navLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
+              if (window.innerWidth < 992) {
+                var bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+                  toggle: false
+                });
+                bsCollapse.hide();
+              }
+            });
+          });
+        }
+        
+        // Dropdown auto close on mobile
+        var dropdownItems = document.querySelectorAll('.dropdown-item');
+        dropdownItems.forEach(function(item) {
+          item.addEventListener('click', function() {
+            if (window.innerWidth < 992) {
+              var dropdown = bootstrap.Dropdown.getInstance(item.closest('.dropdown').querySelector('[data-bs-toggle="dropdown"]'));
+              if (dropdown) {
+                dropdown.hide();
+              }
+            }
+          });
+        });
+      })();
+    
     script(src="/js/app.js")

@@ -1,36 +1,576 @@
 extends ../layout/main
 
 block content
-  .container
-    .row.mb-4.align-items-center
-      .col-lg-8
-        h1.fw-bold.text-danger.mb-2 Cabang Olahraga
-        p.text-secondary.mb-0
-          | Pilih cabang olahraga untuk melihat event, jadwal, skor, dan berita.
-      .col-lg-4.text-lg-end.mt-3.mt-lg-0
-        span.badge.bg-danger-subtle.text-danger.me-2
-          i.bi.bi-lightning-charge-fill.me-1
-          | Multi Sports
-        span.badge.bg-secondary-subtle.text-secondary
-          i.bi.bi-geo-alt-fill.me-1
-          | Indonesia
+  style.
+    /* Sports Page Styles */
+    .sports-hero {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 10px 40px rgba(255, 59, 48, 0.25);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .sports-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .sports-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -5%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite reverse;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      50% {
+        transform: translate(30px, -30px) rotate(10deg);
+      }
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .hero-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+    
+    .hero-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 3rem;
+      color: white;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .hero-subtitle {
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    
+    .hero-badges {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    
+    .hero-badge {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .hero-badge:hover {
+      background: rgba(255, 255, 255, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .hero-badge i {
+      font-size: 1.1rem;
+    }
+    
+    .hero-illustration {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    /* Stats Section */
+    .stats-section {
+      background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      color: white;
+      animation: fadeInUp 0.6s ease-out 0.2s backwards;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 1rem;
+    }
+    
+    .stat-number {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      color: #FF3B30;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+    }
+    
+    .stat-label {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    
+    /* Sports Card */
+    .sport-card {
+      background: white;
+      border: 2px solid #f0f0f0;
+      border-radius: 20px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      height: 100%;
+      position: relative;
+      cursor: pointer;
+      animation: fadeInScale 0.5s ease-out backwards;
+    }
+    
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .sport-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #FF3B30 0%, #FF9500 100%);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+    
+    .sport-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .sport-card:hover {
+      transform: translateY(-12px);
+      border-color: #FF3B30;
+      box-shadow: 0 20px 40px rgba(255, 59, 48, 0.2);
+    }
+    
+    .sport-icon-wrapper {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      transition: all 0.4s ease;
+      border: 2px solid #ffeded;
+    }
+    
+    .sport-card:hover .sport-icon-wrapper {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      transform: rotate(10deg) scale(1.1);
+      border-color: #FF3B30;
+    }
+    
+    .sport-icon {
+      font-size: 2rem;
+      color: #FF3B30;
+      transition: all 0.4s ease;
+    }
+    
+    .sport-card:hover .sport-icon {
+      color: white;
+      transform: scale(1.1);
+    }
+    
+    .sport-name {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.8rem;
+      color: #1C1C1E;
+      margin-bottom: 0.75rem;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+    }
+    
+    .sport-card:hover .sport-name {
+      color: #FF3B30;
+    }
+    
+    .sport-description {
+      color: #6c757d;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      min-height: 60px;
+    }
+    
+    .sport-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #FF3B30;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      background: #fff5f5;
+      border: 2px solid #ffeded;
+      transition: all 0.3s ease;
+    }
+    
+    .sport-card:hover .sport-action {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      color: white;
+      border-color: #FF3B30;
+      transform: translateX(5px);
+    }
+    
+    .sport-action i {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+    
+    .sport-card:hover .sport-action i {
+      transform: translateX(5px);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      background: white;
+      border: 2px dashed #e0e0e0;
+      border-radius: 24px;
+      padding: 4rem 2rem;
+      text-align: center;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .empty-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .empty-icon i {
+      font-size: 4rem;
+      color: #adb5bd;
+    }
+    
+    .empty-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      color: #1C1C1E;
+      margin-bottom: 1rem;
+      letter-spacing: 1px;
+    }
+    
+    .empty-text {
+      color: #6c757d;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .empty-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+    }
+    
+    .empty-action:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 59, 48, 0.4);
+      color: white;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .hero-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+      }
+      
+      .sport-name {
+        font-size: 1.6rem;
+      }
+      
+      .stats-section {
+        padding: 1.5rem;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .sports-hero {
+        padding: 2rem 1.5rem;
+      }
+      
+      .hero-title {
+        font-size: 2rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+      
+      .hero-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
+      
+      .hero-badges {
+        justify-content: center;
+      }
+      
+      .sport-icon-wrapper {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .sport-icon {
+        font-size: 1.6rem;
+      }
+      
+      .sport-name {
+        font-size: 1.4rem;
+      }
+      
+      .sport-description {
+        min-height: auto;
+      }
+      
+      .empty-icon {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .empty-icon i {
+        font-size: 3rem;
+      }
+      
+      .empty-title {
+        font-size: 1.6rem;
+      }
+      
+      .stat-number {
+        font-size: 2rem;
+      }
+    }
 
+  .container
+    //- Hero Section
+    .sports-hero
+      .hero-content
+        .row.align-items-center
+          .col-lg-8
+            .hero-icon
+              i.bi.bi-trophy-fill
+            h1.hero-title Cabang Olahraga
+            p.hero-subtitle
+              | Jelajahi berbagai cabang olahraga yang tersedia di SPORTER. Pilih olahraga favoritmu untuk melihat event, jadwal pertandingan, skor terkini, dan berita terbaru.
+            .hero-badges
+              .hero-badge
+                i.bi.bi-lightning-charge-fill
+                span Multi Sports Platform
+              .hero-badge
+                i.bi.bi-geo-alt-fill
+                span Indonesia
+              .hero-badge
+                i.bi.bi-people-fill
+                span 10,000+ Atlet
+          
+          .col-lg-4.text-center.d-none.d-lg-block
+            .hero-illustration
+              i.bi.bi-dribbble(style="font-size: 8rem; color: rgba(255, 255, 255, 0.2);")
+
+    //- Stats Section
+    if sports && sports.length
+      .stats-section
+        .row.g-4
+          .col-6.col-md-3
+            .stat-item
+              .stat-number= sports.length
+              .stat-label Cabang Olahraga
+          .col-6.col-md-3
+            .stat-item
+              .stat-number 50+
+              .stat-label Event Aktif
+          .col-6.col-md-3
+            .stat-item
+              .stat-number 10K+
+              .stat-label Pengguna
+          .col-6.col-md-3
+            .stat-item
+              .stat-number 100+
+              .stat-label Tim Terdaftar
+
+    //- Sports Grid
     if sports && sports.length
       .row.g-4
-        each s in sports
-          .col-md-6.col-lg-3
-            a.text-decoration-none.text-dark(href=`/sports/${s.slug}`)
-              .card.h-100.border-0.shadow-sm.sporter-sport-card.hover-up
-                .card-body.d-flex.flex-column
-                  h5.fw-semibold.text-danger.mb-1= s.name
+        each s, index in sports
+          .col-md-6.col-lg-4.col-xl-3(style=`animation-delay: ${index * 0.1}s;`)
+            a.text-decoration-none(href=`/sports/${s.slug}`)
+              .sport-card
+                .card-body.p-4.d-flex.flex-column
+                  .sport-icon-wrapper
+                    i.sport-icon(class=s.icon || 'bi-dribbble')
+                  h3.sport-name= s.name
                   if s.description
-                    p.text-muted.small.mb-3= s.description
+                    p.sport-description= s.description
                   else
-                    p.text-muted.small.mb-3 Cabang olahraga resmi di SPORTER.
+                    p.sport-description Cabang olahraga resmi di SPORTER. Ikuti event, kompetisi, dan berita terkini.
                   .mt-auto
-                    span.badge.bg-danger-subtle.text-danger.small
-                      i.bi.bi-arrow-right-short.me-1
-                      | Lihat detail
+                    .sport-action
+                      span Lihat Detail
+                      i.bi.bi-arrow-right
     else
-      .alert.alert-info.mt-4
-        | Belum ada data cabang olahraga.
+      //- Empty State
+      .empty-state
+        .empty-icon
+          i.bi.bi-inbox
+        h2.empty-title Belum Ada Cabang Olahraga
+        p.empty-text
+          | Saat ini belum ada cabang olahraga yang tersedia.
+          br
+          | Silakan hubungi admin untuk menambahkan cabang olahraga baru.
+        a.empty-action(href="/contact")
+          i.bi.bi-envelope-fill
+          span Hubungi Admin
+
+  //- Custom JavaScript
+  script.
+    (function() {
+      // Add stagger animation delay
+      var cards = document.querySelectorAll('.sport-card');
+      cards.forEach(function(card, index) {
+        card.style.animationDelay = (index * 0.1) + 's';
+      });
+      
+      // Parallax effect for hero
+      window.addEventListener('scroll', function() {
+        var hero = document.querySelector('.sports-hero');
+        if (hero) {
+          var scrolled = window.scrollY;
+          if (scrolled < 600) {
+            hero.style.transform = 'translateY(' + (scrolled * 0.3) + 'px)';
+            hero.style.opacity = 1 - (scrolled * 0.002);
+          }
+        }
+      });
+      
+      // Add click analytics (optional)
+      cards.forEach(function(card) {
+        card.addEventListener('click', function() {
+          var sportName = this.querySelector('.sport-name');
+          if (sportName) {
+            console.log('Sport clicked:', sportName.textContent);
+          }
+        });
+      });
+      
+      // Intersection Observer for scroll animations
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        });
+        
+        // Observe cards
+        cards.forEach(function(card) {
+          observer.observe(card);
+        });
+        
+        // Observe stats section
+        var statsSection = document.querySelector('.stats-section');
+        if (statsSection) {
+          observer.observe(statsSection);
+        }
+      }
+    })();
