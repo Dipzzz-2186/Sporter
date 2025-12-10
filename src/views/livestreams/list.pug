@@ -1,0 +1,24 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    h2.mb-4 Livestream
+
+    if livestreams.length === 0
+      p.text-muted Belum ada livestream.
+    else
+      .row.g-4
+        each item in livestreams
+          .col-md-4
+            .card.shadow-sm
+              if item.thumbnail_url
+                img.card-img-top(src=item.thumbnail_url alt=item.title)
+              .card-body
+                h5.card-title= item.title
+                if item.sport_name
+                  span.badge.bg-danger.mb-2= item.sport_name
+                if item.is_live
+                  span.badge.bg-success.ms-2 LIVE
+                p.text-muted.small.mt-2
+                  | #{item.event_title || '-'}
+                a.btn.btn-primary.btn-sm(href=`/livestreams/${item.id}`) Tonton

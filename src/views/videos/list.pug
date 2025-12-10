@@ -1,0 +1,21 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    h2.mb-4 Video Pertandingan
+
+    if videos.length === 0
+      p.text-muted Belum ada video.
+    else
+      .row.g-4
+        each v in videos
+          .col-md-4
+            .card.shadow-sm
+              if v.thumbnail_url
+                img.card-img-top(src=v.thumbnail_url alt=v.title)
+              .card-body
+                h5.card-title= v.title
+                if v.sport_name
+                  span.badge.bg-danger.mb-2= v.sport_name
+                p.text-muted.small.mt-2= v.event_title || '-'
+                a.btn.btn-primary.btn-sm(href=`/videos/${v.id}`) Lihat Video

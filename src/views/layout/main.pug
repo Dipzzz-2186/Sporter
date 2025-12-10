@@ -495,6 +495,16 @@ html(lang="id")
               a.nav-link(href="/news" class=currentPage === 'news' ? 'active' : '')
                 i.bi.bi-newspaper.me-2
                 | Berita
+                
+            li.nav-item
+              a.nav-link(href="/livestreams" class=currentPage === 'livestreams' ? 'active' : '')
+                i.bi.bi-broadcast.me-2
+                | Livestream
+
+            li.nav-item
+              a.nav-link(href="/videos" class=currentPage === 'videos' ? 'active' : '')
+                i.bi.bi-play-btn-fill.me-2
+                | Video
             
             if !currentUser
               li.nav-item

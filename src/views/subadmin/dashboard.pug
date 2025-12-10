@@ -1,0 +1,158 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    .d-flex.justify-content-between.align-items-center.mb-3
+      .d-flex.flex-column
+        h2.mb-0 SubAdmin Dashboard
+        small.text-muted.mt-1= "Halo, " + (currentUser && currentUser.name ? currentUser.name : 'SubAdmin')
+      .btn-group
+        a.btn.btn-outline-secondary(href="/admin" role="button")
+          i.bi.bi-speedometer2.me-1
+          | Admin Area
+        a.btn.btn-primary(href="/subadmin/events/create")
+          i.bi.bi-plus-lg.me-1
+          | Buat Event
+        a.btn.btn-success(href="/subadmin/matches/create")
+          i.bi.bi-calendar-plus.me-1
+          | Jadwal Pertandingan
+        a.btn.btn-warning(href="/subadmin/news/create")
+          i.bi.bi-newspaper.me-1
+          | Buat Berita
+        a.btn.btn-info.text-white(href="/subadmin/videos/create")
+          i.bi.bi-play-btn-fill.me-1
+          | Tambah Video
+        a.btn.btn-danger(href="/subadmin/livestreams/create")
+          i.bi.bi-broadcast.me-1
+          | Tambah Livestream
+
+    // quick stats
+    .row.mb-4.g-3
+      .col-md-2
+        .card.p-3.h-100
+          small.text-muted Cabang Kamu
+          h4.mb-0= stats.sports || 0
+      .col-md-2
+        .card.p-3.h-100
+          small.text-muted Event
+          h4.mb-0= stats.events || 0
+      .col-md-2
+        .card.p-3.h-100
+          small.text-muted Matches
+          h4.mb-0= stats.matches || 0
+      .col-md-2
+        .card.p-3.h-100
+          small.text-muted Videos
+          h4.mb-0= stats.videos || 0
+      .col-md-2
+        .card.p-3.h-100
+          small.text-muted Livestreams
+          h4.mb-0= stats.livestreams || 0
+      .col-md-2
+        .card.p-3.h-100
+          small.text-muted Ticket Types
+          h4.mb-0= stats.ticketTypes || 0
+
+    // Upcoming matches with ticket actions
+    .row.g-4
+      .col-lg-8
+        .card.shadow-sm
+          .card-header.d-flex.justify-content-between.align-items-center
+            h5.mb-0.fw-semibold
+              i.bi.bi-calendar-event.me-2
+              | Jadwal Mendatang
+            a.small.text-decoration-none(href="/subadmin/matches") Kelola semua
+          .table-responsive
+            table.table.table-sm.mb-0
+              thead
+                tr.text-muted.small
+                  th Match / Event
+                  th Cabang
+                  th Tanggal
+                  th Venue
+                  th Ticket
+                  th Aksi
+              tbody
+                if upcomingMatches && upcomingMatches.length
+                  each m in upcomingMatches
+                    - const start = new Date(m.start_time || m.start_date || null)
+                    tr
+                      td
+                        b= m.title || (m.home_team_name ? (m.home_team_name + " vs " + (m.away_team_name||'-')) : 'Match')
+                        if m.match_title
+                          br
+                          small.text-muted= m.match_title
+                      td= m.sport_name || '-'
+                      td
+                        if m.start_time || m.start_date
+                          = start.toLocaleString('id-ID')
+                        else
+                          | -
+                      td= m.venue_name || '-'
+                      td
+                        if m.ticket_available === 0
+                          span.badge.bg-danger Sold out
+                        else if !m.can_buy
+                          span.badge.bg-secondary.text-white Disabled
+                        else
+                          span.badge.bg-success= m.ticket_available + " left"
+                      td
+                        if m.can_buy
+                          form.d-inline(method="post" action="/purchase/buy")
+                            input(type="hidden" name="ticket_type_id" value=m.default_ticket_type_id)
+                            input(type="number" name="quantity" min="1" value="1" style="width:70px;display:inline-block;margin-right:6px")
+                            button.btn.btn-sm.btn-primary(type="submit") Beli
+                        else
+                          button.btn.btn-sm.btn-outline-secondary(disabled) Tidak bisa beli
+
+                else
+                  tr
+                    td(colspan="6")
+                      p.text-muted.mb-0 Tidak ada jadwal mendatang untuk cabang yang Anda kelola.
+
+      .col-lg-4
+        // Recent news / videos / livestreams
+        .card.shadow-sm.mb-3
+          .card-header
+            h6.mb-0 Berita Terbaru
+          ul.list-group.list-group-flush
+            if recentNews && recentNews.length
+              each n in recentNews
+                li.list-group-item
+                  a(href=`/news/${n.slug}`)= n.title
+            else
+              li.list-group-item.text-muted Belum ada berita.
+
+        .card.shadow-sm.mb-3
+          .card-header
+            h6.mb-0 Video Terbaru
+          ul.list-group.list-group-flush
+            if recentVideos && recentVideos.length
+              each v in recentVideos
+                li.list-group-item
+                  a(href=`/videos/${v.id}`)= v.title
+            else
+              li.list-group-item.text-muted Belum ada video.
+
+        .card.shadow-sm
+          .card-header
+            h6.mb-0 Livestream Terdekat
+          ul.list-group.list-group-flush
+            if upcomingLivestreams && upcomingLivestreams.length
+              each l in upcomingLivestreams
+                li.list-group-item
+                  b= l.title
+                  br
+                  small.text-muted= (l.sport_name || '-') + ' • ' + (new Date(l.start_time || l.created_at)).toLocaleString('id-ID')
+                  br
+                  a.btn.btn-sm.btn-outline-primary.mt-2(href=`/livestreams/${l.id}`) Lihat
+            else
+              li.list-group-item.text-muted Belum ada livestream.
+
+    // quick links
+    .mt-4
+      a.btn.btn-outline-secondary.me-2(href="/subadmin/events") Kelola Event
+      a.btn.btn-outline-secondary.me-2(href="/subadmin/news") Kelola Berita
+      a.btn.btn-outline-secondary.me-2(href="/subadmin/matches") Kelola Jadwal
+      a.btn.btn-outline-secondary.me-2(href="/subadmin/videos") Kelola Video
+      a.btn.btn-outline-secondary(href="/subadmin/livestreams") Kelola Livestream

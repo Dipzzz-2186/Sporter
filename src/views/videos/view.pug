@@ -1,0 +1,51 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    a.btn.btn-light.btn-sm.mb-3(href="javascript:history.back()")
+      i.bi.bi-arrow-left
+      |  Kembali
+
+    .row
+      .col-lg-8
+        h2.mb-2= video.title
+
+        if embedUrl
+          .ratio.ratio-16x9.mb-3
+            iframe(
+              src=embedUrl
+              allowfullscreen
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            )
+        else
+          .alert.alert-warning
+            | Video tidak dapat di-embed. 
+            a(href=video.url target="_blank") Buka langsung di YouTube.
+
+        if video.description
+          p.mt-3.text-muted= video.description
+
+      .col-lg-4
+        .card.shadow-sm
+          .card-body
+            h5.fw-semibold.mb-3 Informasi Video
+            p.mb-1
+              b Jenis: 
+              | #{video.type}
+            if video.sport_name
+              p.mb-1
+                b Cabang: 
+                | #{video.sport_name}
+            if video.event_title
+              p.mb-1
+                b Event: 
+                | #{video.event_title}
+            if video.match_title
+              p.mb-1
+                b Match: 
+                | #{video.match_title}
+            if video.start_time
+              p.mb-1
+                b Tanggal: 
+                | #{new Date(video.start_time).toLocaleString('id-ID')}

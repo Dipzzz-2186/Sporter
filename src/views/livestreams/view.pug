@@ -1,0 +1,56 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    a.btn.btn-light.btn-sm.mb-3(href="javascript:history.back()")
+      i.bi.bi-arrow-left
+      |  Kembali
+
+    .row
+      .col-lg-8
+        h2.mb-2= livestream.title
+
+        if embedUrl
+          .ratio.ratio-16x9.mb-3
+            iframe(
+              src=embedUrl
+              allowfullscreen
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            )
+        else
+          .alert.alert-warning
+            | Livestream tidak dapat di-embed. 
+            a(href=livestream.url target="_blank") Buka link asli.
+
+        if livestream.start_time
+          p.text-muted.mt-2
+            b Jadwal Mulai :
+            |  #{new Date(livestream.start_time).toLocaleString('id-ID')}
+        if livestream.end_time
+          p.text-muted
+            b Selesai :
+            |  #{new Date(livestream.end_time).toLocaleString('id-ID')}
+
+      .col-lg-4
+        .card.shadow-sm
+          .card-body
+            h5.fw-semibold.mb-3 Informasi Livestream
+            if livestream.sport_name
+              p.mb-1
+                b Cabang:
+                |  #{livestream.sport_name}
+            if livestream.event_title
+              p.mb-1
+                b Event:
+                |  #{livestream.event_title}
+            if livestream.match_title
+              p.mb-1
+                b Match:
+                |  #{livestream.match_title}
+            p.mt-2.text-muted.small
+              | Status: 
+              if livestream.is_live
+                span.text-success.fw-bold LIVE
+              else
+                span.text-secondary Tidak Live
