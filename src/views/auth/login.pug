@@ -1,0 +1,38 @@
+extends ../layout/main
+
+block content
+  .container
+    .row.justify-content-center
+      .col-md-6.col-lg-4
+        .card.shadow-sm.border-0.mt-5
+          .card-body.p-4
+            h1.h4.fw-bold.mb-3.text-center.text-danger Login Admin
+            p.text-muted.small.text-center.mb-4
+              | Masuk sebagai admin atau subadmin untuk mengelola event & berita.
+
+            if flash && flash.error && flash.error.length
+              .alert.alert-danger.py-2.small
+                each msg in flash.error
+                  div= msg
+
+            if flash && flash.success && flash.success.length
+              .alert.alert-success.py-2.small
+                each msg in flash.success
+                  div= msg
+
+            form(method="POST", action="/login")
+              .mb-3
+                label.form-label(for="email") Email
+                input#email.form-control(type="email", name="email", required, value=old && old.email ? old.email : '')
+              .mb-3
+                label.form-label(for="password") Password
+                input#password.form-control(type="password", name="password", required)
+
+              button.btn.btn-danger.w-100(type="submit") Login
+
+            p.text-center.text-muted.small.mt-3
+              | Hanya akun 
+              strong admin
+              |  dan 
+              strong subadmin
+              |  yang bisa mengakses panel manajemen.

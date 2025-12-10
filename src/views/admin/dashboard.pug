@@ -1,0 +1,107 @@
+extends ../layout/main
+
+block content
+  .container-fluid.py-4
+    .row.mb-3.align-items-center
+      .col-md-8
+        h1.fw-bold.text-danger.mb-1 Admin Dashboard
+        p.text-muted.mb-0
+          | Kelola event, berita, dan aktivitas platform SPORTER.
+      .col-md-4.text-md-end.mt-3.mt-md-0
+        if currentUser
+          span.badge.bg-light.text-danger.border.me-2
+            i.bi.bi-person-badge.me-1
+            | #{currentUser.role}
+        a.btn.btn-outline-danger.btn-sm(href="/")
+          i.bi.bi-house-door.me-1
+          | Lihat Website
+
+    // ===== STAT CARDS =====
+    .row.g-3.mb-4
+      .col-md-3
+        .card.border-0.shadow-sm.admin-stat-card
+          .card-body
+            span.text-muted.small Cabang Olahraga
+            h3.fw-bold.mb-0= stats.sports || 0
+      .col-md-3
+        .card.border-0.shadow-sm.admin-stat-card
+          .card-body
+            span.text-muted.small Total Event
+            h3.fw-bold.mb-0= stats.events || 0
+      .col-md-3
+        .card.border-0.shadow-sm.admin-stat-card
+          .card-body
+            span.text-muted.small Event Mendatang
+            h3.fw-bold.mb-0= stats.upcomingEvents || 0
+      .col-md-3
+        .card.border-0.shadow-sm.admin-stat-card
+          .card-body
+            span.text-muted.small Berita Terpublikasi
+            h3.fw-bold.mb-0= stats.news || 0
+
+    .row.g-4
+      // ===== RECENT EVENTS =====
+      .col-lg-6
+        .card.border-0.shadow-sm
+          .card-header.bg-white.border-0.d-flex.justify-content-between.align-items-center
+            h5.mb-0.fw-semibold
+              i.bi.bi-calendar-event.me-2
+              | Event Terbaru
+            //- placeholder untuk link manage
+            a.text-decoration-none.small(href="#") Kelola event
+          if recentEvents && recentEvents.length
+            .table-responsive
+              table.table.table-sm.mb-0.align-middle
+                thead
+                  tr.text-muted.small
+                    th Judul
+                    th Cabang
+                    th Status
+                    th Tanggal
+                tbody
+                  each e in recentEvents
+                    tr
+                      td
+                        a.text-decoration-none(href=`/events/${e.slug || ''}`)
+                          = e.title
+                      td= e.sport_name || '-'
+                      td
+                        if e.status === 'upcoming'
+                          span.badge.bg-warning.text-dark.uppercased.small Upcoming
+                        else if e.status === 'ongoing'
+                          span.badge.bg-success.small Ongoing
+                        else
+                          span.badge.bg-secondary.small Finished
+                      td
+                        - const d = new Date(e.start_date)
+                        span.small= d.toLocaleDateString('id-ID')
+          else
+            .card-body
+              p.text-muted.mb-0 Belum ada event tercatat.
+
+      // ===== RECENT NEWS =====
+      .col-lg-6
+        .card.border-0.shadow-sm
+          .card-header.bg-white.border-0.d-flex.justify-content-between.align-items-center
+            h5.mb-0.fw-semibold
+              i.bi.bi-newspaper.me-2
+              | Berita Terbaru
+            a.text-decoration-none.small(href="/news") Lihat semua berita
+          if recentNews && recentNews.length
+            .list-group.list-group-flush
+              each n in recentNews
+                a.list-group-item.list-group-item-action.d-flex.justify-content-between.align-items-start(
+                  href=`/news/${n.slug}`
+                )
+                  .me-3
+                    if n.sport_name
+                      span.badge.bg-light.text-danger.border.small.mb-1
+                        = n.sport_name
+                    h6.mb-1= n.title
+                    if n.published_at
+                      - const dn = new Date(n.published_at)
+                      small.text-muted= dn.toLocaleDateString('id-ID')
+                  i.bi.bi-chevron-right.text-muted
+          else
+            .card-body
+              p.text-muted.mb-0 Belum ada berita.

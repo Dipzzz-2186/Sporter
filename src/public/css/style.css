@@ -123,3 +123,117 @@ main {
   transform: translateY(-4px);
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
 }
+/* ===== NEWS HERO SECTION (ala DBL) ===== */
+
+.news-hero-section {
+  background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Main article left */
+.news-main-card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #111827;
+  color: #f9fafb;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.35);
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+
+.news-main-image-wrapper {
+  max-height: 260px;
+  overflow: hidden;
+}
+
+.news-main-image {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display: block;
+}
+
+.news-main-content {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.news-main-title {
+  font-size: 1.4rem;
+  line-height: 1.3;
+}
+
+.news-main-excerpt {
+  font-size: 0.95rem;
+  color: #e5e7eb;
+  opacity: 0.9;
+}
+
+/* Right big card */
+.news-side-top-card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #0f172a;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.3);
+}
+
+.news-side-top-image {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  display: block;
+}
+
+.news-side-top-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(
+    to top,
+    rgba(15, 23, 42, 0.9),
+    rgba(15, 23, 42, 0.1)
+  );
+  color: #f9fafb;
+}
+
+/* Right small cards */
+.news-side-mini-card {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #111827;
+}
+
+.news-side-mini-image {
+  width: 100%;
+  height: 95px;
+  object-fit: cover;
+}
+
+.news-side-mini-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 0.4rem 0.5rem;
+  background: linear-gradient(
+    to top,
+    rgba(15, 23, 42, 0.95),
+    rgba(15, 23, 42, 0.1)
+  );
+  color: #f9fafb;
+}
+/* ADMIN DASHBOARD */
+.admin-stat-card {
+  border-radius: 1rem;
+  background: #ffffff;
+}
+
+.admin-stat-card .card-body {
+  padding: 1rem 1.25rem;
+}

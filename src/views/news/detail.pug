@@ -1,0 +1,26 @@
+extends ../layout/main
+
+block content
+  .container
+    .row.justify-content-center
+      .col-lg-9
+        a.text-decoration-none.text-secondary.small.d-inline-flex.align-items-center.mb-3(href="/news")
+          i.bi.bi-arrow-left.me-1
+          | Kembali ke daftar berita
+
+        if article.thumbnail_url
+          img.img-fluid.rounded.mb-4(src=article.thumbnail_url, alt=article.title)
+
+        if article.sport_name
+          span.badge.bg-light.text-danger.border.me-2
+            = article.sport_name
+
+        if article.published_at_formatted
+          span.text-muted.small
+            i.bi.bi-calendar-event.me-1
+            = article.published_at_formatted
+
+        h1.fw-bold.mt-3.mb-3= article.title
+
+        .sporter-article-content
+          p.text-secondary.white-space-pre-line= article.content

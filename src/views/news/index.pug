@@ -1,0 +1,100 @@
+extends ../layout/main
+
+block content
+  // ===== HERO NEWS LAYOUT (ala portal) =====
+  .news-hero-section.py-4
+    .container
+      .row.g-3
+        // ===== KIRI: ARTIKEL UTAMA =====
+        .col-lg-7
+          if mainArticle
+            a.text-decoration-none.text-light(href=`/news/${mainArticle.slug}`)
+              .news-main-card
+                if mainArticle.thumbnail_url
+                  .news-main-image-wrapper
+                    img.news-main-image(
+                      src=mainArticle.thumbnail_url,
+                      alt=mainArticle.title
+                    )
+                .news-main-content
+                  if mainArticle.sport_name
+                    span.badge.bg-danger.me-2.text-uppercase.small
+                      = mainArticle.sport_name
+                  if mainArticle.published_at_formatted
+                    span.text-light-50.small
+                      i.bi.bi-calendar-event.me-1
+                      = mainArticle.published_at_formatted
+                  h2.news-main-title.mt-2.mb-2= mainArticle.title
+                  if mainArticle.excerpt
+                    p.mb-0.news-main-excerpt= mainArticle.excerpt
+                  else if mainArticle.content
+                    p.mb-0.news-main-excerpt= mainArticle.content.substring(0, 120) + '...'
+          else
+            .alert.alert-light
+              | Belum ada berita untuk ditampilkan.
+
+        // ===== KANAN: SPONSOR / SIDE NEWS =====
+        .col-lg-5
+          if sideTopArticle
+            a.text-decoration-none.text-light(href=`/news/${sideTopArticle.slug}`)
+              .news-side-top-card.mb-3
+                if sideTopArticle.thumbnail_url
+                  img.news-side-top-image(
+                    src=sideTopArticle.thumbnail_url,
+                    alt=sideTopArticle.title
+                  )
+                .news-side-top-overlay
+                  if sideTopArticle.sport_name
+                    span.badge.bg-light.text-danger.mb-1
+                      = sideTopArticle.sport_name
+                  h5.mb-1= sideTopArticle.title
+                  if sideTopArticle.excerpt
+                    p.small.mb-0= sideTopArticle.excerpt.substring(0, 80) + '...'
+
+          if sideMiniArticles && sideMiniArticles.length
+            .row.g-2
+              each item in sideMiniArticles
+                .col-6
+                  a.text-decoration-none.text-light(href=`/news/${item.slug}`)
+                    .news-side-mini-card
+                      if item.thumbnail_url
+                        img.news-side-mini-image(src=item.thumbnail_url, alt=item.title)
+                      .news-side-mini-overlay
+                        if item.sport_name
+                          span.badge.bg-dark.bg-opacity-75.text-white.small.mb-1
+                            = item.sport_name
+                        p.small.mb-0= item.title
+
+  // ===== GRID BERITA DI BAWAH =====
+  .py-4
+    .container
+      .row.mb-3
+        .col-lg-8
+          h3.fw-bold.text-danger.mb-1 Berita Lainnya
+          p.text-secondary.mb-0
+            | Kumpulan artikel terbaru dari berbagai cabang olahraga.
+      if otherArticles && otherArticles.length
+        .row.g-4
+          each item in otherArticles
+            .col-md-6.col-lg-3
+              a.text-decoration-none.text-dark(href=`/news/${item.slug}`)
+                .card.border-0.shadow-sm.sporter-news-card.h-100
+                  if item.thumbnail_url
+                    img.card-img-top.rounded-top(src=item.thumbnail_url, alt=item.title)
+                  .card-body.d-flex.flex-column
+                    if item.sport_name
+                      span.badge.bg-light.text-danger.border.mb-2
+                        = item.sport_name
+                    if item.published_at_formatted
+                      span.text-muted.small= item.published_at_formatted
+                    h6.fw-semibold.mt-1.mb-2= item.title
+                    if item.excerpt
+                      p.text-muted.small.mb-3= item.excerpt
+                    else if item.content
+                      p.text-muted.small.mb-3= item.content.substring(0, 80) + '...'
+                    .mt-auto
+                      span.text-danger.small.fw-semibold
+                        | Baca selengkapnya →
+      else
+        .alert.alert-light.border.mt-3
+          | Belum ada berita lainnya.

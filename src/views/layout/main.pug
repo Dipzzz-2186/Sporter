@@ -45,9 +45,29 @@ html(lang="id")
         #navMain.collapse.navbar-collapse
           ul.navbar-nav.ms-auto
             li.nav-item
-              a.nav-link(href="/") Beranda
+                a.nav-link(href="/") Beranda
             li.nav-item
-              a.nav-link(href="/sports") Cabang Olahraga
+                a.nav-link(href="/sports") Cabang Olahraga
+            li.nav-item
+                a.nav-link(href="/news") Berita
+
+        if !currentUser
+            li.nav-item
+            a.nav-link(href="/login")
+                i.bi.bi-box-arrow-in-right.me-1
+                | Login
+        else
+            if currentUser.role === 'admin' || currentUser.role === 'subadmin'
+            li.nav-item
+                a.nav-link(href="/admin")
+                i.bi.bi-speedometer2.me-1
+                | Dashboard
+
+            li.nav-item
+            a.nav-link(href="/logout")
+                i.bi.bi-box-arrow-right.me-1
+                | Logout
+
             //- nanti bisa tambah /events /news dll
 
     // MAIN CONTENT
