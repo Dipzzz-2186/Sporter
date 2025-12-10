@@ -1,0 +1,11 @@
+extends ../layout/main
+
+block content
+  h1 Daftar Cabang Olahraga
+
+  if sports.length
+    ul
+      each s in sports
+        li= s.name
+  else
+    p Tidak ada data.
