@@ -1,0 +1,32 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    h3.mb-3 Tambah Livestream
+    if flash && flash.error
+      .alert.alert-danger= flash.error
+    if flash && flash.success
+      .alert.alert-success= flash.success
+
+    form(method="post" action="/subadmin/livestreams/create")
+      .mb-3
+        label.form-label Cabang Olahraga
+        select.form-select(name="sport_id" required)
+          option(value="") -- Pilih cabang --
+          each s in sports
+            option(value=s.id)= s.name
+
+      .mb-3
+        label.form-label Judul
+        input.form-control(type="text" name="title" required)
+
+      .mb-3
+        label.form-label URL (link YouTube saja)
+        input.form-control(type="text" name="url" placeholder="https://www.youtube.com/watch?v=..." required)
+
+      .mb-3
+        label.form-label Deskripsi (opsional)
+        textarea.form-control(name="description" rows="3")
+
+      button.btn.btn-primary(type="submit") Simpan Livestream
+      a.btn.btn-secondary.ms-2(href="/livestreams") Batal
