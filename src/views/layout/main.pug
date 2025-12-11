@@ -619,11 +619,16 @@ html(lang="id")
                       i.bi.bi-person-fill.me-2
                       | Profile
 
-                  if currentUser.role === 'admin' || currentUser.role === 'subadmin'
+                  if currentUser.role === 'admin'
                     li
                       a.dropdown-item(href="/admin")
                         i.bi.bi-speedometer2.me-2
                         | Dashboard Admin
+                  if currentUser.role === 'subadmin'
+                    li
+                      a.dropdown-item(href="/subadmin")
+                        i.bi.bi-speedometer2.me-2
+                        | Dashboard Subadmin
 
                   li
                     hr.dropdown-divider
