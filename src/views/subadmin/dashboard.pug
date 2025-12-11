@@ -1,158 +1,945 @@
 extends ../layout/main
 
 block content
-  .container.mt-4
-    .d-flex.justify-content-between.align-items-center.mb-3
-      .d-flex.flex-column
-        h2.mb-0 SubAdmin Dashboard
-        small.text-muted.mt-1= "Halo, " + (currentUser && currentUser.name ? currentUser.name : 'SubAdmin')
-      .btn-group
-        a.btn.btn-outline-secondary(href="/admin" role="button")
-          i.bi.bi-speedometer2.me-1
-          | Admin Area
-        a.btn.btn-primary(href="/subadmin/events/create")
-          i.bi.bi-plus-lg.me-1
-          | Buat Event
-        a.btn.btn-success(href="/subadmin/matches/create")
-          i.bi.bi-calendar-plus.me-1
-          | Jadwal Pertandingan
-        a.btn.btn-warning(href="/subadmin/news/create")
-          i.bi.bi-newspaper.me-1
-          | Buat Berita
-        a.btn.btn-info.text-white(href="/subadmin/videos/create")
-          i.bi.bi-play-btn-fill.me-1
-          | Tambah Video
-        a.btn.btn-danger(href="/subadmin/livestreams/create")
-          i.bi.bi-broadcast.me-1
-          | Tambah Livestream
+  style.
+    /* Dashboard Hero */
+    .dashboard-hero {
+      background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
+      border-radius: 24px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .dashboard-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    .dashboard-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(52, 211, 153, 0.05) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    .user-greeting {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .user-role-badge {
+      background: rgba(59, 130, 246, 0.15);
+      color: #3B82F6;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      backdrop-filter: blur(10px);
+    }
+    
+    /* Quick Actions */
+    .quick-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    
+    .action-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: 15px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      color: white;
+      text-decoration: none;
+    }
+    
+    .action-btn-primary {
+      background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+      border: none;
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    }
+    
+    .action-btn-success {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      border: none;
+      box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+    }
+    
+    .action-btn-warning {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      border: none;
+      box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+    }
+    
+    .action-btn-info {
+      background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+      border: none;
+      box-shadow: 0 5px 15px rgba(6, 182, 212, 0.3);
+    }
+    
+    .action-btn-danger {
+      background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+      border: none;
+      box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 18px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      border: 1px solid #f0f0f0;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out backwards;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      border-color: #3B82F6;
+    }
+    
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      color: white;
+    }
+    
+    .stat-icon-sports { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); }
+    .stat-icon-events { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
+    .stat-icon-matches { background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%); }
+    .stat-icon-videos { background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); }
+    .stat-icon-livestreams { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
+    .stat-icon-tickets { background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1C1C1E;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    
+    /* Content Sections */
+    .dashboard-section {
+      margin-bottom: 2rem;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1C1C1E;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .section-title i {
+      color: #3B82F6;
+    }
+    
+    .section-link {
+      color: #3B82F6;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: all 0.3s ease;
+    }
+    
+    .section-link:hover {
+      color: #1D4ED8;
+      gap: 0.5rem;
+    }
+    
+    /* Table Styling */
+    .dashboard-table {
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid #f0f0f0;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .dashboard-table .table {
+      margin-bottom: 0;
+    }
+    
+    .dashboard-table thead th {
+      background: #f8fafc;
+      border-bottom: 2px solid #e2e8f0;
+      font-weight: 600;
+      color: #4b5563;
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .dashboard-table tbody td {
+      padding: 1rem 1.25rem;
+      vertical-align: middle;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .match-title {
+      font-weight: 600;
+      color: #1C1C1E;
+      margin-bottom: 0.25rem;
+    }
+    
+    .match-subtitle {
+      font-size: 0.85rem;
+      color: #6c757d;
+    }
+    
+    .date-badge {
+      background: #f8fafc;
+      padding: 0.4rem 0.8rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      color: #4b5563;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .ticket-badge {
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .ticket-sold-out {
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+    }
+    
+    .ticket-disabled {
+      background: rgba(107, 114, 128, 0.1);
+      color: #6b7280;
+    }
+    
+    .ticket-available {
+      background: rgba(34, 197, 94, 0.1);
+      color: #16a34a;
+    }
+    
+    /* Quick Buy Form */
+    .quick-buy-form {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .quantity-input {
+      width: 70px;
+      padding: 0.35rem 0.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    
+    .buy-btn {
+      background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .buy-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    
+    /* Sidebar Cards */
+    .sidebar-card {
+      background: white;
+      border-radius: 18px;
+      border: 1px solid #f0f0f0;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .sidebar-card-header {
+      background: #f8fafc;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .sidebar-card-header h6 {
+      margin: 0;
+      font-weight: 600;
+      color: #1C1C1E;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .sidebar-list-item {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #f1f5f9;
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar-list-item:hover {
+      background: #f8fafc;
+    }
+    
+    .sidebar-list-item:last-child {
+      border-bottom: none;
+    }
+    
+    .sidebar-list-item a {
+      color: #1C1C1E;
+      text-decoration: none;
+      font-weight: 500;
+      display: block;
+      transition: color 0.3s ease;
+    }
+    
+    .sidebar-list-item a:hover {
+      color: #3B82F6;
+    }
+    
+    .livestream-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .livestream-title {
+      font-weight: 600;
+      color: #1C1C1E;
+      margin: 0;
+    }
+    
+    .livestream-meta {
+      font-size: 0.85rem;
+      color: #6c757d;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .livestream-sport {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3B82F6;
+      padding: 0.2rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+    
+    .livestream-btn {
+      margin-top: 0.5rem;
+    }
+    
+    /* Empty States */
+    .empty-state {
+      padding: 2rem;
+      text-align: center;
+      color: #6c757d;
+    }
+    
+    .empty-state-icon {
+      width: 60px;
+      height: 60px;
+      background: #f8fafc;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: #94a3b8;
+    }
+    
+    /* Quick Links */
+    .quick-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #f0f0f0;
+    }
+    
+    .quick-link {
+      background: white;
+      border: 1px solid #e2e8f0;
+      color: #4b5563;
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .quick-link:hover {
+      background: #f8fafc;
+      color: #3B82F6;
+      border-color: #3B82F6;
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Animation delays */
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+    .stat-card:nth-child(5) { animation-delay: 0.5s; }
+    .stat-card:nth-child(6) { animation-delay: 0.6s; }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dashboard-hero {
+        padding: 1.75rem;
+      }
+      
+      .user-greeting {
+        font-size: 1.5rem;
+      }
+      
+      .quick-actions {
+        flex-direction: column;
+      }
+      
+      .action-btn {
+        justify-content: center;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .dashboard-table {
+        overflow-x: auto;
+      }
+      
+      .quick-buy-form {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .quantity-input {
+        width: 100%;
+      }
+      
+      .buy-btn {
+        width: 100%;
+      }
+      
+      .quick-links {
+        flex-direction: column;
+      }
+      
+      .quick-link {
+        justify-content: center;
+      }
+    }
 
-    // quick stats
-    .row.mb-4.g-3
-      .col-md-2
-        .card.p-3.h-100
-          small.text-muted Cabang Kamu
-          h4.mb-0= stats.sports || 0
-      .col-md-2
-        .card.p-3.h-100
-          small.text-muted Event
-          h4.mb-0= stats.events || 0
-      .col-md-2
-        .card.p-3.h-100
-          small.text-muted Matches
-          h4.mb-0= stats.matches || 0
-      .col-md-2
-        .card.p-3.h-100
-          small.text-muted Videos
-          h4.mb-0= stats.videos || 0
-      .col-md-2
-        .card.p-3.h-100
-          small.text-muted Livestreams
-          h4.mb-0= stats.livestreams || 0
-      .col-md-2
-        .card.p-3.h-100
-          small.text-muted Ticket Types
-          h4.mb-0= stats.ticketTypes || 0
+  // Dashboard Hero
+  .dashboard-hero
+    .container
+      .row.align-items-center
+        .col-md-8
+          h1.user-greeting= "Halo, " + (currentUser && currentUser.name ? currentUser.name : 'SubAdmin')
+          span.user-role-badge
+            i.bi.bi-shield-check
+            | SubAdmin Dashboard
+          p.text-white-75.mt-2.mb-0 Kelola event, jadwal, dan konten untuk cabang olahraga Anda
+        .col-md-4.text-md-end.mt-3.mt-md-0
+          a.btn.btn-light.btn-lg(href="/admin")
+            i.bi.bi-speedometer2.me-2
+            | Admin Area
+    
+    .quick-actions
+      a.action-btn.action-btn-primary(href="/subadmin/events/create")
+        i.bi.bi-plus-lg
+        | Buat Event
+      a.action-btn.action-btn-success(href="/subadmin/matches/create")
+        i.bi.bi-calendar-plus
+        | Jadwal Pertandingan
+      a.action-btn.action-btn-warning(href="/subadmin/news/create")
+        i.bi.bi-newspaper
+        | Buat Berita
+      a.action-btn.action-btn-info(href="/subadmin/videos/create")
+        i.bi.bi-play-btn-fill
+        | Tambah Video
+      a.action-btn.action-btn-danger(href="/subadmin/livestreams/create")
+        i.bi.bi-broadcast
+        | Tambah Livestream
 
-    // Upcoming matches with ticket actions
+  .container
+    // Stats Overview
+    .stats-grid
+      .stat-card
+        .stat-icon.stat-icon-sports
+          i.bi.bi-trophy
+        .stat-value= stats.sports || 0
+        .stat-label Cabang Olahraga
+      
+      .stat-card
+        .stat-icon.stat-icon-events
+          i.bi.bi-calendar-event
+        .stat-value= stats.events || 0
+        .stat-label Event
+      
+      .stat-card
+        .stat-icon.stat-icon-matches
+          i.bi.bi-calendar-check
+        .stat-value= stats.matches || 0
+        .stat-label Pertandingan
+      
+      .stat-card
+        .stat-icon.stat-icon-videos
+          i.bi.bi-play-btn
+        .stat-value= stats.videos || 0
+        .stat-label Video
+      
+      .stat-card
+        .stat-icon.stat-icon-livestreams
+          i.bi.bi-broadcast
+        .stat-value= stats.livestreams || 0
+        .stat-label Livestreams
+      
+      .stat-card
+        .stat-icon.stat-icon-tickets
+          i.bi.bi-ticket-perforated
+        .stat-value= stats.ticketTypes || 0
+        .stat-label Tipe Tiket
+
     .row.g-4
+      // Upcoming Matches
       .col-lg-8
-        .card.shadow-sm
-          .card-header.d-flex.justify-content-between.align-items-center
-            h5.mb-0.fw-semibold
-              i.bi.bi-calendar-event.me-2
+        .dashboard-section
+          .section-header
+            h2.section-title
+              i.bi.bi-calendar-event
               | Jadwal Mendatang
-            a.small.text-decoration-none(href="/subadmin/matches") Kelola semua
-          .table-responsive
-            table.table.table-sm.mb-0
-              thead
-                tr.text-muted.small
-                  th Match / Event
-                  th Cabang
-                  th Tanggal
-                  th Venue
-                  th Ticket
-                  th Aksi
-              tbody
-                if upcomingMatches && upcomingMatches.length
-                  each m in upcomingMatches
-                    - const start = new Date(m.start_time || m.start_date || null)
-                    tr
-                      td
-                        b= m.title || (m.home_team_name ? (m.home_team_name + " vs " + (m.away_team_name||'-')) : 'Match')
-                        if m.match_title
-                          br
-                          small.text-muted= m.match_title
-                      td= m.sport_name || '-'
-                      td
-                        if m.start_time || m.start_date
-                          = start.toLocaleString('id-ID')
-                        else
-                          | -
-                      td= m.venue_name || '-'
-                      td
-                        if m.ticket_available === 0
-                          span.badge.bg-danger Sold out
-                        else if !m.can_buy
-                          span.badge.bg-secondary.text-white Disabled
-                        else
-                          span.badge.bg-success= m.ticket_available + " left"
-                      td
-                        if m.can_buy
-                          form.d-inline(method="post" action="/purchase/buy")
-                            input(type="hidden" name="ticket_type_id" value=m.default_ticket_type_id)
-                            input(type="number" name="quantity" min="1" value="1" style="width:70px;display:inline-block;margin-right:6px")
-                            button.btn.btn-sm.btn-primary(type="submit") Beli
-                        else
-                          button.btn.btn-sm.btn-outline-secondary(disabled) Tidak bisa beli
-
-                else
+            a.section-link(href="/subadmin/matches")
+              | Kelola Semua
+              i.bi.bi-arrow-right
+            
+          .dashboard-table
+            .table-responsive
+              table.table.table-hover.mb-0
+                thead
                   tr
-                    td(colspan="6")
-                      p.text-muted.mb-0 Tidak ada jadwal mendatang untuk cabang yang Anda kelola.
+                    th Match / Event
+                    th Cabang
+                    th Tanggal
+                    th Tiket
+                    th Aksi
+                tbody
+                  if upcomingMatches && upcomingMatches.length
+                    each m in upcomingMatches
+                      - const start = new Date(m.start_time || m.start_date || null)
+                      tr
+                        td
+                          .match-title= m.title || (m.home_team_name ? (m.home_team_name + " vs " + (m.away_team_name||'-')) : 'Match')
+                          if m.match_title
+                            .match-subtitle= m.match_title
+                        td= m.sport_name || '-'
+                        td
+                          .date-badge
+                            i.bi.bi-calendar3
+                            = start.toLocaleDateString('id-ID')
+                          .text-muted.small.mt-1
+                            i.bi.bi-clock
+                            = start.toLocaleTimeString('id-ID')
+                        td
+                          if m.ticket_available === 0
+                            span.ticket-badge.ticket-sold-out Sold out
+                          else if !m.can_buy
+                            span.ticket-badge.ticket-disabled Disabled
+                          else
+                            span.ticket-badge.ticket-available= m.ticket_available + " tersedia"
+                        td
+                          if m.can_buy
+                            form.quick-buy-form(method="post" action="/purchase/buy")
+                              input(type="hidden" name="ticket_type_id" value=m.default_ticket_type_id)
+                              input.quantity-input.form-control.form-control-sm(
+                                type="number" 
+                                name="quantity" 
+                                min="1" 
+                                max=m.ticket_available 
+                                value="1"
+                              )
+                              button.buy-btn.btn-sm(type="submit")
+                                i.bi.bi-cart3.me-1
+                                | Beli
+                          else
+                            button.btn.btn-sm.btn-outline-secondary(disabled)
+                              i.bi.bi-slash-circle.me-1
+                              | Tidak Tersedia
+                  else
+                    tr
+                      td(colspan="5")
+                        .empty-state
+                          .empty-state-icon
+                            i.bi.bi-calendar-x
+                          p.mb-0 Tidak ada jadwal mendatang untuk cabang yang Anda kelola.
 
+      // Sidebar Content
       .col-lg-4
-        // Recent news / videos / livestreams
-        .card.shadow-sm.mb-3
-          .card-header
-            h6.mb-0 Berita Terbaru
-          ul.list-group.list-group-flush
+        // Recent News
+        .sidebar-card
+          .sidebar-card-header
+            h6
+              i.bi.bi-newspaper.me-2
+              | Berita Terbaru
+          ul.sidebar-list
             if recentNews && recentNews.length
               each n in recentNews
-                li.list-group-item
-                  a(href=`/news/${n.slug}`)= n.title
+                li.sidebar-list-item
+                  a(href=`/news/${n.slug}`)
+                    = n.title
+                    small.text-muted.d-block.mt-1
+                      i.bi.bi-clock
+                      = ' ' + (new Date(n.created_at || n.published_at)).toLocaleDateString('id-ID')
             else
-              li.list-group-item.text-muted Belum ada berita.
-
-        .card.shadow-sm.mb-3
-          .card-header
-            h6.mb-0 Video Terbaru
-          ul.list-group.list-group-flush
+              li.sidebar-list-item
+                .empty-state.py-3
+                  .empty-state-icon.mb-2
+                    i.bi.bi-newspaper
+                  p.mb-0.text-muted Belum ada berita
+        
+        // Recent Videos
+        .sidebar-card
+          .sidebar-card-header
+            h6
+              i.bi.bi-play-btn.me-2
+              | Video Terbaru
+          ul.sidebar-list
             if recentVideos && recentVideos.length
               each v in recentVideos
-                li.list-group-item
-                  a(href=`/videos/${v.id}`)= v.title
+                li.sidebar-list-item
+                  a(href=`/videos/${v.id}`)
+                    = v.title
+                    small.text-muted.d-block.mt-1
+                      i.bi.bi-film
+                      = ' ' + (v.sport_name || '-')
             else
-              li.list-group-item.text-muted Belum ada video.
-
-        .card.shadow-sm
-          .card-header
-            h6.mb-0 Livestream Terdekat
-          ul.list-group.list-group-flush
+              li.sidebar-list-item
+                .empty-state.py-3
+                  .empty-state-icon.mb-2
+                    i.bi.bi-play-btn
+                  p.mb-0.text-muted Belum ada video
+        
+        // Upcoming Livestreams
+        .sidebar-card
+          .sidebar-card-header
+            h6
+              i.bi.bi-broadcast.me-2
+              | Livestream Terdekat
+          ul.sidebar-list
             if upcomingLivestreams && upcomingLivestreams.length
               each l in upcomingLivestreams
-                li.list-group-item
-                  b= l.title
-                  br
-                  small.text-muted= (l.sport_name || '-') + ' • ' + (new Date(l.start_time || l.created_at)).toLocaleString('id-ID')
-                  br
-                  a.btn.btn-sm.btn-outline-primary.mt-2(href=`/livestreams/${l.id}`) Lihat
+                li.sidebar-list-item
+                  .livestream-item
+                    .livestream-title= l.title
+                    .livestream-meta
+                      span.livestream-sport= l.sport_name || '-'
+                      i.bi.bi-clock
+                      = (new Date(l.start_time || l.created_at)).toLocaleDateString('id-ID')
+                    a.btn.btn-sm.btn-outline-primary.livestream-btn(href=`/livestreams/${l.id}`)
+                      i.bi.bi-eye.me-1
+                      | Tonton
             else
-              li.list-group-item.text-muted Belum ada livestream.
+              li.sidebar-list-item
+                .empty-state.py-3
+                  .empty-state-icon.mb-2
+                    i.bi.bi-broadcast
+                  p.mb-0.text-muted Belum ada livestream
 
-    // quick links
-    .mt-4
-      a.btn.btn-outline-secondary.me-2(href="/events") Kelola Event
-      a.btn.btn-outline-secondary.me-2(href="/news") Kelola Berita
-      a.btn.btn-outline-secondary.me-2(href="/matches") Kelola Jadwal
-      a.btn.btn-outline-secondary.me-2(href="/videos") Kelola Video
-      a.btn.btn-outline-secondary(href="/livestreams") Kelola Livestream
+    // Quick Management Links
+    .quick-links
+      a.quick-link(href="/events")
+        i.bi.bi-calendar-event
+        | Kelola Event
+      a.quick-link(href="/news")
+        i.bi.bi-newspaper
+        | Kelola Berita
+      a.quick-link(href="/matches")
+        i.bi.bi-calendar-check
+        | Kelola Jadwal
+      a.quick-link(href="/videos")
+        i.bi.bi-play-btn
+        | Kelola Video
+      a.quick-link(href="/livestreams")
+        i.bi.bi-broadcast
+        | Kelola Livestream
+      a.quick-link(href="/tickets")
+        i.bi.bi-ticket-perforated
+        | Kelola Tiket
+
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      // Animate stat counters
+      const statValues = document.querySelectorAll('.stat-value');
+      statValues.forEach((element, index) => {
+        const targetValue = parseInt(element.textContent) || 0;
+        if (targetValue > 0) {
+          let current = 0;
+          const increment = targetValue / 20;
+          const stepTime = 50;
+          
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= targetValue) {
+              current = targetValue;
+              clearInterval(timer);
+            }
+            element.textContent = Math.floor(current);
+          }, stepTime);
+        }
+      });
+      
+      // Add interactivity to table rows
+      const tableRows = document.querySelectorAll('.dashboard-table tbody tr');
+      tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+          this.style.backgroundColor = '#f8fafc';
+          this.style.transition = 'background-color 0.3s ease';
+        });
+        
+        row.addEventListener('mouseleave', function() {
+          this.style.backgroundColor = '';
+        });
+      });
+      
+      // Quick buy form validation
+      const buyForms = document.querySelectorAll('.quick-buy-form');
+      buyForms.forEach(form => {
+        const quantityInput = form.querySelector('.quantity-input');
+        const maxTickets = parseInt(quantityInput.getAttribute('max')) || 999;
+        
+        quantityInput.addEventListener('change', function() {
+          let value = parseInt(this.value);
+          if (isNaN(value) || value < 1) {
+            this.value = 1;
+          } else if (value > maxTickets) {
+            this.value = maxTickets;
+          }
+        });
+        
+        quantityInput.addEventListener('input', function() {
+          let value = parseInt(this.value);
+          if (isNaN(value) || value < 1) {
+            this.value = '';
+          }
+        });
+      });
+      
+      // Add click effect to action buttons
+      const actionButtons = document.querySelectorAll('.action-btn');
+      actionButtons.forEach(button => {
+        button.addEventListener('mousedown', function() {
+          this.style.transform = 'scale(0.95)';
+        });
+        
+        button.addEventListener('mouseup', function() {
+          this.style.transform = '';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+          this.style.transform = '';
+        });
+      });
+      
+      // Update time display for livestreams
+      function updateLiveTimes() {
+        const timeElements = document.querySelectorAll('.livestream-meta .bi-clock');
+        timeElements.forEach(element => {
+          const parent = element.parentElement;
+          const dateText = parent.textContent.split('•')[1]?.trim();
+          if (dateText) {
+            const date = new Date(dateText);
+            if (!isNaN(date.getTime())) {
+              const now = new Date();
+              const diffMs = date - now;
+              const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+              
+              if (diffHours > 0 && diffHours < 24) {
+                element.classList.add('text-warning');
+                element.title = `Mulai dalam ${diffHours} jam`;
+              } else if (diffMs <= 0 && diffMs > -3600000) {
+                element.classList.add('text-danger');
+                element.title = 'Sedang berlangsung';
+              }
+            }
+          }
+        });
+      }
+      
+      // Initial update
+      updateLiveTimes();
+      
+      // Update every minute
+      setInterval(updateLiveTimes, 60000);
+      
+      // Add keyboard shortcuts
+      document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey) {
+          switch(e.key) {
+            case 'e':
+              e.preventDefault();
+              window.location.href = '/subadmin/events/create';
+              break;
+            case 'm':
+              e.preventDefault();
+              window.location.href = '/subadmin/matches/create';
+              break;
+            case 'n':
+              e.preventDefault();
+              window.location.href = '/subadmin/news/create';
+              break;
+            case 'v':
+              e.preventDefault();
+              window.location.href = '/subadmin/videos/create';
+              break;
+            case 'l':
+              e.preventDefault();
+              window.location.href = '/subadmin/livestreams/create';
+              break;
+          }
+        }
+      });
+      
+      // Show keyboard shortcuts hint
+      setTimeout(() => {
+        const hint = document.createElement('div');
+        hint.className = 'position-fixed bottom-0 end-0 m-3 p-3 bg-dark text-white rounded-3 shadow-lg';
+        hint.style.zIndex = '1000';
+        hint.innerHTML = `
+          <small class="d-block mb-1">Keyboard Shortcuts:</small>
+          <div class="d-flex gap-2">
+            <kbd class="bg-secondary">Ctrl+E</kbd> Event
+            <kbd class="bg-secondary">Ctrl+M</kbd> Match
+            <kbd class="bg-secondary">Ctrl+N</kbd> News
+          </div>
+        `;
+        hint.style.display = 'none';
+        document.body.appendChild(hint);
+        
+        // Show hint on Ctrl+/ and hide on click
+        document.addEventListener('keydown', function(e) {
+          if (e.ctrlKey && e.key === '/') {
+            e.preventDefault();
+            hint.style.display = hint.style.display === 'none' ? 'block' : 'none';
+          }
+        });
+        
+        hint.addEventListener('click', function() {
+          this.style.display = 'none';
+        });
+        
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+          hint.style.display = 'none';
+        }, 10000);
+      }, 3000);
+    });
