@@ -35,6 +35,15 @@ router.post("/events/:id/edit", authMiddleware.requireAdmin, adminController.upd
 
 router.post("/events/:id/delete", authMiddleware.requireAdmin, adminController.deleteEvent);
 
+// News management (admin only)
+router.get("/news", authMiddleware.requireAdmin, adminController.listNews);
+router.get("/news/create", authMiddleware.requireAdmin, adminController.renderCreateNews);
+router.post("/news/create", authMiddleware.requireAdmin, adminController.createNews);
+
+router.get("/news/:id/edit", authMiddleware.requireAdmin, adminController.renderEditNews);
+router.post("/news/:id/edit", authMiddleware.requireAdmin, adminController.updateNews);
+
+router.post("/news/:id/delete", authMiddleware.requireAdmin, adminController.deleteNews);
 
 // Subadmin management (admin only)
 router.get("/subadmins", authMiddleware.requireAdmin, adminController.listSubadmins);

@@ -1,0 +1,74 @@
+extends ../layout/main
+
+block content
+  .container.py-4
+    .d-flex.justify-content-between.align-items-center.mb-3
+      div
+        h1.fw-bold.mb-1 Kelola Berita
+        p.text-muted.mb-0
+          | Manage semua artikel berita yang tampil di SPORTER.
+      a.btn.btn-danger(href="/admin/news/create")
+        i.bi.bi-plus-circle.me-1
+        | Tambah Berita
+
+    if flash && flash.error && flash.error.length
+      each msg in flash.error
+        .alert.alert-danger(role="alert")= msg
+    if flash && flash.success && flash.success.length
+      each msg in flash.success
+        .alert.alert-success(role="alert")= msg
+
+    if news && news.length
+      .card
+        .card-body
+          .table-responsive
+            table.table.table-hover.align-middle
+              thead
+                tr
+                  th ID
+                  th Judul
+                  th Cabang
+                  th Event
+                  th Status
+                  th Diterbitkan
+                  th.text-end Aksi
+              tbody
+                each n in news
+                  tr
+                    td= n.id
+                    td
+                      strong= n.title
+                      if n.slug
+                        br
+                        small.text-muted= n.slug
+                    td= n.sport_name || '-'
+                    td= n.event_title || '-'
+                    td
+                      if n.status === 'published'
+                        span.badge.bg-success-subtle.text-success Published
+                      else if n.status === 'draft'
+                        span.badge.bg-secondary-subtle.text-secondary Draft
+                      else
+                        span.badge.bg-warning-subtle.text-warning= n.status
+                    td
+                      if n.published_at
+                        - const pub = new Date(n.published_at).toLocaleDateString('id-ID');
+                        span= pub
+                      else
+                        span.text-muted -
+                    td.text-end
+                      if n.slug
+                        a.btn.btn-sm.btn-outline-secondary.me-1(href=`/news/${n.slug}` target="_blank")
+                          i.bi.bi-box-arrow-up-right
+                      a.btn.btn-sm.btn-outline-primary.me-1(href=`/admin/news/${n.id}/edit`)
+                        i.bi.bi-pencil
+                      form.d-inline(method="post" action=`/admin/news/${n.id}/delete` onsubmit="return confirm('Yakin hapus berita ini?');")
+                        button.btn.btn-sm.btn-outline-danger(type="submit")
+                          i.bi.bi-trash
+    else
+      .text-center.py-5
+        h4.mb-2 Belum ada berita
+        p.text-muted.mb-3 Tambahkan artikel berita pertama untuk SPORTER.
+        a.btn.btn-danger(href="/admin/news/create")
+          i.bi.bi-plus-circle.me-1
+          | Tambah Berita

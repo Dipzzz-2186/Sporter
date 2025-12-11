@@ -375,3 +375,216 @@ exports.deleteEvent = async (req, res) => {
     return res.redirect("/admin/events");
   }
 };
+// ========== HELPER SLUG (pakai kalau belum ada) ==========
+function makeSlug(str = "") {
+  return String(str)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+// ========== NEWS CRUD (ADMIN) ==========
+
+// List semua berita
+exports.listNews = async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT n.id, n.title, n.slug, n.status, n.published_at,
+              s.name AS sport_name,
+              e.title AS event_title
+       FROM news_articles n
+       LEFT JOIN sports s ON s.id = n.sport_id
+       LEFT JOIN events e ON e.id = n.event_id
+       ORDER BY n.published_at DESC, n.created_at DESC`
+    );
+
+    return res.render("admin/news", {
+      title: "Kelola Berita - SPORTER",
+      news: rows,
+    });
+  } catch (err) {
+    console.error("ERROR listNews:", err);
+    req.flash("error", "Gagal memuat data berita.");
+    return res.redirect("/admin");
+  }
+};
+
+// Render form CREATE berita
+exports.renderCreateNews = async (req, res) => {
+  try {
+    const [sports] = await db.query("SELECT id, name FROM sports ORDER BY name");
+    const [events] = await db.query("SELECT id, title FROM events ORDER BY start_date DESC");
+
+    return res.render("admin/news_form", {
+      title: "Buat Berita - SPORTER",
+      mode: "create",
+      article: {},
+      sports,
+      events,
+    });
+  } catch (err) {
+    console.error("ERROR renderCreateNews:", err);
+    req.flash("error", "Gagal memuat form berita.");
+    return res.redirect("/admin/news");
+  }
+};
+
+// Handle CREATE berita
+exports.createNews = async (req, res) => {
+  try {
+    let {
+      sport_id,
+      event_id,
+      title,
+      slug,
+      excerpt,
+      content,
+      status,
+      published_at,
+    } = req.body;
+
+    if (!title) {
+      req.flash("error", "Judul wajib diisi.");
+      return res.redirect("/admin/news/create");
+    }
+
+    if (!slug || !slug.trim()) slug = makeSlug(title);
+    if (!status) status = "draft";
+
+    await db.query(
+      `INSERT INTO news_articles
+       (sport_id, event_id, author_id, title, slug, excerpt, content, status, published_at, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+      [
+        sport_id || null,
+        event_id || null,
+        req.session.user ? req.session.user.id : null,
+        title,
+        slug,
+        excerpt || null,
+        content || "",
+        status,
+        published_at || null,
+      ]
+    );
+
+    req.flash("success", "Berita berhasil dibuat.");
+    return res.redirect("/admin/news");
+  } catch (err) {
+    console.error("ERROR createNews (admin):", err);
+    req.flash("error", "Gagal membuat berita.");
+    return res.redirect("/admin/news/create");
+  }
+};
+
+// Render form EDIT berita
+exports.renderEditNews = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID berita tidak valid.");
+      return res.redirect("/admin/news");
+    }
+
+    const [[article]] = await db.query(
+      `SELECT * FROM news_articles WHERE id = ? LIMIT 1`,
+      [id]
+    );
+
+    if (!article) {
+      req.flash("error", "Berita tidak ditemukan.");
+      return res.redirect("/admin/news");
+    }
+
+    const [sports] = await db.query("SELECT id, name FROM sports ORDER BY name");
+    const [events] = await db.query("SELECT id, title FROM events ORDER BY start_date DESC");
+
+    return res.render("admin/news_form", {
+      title: "Edit Berita - SPORTER",
+      mode: "edit",
+      article,
+      sports,
+      events,
+    });
+  } catch (err) {
+    console.error("ERROR renderEditNews:", err);
+    req.flash("error", "Gagal memuat form edit berita.");
+    return res.redirect("/admin/news");
+  }
+};
+
+// Handle UPDATE berita
+exports.updateNews = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID berita tidak valid.");
+      return res.redirect("/admin/news");
+    }
+
+    let {
+      sport_id,
+      event_id,
+      title,
+      slug,
+      excerpt,
+      content,
+      status,
+      published_at,
+    } = req.body;
+
+    if (!title) {
+      req.flash("error", "Judul wajib diisi.");
+      return res.redirect(`/admin/news/${id}/edit`);
+    }
+
+    if (!slug || !slug.trim()) slug = makeSlug(title);
+    if (!status) status = "draft";
+
+    await db.query(
+      `UPDATE news_articles
+       SET sport_id = ?, event_id = ?, title = ?, slug = ?, excerpt = ?,
+           content = ?, status = ?, published_at = ?, updated_at = NOW()
+       WHERE id = ?`,
+      [
+        sport_id || null,
+        event_id || null,
+        title,
+        slug,
+        excerpt || null,
+        content || "",
+        status,
+        published_at || null,
+        id,
+      ]
+    );
+
+    req.flash("success", "Berita berhasil diupdate.");
+    return res.redirect("/admin/news");
+  } catch (err) {
+    console.error("ERROR updateNews:", err);
+    req.flash("error", "Gagal mengupdate berita.");
+    return res.redirect("/admin/news");
+  }
+};
+
+// Handle DELETE berita
+exports.deleteNews = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID berita tidak valid.");
+      return res.redirect("/admin/news");
+    }
+
+    await db.query("DELETE FROM news_articles WHERE id = ?", [id]);
+
+    req.flash("success", "Berita berhasil dihapus.");
+    return res.redirect("/admin/news");
+  } catch (err) {
+    console.error("ERROR deleteNews:", err);
+    req.flash("error", "Gagal menghapus berita.");
+    return res.redirect("/admin/news");
+  }
+};
