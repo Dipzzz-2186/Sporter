@@ -409,6 +409,28 @@ block content
       box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
     }
     
+    /* Close button for badges */
+    .badge-close {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-left: 0.5rem;
+      padding: 0;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+    
+    .badge-close:hover {
+      opacity: 1;
+    }
+    
     /* Responsive */
     @media (max-width: 768px) {
       .create-hero {
@@ -561,14 +583,15 @@ block content
           
           .sports-grid
             each sport in sports
+              - const isChecked = formData && formData.sport_ids && formData.sport_ids.includes(sport.id.toString())
               input.sport-checkbox(
                 type="checkbox" 
                 name="sport_ids" 
-                id="sport-#{sport.id}" 
+                id=`sport-${sport.id}` 
                 value=sport.id
-                checked=formData && formData.sport_ids && formData.sport_ids.includes(sport.id.toString())
+                checked=isChecked
               )
-              label.sport-card(for="sport-#{sport.id}")
+              label.sport-card(for=`sport-${sport.id}`)
                 .sport-icon
                   i.bi.bi-trophy-fill
                 div
@@ -595,6 +618,12 @@ block content
             | Batal
 
   script.
+    // Initialize on DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+      updateSelectedBadges();
+      setupEventListeners();
+    });
+    
     // Toggle password visibility
     function togglePassword(inputId) {
       const input = document.getElementById(inputId);
@@ -620,6 +649,9 @@ block content
       
       checkboxes.forEach(checkbox => {
         checkbox.checked = !allChecked;
+        // Trigger change event
+        const event = new Event('change');
+        checkbox.dispatchEvent(event);
       });
       
       if (!allChecked) {
@@ -627,22 +659,16 @@ block content
       } else {
         selectAllBtn.innerHTML = '<i class="bi bi-check-square"></i> Pilih Semua';
       }
-      
-      updateSelectedBadges();
     }
     
     // Update selected badges display
     function updateSelectedBadges() {
       const selectedBadges = document.getElementById('selectedBadges');
-      const noSelectionText = document.getElementById('noSelectionText');
       const checkboxes = document.querySelectorAll('.sport-checkbox:checked');
       
       if (checkboxes.length === 0) {
-        noSelectionText.style.display = 'block';
         selectedBadges.innerHTML = '<div class="no-selection" id="noSelectionText">Belum ada cabang yang dipilih</div>';
       } else {
-        noSelectionText.style.display = 'none';
-        
         let badgesHTML = '';
         checkboxes.forEach(checkbox => {
           const sportCard = checkbox.nextElementSibling;
@@ -653,7 +679,7 @@ block content
             <div class="selected-badge" data-sport-id="${sportId}">
               <i class="bi bi-trophy"></i>
               ${sportName}
-              <button type="button" class="btn-close" onclick="deselectSport(${sportId})" style="font-size: 0.75rem; margin-left: 0.25rem;"></button>
+              <button type="button" class="badge-close" onclick="deselectSport('${sportId}')">×</button>
             </div>
           `;
         });
@@ -667,11 +693,75 @@ block content
       const checkbox = document.getElementById(`sport-${sportId}`);
       if (checkbox) {
         checkbox.checked = false;
-        updateSelectedBadges();
+        const event = new Event('change');
+        checkbox.dispatchEvent(event);
       }
     }
     
-    // Form validation
+    // Setup event listeners
+    function setupEventListeners() {
+      // Add click event to sport cards
+      document.querySelectorAll('.sport-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+          // Skip if clicked on badge close button
+          if (e.target.classList.contains('badge-close')) {
+            return;
+          }
+          
+          const checkbox = this.previousElementSibling;
+          checkbox.checked = !checkbox.checked;
+          const event = new Event('change');
+          checkbox.dispatchEvent(event);
+        });
+      });
+      
+      // Add change event to sport checkboxes
+      document.querySelectorAll('.sport-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', updateSelectedBadges);
+      });
+      
+      // Real-time form validation
+      setupFormValidation();
+    }
+    
+    // Setup form validation
+    function setupFormValidation() {
+      // Name validation
+      document.getElementById('name').addEventListener('input', function() {
+        if (this.value.trim()) {
+          this.classList.remove('is-invalid');
+          document.getElementById('nameError').style.display = 'none';
+        }
+      });
+      
+      // Email validation
+      document.getElementById('email').addEventListener('input', function() {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (this.value.trim() && emailRegex.test(this.value)) {
+          this.classList.remove('is-invalid');
+          document.getElementById('emailError').style.display = 'none';
+        }
+      });
+      
+      // Password validation
+      document.getElementById('password').addEventListener('input', function() {
+        if (this.value.length >= 8) {
+          this.classList.remove('is-invalid');
+          document.getElementById('passwordError').style.display = 'none';
+        }
+      });
+      
+      // Confirm password validation
+      document.getElementById('confirmPassword').addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        if (this.value === password) {
+          this.classList.remove('is-invalid');
+          document.getElementById('confirmPasswordError').style.display = 'none';
+        }
+      });
+    }
+    
+    // Form submission validation
     document.getElementById('subadminForm').addEventListener('submit', function(e) {
       let isValid = true;
       
@@ -682,9 +772,6 @@ block content
         name.classList.add('is-invalid');
         nameError.style.display = 'flex';
         isValid = false;
-      } else {
-        name.classList.remove('is-invalid');
-        nameError.style.display = 'none';
       }
       
       // Email validation
@@ -695,9 +782,6 @@ block content
         email.classList.add('is-invalid');
         emailError.style.display = 'flex';
         isValid = false;
-      } else {
-        email.classList.remove('is-invalid');
-        emailError.style.display = 'none';
       }
       
       // Password validation
@@ -707,9 +791,6 @@ block content
         password.classList.add('is-invalid');
         passwordError.style.display = 'flex';
         isValid = false;
-      } else {
-        password.classList.remove('is-invalid');
-        passwordError.style.display = 'none';
       }
       
       // Confirm password validation
@@ -719,9 +800,6 @@ block content
         confirmPassword.classList.add('is-invalid');
         confirmPasswordError.style.display = 'flex';
         isValid = false;
-      } else {
-        confirmPassword.classList.remove('is-invalid');
-        confirmPasswordError.style.display = 'none';
       }
       
       // At least one sport must be selected
@@ -733,117 +811,11 @@ block content
       
       if (!isValid) {
         e.preventDefault();
+        // Smooth scroll to first error
+        const firstError = document.querySelector('.is-invalid');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          firstError.focus();
+        }
       }
-    });
-    
-    // Real-time validation
-    document.getElementById('name').addEventListener('input', function() {
-      if (this.value.trim()) {
-        this.classList.remove('is-invalid');
-        document.getElementById('nameError').style.display = 'none';
-      }
-    });
-    
-    document.getElementById('email').addEventListener('input', function() {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (this.value.trim() && emailRegex.test(this.value)) {
-        this.classList.remove('is-invalid');
-        document.getElementById('emailError').style.display = 'none';
-      }
-    });
-    
-    document.getElementById('password').addEventListener('input', function() {
-      if (this.value.length >= 8) {
-        this.classList.remove('is-invalid');
-        document.getElementById('passwordError').style.display = 'none';
-      }
-    });
-    
-    document.getElementById('confirmPassword').addEventListener('input', function() {
-      const password = document.getElementById('password').value;
-      if (this.value === password) {
-        this.classList.remove('is-invalid');
-        document.getElementById('confirmPasswordError').style.display = 'none';
-      }
-    });
-    
-    // Update badges when sports are selected/deselected
-    document.querySelectorAll('.sport-checkbox').forEach(checkbox => {
-      checkbox.addEventListener('change', updateSelectedBadges);
-    });
-    
-    // Initialize badges on load
-    document.addEventListener('DOMContentLoaded', function() {
-      updateSelectedBadges();
-      
-      // Add animations
-      const formContainer = document.querySelector('.form-container');
-      if (formContainer) {
-        formContainer.style.animationDelay = '0.2s';
-      }
-      
-      // Add custom CSS for animations
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        .sport-card {
-          animation: fadeIn 0.3s ease-out;
-        }
-        
-        .selected-badge {
-          animation: fadeIn 0.3s ease-out;
-        }
-        
-        /* Smooth transitions */
-        .form-control-modern,
-        .sport-card,
-        .submit-btn,
-        .cancel-btn {
-          transition: all 0.3s ease;
-        }
-        
-        /* Focus styles */
-        .sport-card:focus-within {
-          border-color: #3B82F6;
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-        
-        /* Password strength indicator */
-        #passwordStrength {
-          height: 4px;
-          background: #E2E8F0;
-          border-radius: 2px;
-          margin-top: 0.5rem;
-          overflow: hidden;
-        }
-        
-        #passwordStrength::after {
-          content: '';
-          display: block;
-          height: 100%;
-          width: 0;
-          background: #DC2626;
-          transition: width 0.3s ease, background 0.3s ease;
-        }
-        
-        #passwordStrength.weak::after {
-          width: 33%;
-          background: #DC2626;
-        }
-        
-        #passwordStrength.medium::after {
-          width: 66%;
-          background: #F59E0B;
-        }
-        
-        #passwordStrength.strong::after {
-          width: 100%;
-          background: #10B981;
-        }
-      `;
-      document.head.appendChild(style);
     });
