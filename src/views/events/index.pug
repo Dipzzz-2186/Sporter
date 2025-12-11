@@ -2,292 +2,1353 @@ extends ../layout/main
 
 block content
   style.
+    /* Hero Section with Modern Gradient */
     .events-hero {
       background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
-      border-radius: 24px;
-      padding: 3rem 2rem;
-      margin-bottom: 3rem;
       position: relative;
       overflow: hidden;
-      color: #fff;
+      padding: 5rem 0;
+      animation: fadeIn 0.8s ease-out;
+      margin-bottom: 3rem;
+      border-radius: 0 0 30px 30px;
     }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .events-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(52, 211, 153, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    .events-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -40%;
+      left: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 149, 0, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(50px, -50px) scale(1.1); }
+    }
+    
+    .events-hero-content {
+      position: relative;
+      z-index: 2;
+      animation: slideInLeft 0.8s ease-out;
+    }
+    
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
     .events-hero-badge {
+      background: rgba(52, 211, 153, 0.15) !important;
+      color: #34D399 !important;
+      border: 2px solid rgba(52, 211, 153, 0.3);
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      backdrop-filter: blur(10px);
+      animation: pulseGreen 2s infinite;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.4rem 0.9rem;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      font-size: 0.85rem;
+    }
+    
+    @keyframes pulseGreen {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(52, 211, 153, 0); }
+    }
+    
+    .events-hero h1 {
+      color: white;
+      font-size: 3.5rem;
+      line-height: 1.2;
       margin-bottom: 1rem;
+      animation: fadeInUp 0.8s ease-out 0.2s backwards;
     }
-    .events-hero-title {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
-      letter-spacing: 1px;
-      margin-bottom: 0.75rem;
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .events-hero-subtitle {
-      color: rgba(255,255,255,0.8);
-      max-width: 520px;
-      font-size: 0.98rem;
+    
+    .events-hero .text-success {
+      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .events-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.85);
+    
+    .events-hero .lead {
+      color: rgba(255, 255, 255, 0.85) !important;
+      font-size: 1.15rem;
+      line-height: 1.8;
+      animation: fadeInUp 0.8s ease-out 0.4s backwards;
+      max-width: 600px;
     }
-    .events-meta-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.5rem 0.9rem;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.2);
-      backdrop-filter: blur(8px);
+    
+    /* Stats Cards */
+    .events-stats {
+      margin: -3rem 0 3rem;
+      position: relative;
+      z-index: 10;
     }
-    .events-filter-bar {
-      margin-bottom: 1.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .events-filter-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .events-chip {
-      border-radius: 999px;
-      padding: 0.35rem 0.9rem;
-      font-size: 0.85rem;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .events-chip.active {
-      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
-      border-color: transparent;
-      color: #fff;
-    }
-    .events-search-input {
-      max-width: 260px;
-    }
-    .event-card {
-      border-radius: 18px;
-      border: 1px solid #e5e7eb;
-      transition: all 0.3s ease;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-    .event-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
-      border-color: #FF3B30;
-    }
-    .event-status-badge {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-radius: 999px;
-      padding: 0.2rem 0.6rem;
-      font-weight: 600;
-    }
-    .event-status-upcoming {
-      background: rgba(52,211,153,0.09);
-      color: #059669;
-    }
-    .event-status-ongoing {
-      background: rgba(59,130,246,0.08);
-      color: #2563eb;
-    }
-    .event-status-finished {
-      background: rgba(148,163,184,0.15);
-      color: #475569;
-    }
-    .event-date {
-      font-size: 0.85rem;
-      color: #6b7280;
-    }
-    .event-location {
-      font-size: 0.85rem;
-      color: #4b5563;
-    }
-    .event-sport {
-      font-size: 0.8rem;
-      color: #6b7280;
-    }
-    .event-description {
-      font-size: 0.88rem;
-      color: #4b5563;
-      margin-top: 0.5rem;
-    }
-    .event-card-footer {
-      margin-top: auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .empty-state {
+    
+    .stat-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
       text-align: center;
-      padding: 4rem 0;
-      color: #6b7280;
+      transition: all 0.3s ease;
+      border: 2px solid #f0f0f0;
+      height: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      animation: fadeInUp 0.6s ease-out backwards;
     }
-    .empty-state-icon {
-      width: 70px;
-      height: 70px;
-      border-radius: 999px;
-      border: 1px dashed #d1d5db;
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(52, 211, 153, 0.15);
+      border-color: #34D399;
+    }
+    
+    .stat-icon-wrapper {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, rgba(52, 211, 153, 0.1) 0%, rgba(52, 211, 153, 0.2) 100%);
+      border-radius: 15px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 1rem;
+      transition: all 0.3s ease;
     }
-    @media (max-width: 768px) {
+    
+    .stat-card:hover .stat-icon-wrapper {
+      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      transform: rotate(5deg) scale(1.1);
+    }
+    
+    .stat-icon-wrapper i {
+      font-size: 1.8rem;
+      color: #34D399;
+      transition: color 0.3s ease;
+    }
+    
+    .stat-card:hover .stat-icon-wrapper i {
+      color: white;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1C1C1E;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    
+    /* Filter Section */
+    .events-filter-section {
+      background: white;
+      padding: 2rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 2rem;
+    }
+    
+    .events-filter-container {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 20px;
+      padding: 2rem;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .filter-header {
+      margin-bottom: 1.5rem;
+    }
+    
+    .filter-header h3 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      color: #1C1C1E;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .filter-header p {
+      color: #6c757d;
+      font-size: 1rem;
+      margin: 0;
+    }
+    
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .events-chip {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 50px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      color: #6c757d;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+    
+    .events-chip:hover,
+    .events-chip.active {
+      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      border-color: #34D399;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 211, 153, 0.3);
+    }
+    
+    .events-chip i {
+      font-size: 1.1rem;
+    }
+    
+    .search-container {
+      position: relative;
+      max-width: 300px;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 0.875rem 1rem 0.875rem 3rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 15px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: #34D399;
+      box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+      font-size: 1.1rem;
+    }
+    
+    /* Event Cards */
+    .events-section {
+      padding: 2rem 0 5rem;
+      background: white;
+    }
+    
+    .section-header {
+      margin-bottom: 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    
+    .section-header h2 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      color: #1C1C1E;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .section-header p {
+      color: #6c757d;
+      font-size: 1.05rem;
+      margin: 0;
+    }
+    
+    .sporter-event-card {
+      border-radius: 20px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid #f0f0f0;
+      overflow: hidden;
+      position: relative;
+      animation: fadeInUp 0.6s ease-out backwards;
+      background: white;
+      height: 100%;
+    }
+    
+    .sporter-event-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #34D399 0%, #10B981 100%);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+      z-index: 2;
+    }
+    
+    .sporter-event-card.upcoming::before {
+      background: linear-gradient(90deg, #34D399 0%, #10B981 100%);
+    }
+    
+    .sporter-event-card.ongoing::before {
+      background: linear-gradient(90deg, #3B82F6 0%, #1D4ED8 100%);
+    }
+    
+    .sporter-event-card.finished::before {
+      background: linear-gradient(90deg, #6B7280 0%, #4B5563 100%);
+    }
+    
+    .sporter-event-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .sporter-event-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(52, 211, 153, 0.15);
+      border-color: #34D399;
+    }
+    
+    .event-card-header {
+      padding: 1.75rem 1.75rem 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      position: relative;
+    }
+    
+    .event-date-badge {
+      position: absolute;
+      top: -15px;
+      left: 1.75rem;
+      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 5px 15px rgba(52, 211, 153, 0.3);
+    }
+    
+    .event-date-badge.ongoing {
+      background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    }
+    
+    .event-date-badge.finished {
+      background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);
+    }
+    
+    .event-status {
+      margin-left: auto;
+    }
+    
+    .status-badge {
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .status-upcoming {
+      background: rgba(52, 211, 153, 0.1);
+      color: #059669;
+    }
+    
+    .status-ongoing {
+      background: rgba(59, 130, 246, 0.1);
+      color: #2563eb;
+      animation: pulseBlue 2s infinite;
+    }
+    
+    @keyframes pulseBlue {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+      50% { box-shadow: 0 0 0 5px rgba(59, 130, 246, 0); }
+    }
+    
+    .status-finished {
+      background: rgba(107, 114, 128, 0.1);
+      color: #4B5563;
+    }
+    
+    .sporter-event-card .card-body {
+      padding: 1.5rem 1.75rem;
+    }
+    
+    .sporter-event-card h5 {
+      color: #1C1C1E;
+      font-weight: 700;
+      font-size: 1.25rem;
+      line-height: 1.4;
+      margin-bottom: 1rem;
+      min-height: 56px;
+    }
+    
+    .event-meta {
+      margin-bottom: 1.25rem;
+    }
+    
+    .event-meta-item {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .event-meta-item i {
+      color: #34D399;
+      font-size: 1rem;
+      width: 20px;
+    }
+    
+    .event-sport-badge {
+      background: rgba(52, 211, 153, 0.1) !important;
+      color: #059669 !important;
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid rgba(52, 211, 153, 0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+    
+    .event-sport-badge i {
+      font-size: 0.9rem;
+    }
+    
+    .event-description {
+      color: #6c757d;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      min-height: 84px;
+    }
+    
+    .event-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+    
+    .sporter-event-card .btn {
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.5rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+    }
+    
+    .sporter-event-card .btn-outline-success {
+      background: transparent;
+      border: 2px solid #34D399;
+      color: #059669;
+    }
+    
+    .sporter-event-card .btn-outline-success:hover {
+      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 211, 153, 0.3);
+    }
+    
+    .sporter-event-card .btn-outline-secondary {
+      background: transparent;
+      border: 2px solid #e0e0e0;
+      color: #6c757d;
+    }
+    
+    .sporter-event-card .btn-outline-secondary:hover {
+      background: #f8f9fa;
+      border-color: #6c757d;
+      color: #4B5563;
+      transform: translateY(-2px);
+    }
+    
+    /* Empty State */
+    .events-empty-state {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 2px dashed #d0d0d0;
+      border-radius: 20px;
+      padding: 4rem 2rem;
+      text-align: center;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .events-empty-state-icon {
+      width: 100px;
+      height: 100px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .events-empty-state-icon i {
+      font-size: 3rem;
+      color: #adb5bd;
+    }
+    
+    .events-empty-state h3 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      color: #1C1C1E;
+      letter-spacing: 1px;
+      margin-bottom: 0.75rem;
+    }
+    
+    .events-empty-state p {
+      color: #6c757d;
+      font-size: 1.05rem;
+      margin: 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
       .events-hero {
-        padding: 2.25rem 1.5rem;
+        padding: 3rem 0;
       }
-      .events-hero-title {
+      
+      .events-hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .events-hero .lead {
+        font-size: 1rem;
+      }
+      
+      .events-stats {
+        margin-top: -2rem;
+      }
+      
+      .section-header h2 {
         font-size: 2rem;
       }
-      .events-filter-bar {
-        flex-direction: column;
-        align-items: stretch;
+      
+      .filter-chips {
+        justify-content: center;
       }
-      .events-search-input {
-        max-width: 100%;
+      
+      .sporter-event-card h5 {
+        min-height: auto;
+      }
+      
+      .event-description {
+        min-height: auto;
       }
     }
-
-  .container.py-4
-    .events-hero.mb-4
-      .row.align-items-center
-        .col-lg-8
-          span.events-hero-badge
-            i.bi.bi-calendar-event.me-1
-            | Event & Turnamen Olahraga
-          h1.events-hero-title
-            | Jelajahi Event Olahraga di Seluruh Indonesia
-          p.events-hero-subtitle
-            | Lihat jadwal event, lokasi pertandingan, dan detail turnamen yang sedang dan akan berlangsung.
-          
-          .events-meta.mt-3
-            .events-meta-item
-              i.bi.bi-broadcast.me-1
-              | Event ongoing & upcoming
-            .events-meta-item
-              i.bi.bi-geo-alt.me-1
-              | Arena & venue terbaik
-        .col-lg-4.text-lg-end.mt-3.mt-lg-0
-          small.text-uppercase.text-muted.d-block.mb-1
-            | Terhubung dengan SPORTER
-          p.mb-0.fw-semibold
-            i.bi.bi-lightning-charge-fill.me-1.text-warning
-            | Update event terbaru setiap saat
-
-    .events-filter-bar
-      .events-filter-chips
-        button.events-chip.active(type="button" data-filter="all")
-          i.bi.bi-stars
-          | Semua
-        button.events-chip(type="button" data-filter="upcoming")
-          i.bi.bi-sunrise
-          | Akan Datang
-        button.events-chip(type="button" data-filter="ongoing")
-          i.bi.bi-broadcast-pin
-          | Sedang Berlangsung
-        button.events-chip(type="button" data-filter="finished")
-          i.bi.bi-flag-checkered
-          | Selesai
-      form(d="eventsSearchForm" class="d-flex events-search-input")
-        input.form-control.form-control-sm#eventsSearchInput(type="search" placeholder="Cari nama event / lokasi...")
     
-    if events && events.length
-      .row.g-3#eventsList
-        each e in events
-          - const statusClass = e.status === 'upcoming' ? 'event-status-upcoming' : (e.status === 'ongoing' ? 'event-status-ongoing' : 'event-status-finished');
-          - const statusLabel = e.status === 'upcoming' ? 'Akan Datang' : (e.status === 'ongoing' ? 'Sedang Berlangsung' : 'Selesai');
-          .col-md-6.col-lg-4.event-item(data-status=e.status data-title=e.title data-venue=e.venue_name)
-            .event-card.p-3
-              .d-flex.justify-content-between.align-items-start.mb-2
-                if e.start_date_formatted
-                  span.event-date
-                    i.bi.bi-calendar3.me-1
-                    if e.end_date_formatted && e.end_date_formatted !== e.start_date_formatted
-                      | #{e.start_date_formatted} - #{e.end_date_formatted}
-                    else
-                      | #{e.start_date_formatted}
-                span.event-status-badge(class=statusClass)= statusLabel
-              h5.mb-1= e.title
-              if e.venue_name
-                .event-location.mb-1
-                  i.bi.bi-geo-alt-fill.me-1
-                  span= e.venue_name
-              if e.sport_name
-                .event-sport
-                  i.bi.bi-trophy-fill.me-1
-                  span= e.sport_name
-              if e.description
-                .event-description
-                  = e.description.length > 110 ? e.description.substring(0, 110) + '...' : e.description
-              .event-card-footer.mt-3
-                a.btn.btn-sm.btn-outline-danger(href=`/events/${e.slug || e.id}`)
-                  i.bi.bi-info-circle.me-1
-                  | Detail
-                a.btn.btn-sm.btn-outline-secondary(href=`/tickets/${e.id}`)
-                  i.bi.bi-ticket-perforated.me-1
-                  | Tiket
-    else
-      .empty-state
-        .empty-state-icon
-          i.bi.bi-calendar-x
-        h3.mb-2 Belum Ada Event
-        p.mb-0 Event dan turnamen olahraga akan segera hadir di platform SPORTER.
+    @media (max-width: 767px) {
+      .events-hero h1 {
+        font-size: 2rem;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .section-header h2 {
+        font-size: 1.75rem;
+      }
+      
+      .events-filter-container {
+        padding: 1.5rem;
+      }
+      
+      .events-chip {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .search-container {
+        max-width: 100%;
+      }
+      
+      .sporter-event-card .card-body {
+        padding: 1.25rem;
+      }
+      
+      .event-actions {
+        flex-direction: column;
+      }
+      
+      .sporter-event-card .btn {
+        width: 100%;
+      }
+    }
+    
+    /* Animation delays */
+    .sporter-event-card:nth-child(1) { animation-delay: 0.1s; }
+    .sporter-event-card:nth-child(2) { animation-delay: 0.2s; }
+    .sporter-event-card:nth-child(3) { animation-delay: 0.3s; }
+    .sporter-event-card:nth-child(4) { animation-delay: 0.4s; }
+    .sporter-event-card:nth-child(5) { animation-delay: 0.5s; }
+    .sporter-event-card:nth-child(6) { animation-delay: 0.6s; }
+    
+    .stat-card:nth-child(1) { animation-delay: 0.2s; }
+    .stat-card:nth-child(2) { animation-delay: 0.4s; }
+    .stat-card:nth-child(3) { animation-delay: 0.6s; }
+    .stat-card:nth-child(4) { animation-delay: 0.8s; }
 
+  // HERO SECTION
+  .events-hero
+    .container
+      .row.align-items-center.gy-4
+        .col-lg-7.events-hero-content
+          span.badge.events-hero-badge.mb-3
+            i.bi.bi-calendar-event.me-2
+            | Event & Turnamen Terlengkap
+          h1.fw-bold.mb-3
+            | Jadwal 
+            span.text-success Event Olahraga
+          p.lead.mb-4
+            | Temukan turnamen dan event olahraga terbaru di seluruh Indonesia. 
+            | Dapatkan informasi lengkap tentang jadwal, lokasi, dan tiket dalam satu platform terintegrasi.
+          
+          .row.mt-4.g-3
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2
+                i.bi.bi-check-circle-fill.text-success.fs-5
+                div
+                  .h4.mb-0.fw-bold #{events ? events.filter(e => e.status === 'upcoming').length : '0'}
+                  small.text-white-50.fs-7 Akan Datang
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2
+                i.bi.bi-broadcast.text-primary.fs-5
+                div
+                  .h4.mb-0.fw-bold #{events ? events.filter(e => e.status === 'ongoing').length : '0'}
+                  small.text-white-50.fs-7 Berlangsung
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2
+                i.bi.bi-geo-alt.text-warning.fs-5
+                div
+                  .h4.mb-0.fw-bold #{events ? new Set(events.map(e => e.venue_name)).size : '0'}
+                  small.text-white-50.fs-7 Venue
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2
+                i.bi.bi-trophy.text-info.fs-5
+                div
+                  .h4.mb-0.fw-bold #{events ? new Set(events.map(e => e.sport_name)).size : '0'}
+                  small.text-white-50.fs-7 Cabang
+        
+        .col-lg-5.text-center
+          .sporter-hero-illustration.mx-auto(style="padding: 2.5rem 2rem; background: rgba(52, 211, 153, 0.08); border-color: rgba(52, 211, 153, 0.2);")
+            i.bi.bi-trophy-fill
+            p.mb-0.fs-6
+              | Jadwal Lengkap • Lokasi Akurat • Tiket Terintegrasi
+
+  // STATS SECTION
+  .events-stats
+    .container
+      .row.g-4
+        .col-md-3.col-sm-6
+          .stat-card
+            .stat-icon-wrapper
+              i.bi.bi-calendar-check-fill
+            .stat-value #{events ? events.length : '0'}
+            .stat-label Total Event
+        
+        .col-md-3.col-sm-6
+          .stat-card
+            .stat-icon-wrapper
+              i.bi.bi-broadcast-pin
+            .stat-value #{events ? events.filter(e => e.status === 'ongoing').length : '0'}
+            .stat-label Sedang Berlangsung
+        
+        .col-md-3.col-sm-6
+          .stat-card
+            .stat-icon-wrapper
+              i.bi.bi-people-fill
+            .stat-value #{events ? events.length * 150 : '0'}
+            .stat-label Partisipan
+        
+        .col-md-3.col-sm-6
+          .stat-card
+            .stat-icon-wrapper
+              i.bi.bi-building
+            .stat-value #{events ? new Set(events.map(e => e.venue_name)).size : '0'}
+            .stat-label Arena
+
+  // FILTER SECTION
+  .events-filter-section
+    .container
+      .events-filter-container
+        .filter-header
+          h3 Temukan Event Favorit Anda
+          p Filter berdasarkan status dan cari event yang sesuai
+        
+        .d-flex.flex-column.flex-md-row.justify-content-between.align-items-md-center.gap-3
+          .filter-chips
+            button.events-chip.active(type="button" data-filter="all")
+              i.bi.bi-stars
+              | Semua Event
+            button.events-chip(type="button" data-filter="upcoming")
+              i.bi.bi-sunrise
+              | Akan Datang
+            button.events-chip(type="button" data-filter="ongoing")
+              i.bi.bi-broadcast-pin
+              | Sedang Berlangsung
+            button.events-chip(type="button" data-filter="finished")
+              i.bi.bi-flag-checkered
+              | Selesai
+          
+          .search-container
+            i.bi.bi-search.search-icon
+            input.search-input.form-control#eventsSearchInput(
+              type="search" 
+              placeholder="Cari event, lokasi, cabang..."
+            )
+
+  // EVENTS SECTION
+  .events-section
+    .container
+      .section-header
+        div
+          h2 Daftar Event
+          p Pilih event yang ingin Anda ikuti atau tonton
+        
+        if events && events.length > 0
+          .d-flex.align-items-center.gap-2
+            span.text-muted.small#events-count #{events.length} Event Tersedia
+            i.bi.bi-calendar-check.text-success
+
+      if !events || events.length === 0
+        .events-empty-state
+          .events-empty-state-icon
+            i.bi.bi-calendar-x-fill
+          h3 Belum Ada Event
+          p
+            | Event dan turnamen olahraga akan segera hadir di platform SPORTER.
+            br
+            | Pantau terus halaman ini untuk update terbaru!
+      
+      else
+        #events-container.row.g-4
+          each e in events
+            - const statusClass = e.status === 'upcoming' ? 'status-upcoming' : (e.status === 'ongoing' ? 'status-ongoing' : 'status-finished');
+            - const statusLabel = e.status === 'upcoming' ? 'Akan Datang' : (e.status === 'ongoing' ? 'Sedang Berlangsung' : 'Selesai');
+            .col-md-6.col-lg-4.event-item(
+              data-status=e.status 
+              data-title=e.title 
+              data-venue=e.venue_name
+              data-sport=e.sport_name
+              class=e.status
+            )
+              .sporter-event-card(class=e.status)
+                .event-card-header.d-flex.justify-content-between.align-items-center
+                  if e.start_date_formatted
+                    span.event-date-badge(class=e.status)
+                      i.bi.bi-calendar3
+                      | #{e.start_date_formatted}
+                  
+                  span.status-badge(class=statusClass)= statusLabel
+                
+                .card-body.d-flex.flex-column
+                  h5= e.title
+                  
+                  .event-meta
+                    if e.venue_name
+                      .event-meta-item
+                        i.bi.bi-geo-alt-fill
+                        span= e.venue_name
+                    
+                    if e.sport_name
+                      .event-meta-item
+                        i.bi.bi-trophy-fill
+                        span= e.sport_name
+                    
+                    if e.start_date_formatted && e.end_date_formatted && e.end_date_formatted !== e.start_date_formatted
+                      .event-meta-item
+                        i.bi.bi-clock-history
+                        span #{e.start_date_formatted} - #{e.end_date_formatted}
+                  
+                  if e.description
+                    .event-description= e.description.length > 110 ? e.description.substring(0, 110) + '...' : e.description
+                  else
+                    .event-description Event olahraga menarik dengan peserta terbaik.
+                  
+                  .mt-auto.event-actions
+                    a.btn.btn-outline-success(href=`/events/${e.slug || e.id}`)
+                      i.bi.bi-info-circle
+                      | Detail Event
+                    a.btn.btn-outline-secondary(href=`/tickets/${e.id}`)
+                      i.bi.bi-ticket-perforated
+                      | Tiket
+
+  //- Custom JavaScript
   script.
     (function() {
-      const chips = document.querySelectorAll('.events-chip');
-      const searchInput = document.getElementById('eventsSearchInput');
-      const eventItems = document.querySelectorAll('.event-item');
-
-      function applyFilter() {
-        const activeChip = document.querySelector('.events-chip.active');
-        const filter = activeChip ? activeChip.getAttribute('data-filter') : 'all';
-        const keyword = (searchInput.value || '').toLowerCase();
-
-        eventItems.forEach(function(item) {
-          const status = item.getAttribute('data-status') || '';
-          const title = (item.getAttribute('data-title') || '').toLowerCase();
-          const venue = (item.getAttribute('data-venue') || '').toLowerCase();
-
-          let visibleByStatus = filter === 'all' || status === filter;
-          let visibleBySearch = !keyword || title.includes(keyword) || venue.includes(keyword);
-
-          item.style.display = (visibleByStatus && visibleBySearch) ? '' : 'none';
-        });
+      // Helper function untuk icon olahraga
+      function getSportIcon(sportName) {
+        const icons = {
+          'Sepak Bola': 'bi-emoji-angry-fill',
+          'Basket': 'bi-basket2-fill',
+          'Bulu Tangkis': 'bi-brightness-alt-high-fill',
+          'Tenis': 'bi-circle-half',
+          'Bola Voli': 'bi-circle-fill',
+          'Renang': 'bi-water',
+          'Atletik': 'bi-person-running',
+          'Sepeda': 'bi-bicycle',
+          'Panahan': 'bi-bullseye'
+        };
+        return icons[sportName] || 'bi-trophy-fill';
       }
-
-      chips.forEach(function(chip) {
-        chip.addEventListener('click', function() {
-          chips.forEach(function(c) { c.classList.remove('active'); });
-          this.classList.add('active');
-          applyFilter();
+      
+      // Apply icons to existing badges
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.event-meta-item i.bi-trophy-fill').forEach(function(icon) {
+          const sportName = icon.parentElement.textContent.trim();
+          const iconClass = getSportIcon(sportName);
+          if (iconClass) {
+            icon.className = 'bi ' + iconClass;
+          }
         });
+        
+        // Inisialisasi Intersection Observer
+        if ('IntersectionObserver' in window) {
+          const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+              }
+            });
+          }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+          });
+          
+          // Observe all cards
+          document.querySelectorAll('.sporter-event-card, .stat-card').forEach(function(card) {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+          });
+        }
+        
+        // Sistem Filter
+        const filterButtons = document.querySelectorAll('.events-chip');
+        const searchInput = document.getElementById('eventsSearchInput');
+        const eventItems = document.querySelectorAll('.event-item');
+        const eventsCountElement = document.getElementById('events-count');
+        
+        function updateEventsCount() {
+          const visibleItems = document.querySelectorAll('.event-item:not([style*="display: none"])');
+          if (eventsCountElement) {
+            eventsCountElement.textContent = `${visibleItems.length} Event Tersedia`;
+          }
+          
+          // Animate stats cards
+          const visibleStatus = {
+            upcoming: 0,
+            ongoing: 0,
+            finished: 0
+          };
+          
+          visibleItems.forEach(item => {
+            const status = item.getAttribute('data-status');
+            if (visibleStatus.hasOwnProperty(status)) {
+              visibleStatus[status]++;
+            }
+          });
+          
+          // Update stat cards with animation
+          animateCounter('.stat-card:nth-child(1) .stat-value', visibleItems.length);
+          animateCounter('.stat-card:nth-child(2) .stat-value', visibleStatus.ongoing);
+          animateCounter('.stat-card:nth-child(3) .stat-value', visibleItems.length * 150);
+          
+          const venues = new Set();
+          visibleItems.forEach(item => {
+            const venue = item.getAttribute('data-venue');
+            if (venue) venues.add(venue);
+          });
+          animateCounter('.stat-card:nth-child(4) .stat-value', venues.size);
+        }
+        
+        function animateCounter(selector, targetValue) {
+          const element = document.querySelector(selector);
+          if (!element) return;
+          
+          const currentValue = parseInt(element.textContent) || 0;
+          const duration = 800;
+          const steps = 40;
+          const increment = (targetValue - currentValue) / steps;
+          let currentStep = 0;
+          
+          const timer = setInterval(() => {
+            currentStep++;
+            const newValue = Math.floor(currentValue + (increment * currentStep));
+            element.textContent = newValue;
+            
+            if (currentStep >= steps) {
+              clearInterval(timer);
+              element.textContent = targetValue;
+            }
+          }, duration / steps);
+        }
+        
+        function applyFilter() {
+          const activeButton = document.querySelector('.events-chip.active');
+          const filter = activeButton ? activeButton.getAttribute('data-filter') : 'all';
+          const keyword = (searchInput ? searchInput.value.toLowerCase() : '');
+          
+          eventItems.forEach(function(item) {
+            const status = item.getAttribute('data-status') || '';
+            const title = (item.getAttribute('data-title') || '').toLowerCase();
+            const venue = (item.getAttribute('data-venue') || '').toLowerCase();
+            const sport = (item.getAttribute('data-sport') || '').toLowerCase();
+            
+            let visibleByStatus = filter === 'all' || status === filter;
+            let visibleBySearch = !keyword || 
+                                 title.includes(keyword) || 
+                                 venue.includes(keyword) || 
+                                 sport.includes(keyword);
+            
+            if (visibleByStatus && visibleBySearch) {
+              item.style.display = 'block';
+              // Trigger animation
+              setTimeout(() => {
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+              }, 50);
+            } else {
+              item.style.opacity = '0';
+              item.style.transform = 'translateY(20px)';
+              setTimeout(() => {
+                item.style.display = 'none';
+              }, 300);
+            }
+          });
+          
+          // Update counter
+          setTimeout(updateEventsCount, 350);
+        }
+        
+        // Event listeners untuk filter
+        filterButtons.forEach(function(button) {
+          button.addEventListener('click', function() {
+            filterButtons.forEach(function(btn) {
+              btn.classList.remove('active');
+            });
+            this.classList.add('active');
+            applyFilter();
+          });
+        });
+        
+        // Event listener untuk search
+        if (searchInput) {
+          searchInput.addEventListener('input', function() {
+            applyFilter();
+          });
+          
+          // Clear search button
+          const clearButton = document.createElement('button');
+          clearButton.type = 'button';
+          clearButton.className = 'btn btn-sm btn-link position-absolute end-0 top-50 translate-middle-y me-2';
+          clearButton.innerHTML = '<i class="bi bi-x"></i>';
+          clearButton.style.display = 'none';
+          clearButton.addEventListener('click', function() {
+            searchInput.value = '';
+            searchInput.focus();
+            applyFilter();
+            this.style.display = 'none';
+          });
+          
+          searchInput.parentElement.appendChild(clearButton);
+          
+          searchInput.addEventListener('input',            function() {
+              if (this.value.trim() !== '') {
+                clearButton.style.display = 'block';
+              } else {
+                clearButton.style.display = 'none';
+              }
+              applyFilter();
+            });
+          
+          // Enter key untuk search
+          searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              applyFilter();
+            }
+          });
+        }
+        
+        // Keyboard navigation untuk filter
+        document.addEventListener('keydown', function(e) {
+          const activeFilter = document.querySelector('.events-chip.active');
+          if (!activeFilter) return;
+          
+          const filters = Array.from(filterButtons);
+          const currentIndex = filters.indexOf(activeFilter);
+          
+          if (e.key === 'ArrowLeft' && currentIndex > 0) {
+            e.preventDefault();
+            filters[currentIndex - 1].click();
+          } else if (e.key === 'ArrowRight' && currentIndex < filters.length - 1) {
+            e.preventDefault();
+            filters[currentIndex + 1].click();
+          } else if (e.key === 'Home') {
+            e.preventDefault();
+            filters[0].click();
+          } else if (e.key === 'End') {
+            e.preventDefault();
+            filters[filters.length - 1].click();
+          }
+        });
+        
+        // Hover effects untuk cards
+        document.querySelectorAll('.sporter-event-card').forEach(function(card) {
+          card.addEventListener('mouseenter', function() {
+            this.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+          });
+        });
+        
+        // Parallax effect untuk hero
+        window.addEventListener('scroll', function() {
+          const scrolled = window.scrollY;
+          const hero = document.querySelector('.events-hero');
+          if (hero && scrolled < 800) {
+            hero.style.transform = 'translateY(' + (scrolled * 0.5) + 'px)';
+          }
+        });
+        
+        // Simulasi real-time update untuk event yang sedang berlangsung
+        function simulateLiveUpdates() {
+          const ongoingEvents = document.querySelectorAll('.event-item[data-status="ongoing"]');
+          ongoingEvents.forEach(event => {
+            // Update participant count secara acak
+            const participantElement = event.querySelector('.event-meta-item:nth-child(3)');
+            if (participantElement) {
+              const currentText = participantElement.textContent;
+              const match = currentText.match(/(\d+)/);
+              if (match) {
+                const currentCount = parseInt(match[1]);
+                const change = Math.floor(Math.random() * 10) - 3; // -3 to +6
+                const newCount = Math.max(50, currentCount + change);
+                participantElement.textContent = currentText.replace(/\d+/, newCount);
+              }
+            }
+          });
+        }
+        
+        // Jalankan simulasi jika ada event ongoing
+        if (document.querySelector('.event-item[data-status="ongoing"]')) {
+          setInterval(simulateLiveUpdates, 10000); // Update setiap 10 detik
+        }
+        
+        // Add animation untuk status badge ongoing
+        const ongoingBadges = document.querySelectorAll('.status-ongoing');
+        ongoingBadges.forEach(badge => {
+          setInterval(() => {
+            badge.classList.toggle('pulse');
+          }, 2000);
+        });
+        
+        // Initialize tooltips jika Bootstrap tersedia
+        if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+          const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+          tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+          });
+        }
+        
+        // Add smooth scroll untuk anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+          anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href !== '#' && href !== '#!') {
+              e.preventDefault();
+              const target = document.querySelector(href);
+              if (target) {
+                target.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start'
+                });
+              }
+            }
+          });
+        });
+        
+        // Add loading animation untuk images
+        document.querySelectorAll('.sporter-event-card img').forEach(img => {
+          img.addEventListener('load', function() {
+            this.classList.add('loaded');
+          });
+          
+          img.addEventListener('error', function() {
+            this.style.display = 'none';
+            const fallback = document.createElement('div');
+            fallback.className = 'event-image-fallback';
+            fallback.innerHTML = '<i class="bi bi-calendar-event"></i>';
+            this.parentElement.appendChild(fallback);
+          });
+        });
+        
+        // Initialize dengan filter aktif
+        applyFilter();
+        
+        // Add CSS untuk additional animations
+        const style = document.createElement('style');
+        style.textContent = `
+          .event-image-fallback {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+          }
+          
+          .event-image-fallback i {
+            font-size: 3rem;
+            color: #adb5bd;
+          }
+          
+          .events-chip:focus {
+            outline: 2px solid #34D399;
+            outline-offset: 2px;
+          }
+          
+          .search-input:focus {
+            border-color: #34D399;
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+          }
+          
+          @keyframes slideInRight {
+            from {
+              opacity: 0;
+              transform: translateX(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+          
+          .sporter-hero-illustration {
+            animation: slideInRight 0.8s ease-out 0.3s backwards;
+          }
+          
+          @keyframes bounce {
+            0%, 100% {
+              transform: translateY(0);
+            }
+            50% {
+              transform: translateY(-10px);
+            }
+          }
+          
+          .sporter-hero-illustration i {
+            animation: bounce 3s infinite;
+          }
+          
+          .status-ongoing.pulse {
+            animation: pulseBlue 1.5s infinite;
+          }
+          
+          @keyframes pulseBlue {
+            0%, 100% {
+              box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+            }
+            50% {
+              box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+            }
+          }
+          
+          /* Animation untuk stat cards */
+          @keyframes countUp {
+            from {
+              opacity: 0;
+              transform: translateY(10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          .stat-card .stat-value {
+            animation: countUp 0.5s ease-out;
+          }
+          
+          /* Responsive tweaks */
+          @media (max-width: 768px) {
+            .events-chip {
+              flex: 1;
+              min-width: 120px;
+              justify-content: center;
+            }
+            
+            .sporter-event-card {
+              margin-bottom: 1rem;
+            }
+          }
+          
+          /* Dark mode support */
+          @media (prefers-color-scheme: dark) {
+            .stat-card {
+              background: #1a1a1a;
+              border-color: #333;
+              color: #fff;
+            }
+            
+            .stat-card .stat-value {
+              color: #fff;
+            }
+            
+            .stat-card .stat-label {
+              color: #ccc;
+            }
+            
+            .stat-icon-wrapper {
+              background: rgba(52, 211, 153, 0.2);
+            }
+            
+            .stat-card:hover {
+              border-color: #34D399;
+              box-shadow: 0 15px 40px rgba(52, 211, 153, 0.2);
+            }
+          }
+          
+          /* Prefers reduced motion */
+          @media (prefers-reduced-motion: reduce) {
+            .sporter-event-card,
+            .stat-card,
+            .events-chip {
+              transition: none !important;
+              animation: none !important;
+            }
+            
+            .events-hero::before,
+            .events-hero::after {
+              animation: none;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        // Add event listener untuk reset filter
+        const resetFilterBtn = document.createElement('button');
+        resetFilterBtn.type = 'button';
+        resetFilterBtn.className = 'btn btn-sm btn-outline-secondary mt-2 d-none';
+        resetFilterBtn.innerHTML = '<i class="bi bi-arrow-counterclockwise me-1"></i>Reset Filter';
+        resetFilterBtn.id = 'resetFilterBtn';
+        resetFilterBtn.addEventListener('click', function() {
+          filterButtons.forEach(btn => {
+            if (btn.getAttribute('data-filter') === 'all') {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+          if (searchInput) {
+            searchInput.value = '';
+            const clearBtn = searchInput.parentElement.querySelector('.btn-link');
+            if (clearBtn) clearBtn.style.display = 'none';
+          }
+          applyFilter();
+          this.classList.add('d-none');
+        });
+        
+        // Add reset button setelah filter chips
+        const filterContainer = document.querySelector('.filter-chips');
+        if (filterContainer) {
+          filterContainer.parentElement.appendChild(resetFilterBtn);
+        }
+        
+        // Tampilkan reset button jika filter aktif bukan "all" atau ada search
+        function checkResetButton() {
+          const activeFilter = document.querySelector('.events-chip.active');
+          const hasSearch = searchInput && searchInput.value.trim() !== '';
+          const isDefaultFilter = activeFilter && activeFilter.getAttribute('data-filter') === 'all';
+          
+          if (!isDefaultFilter || hasSearch) {
+            resetFilterBtn.classList.remove('d-none');
+          } else {
+            resetFilterBtn.classList.add('d-none');
+          }
+        }
+        
+        // Panggil checkResetButton saat filter berubah
+        filterButtons.forEach(button => {
+          button.addEventListener('click', checkResetButton);
+        });
+        
+        if (searchInput) {
+          searchInput.addEventListener('input', checkResetButton);
+        }
+        
+        // Initial check
+        checkResetButton();
       });
-
-      if (searchInput) {
-        searchInput.addEventListener('input', function() {
-          applyFilter();
+      
+      // Add global helper function untuk formatting
+      window.formatEventDate = function(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+          weekday: 'short',
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
         });
-      }
+      };
+      
+      window.formatTime = function(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleTimeString('id-ID', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      };
     })();
