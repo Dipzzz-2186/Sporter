@@ -60,7 +60,7 @@ const uploadNewsThumb = multer({
 
 
 // routes
-router.get("/", authMiddleware.requireAdminOrSubadmin, adminController.renderDashboard);
+router.get("/", authMiddleware.requireAdmin, adminController.renderDashboard);
 
 // Events Management (Admin only)
 router.get("/events", authMiddleware.requireAdmin, adminController.listEvents);

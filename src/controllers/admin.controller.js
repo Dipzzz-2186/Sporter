@@ -6,70 +6,140 @@ const SALT_ROUNDS = 12;
 /**
  * Render admin dashboard
  */
+// ========== RENDER ADMIN DASHBOARD (FULL DATA LIKE SUBADMIN) ==========
+
 exports.renderDashboard = async (req, res) => {
   try {
-    // counts
-    const [sportsRows] = await db.query("SELECT COUNT(*) AS total FROM sports");
-    const sportsCount = sportsRows[0] ? sportsRows[0].total : 0;
+    const userId = req.session.user.id;
 
-    const [eventsRows] = await db.query("SELECT COUNT(*) AS total FROM events");
-    const eventsCount = eventsRows[0] ? eventsRows[0].total : 0;
+    // ambil semua sport karena admin boleh semua
+    const [sports] = await db.query('SELECT id FROM sports');
+    const sportIds = sports.map(s => s.id);
 
-    const [upcomingRows] = await db.query(
-      "SELECT COUNT(*) AS total FROM events WHERE status = 'upcoming'"
-    );
-    const upcomingEventsCount = upcomingRows[0] ? upcomingRows[0].total : 0;
-
-    const [newsRows] = await db.query(
-      "SELECT COUNT(*) AS total FROM news_articles WHERE status = 'published'"
-    );
-    const newsCount = newsRows[0] ? newsRows[0].total : 0;
-
-    // orders maybe not exist — safe try/catch
-    let ordersCount = 0;
-    try {
-      const [ordersRows] = await db.query("SELECT COUNT(*) AS total FROM orders");
-      ordersCount = ordersRows[0] ? ordersRows[0].total : 0;
-    } catch (e) {
-      ordersCount = 0;
+    if (sportIds.length === 0) {
+      return res.render("admin/dashboard", {
+        title: "Admin Dashboard - SPORTER",
+        stats: { sports: 0, events: 0, matches: 0, videos: 0, livestreams: 0, ticketTypes: 0 },
+        upcomingMatches: [],
+        recentNews: [],
+        recentVideos: [],
+        upcomingLivestreams: [],
+        recentEvents: [],
+        currentUser: req.session.user
+      });
     }
 
-    // recent events
-    const [recentEvents] = await db.query(
-      `SELECT e.id, e.title, e.slug, e.start_date, e.status, s.name AS sport_name
-       FROM events e
-       LEFT JOIN sports s ON s.id = e.sport_id
-       ORDER BY e.start_date DESC
-       LIMIT 5`
+    const placeholders = sportIds.map(() => '?').join(',');
+
+    // Stats
+    const [[cEvents]] = await db.query(
+      `SELECT COUNT(id) AS total FROM events WHERE sport_id IN (${placeholders})`,
+      sportIds
     );
 
-    // recent news
-    const [recentNews] = await db.query(
-      `SELECT n.id, n.title, n.slug, n.published_at, sp.name AS sport_name
-       FROM news_articles n
-       LEFT JOIN sports sp ON sp.id = n.sport_id
-       WHERE n.status = 'published'
-       ORDER BY n.published_at DESC
-       LIMIT 5`
+    const [[cMatches]] = await db.query(
+      `SELECT COUNT(id) AS total FROM matches WHERE sport_id IN (${placeholders})`,
+      sportIds
     );
+
+    const [[cVideos]] = await db.query(
+      `SELECT COUNT(id) AS total FROM videos WHERE type <> 'livestream' AND sport_id IN (${placeholders})`,
+      sportIds
+    );
+
+    const [[cLivestreams]] = await db.query(
+      `SELECT COUNT(id) AS total FROM videos WHERE type = 'livestream' AND sport_id IN (${placeholders})`,
+      sportIds
+    );
+
+    const [[cTicketTypes]] = await db.query(
+      `SELECT COUNT(*) AS total
+       FROM ticket_types tt
+       LEFT JOIN matches m ON m.id = tt.match_id
+       LEFT JOIN events e ON e.id = tt.event_id
+       WHERE COALESCE(m.sport_id, e.sport_id) IN (${placeholders})`,
+      sportIds
+    );
+
+    const stats = {
+      sports: sportIds.length,
+      events: cEvents.total,
+      matches: cMatches.total,
+      videos: cVideos.total,
+      livestreams: cLivestreams.total,
+      ticketTypes: cTicketTypes.total
+    };
+
+    // Recent Events
+    const [recentEvents] = await db.query(`
+      SELECT e.id, e.title, e.slug, e.start_date, e.status, s.name AS sport_name
+      FROM events e
+      LEFT JOIN sports s ON s.id = e.sport_id
+      ORDER BY e.start_date DESC
+      LIMIT 6
+    `);
+
+    // Recent News
+    const [recentNews] = await db.query(`
+      SELECT n.id, n.title, n.slug, n.published_at, s.name AS sport_name
+      FROM news_articles n
+      LEFT JOIN sports s ON s.id = n.sport_id
+      WHERE n.status = 'published'
+      ORDER BY n.published_at DESC
+      LIMIT 6
+    `);
+
+    // Recent Videos
+    const [recentVideos] = await db.query(`
+      SELECT id, title, thumbnail_url
+      FROM videos
+      WHERE type <> 'livestream'
+      ORDER BY created_at DESC
+      LIMIT 6
+    `);
+
+    // Upcoming Livestream
+    const [upcomingLivestreams] = await db.query(`
+      SELECT v.id, v.title, v.start_time, v.is_live, s.name AS sport_name
+      FROM videos v
+      LEFT JOIN sports s ON s.id = v.sport_id
+      WHERE v.type = 'livestream' AND (v.start_time >= NOW() OR v.is_live = 1)
+      ORDER BY v.start_time ASC
+      LIMIT 6
+    `);
+
+    // Upcoming Matches
+    const [upcomingMatches] = await db.query(`
+      SELECT m.id, m.title, m.start_time, v.name AS venue_name,
+             s.name AS sport_name,
+             ht.name AS home_team_name, at.name AS away_team_name
+      FROM matches m
+      LEFT JOIN venues v ON v.id = m.venue_id
+      LEFT JOIN sports s ON s.id = m.sport_id
+      LEFT JOIN teams ht ON ht.id = m.home_team_id
+      LEFT JOIN teams at ON at.id = m.away_team_id
+      WHERE m.start_time >= NOW()
+      ORDER BY m.start_time ASC
+      LIMIT 10
+    `);
 
     return res.render("admin/dashboard", {
       title: "Admin Dashboard - SPORTER",
-      stats: {
-        sports: sportsCount,
-        events: eventsCount,
-        upcomingEvents: upcomingEventsCount,
-        news: newsCount,
-        orders: ordersCount,
-      },
+      stats,
       recentEvents,
       recentNews,
+      recentVideos,
+      upcomingLivestreams,
+      upcomingMatches,
+      currentUser: req.session.user
     });
+
   } catch (err) {
-    console.error("ERROR renderDashboard:", err);
+    console.error("ERROR renderDashboard admin full:", err);
     return res.status(500).send("Terjadi kesalahan saat memuat dashboard.");
   }
 };
+
 
 /**
  * Render form to create subadmin

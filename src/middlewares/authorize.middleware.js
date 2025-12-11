@@ -1,7 +1,6 @@
 // src/middlewares/authorize.middleware.js
 const db = require('../config/db');
 
-// ensure user is subadmin and has assignment OR is admin
 exports.requireAssignedToSport = (paramSportIdGetter) => {
   return async (req, res, next) => {
     try {
@@ -16,8 +15,12 @@ exports.requireAssignedToSport = (paramSportIdGetter) => {
         return res.redirect('/');
       }
 
-      // paramSportIdGetter: (req) => sportId
-      const sportId = paramSportIdGetter(req);
+      // support async or sync getter
+      let sportId = paramSportIdGetter && paramSportIdGetter(req);
+      if (sportId && typeof sportId.then === 'function') {
+        sportId = await sportId;
+      }
+
       if (!sportId) {
         req.flash('error', 'Sport ID tidak valid.');
         return res.redirect('back');

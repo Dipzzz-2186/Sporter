@@ -1,39 +1,48 @@
 // src/middlewares/auth.middleware.js
 
-// Pastikan ada session dan user
+// helper
 const isLoggedIn = (req) => !!(req && req.session && req.session.user);
-
-// Redirect ke login sambil menyertakan next param
 const redirectToLogin = (req, res) => {
   const nextUrl = encodeURIComponent(req.originalUrl || "/");
   return res.redirect(`/login?next=${nextUrl}`);
 };
 
-// -------------------------
-// middleware exports
-// -------------------------
+// middlewares
+function requireLogin(req, res, next) {
+  if (isLoggedIn(req)) return next();
+  req.flash && req.flash('error', 'Silakan login terlebih dahulu.');
+  return redirectToLogin(req, res);
+}
 
-// Harus login (general)
-exports.requireLogin = (req, res, next) => {
+function requireAdmin(req, res, next) {
   if (!isLoggedIn(req)) return redirectToLogin(req, res);
-  next();
-};
+  if (req.session.user.role === 'admin') return next();
+  req.flash && req.flash('error', 'Akses ditolak: khusus admin.');
+  // redirect aman ke homepage agar tidak loop jika admin-only area gagal
+  return res.redirect('/');
+}
 
-// Hanya admin
-exports.requireAdmin = (req, res, next) => {
+function requireSubadmin(req, res, next) {
   if (!isLoggedIn(req)) return redirectToLogin(req, res);
-  if (req.session.user.role !== "admin") {
-    req.flash("error", "Akses ditolak: khusus admin.");
-    return res.redirect("/"); // jangan redirect ke /admin (bisa loop). Kirim ke homepage.
-  }
-  next();
-};
+  if (req.session.user.role === 'subadmin') return next();
+  // kalau admin coba masuk area subadmin, redirect ke /admin supaya UX konsisten
+  if (req.session.user.role === 'admin') return res.redirect('/admin');
+  req.flash && req.flash('error', 'Akses ditolak: khusus subadmin.');
+  return res.redirect('/');
+}
 
-// Admin atau Subadmin
-exports.requireAdminOrSubadmin = (req, res, next) => {
+function requireAdminOrSubadmin(req, res, next) {
   if (!isLoggedIn(req)) return redirectToLogin(req, res);
   const role = req.session.user.role;
-  if (role === "admin" || role === "subadmin") return next();
-  req.flash("error", "Akses ditolak: khusus admin / subadmin.");
-  return res.redirect("/"); // arahkan pulang
+  if (role === 'admin' || role === 'subadmin') return next();
+  req.flash && req.flash('error', 'Akses ditolak.');
+  return res.redirect('/');
+}
+
+// export secara konsisten
+module.exports = {
+  requireLogin,
+  requireAdmin,
+  requireSubadmin,
+  requireAdminOrSubadmin,
 };

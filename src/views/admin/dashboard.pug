@@ -2,428 +2,72 @@ extends ../layout/main
 
 block content
   style.
-    /* Admin Dashboard Styles */
-    .admin-dashboard {
-      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-      min-height: 100vh;
-      padding: 2rem 0;
-    }
-    
-    /* Header Section */
-    .admin-header {
-      background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
-      border-radius: 24px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      color: white;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      animation: fadeInDown 0.6s ease-out;
-    }
-    
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .admin-header h1 {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .admin-header p {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 1rem;
-      margin: 0;
-    }
-    
-    .admin-badge {
-      background: rgba(255, 59, 48, 0.15);
-      color: #FF3B30;
-      padding: 0.6rem 1.2rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      border: 2px solid rgba(255, 59, 48, 0.3);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .admin-header .btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      color: white;
-      padding: 0.6rem 1.2rem;
-      border-radius: 12px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-    }
-    
-    .admin-header .btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: #FF3B30;
-      color: white;
-      transform: translateY(-2px);
-    }
-    
-    /* Stat Cards */
-    .admin-stat-card {
-      background: white;
-      border-radius: 20px;
-      border: 2px solid #f0f0f0;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
-      animation: fadeInUp 0.6s ease-out backwards;
-      position: relative;
-    }
-    
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .admin-stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, #FF3B30 0%, #FF9500 100%);
-      transform: scaleX(0);
-      transition: transform 0.4s ease;
-    }
-    
-    .admin-stat-card:hover::before {
-      transform: scaleX(1);
-    }
-    
-    .admin-stat-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 35px rgba(255, 59, 48, 0.15);
-      border-color: #FF3B30;
-    }
-    
-    .admin-stat-card .card-body {
-      padding: 2rem;
-    }
-    
-    .stat-icon-wrapper {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-      transition: all 0.4s ease;
-      border: 2px solid #ffeded;
-    }
-    
-    .admin-stat-card:hover .stat-icon-wrapper {
-      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
-      transform: rotate(10deg) scale(1.1);
-      border-color: #FF3B30;
-    }
-    
-    .stat-icon {
-      font-size: 1.8rem;
-      color: #FF3B30;
-      transition: color 0.4s ease;
-    }
-    
-    .admin-stat-card:hover .stat-icon {
-      color: white;
-    }
-    
-    .stat-label {
-      color: #6c757d;
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      display: block;
-    }
-    
-    .stat-number {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
-      color: #1C1C1E;
-      letter-spacing: 1px;
-      margin: 0;
-      transition: color 0.3s ease;
-    }
-    
-    .admin-stat-card:hover .stat-number {
-      color: #FF3B30;
-    }
-    
-    /* Content Cards */
-    .admin-content-card {
-      background: white;
-      border-radius: 20px;
-      border: 2px solid #f0f0f0;
-      overflow: hidden;
-      animation: fadeInUp 0.6s ease-out backwards;
-      height: 100%;
-    }
-    
-    .admin-content-card .card-header {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      border-bottom: 2px solid #e8e8e8;
-      padding: 1.5rem;
-    }
-    
-    .admin-content-card .card-header h5 {
-      color: #1C1C1E;
-      font-weight: 700;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 0;
-    }
-    
-    .admin-content-card .card-header i {
-      color: #FF3B30;
-      font-size: 1.3rem;
-    }
-    
-    .admin-content-card .card-header a {
-      color: #6c757d;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-    
-    .admin-content-card .card-header a:hover {
-      color: #FF3B30;
-      transform: translateX(3px);
-    }
-    
-    /* Table Styles */
-    .admin-table {
-      margin: 0;
-    }
-    
-    .admin-table thead {
-      background: #f8f9fa;
-    }
-    
-    .admin-table thead th {
-      color: #6c757d;
-      font-weight: 600;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 1rem;
-      border: none;
-    }
-    
-    .admin-table tbody tr {
-      border-bottom: 1px solid #f0f0f0;
-      transition: all 0.3s ease;
-    }
-    
-    .admin-table tbody tr:hover {
-      background: #f8f9fa;
-      transform: translateX(5px);
-    }
-    
-    .admin-table tbody td {
-      padding: 1rem;
-      vertical-align: middle;
-      border: none;
-    }
-    
-    .admin-table tbody td a {
-      color: #1C1C1E;
-      font-weight: 600;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-    
-    .admin-table tbody td a:hover {
-      color: #FF3B30;
-    }
-    
-    .admin-table .badge {
-      padding: 0.4rem 0.8rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-    }
-    
-    /* List Group Styles */
-    .news-list-item {
-      border: none;
-      border-bottom: 1px solid #f0f0f0;
-      padding: 1.25rem;
-      transition: all 0.3s ease;
-      text-decoration: none;
-    }
-    
-    .news-list-item:hover {
-      background: #f8f9fa;
-      transform: translateX(5px);
-    }
-    
-    .news-list-item h6 {
-      color: #1C1C1E;
-      font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-      transition: color 0.3s ease;
-    }
-    
-    .news-list-item:hover h6 {
-      color: #FF3B30;
-    }
-    
-    .news-list-item .badge {
-      padding: 0.3rem 0.7rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.75rem;
-    }
-    
-    .news-list-item i.bi-chevron-right {
-      transition: transform 0.3s ease;
-    }
-    
-    .news-list-item:hover i.bi-chevron-right {
-      transform: translateX(5px);
-    }
-    
-    /* Empty State */
-    .empty-state {
-      padding: 3rem 2rem;
-      text-align: center;
-    }
-    
-    .empty-state-icon {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem;
-      animation: float 3s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    
-    .empty-state-icon i {
-      font-size: 2.5rem;
-      color: #adb5bd;
-    }
-    
-    .empty-state p {
-      color: #6c757d;
-      font-size: 0.95rem;
-      margin: 0;
-    }
-    
-    /* Responsive */
-    @media (max-width: 991px) {
-      .admin-header {
-        padding: 1.5rem;
-      }
-      
-      .admin-header h1 {
-        font-size: 2rem;
-      }
-      
-      .stat-number {
-        font-size: 2rem;
-      }
-      
-      .admin-stat-card .card-body {
-        padding: 1.5rem;
-      }
-    }
-    
-    @media (max-width: 767px) {
-      .admin-dashboard {
-        padding: 1rem 0;
-      }
-      
-      .admin-header {
-        padding: 1.25rem;
-        border-radius: 16px;
-      }
-      
-      .admin-header h1 {
-        font-size: 1.75rem;
-      }
-      
-      .admin-badge,
-      .admin-header .btn {
-        width: 100%;
-        justify-content: center;
-        margin-top: 0.5rem;
-      }
-      
-      .stat-icon-wrapper {
-        width: 50px;
-        height: 50px;
-      }
-      
-      .stat-icon {
-        font-size: 1.5rem;
-      }
-      
-      .stat-number {
-        font-size: 1.8rem;
-      }
-      
-      .admin-table {
-        font-size: 0.85rem;
-      }
-      
-      .admin-table thead th,
-      .admin-table tbody td {
-        padding: 0.75rem 0.5rem;
-      }
-    }
-    
-    /* Animation delays */
-    .admin-stat-card:nth-child(1) { animation-delay: 0.1s; }
-    .admin-stat-card:nth-child(2) { animation-delay: 0.2s; }
-    .admin-stat-card:nth-child(3) { animation-delay: 0.3s; }
-    .admin-stat-card:nth-child(4) { animation-delay: 0.4s; }
+    /* Admin Dashboard Styles (kept as requested) */
+    .admin-dashboard { background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%); min-height: 100vh; padding: 2rem 0; }
+    .admin-header { background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%); border-radius: 24px; padding: 2rem; margin-bottom: 2rem; color: white; box-shadow: 0 10px 30px rgba(0,0,0,.15); animation: fadeInDown .6s ease-out; }
+    @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px);} to {opacity:1; transform:translateY(0);} }
+    .admin-header h1 { font-family:'Bebas Neue', cursive; font-size:2.5rem; letter-spacing:1px; margin-bottom:.5rem; background:linear-gradient(135deg,#FF3B30 0%,#FF9500 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .admin-header p { color:rgba(255,255,255,.7); font-size:1rem; margin:0; }
+    .admin-badge { background:rgba(255,59,48,0.15); color:#FF3B30; padding:.6rem 1.2rem; border-radius:20px; font-weight:600; font-size:.9rem; border:2px solid rgba(255,59,48,0.3); display:inline-flex; align-items:center; gap:.5rem; }
+    .admin-header .btn { background:rgba(255,255,255,0.1); border:2px solid rgba(255,255,255,0.3); color:white; padding:.6rem 1.2rem; border-radius:12px; font-weight:600; transition:all .3s; backdrop-filter: blur(10px); }
+    .admin-header .btn:hover { background:rgba(255,255,255,0.2); border-color:#FF3B30; transform:translateY(-2px); }
+    .admin-stat-card { background:white; border-radius:20px; border:2px solid #f0f0f0; transition:all .4s cubic-bezier(.4,0,.2,1); overflow:hidden; animation:fadeInUp .6s ease-out backwards; position:relative; }
+    @keyframes fadeInUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+    .admin-stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; background:linear-gradient(90deg,#FF3B30 0%,#FF9500 100%); transform:scaleX(0); transition:transform .4s; }
+    .admin-stat-card:hover::before { transform:scaleX(1); }
+    .admin-stat-card:hover { transform:translateY(-8px); box-shadow:0 15px 35px rgba(255,59,48,.15); border-color:#FF3B30; }
+    .admin-stat-card .card-body { padding:2rem; }
+    .stat-icon-wrapper { width:60px; height:60px; background:linear-gradient(135deg,#fff5f5 0%,#ffe8e6 100%); border-radius:16px; display:flex; align-items:center; justify-content:center; margin-bottom:1rem; transition:all .4s; border:2px solid #ffeded; }
+    .admin-stat-card:hover .stat-icon-wrapper { background:linear-gradient(135deg,#FF3B30 0%,#FF9500 100%); transform: rotate(10deg) scale(1.1); border-color:#FF3B30; }
+    .stat-icon { font-size:1.8rem; color:#FF3B30; transition:color .4s; }
+    .admin-stat-card:hover .stat-icon { color:white; }
+    .stat-label { color:#6c757d; font-size:.9rem; font-weight:500; margin-bottom:.5rem; display:block; }
+    .stat-number { font-family:'Bebas Neue', cursive; font-size:2.5rem; color:#1C1C1E; letter-spacing:1px; margin:0; transition:color .3s; }
+    .admin-content-card { background:white; border-radius:20px; border:2px solid #f0f0f0; overflow:hidden; animation:fadeInUp .6s ease-out backwards; height:100%; }
+    .admin-content-card .card-header { background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%); border-bottom:2px solid #e8e8e8; padding:1.5rem; }
+    .admin-content-card .card-header h5 { color:#1C1C1E; font-weight:700; font-size:1.2rem; display:flex; align-items:center; gap:.5rem; margin:0; }
+    .admin-content-card .card-header i { color:#FF3B30; font-size:1.3rem; }
+    .admin-content-card .card-header a { color:#6c757d; font-weight:600; text-decoration:none; transition:all .3s; }
+    .admin-content-card .card-header a:hover { color:#FF3B30; transform:translateX(3px); }
+    .admin-table { margin:0; }
+    .admin-table thead { background:#f8f9fa; }
+    .admin-table thead th { color:#6c757d; font-weight:600; font-size:.85rem; text-transform:uppercase; letter-spacing:.5px; padding:1rem; border:none; }
+    .admin-table tbody tr { border-bottom:1px solid #f0f0f0; transition:all .3s; }
+    .admin-table tbody tr:hover { background:#f8f9fa; transform:translateX(5px); }
+    .admin-table tbody td { padding:1rem; vertical-align:middle; border:none; }
+    .admin-table tbody td a { color:#1C1C1E; font-weight:600; text-decoration:none; transition:color .3s; }
+    .admin-table tbody td a:hover { color:#FF3B30; }
+    .admin-table .badge { padding:.4rem .8rem; border-radius:20px; font-weight:600; font-size:.75rem; text-transform:uppercase; }
+    .news-list-item { border:none; border-bottom:1px solid #f0f0f0; padding:1.25rem; transition:all .3s; text-decoration:none; }
+    .news-list-item:hover { background:#f8f9fa; transform:translateX(5px); }
+    .news-list-item h6 { color:#1C1C1E; font-weight:700; font-size:1rem; margin-bottom:.5rem; transition:color .3s; }
+    .news-list-item:hover h6 { color:#FF3B30; }
+    .empty-state { padding:3rem 2rem; text-align:center; }
+    .empty-state-icon { width:80px; height:80px; background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; animation:float 3s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+    .empty-state-icon i { font-size:2.5rem; color:#adb5bd; }
+    .empty-state p { color:#6c757d; font-size:.95rem; margin:0; }
+    .video-thumb { width:84px; height:56px; object-fit:cover; border-radius:8px; }
+    .ticket-badge { border-radius:12px; padding:.25rem .6rem; font-weight:700; }
+    @media (max-width:991px) { .admin-header { padding:1.5rem } .admin-header h1{font-size:2rem} .stat-number{font-size:2rem} .admin-stat-card .card-body{padding:1.5rem} }
+    @media (max-width:767px) { .admin-dashboard { padding:1rem 0 } .admin-header { padding:1.25rem; border-radius:16px } .admin-header h1{font-size:1.75rem} .video-thumb{width:64px;height:44px} }
 
   .admin-dashboard
     .container-fluid
-      //- Header Section
+      // Header
       .admin-header
         .row.align-items-center.g-3
           .col-lg-7
             h1 Admin Dashboard
             p
               i.bi.bi-speedometer2.me-2
-              | Kelola event, berita, dan aktivitas platform SPORTER dengan mudah.
-          
+              | Kelola event, berita, jadwal, video, livestream, dan tiket.
           .col-lg-5
             .d-flex.align-items-center.justify-content-lg-end.gap-2.flex-wrap
               if currentUser
                 .admin-badge
                   i.bi.bi-person-badge
-                  span= currentUser.role || 'Admin'
+                  span= currentUser.name || currentUser.email || currentUser.role
               a.btn(href="/")
                 i.bi.bi-house-door.me-2
                 | Lihat Website
@@ -432,7 +76,13 @@ block content
                   i.bi.bi-people-fill.me-1
                   | Manage Subadmins
 
-      //- Stats Cards
+      // Note: quick-create buttons removed — create must be done via "Kelola" pages
+      if flash && flash.success && flash.success.length
+        .alert.alert-success(role="alert")= flash.success[0]
+      if flash && flash.error && flash.error.length
+        .alert.alert-danger(role="alert")= flash.error[0]
+
+      // Stats
       .row.g-3.g-lg-4.mb-4
         .col-6.col-lg-3
           .card.border-0.admin-stat-card
@@ -440,45 +90,38 @@ block content
               .stat-icon-wrapper
                 i.stat-icon.bi.bi-dribbble
               span.stat-label Cabang Olahraga
-              h3.stat-number= stats.sports || 0
-        
+              h3.stat-number= (stats && stats.sports) || 0
         .col-6.col-lg-3
           .card.border-0.admin-stat-card
             .card-body
               .stat-icon-wrapper
                 i.stat-icon.bi.bi-calendar-event
               span.stat-label Total Event
-              h3.stat-number= stats.events || 0
-        
+              h3.stat-number= (stats && stats.events) || 0
         .col-6.col-lg-3
           .card.border-0.admin-stat-card
             .card-body
               .stat-icon-wrapper
                 i.stat-icon.bi.bi-calendar-check
               span.stat-label Event Mendatang
-              h3.stat-number= stats.upcomingEvents || 0
-        
+              h3.stat-number= (stats && stats.upcomingEvents) || 0
         .col-6.col-lg-3
           .card.border-0.admin-stat-card
             .card-body
               .stat-icon-wrapper
                 i.stat-icon.bi.bi-newspaper
               span.stat-label Berita Terpublikasi
-              h3.stat-number= stats.news || 0
+              h3.stat-number= (stats && stats.news) || 0
 
-      //- Content Section
+      // Main content: Event & News top row
       .row.g-4
-        //- Recent Events
         .col-lg-6
           .card.border-0.admin-content-card
             .card-header.d-flex.justify-content-between.align-items-center
               h5
                 i.bi.bi-calendar-event
                 | Event Terbaru
-              a(href="/admin/events")
-                | Kelola Event
-                i.bi.bi-arrow-right.ms-1
-            
+              a(href=(currentUser && currentUser.role === 'admin') ? '/admin/events' : '/subadmin/events') Kelola Event
             if recentEvents && recentEvents.length
               .table-responsive
                 table.table.admin-table.mb-0
@@ -505,7 +148,7 @@ block content
                         td
                           - const d = e.start_date ? new Date(e.start_date) : null
                           if d
-                            span.small.text-muted= d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+                            span.small.text-muted= d.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
                           else
                             span.small.text-muted -
             else
@@ -514,34 +157,26 @@ block content
                   i.bi.bi-calendar-x
                 p Belum ada event tercatat.
 
-        //- Recent News
         .col-lg-6
           .card.border-0.admin-content-card
             .card-header.d-flex.justify-content-between.align-items-center
               h5
                 i.bi.bi-newspaper
                 | Berita Terbaru
-              a(href="admin/news")
-                | Lihat Semua
-                i.bi.bi-arrow-right.ms-1
-            
+              a(href=(currentUser && currentUser.role === 'admin') ? '/admin/news' : '/subadmin/news') Lihat Semua
             if recentNews && recentNews.length
-              .list-group.list-group-flush
+              ul.list-group.list-group-flush
                 each n in recentNews
-                  a.list-group-item.news-list-item.d-flex.justify-content-between.align-items-start(
-                    href=`/news/${n.slug}`
-                  )
+                  a.list-group-item.news-list-item.d-flex.justify-content-between.align-items-start(href=`/news/${n.slug}`)
                     .flex-grow-1
                       if n.sport_name
-                        span.badge.bg-light.text-danger.border.mb-2
-                          = n.sport_name
+                        span.badge.bg-light.text-danger.border.mb-2= n.sport_name
                       h6= n.title
                       if n.published_at
-                        - const dn = n.published_at ? new Date(n.published_at) : null
-                        if dn
-                          small.text-muted
-                            i.bi.bi-clock.me-1
-                            = dn.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+                        - const dn = new Date(n.published_at)
+                        small.text-muted
+                          i.bi.bi-clock.me-1
+                          = dn.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
                     i.bi.bi-chevron-right.text-muted.ms-3
             else
               .empty-state
@@ -549,63 +184,166 @@ block content
                   i.bi.bi-newspaper
                 p Belum ada berita terpublikasi.
 
-  //- Custom JavaScript
+      // Second row: Jadwal, Klasemen
+      .row.g-4.mt-1
+        // Jadwal card
+        .col-lg-6
+          .card.border-0.admin-content-card
+            .card-header.d-flex.justify-content-between.align-items-center
+              h5
+                i.bi.bi-clock.me-2
+                | Jadwal
+              if currentUser && currentUser.role === 'subadmin'
+                a(href='/subadmin/matches') Kelola Jadwal
+              else
+                span.small-muted Hanya SubAdmin
+            if upcomingMatches && upcomingMatches.length
+              .table-responsive
+                table.table.admin-table.mb-0
+                  thead
+                    tr
+                      th Match / Event
+                      th Cabang
+                      th Tanggal
+                      th Venue
+                      th Ticket
+                  tbody
+                    each m in upcomingMatches
+                      - const st = m.start_time ? new Date(m.start_time) : (m.start_date ? new Date(m.start_date) : null)
+                      tr
+                        td
+                          b= m.title || (m.home_team_name ? (m.home_team_name + ' vs ' + (m.away_team_name||'-')) : 'Match')
+                        td= m.sport_name || '-'
+                        td= st ? st.toLocaleString('id-ID') : '-'
+                        td= m.venue_name || '-'
+                        td
+                          - const av = (typeof m.ticket_available !== 'undefined') ? Number(m.ticket_available) : null
+                          if av === 0
+                            span.badge.bg-danger.ticket-badge Sold out
+                          else if av > 0
+                            span.badge.bg-success.ticket-badge= av + ' left'
+                          else
+                            span.badge.bg-secondary.ticket-badge -
+
+            else
+              .empty-state
+                p.text-muted Tidak ada jadwal.
+
+        // Klasemen card
+        .col-lg-6
+          .card.border-0.admin-content-card
+            .card-header.d-flex.justify-content-between.align-items-center
+              h5
+                i.bi.bi-list-ol.me-2
+                | Klasemen
+              if currentUser && currentUser.role === 'subadmin'
+                a(href='/subadmin/standings') Kelola Klasemen
+              else
+                span.small-muted Hanya SubAdmin
+            if standings && standings.length
+              .table-responsive
+                table.table.admin-table.mb-0
+                  thead
+                    tr
+                      th Tim
+                      th.text-center PJ
+                      th.text-center W
+                      th.text-center D
+                      th.text-center L
+                      th.text-end PTS
+                  tbody
+                    each r in standings
+                      tr
+                        td
+                          strong= r.team
+                          if r.sport_name
+                            br
+                            small.text-muted= r.sport_name
+                        td.text-center= r.played || 0
+                        td.text-center= r.win || 0
+                        td.text-center= r.draw || 0
+                        td.text-center= r.loss || 0
+                        td.text-end= r.pts || 0
+            else
+              .empty-state
+                p.text-muted Klasemen belum tersedia.
+
+      // Third row: Video & Livestream
+      .row.g-4.mt-1
+        .col-lg-6
+          .card.border-0.admin-content-card
+            .card-header.d-flex.justify-content-between.align-items-center
+              h5
+                i.bi.bi-camera-reels.me-2
+                | Video
+              a(href=(currentUser && currentUser.role === 'admin') ? '/admin/videos' : '/subadmin/videos') Kelola Video
+            if recentVideos && recentVideos.length
+              ul.list-group.list-group-flush
+                each v in recentVideos
+                  li.list-group-item.d-flex.justify-content-between.align-items-center
+                    .d-flex.align-items-center
+                      if v.thumbnail_url
+                        img.video-thumb(src=v.thumbnail_url alt=v.title)
+                      else
+                        i.bi.bi-film.fs-3.me-2
+                      .ms-3
+                        a(href=`/videos/${v.id}`)= v.title
+                        if v.sport_name
+                          br
+                          small.text-muted= v.sport_name
+                    a.btn.btn-sm.btn-outline-primary(href=`/videos/${v.id}`) Tonton
+            else
+              .empty-state
+                p.text-muted Belum ada video.
+
+        .col-lg-6
+          .card.border-0.admin-content-card
+            .card-header.d-flex.justify-content-between.align-items-center
+              h5
+                i.bi.bi-broadcast.me-2
+                | Livestream
+              a(href=(currentUser && currentUser.role === 'admin') ? '/admin/livestreams' : '/subadmin/livestreams') Kelola Livestream
+            if upcomingLivestreams && upcomingLivestreams.length
+              ul.list-group.list-group-flush
+                each l in upcomingLivestreams
+                  li.list-group-item
+                    b= l.title
+                    br
+                    small.text-muted= (l.sport_name || '-') + ' • ' + (l.start_time ? new Date(l.start_time).toLocaleString('id-ID') : (l.created_at ? new Date(l.created_at).toLocaleString('id-ID') : '-'))
+                    br
+                    a.btn.btn-sm.btn-outline-primary.mt-2(href=`/livestreams/${l.id}`) Lihat
+            else
+              .empty-state
+                p.text-muted Belum ada livestream.
+
+      // bottom quick links (no create)
+      .mt-4
+        a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/events' : '/subadmin/events') Kelola Event
+        a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/news' : '/subadmin/news') Kelola Berita
+        if currentUser && currentUser.role === 'subadmin'
+          a.btn.btn-outline-secondary.me-2(href='/subadmin/matches') Kelola Jadwal
+          a.btn.btn-outline-secondary.me-2(href='/subadmin/standings') Kelola Klasemen
+        else
+          span.text-muted.me-2 Hanya SubAdmin yang mengelola Jadwal & Klasemen
+        a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/videos' : '/subadmin/videos') Kelola Video
+        a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/livestreams' : '/subadmin/livestreams') Kelola Livestream
+        a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/tickets' : '/subadmin/tickets') Kelola Ticket Types
+        if currentUser && currentUser.role === 'admin'
+          a.btn.btn-outline-danger.ms-2(href="/admin/subadmins") Manage Subadmins
+
+  // small JS for stat animate
   script.
-    (function() {
-      // Intersection Observer for animations
-      if ('IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              entry.target.style.opacity = '1';
-              entry.target.style.transform = 'translateY(0)';
-            }
-          });
-        }, {
-          threshold: 0.1,
-          rootMargin: '0px 0px -50px 0px'
-        });
-        
-        // Observe stat cards
-        document.querySelectorAll('.admin-stat-card').forEach(function(card) {
-          observer.observe(card);
-        });
-        
-        // Observe content cards
-        document.querySelectorAll('.admin-content-card').forEach(function(card) {
-          observer.observe(card);
-        });
-      }
-      
-      // Counter animation for stats
-      function animateCounter(element, start, end, duration) {
-        var range = end - start;
-        var increment = range / (duration / 16);
-        var current = start;
-        
-        var timer = setInterval(function() {
-          current += increment;
-          if (current >= end) {
-            current = end;
-            clearInterval(timer);
-          }
-          element.textContent = Math.floor(current);
-        }, 16);
-      }
-      
-      // Animate stat numbers on load
-      document.querySelectorAll('.stat-number').forEach(function(el) {
-        var endValue = parseInt(el.textContent) || 0;
-        if (endValue > 0) {
-          el.textContent = '0';
-          setTimeout(function() {
-            animateCounter(el, 0, endValue, 1000);
-          }, 300);
-        }
-      });
-      
-      // Add tooltip for truncated text (optional)
-      document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
-        new bootstrap.Tooltip(el);
+    (function(){
+      document.querySelectorAll('.stat-number').forEach(function(el){
+        var target = parseInt(el.textContent) || 0;
+        if(target <= 0) return;
+        el.textContent = '0';
+        var step = Math.max(1, Math.floor(target / 25));
+        var cur = 0;
+        var t = setInterval(function(){
+          cur += step;
+          if(cur >= target){ el.textContent = target; clearInterval(t); }
+          else el.textContent = cur;
+        }, 20);
       });
     })();
