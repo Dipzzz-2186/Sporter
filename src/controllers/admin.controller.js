@@ -180,3 +180,198 @@ exports.deleteSubadmin = async (req, res) => {
     return res.redirect("/admin/subadmins");
   }
 };
+// ========== EVENTS CRUD (ADMIN) ==========
+
+// List semua event untuk halaman admin
+exports.listEvents = async (req, res) => {
+  try {
+    const [events] = await db.query(
+      `SELECT e.id, e.title, e.slug, e.start_date, e.end_date, e.status,
+              s.name AS sport_name,
+              v.name AS venue_name
+       FROM events e
+       LEFT JOIN sports s ON s.id = e.sport_id
+       LEFT JOIN venues v ON v.id = e.venue_id
+       ORDER BY e.start_date DESC`
+    );
+
+    return res.render("admin/events", {
+      title: "Kelola Event - SPORTER",
+      events,
+    });
+  } catch (err) {
+    console.error("ERROR listEvents:", err);
+    req.flash("error", "Gagal memuat data event.");
+    return res.redirect("/admin");
+  }
+};
+
+// Render form CREATE event
+exports.renderCreateEvent = async (req, res) => {
+  try {
+    const [sports] = await db.query("SELECT id, name FROM sports ORDER BY name");
+    const [venues] = await db.query("SELECT id, name FROM venues ORDER BY name");
+
+    return res.render("admin/event_form", {
+      title: "Buat Event - SPORTER",
+      mode: "create",
+      event: {},
+      sports,
+      venues,
+    });
+  } catch (err) {
+    console.error("ERROR renderCreateEvent:", err);
+    req.flash("error", "Gagal memuat form event.");
+    return res.redirect("/admin/events");
+  }
+};
+
+// Helper sederhana buat slug
+function makeSlug(str = "") {
+  return String(str)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+// Handle CREATE event (POST)
+exports.createEvent = async (req, res) => {
+  try {
+    let { sport_id, title, slug, description, start_date, end_date, venue_id, status } = req.body;
+
+    if (!title || !start_date) {
+      req.flash("error", "Judul dan tanggal mulai wajib diisi.");
+      return res.redirect("/admin/events/create");
+    }
+
+    if (!slug || !slug.trim()) slug = makeSlug(title);
+    if (!status) status = "upcoming";
+
+    await db.query(
+      `INSERT INTO events
+       (sport_id, title, slug, description, start_date, end_date, venue_id, organizer_id, status, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+      [
+        sport_id || null,
+        title,
+        slug,
+        description || null,
+        start_date,
+        end_date || null,
+        venue_id || null,
+        req.session.user ? req.session.user.id : null,
+        status,
+      ]
+    );
+
+    req.flash("success", "Event berhasil dibuat.");
+    return res.redirect("/admin/events");
+  } catch (err) {
+    console.error("ERROR createEvent:", err);
+    req.flash("error", "Gagal membuat event.");
+    return res.redirect("/admin/events/create");
+  }
+};
+
+// Render form EDIT event
+exports.renderEditEvent = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID event tidak valid.");
+      return res.redirect("/admin/events");
+    }
+
+    const [[event]] = await db.query(
+      `SELECT * FROM events WHERE id = ? LIMIT 1`,
+      [id]
+    );
+
+    if (!event) {
+      req.flash("error", "Event tidak ditemukan.");
+      return res.redirect("/admin/events");
+    }
+
+    const [sports] = await db.query("SELECT id, name FROM sports ORDER BY name");
+    const [venues] = await db.query("SELECT id, name FROM venues ORDER BY name");
+
+    return res.render("admin/event_form", {
+      title: "Edit Event - SPORTER",
+      mode: "edit",
+      event,
+      sports,
+      venues,
+    });
+  } catch (err) {
+    console.error("ERROR renderEditEvent:", err);
+    req.flash("error", "Gagal memuat form edit event.");
+    return res.redirect("/admin/events");
+  }
+};
+
+// Handle UPDATE event
+exports.updateEvent = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID event tidak valid.");
+      return res.redirect("/admin/events");
+    }
+
+    let { sport_id, title, slug, description, start_date, end_date, venue_id, status } = req.body;
+
+    if (!title || !start_date) {
+      req.flash("error", "Judul dan tanggal mulai wajib diisi.");
+      return res.redirect(`/admin/events/${id}/edit`);
+    }
+
+    if (!slug || !slug.trim()) slug = makeSlug(title);
+    if (!status) status = "upcoming";
+
+    await db.query(
+      `UPDATE events
+       SET sport_id = ?, title = ?, slug = ?, description = ?, start_date = ?, end_date = ?,
+           venue_id = ?, status = ?, updated_at = NOW()
+       WHERE id = ?`,
+      [
+        sport_id || null,
+        title,
+        slug,
+        description || null,
+        start_date,
+        end_date || null,
+        venue_id || null,
+        status,
+        id,
+      ]
+    );
+
+    req.flash("success", "Event berhasil diupdate.");
+    return res.redirect("/admin/events");
+  } catch (err) {
+    console.error("ERROR updateEvent:", err);
+    req.flash("error", "Gagal mengupdate event.");
+    return res.redirect("/admin/events");
+  }
+};
+
+// Handle DELETE event
+exports.deleteEvent = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID event tidak valid.");
+      return res.redirect("/admin/events");
+    }
+
+    await db.query("DELETE FROM events WHERE id = ?", [id]);
+
+    req.flash("success", "Event berhasil dihapus.");
+    return res.redirect("/admin/events");
+  } catch (err) {
+    console.error("ERROR deleteEvent:", err);
+    req.flash("error", "Gagal menghapus event.");
+    return res.redirect("/admin/events");
+  }
+};

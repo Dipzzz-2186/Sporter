@@ -25,6 +25,17 @@ if (typeof adminController.renderDashboard !== "function") {
 // routes
 router.get("/", authMiddleware.requireAdminOrSubadmin, adminController.renderDashboard);
 
+// Events Management (Admin only)
+router.get("/events", authMiddleware.requireAdmin, adminController.listEvents);
+router.get("/events/create", authMiddleware.requireAdmin, adminController.renderCreateEvent);
+router.post("/events/create", authMiddleware.requireAdmin, adminController.createEvent);
+
+router.get("/events/:id/edit", authMiddleware.requireAdmin, adminController.renderEditEvent);
+router.post("/events/:id/edit", authMiddleware.requireAdmin, adminController.updateEvent);
+
+router.post("/events/:id/delete", authMiddleware.requireAdmin, adminController.deleteEvent);
+
+
 // Subadmin management (admin only)
 router.get("/subadmins", authMiddleware.requireAdmin, adminController.listSubadmins);
 router.get("/subadmins/create", authMiddleware.requireAdmin, adminController.renderCreateSubadmin);

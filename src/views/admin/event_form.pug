@@ -1,0 +1,76 @@
+extends ../layout/main
+
+block content
+  - const isEdit = mode === 'edit';
+
+  .container.py-4
+    .d-flex.justify-content-between.align-items-center.mb-3
+      div
+        h1.fw-bold.mb-1= isEdit ? 'Edit Event' : 'Buat Event'
+        p.text-muted.mb-0
+          | Kelola detail event olahraga untuk ditampilkan di SPORTER.
+      a.btn.btn-outline-secondary(href="/admin/events")
+        i.bi.bi-arrow-left.me-1
+        | Kembali
+
+    if flash && flash.error && flash.error.length
+      .alert.alert-danger(role="alert")= flash.error[0]
+    if flash && flash.success && flash.success.length
+      .alert.alert-success(role="alert")= flash.success[0]
+
+    form(method="post" action=isEdit ? `/admin/events/${event.id}/edit` : "/admin/events/create")
+      .row.g-3
+        .col-md-6
+          .mb-3
+            label.form-label(for="title") Judul Event
+            input.form-control#title(type="text" name="title" required value=event.title || '')
+        .col-md-6
+          .mb-3
+            label.form-label(for="slug") Slug (opsional)
+            input.form-control#slug(type="text" name="slug" placeholder="otomatis dari judul jika dikosongkan" value=event.slug || '')
+
+      .row.g-3
+        .col-md-4
+          .mb-3
+            label.form-label(for="sport_id") Cabang Olahraga
+            select.form-select#sport_id(name="sport_id")
+              option(value="") -- Pilih Cabang --
+              each s in sports
+                option(value=s.id selected=(event.sport_id && event.sport_id === s.id))= s.name
+        .col-md-4
+          .mb-3
+            label.form-label(for="venue_id") Venue
+            select.form-select#venue_id(name="venue_id")
+              option(value="") -- Pilih Venue --
+              each v in venues
+                option(value=v.id selected=(event.venue_id && event.venue_id === v.id))= v.name
+        .col-md-4
+          .mb-3
+            label.form-label(for="status") Status
+            select.form-select#status(name="status")
+              - const currentStatus = event.status || 'upcoming';
+              option(value="upcoming" selected=(currentStatus === 'upcoming')) Akan Datang
+              option(value="ongoing" selected=(currentStatus === 'ongoing')) Berlangsung
+              option(value="finished" selected=(currentStatus === 'finished')) Selesai
+
+      .row.g-3
+        .col-md-6
+          .mb-3
+            label.form-label(for="start_date") Tanggal Mulai
+            input.form-control#start_date(type="date" name="start_date" required value=event.start_date ? event.start_date.toISOString().slice(0,10) : '')
+        .col-md-6
+          .mb-3
+            label.form-label(for="end_date") Tanggal Selesai (opsional)
+            input.form-control#end_date(type="date" name="end_date" value=event.end_date ? event.end_date.toISOString().slice(0,10) : '')
+
+      .mb-3
+        label.form-label(for="description") Deskripsi
+        textarea.form-control#description(name="description" rows="4")= event.description || ''
+
+      button.btn.btn-danger.mt-2(type="submit")
+        if isEdit
+          i.bi.bi-save.me-1
+          | Simpan Perubahan
+        else
+          i.bi.bi-plus-circle.me-1
+          | Simpan Event
