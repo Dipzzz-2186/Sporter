@@ -841,11 +841,20 @@ block content
             .col-md-6.col-lg-4
               .sporter-livestream-card(class=item.is_live ? 'live-now' : 'upcoming')
                 .livestream-thumbnail
-                  if item.thumbnail_url
-                    img(src=item.thumbnail_url alt=item.title)
+                  if item.embedUrl
+                    .ratio.ratio-16x9
+                      iframe(
+                        src=item.embedUrl
+                        frameborder="0"
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                      )
+                  else if item.thumbnail_url
+                    img(src=item.thumbnail_url alt=item.title style="width:100%; height:100%; object-fit:cover;")
                   else
-                    .bg-dark.d-flex.align-items-center.justify-content-center(style="height: 100%;")
+                    .bg-dark.d-flex.align-items-center.justify-content-center(style="height:100%;")
                       i.bi.bi-broadcast.fa-4x.text-primary
+
                   
                   .livestream-badge
                     if item.is_live
@@ -874,7 +883,7 @@ block content
                 
                 .card-body.d-flex.flex-column
                   span.livestream-sport-badge
-                    i(class=getSportIcon(item.sport_name))
+                    i(class=item.icon_class)
                     = item.sport_name || 'Olahraga'
                   
                   h5= item.title

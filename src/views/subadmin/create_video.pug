@@ -1,0 +1,50 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    h3.mb-3 Tambah Video (VOD / Highlight)
+    form(method="post" action="/subadmin/videos/create")
+      .mb-3
+        label.form-label Cabang Olahraga
+        select.form-select(name="sport_id")
+          option(value="") -- Pilih cabang --
+          each s in sports
+            option(value=s.id)= s.name
+
+      .mb-3
+        label.form-label Event (optional)
+        input.form-control(type="text" name="event_id")
+
+      .mb-3
+        label.form-label Match (optional)
+        input.form-control(type="text" name="match_id")
+
+      .mb-3
+        label.form-label Judul
+        input.form-control(type="text" name="title" required)
+
+      .mb-3
+        label.form-label Tipe
+        select.form-select(name="type")
+          option(value="vod") VOD
+          option(value="highlight") Highlight
+          option(value="livestream") Livestream (tidak disarankan)
+
+      .mb-3
+        label.form-label Platform
+        input.form-control(type="text" name="platform")
+
+      .mb-3
+        label.form-label URL / Embed
+        input.form-control(type="text" name="url")
+
+      .mb-3
+        label.form-label Start Time
+        input.form-control(type="datetime-local" name="start_time")
+
+      .mb-3
+        label.form-label End Time
+        input.form-control(type="datetime-local" name="end_time")
+
+      button.btn.btn-primary(type="submit") Simpan Video
+      a.btn.btn-secondary.ms-2(href="/events") Batal

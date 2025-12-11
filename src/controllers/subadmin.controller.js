@@ -2,11 +2,30 @@
 const db = require('../config/db');
 const { parseYouTubeEmbed } = require('../utils/media.util'); // helper below
 
-// Render form helpers (reuse sports list)
-async function loadSportsList() {
-    const [sports] = await db.query('SELECT id, name FROM sports ORDER BY name');
-    return sports;
+// helper yang menerima user (req.session.user)
+async function loadSportsList(user) {
+    if (!user) {
+        const [sports] = await db.query('SELECT id, name FROM sports ORDER BY name');
+        return sports;
+    }
+
+    if (user.role === 'admin') {
+        const [sports] = await db.query('SELECT id, name FROM sports ORDER BY name');
+        return sports;
+    }
+
+    // subadmin -> hanya sports yang ter-assign
+    const [rows] = await db.query(
+        `SELECT s.id, s.name
+     FROM sports s
+     JOIN user_sports us ON us.sport_id = s.id
+     WHERE us.user_id = ?
+     ORDER BY s.name`,
+        [user.id]
+    );
+    return rows;
 }
+
 // render dashboard untuk subadmin
 exports.renderDashboard = async (req, res) => {
     try {
@@ -160,7 +179,7 @@ exports.renderDashboard = async (req, res) => {
     } catch (err) {
         console.error('renderDashboard subadmin error', err);
         req.flash('error', 'Gagal memuat dashboard.');
-        return res.redirect('/admin');
+        return res.redirect('/subadmin');
     }
 };
 
@@ -169,7 +188,7 @@ exports.renderDashboard = async (req, res) => {
    ------------------------- */
 exports.renderCreateEvent = async (req, res) => {
     try {
-        const sports = await loadSportsList();
+        const sports = await loadSportsList(req.session.user);
         const [venues] = await db.query('SELECT id, name FROM venues ORDER BY name');
         res.render('subadmin/create_event', { sports, venues });
     } catch (err) {
@@ -193,7 +212,7 @@ exports.createEvent = async (req, res) => {
             [sport_id, title, slug, description, start_date, end_date || null, venue_id || null, req.session.user.id]
         );
         req.flash('success', 'Event berhasil dibuat.');
-        return res.redirect('/admin'); // or /subadmin/events
+        return res.redirect('/subadmin'); // or /subadmin/events
     } catch (err) {
         console.error('createEvent', err);
         req.flash('error', 'Gagal membuat event.');
@@ -205,7 +224,7 @@ exports.createEvent = async (req, res) => {
    NEWS / ARTICLES
    ------------------------- */
 exports.renderCreateNews = async (req, res) => {
-    const sports = await loadSportsList();
+    const sports = await loadSportsList(req.session.user);
     res.render('subadmin/create_news', { sports });
 };
 
@@ -223,7 +242,7 @@ exports.createNews = async (req, res) => {
             [sport_id || null, event_id || null, req.session.user.id, title, slug, excerpt || null, content || '', status || 'draft', published_at || null]
         );
         req.flash('success', 'Berita berhasil dibuat.');
-        return res.redirect('/admin');
+        return res.redirect('/subadmin');
     } catch (err) {
         console.error('createNews', err);
         req.flash('error', 'Gagal membuat berita.');
@@ -235,7 +254,7 @@ exports.createNews = async (req, res) => {
    MATCHES (schedule)
    ------------------------- */
 exports.renderCreateMatch = async (req, res) => {
-    const sports = await loadSportsList();
+    const sports = await loadSportsList(req.session.user);
     const [teams] = await db.query('SELECT id, name, sport_id FROM teams ORDER BY name');
     const [venues] = await db.query('SELECT id, name FROM venues ORDER BY name');
     res.render('subadmin/create_match', { sports, teams, venues });
@@ -254,7 +273,7 @@ exports.createMatch = async (req, res) => {
             [event_id || null, sport_id, home_team_id || null, away_team_id || null, title || null, start_time, end_time || null, venue_id || null]
         );
         req.flash('success', 'Match berhasil dibuat.');
-        return res.redirect('/admin');
+        return res.redirect('/subadmin');
     } catch (err) {
         console.error('createMatch', err);
         req.flash('error', 'Gagal membuat match.');
@@ -293,7 +312,7 @@ exports.addMatchScore = async (req, res) => {
    VIDEOS (VOD/highlight) - NOT livestream
    ------------------------- */
 exports.renderCreateVideo = async (req, res) => {
-    const sports = await loadSportsList();
+    const sports = await loadSportsList(req.session.user);
     res.render('subadmin/create_video', { sports });
 };
 
@@ -314,7 +333,7 @@ exports.createVideo = async (req, res) => {
             [sport_id || null, event_id || null, match_id || null, title, type, platform || null, url, start_time || null, end_time || null]
         );
         req.flash('success', 'Video berhasil ditambahkan.');
-        return res.redirect('/admin');
+        return res.redirect('/subadmin');
     } catch (err) {
         console.error('createVideo', err);
         req.flash('error', 'Gagal menambahkan video.');
@@ -325,29 +344,66 @@ exports.createVideo = async (req, res) => {
 /* -------------------------
    LIVESTREAMS (separate)
    ------------------------- */
+function getYouTubeId(url) {
+    if (!url) return null;
+    const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : null;
+}
 exports.renderCreateLivestream = async (req, res) => {
-    const sports = await loadSportsList();
+    const sports = await loadSportsList(req.session.user);
     res.render('subadmin/create_livestream', { sports });
 };
 
 exports.createLivestream = async (req, res) => {
     try {
-        const { sport_id, event_id, match_id, title, platform, url, start_time, end_time } = req.body;
-        if (req.session.user.role === 'subadmin') {
-            const [rows] = await db.query('SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1', [req.session.user.id, sport_id]);
-            if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return res.redirect('back'); }
+        const { sport_id, title, url, description } = req.body;
+
+        if (!title || !url) {
+            req.flash('error', 'Title dan URL wajib diisi.');
+            return res.redirect('/subadmin/livestreams/create');
         }
+
+        // permission check for subadmin
+        if (req.session.user.role === 'subadmin') {
+            const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1', [req.session.user.id, sport_id]);
+            if (ok.length === 0) {
+                req.flash('error', 'Akses ditolak untuk cabang olahraga ini.');
+                return res.redirect('/subadmin/livestreams/create');
+            }
+        }
+
+        // parse embed URL (use let so we can reassign)
+        let embedUrl = parseYouTubeEmbed(url);
+
+        if (!embedUrl) {
+            // try clean input (strip tags, quotes)
+            const cleaned = String(url).replace(/<[^>]*>/g, '').replace(/['"`\u2018\u2019\u201C\u201D]/g, '').trim();
+            embedUrl = parseYouTubeEmbed(cleaned);
+            if (!embedUrl) {
+                req.flash('error', 'URL tidak dikenali atau belum didukung. Gunakan link YouTube atau paste iframe embed.');
+                return res.redirect('/subadmin/livestreams/create');
+            }
+        }
+
+        // extract id for thumbnail
+        const idMatch = embedUrl.match(/\/embed\/([A-Za-z0-9_-]{6,})/);
+        const ytId = idMatch ? idMatch[1] : null;
+        const thumbnail_url = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : null;
+        const platform = ytId ? 'youtube' : null;
+
+        // Insert into videos table as 'livestream'
         await db.query(
-            `INSERT INTO livestreams (sport_id, event_id, match_id, title, platform, url, start_time, end_time, is_live, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`,
-            [sport_id || null, event_id || null, match_id || null, title, platform || null, url, start_time || null, end_time || null]
+            `INSERT INTO videos (sport_id, event_id, match_id, title, type, platform, url, thumbnail_url, description, start_time, end_time, is_live, created_at, updated_at)
+       VALUES (?, NULL, NULL, ?, 'livestream', ?, ?, ?, NULL, NULL, NULL, 0, NOW(), NOW())`,
+            [sport_id || null, title, platform, url, thumbnail_url, description || null]
         );
+
         req.flash('success', 'Livestream berhasil dibuat.');
-        return res.redirect('/admin');
+        return res.redirect('/livestreams');
     } catch (err) {
-        console.error('createLivestream', err);
-        req.flash('error', 'Gagal menambahkan livestream.');
-        return res.redirect('back');
+        console.error('createLivestream error', err);
+        req.flash('error', 'Gagal menambahkan livestream. Cek server log.');
+        return res.redirect('/subadmin/livestreams/create');
     }
 };
 
@@ -370,7 +426,7 @@ exports.createTicketType = async (req, res) => {
             [event_id || null, match_id || null, name, parseFloat(price || 0), parseInt(quota || 0, 10)]
         );
         req.flash('success', 'Tipe tiket berhasil dibuat.');
-        return res.redirect('/admin');
+        return res.redirect('/subadmin');
     } catch (err) {
         console.error('createTicketType', err);
         req.flash('error', 'Gagal membuat ticket type.');
