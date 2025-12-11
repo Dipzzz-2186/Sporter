@@ -1,131 +1,1004 @@
 extends ../layout/main
 
 block content
+  style.
+    /* News Form Page Styles */
+    .news-form-page {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Header Section */
+    .news-form-header {
+      background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      animation: fadeInDown 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .news-form-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .news-form-header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .news-form-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      margin: 0;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Form Card */
+    .news-form-card {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid #f0f0f0;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Form Sections */
+    .news-form-section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .news-form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .section-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      color: #1C1C1E;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .section-title i {
+      color: #FF3B30;
+      font-size: 1.5rem;
+    }
+    
+    .section-description {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    
+    /* Form Elements */
+    .form-label {
+      color: #1C1C1E;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .form-label i {
+      color: #FF3B30;
+      font-size: 1rem;
+    }
+    
+    .form-label .badge {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      color: #FF3B30;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 1px solid #ffeded;
+      margin-left: auto;
+    }
+    
+    .badge-required {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+    
+    .form-control,
+    .form-select {
+      border: 2px solid #e8e8e8;
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #FF3B30;
+      box-shadow: 0 0 0 0.25rem rgba(255, 59, 48, 0.15);
+      background: white;
+    }
+    
+    .form-control:hover,
+    .form-select:hover {
+      border-color: #d0d0d0;
+      background: white;
+    }
+    
+    .form-control::placeholder {
+      color: #adb5bd;
+      font-style: italic;
+    }
+    
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    /* Help Text */
+    .form-text {
+      color: #6c757d;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .form-text i {
+      color: #FF3B30;
+      font-size: 0.9rem;
+    }
+    
+    /* File Upload Styling */
+    .file-upload-area {
+      border: 2px dashed #e8e8e8;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      background: #f8f9fa;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.75rem;
+    }
+    
+    .file-upload-area:hover {
+      border-color: #FF3B30;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+    }
+    
+    .file-upload-area.dragover {
+      border-color: #FF3B30;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      transform: translateY(-2px);
+    }
+    
+    .file-upload-icon {
+      font-size: 3rem;
+      color: #6c757d;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .file-upload-area:hover .file-upload-icon {
+      color: #FF3B30;
+      transform: scale(1.1);
+    }
+    
+    .file-upload-input {
+      display: none;
+    }
+    
+    /* Thumbnail Preview */
+    .thumbnail-preview-container {
+      position: relative;
+      margin-top: 1rem;
+    }
+    
+    .thumbnail-preview {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid #e8e8e8;
+      transition: all 0.3s ease;
+    }
+    
+    .thumbnail-actions {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .thumbnail-btn {
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .thumbnail-btn:hover {
+      background: #FF3B30;
+      transform: scale(1.1);
+    }
+    
+    /* Status Toggle */
+    .status-toggle-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    
+    .status-toggle {
+      position: relative;
+      flex: 1;
+    }
+    
+    .status-toggle input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+    }
+    
+    .status-toggle-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.2rem;
+      background: #f8f9fa;
+      border: 2px solid #e8e8e8;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    
+    .status-toggle-label:hover {
+      background: white;
+      border-color: #d0d0d0;
+    }
+    
+    .status-toggle input[type="radio"]:checked + .status-toggle-label {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      border-color: #FF3B30;
+      box-shadow: 0 4px 12px rgba(255, 59, 48, 0.15);
+    }
+    
+    .status-icon {
+      font-size: 1.5rem;
+      color: #6c757d;
+      transition: all 0.3s ease;
+    }
+    
+    .status-toggle input[type="radio"]:checked + .status-toggle-label .status-icon {
+      color: #FF3B30;
+    }
+    
+    .status-draft .status-icon {
+      color: #6c757d;
+    }
+    
+    .status-published .status-icon {
+      color: #10b981;
+    }
+    
+    /* Slug Preview */
+    .slug-preview {
+      background: #f8f9fa;
+      border: 2px solid #e8e8e8;
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      margin-top: 0.75rem;
+      display: none;
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+    
+    .slug-preview.active {
+      display: block;
+      animation: fadeInUp 0.3s ease-out;
+    }
+    
+    .slug-preview-label {
+      font-weight: 600;
+      color: #1C1C1E;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .slug-preview-value {
+      word-break: break-all;
+    }
+    
+    /* Action Buttons */
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 2px solid #f0f0f0;
+      margin-top: 2rem;
+    }
+    
+    .btn-submit {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      border: none;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 59, 48, 0.4);
+      color: white;
+    }
+    
+    .btn-back {
+      background: white;
+      border: 2px solid #e8e8e8;
+      color: #6c757d;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      justify-content: center;
+    }
+    
+    .btn-back:hover {
+      background: #f8f9fa;
+      border-color: #1C1C1E;
+      color: #1C1C1E;
+      transform: translateY(-2px);
+    }
+    
+    /* Character Counter */
+    .char-counter {
+      color: #6c757d;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      text-align: right;
+    }
+    
+    .char-counter.warning {
+      color: #f59e0b;
+    }
+    
+    .char-counter.danger {
+      color: #FF3B30;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .news-form-header {
+        padding: 1.5rem;
+      }
+      
+      .news-form-header h1 {
+        font-size: 2rem;
+      }
+      
+      .news-form-card {
+        padding: 2rem;
+      }
+      
+      .status-toggle-group {
+        flex-direction: column;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .news-form-page {
+        padding: 1rem 0;
+      }
+      
+      .news-form-header {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .news-form-header h1 {
+        font-size: 1.75rem;
+      }
+      
+      .news-form-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+      }
+      
+      .section-title {
+        font-size: 1.3rem;
+      }
+      
+      .news-form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+      }
+      
+      .form-control,
+      .form-select {
+        padding: 0.8rem 1rem;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn-submit,
+      .btn-back {
+        width: 100%;
+      }
+    }
+
   - const isEdit = mode === 'edit';
   - const articleSafe = article || {};
 
-  .container.py-4
-    .d-flex.justify-content-between.align-items-center.mb-3
-      div
-        h1.fw-bold.mb-1= isEdit ? 'Edit Berita' : 'Buat Berita'
-        p.text-muted.mb-0
-          | Tulis dan kelola artikel untuk cabang olahraga yang Anda kelola.
-      a.btn.btn-outline-secondary(href="/subadmin/news")
-        i.bi.bi-arrow-left.me-1
-        | Kembali
+  .news-form-page
+    .container
+      //- Header Section
+      .news-form-header
+        h1
+          i.bi.bi-newspaper
+          = isEdit ? 'Edit Berita' : 'Buat Berita'
+        p
+          i.bi.bi-info-circle.me-2
+          | Tulis dan kelola artikel untuk cabang olahraga yang Anda kelola
 
-    if flash && flash.error && flash.error.length
-      each msg in flash.error
-        .alert.alert-danger(role="alert")= msg
-    if flash && flash.success && flash.success.length
-      each msg in flash.success
-        .alert.alert-success(role="alert")= msg
+      //- Flash Messages
+      if flash && flash.error && flash.error.length
+        each msg in flash.error
+          .alert.alert-danger.alert-dismissible.fade.show.mb-3(role="alert" style="border-radius: 12px; border: none;")
+            i.bi.bi-exclamation-triangle-fill.me-2
+            = msg
+            button.btn-close(type="button" data-bs-dismiss="alert")
+      
+      if flash && flash.success && flash.success.length
+        each msg in flash.success
+          .alert.alert-success.alert-dismissible.fade.show.mb-3(role="alert" style="border-radius: 12px; border: none;")
+            i.bi.bi-check-circle-fill.me-2
+            = msg
+            button.btn-close(type="button" data-bs-dismiss="alert")
 
-    form(
-      method="post"
-      action=isEdit ? `/subadmin/news/${articleSafe.id}/edit` : "/subadmin/news/create"
-      enctype="multipart/form-data"
-    )
-      .row.g-3
-        .col-md-8
-          .mb-3
-            label.form-label(for="title") Judul Berita
-            input.form-control#title(
-              type="text"
-              name="title"
-              required
-              value=articleSafe.title || ''
-            )
-        .col-md-4
-          .mb-3
-            label.form-label(for="slug") Slug (opsional)
-            input.form-control#slug(
-              type="text"
-              name="slug"
-              placeholder="otomatis dari judul jika dikosongkan"
-              value=articleSafe.slug || ''
-            )
+      //- Form Card
+      .news-form-card
+        form(
+          method="post"
+          action=isEdit ? `/subadmin/news/${articleSafe.id}/edit` : "/subadmin/news/create"
+          enctype="multipart/form-data"
+        )
+          //- Section 1: Basic Information
+          .news-form-section
+            .section-title
+              i.bi.bi-card-heading
+              | Informasi Dasar
+            
+            .mb-4
+              label.form-label(for="title")
+                i.bi.bi-text-left
+                | Judul Berita
+                span.badge.badge-required Wajib
+              input.form-control#title(
+                type="text"
+                name="title"
+                required
+                value=articleSafe.title || ''
+                placeholder="Masukkan judul berita yang menarik dan deskriptif"
+                maxlength="200"
+              )
+              .char-counter#title-counter 0 / 200 karakter
+            
+            .mb-4
+              label.form-label(for="slug")
+                i.bi.bi-link
+                | Slug URL
+                span.badge Opsional
+              input.form-control#slug(
+                type="text"
+                name="slug"
+                value=articleSafe.slug || ''
+                placeholder="otomatis-dari-judul"
+              )
+              .slug-preview#slug-preview
+                .slug-preview-label
+                  i.bi.bi-eye-fill
+                  | Preview URL:
+                .slug-preview-value
+              small.form-text
+                i.bi.bi-info-circle
+                | Kosongkan untuk generate otomatis dari judul
+            
+            .mb-4
+              label.form-label
+                i.bi.bi-megaphone
+                | Ringkasan Berita
+                span.badge Opsional
+              textarea.form-control#excerpt(
+                name="excerpt"
+                rows="3"
+                placeholder="Ringkasan singkat yang akan ditampilkan di halaman utama..."
+              )= articleSafe.excerpt || ''
 
-      .row.g-3
-        .col-md-4
-          .mb-3
-            label.form-label(for="sport_id") Cabang Olahraga
-            select.form-select#sport_id(name="sport_id" required)
-              option(value="") -- Pilih Cabang --
-              if sports && sports.length
-                each s in sports
-                  option(
-                    value=s.id
-                    selected=(articleSafe.sport_id && articleSafe.sport_id === s.id)
-                  )= s.name
-        .col-md-4
-          .mb-3
-            label.form-label(for="event_id") Event Terkait (opsional)
-            select.form-select#event_id(name="event_id")
-              option(value="") -- Tanpa Event --
-              if events && events.length
-                each e in events
-                  option(
-                    value=e.id
-                    selected=(articleSafe.event_id && articleSafe.event_id === e.id)
-                  )= e.title
-        .col-md-4
-          .mb-3
-            label.form-label(for="status") Status
-            select.form-select#status(name="status")
-              - const currentStatus = articleSafe.status || 'draft';
-              option(value="draft" selected=(currentStatus === 'draft')) Draft
-              option(value="published" selected=(currentStatus === 'published')) Published
+          //- Section 2: Categorization
+          .news-form-section
+            .section-title
+              i.bi.bi-tag
+              | Kategorisasi
+            
+            .row.g-3
+              .col-md-6
+                .mb-3
+                  label.form-label(for="sport_id")
+                    i.bi.bi-trophy
+                    | Cabang Olahraga
+                    span.badge.badge-required Wajib
+                  select.form-select#sport_id(name="sport_id" required)
+                    option(value="" selected disabled) -- Pilih Cabang Olahraga --
+                    if sports && sports.length
+                      each s in sports
+                        option(
+                          value=s.id
+                          selected=(articleSafe.sport_id && articleSafe.sport_id == s.id)
+                        )= s.name
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Pilih cabang olahraga yang terkait dengan berita ini
+              
+              .col-md-6
+                .mb-3
+                  label.form-label(for="event_id")
+                    i.bi.bi-calendar-event
+                    | Event Terkait
+                    span.badge Opsional
+                  select.form-select#event_id(name="event_id")
+                    option(value="" selected) -- Tanpa Event --
+                    if events && events.length
+                      each e in events
+                        option(
+                          value=e.id
+                          selected=(articleSafe.event_id && articleSafe.event_id == e.id)
+                        )= e.title
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Pilih event jika berita terkait dengan event tertentu
 
-      .row.g-3
-        .col-md-4
-          .mb-3
-            label.form-label(for="published_at") Tanggal Publish (opsional)
-            - let pubValue = '';
-            - if (articleSafe.published_at) { pubValue = String(articleSafe.published_at).slice(0,10); }
-            input.form-control#published_at(
-              type="date"
-              name="published_at"
-              value=pubValue
-            )
+          //- Section 3: Thumbnail & Publishing
+          .news-form-section
+            .section-title
+              i.bi.bi-image
+              | Media & Publikasi
+            
+            .row.g-3
+              .col-md-6
+                .mb-3
+                  label.form-label(for="thumbnail")
+                    i.bi.bi-image
+                    | Thumbnail Berita
+                    span.badge Opsional
+                  
+                  if articleSafe.thumbnail_url
+                    .thumbnail-preview-container
+                      img.thumbnail-preview(
+                        src=articleSafe.thumbnail_url,
+                        alt=articleSafe.title || 'Thumbnail',
+                        id="thumbnail-preview-img"
+                      )
+                      .thumbnail-actions
+                        button.thumbnail-btn(type="button" onclick="removeThumbnail()" title="Hapus thumbnail")
+                          i.bi.bi-trash
+                        a.thumbnail-btn(href=articleSafe.thumbnail_url target="_blank" title="Lihat full size")
+                          i.bi.bi-arrows-fullscreen
+                  
+                  .file-upload-area#file-upload-area(
+                    onclick="document.getElementById('thumbnail').click()"
+                    ondragover="handleDragOver(event)"
+                    ondragleave="handleDragLeave(event)"
+                    ondrop="handleDrop(event)"
+                  )
+                    input.form-control#thumbnail.file-upload-input(
+                      type="file"
+                      name="thumbnail"
+                      accept="image/*"
+                      onchange="handleFileSelect(event)"
+                    )
+                    i.bi.bi-cloud-arrow-up.file-upload-icon
+                    h5.mb-2(style="color: #1C1C1E;") Upload Thumbnail
+                    p.text-muted.mb-2 Klik atau drag & drop gambar disini
+                    small.form-text
+                      i.bi.bi-info-circle
+                      | Format: JPG, PNG, WebP (max 3MB). Rekomendasi: 1200×630px
+              
+              .col-md-6
+                .mb-3
+                  label.form-label
+                    i.bi.bi-clock
+                    | Jadwal Publikasi
+                    span.badge Opsional
+                  - let pubValue = '';
+                  - if (articleSafe.published_at) { pubValue = String(articleSafe.published_at).slice(0,10); }
+                  input.form-control#published_at(
+                    type="date"
+                    name="published_at"
+                    value=pubValue
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Atur tanggal publish, kosongkan untuk menggunakan tanggal sekarang
+                
+                .mb-3
+                  label.form-label
+                    i.bi.bi-globe
+                    | Status Berita
+                    span.badge.badge-required Wajib
+                  - const currentStatus = articleSafe.status || 'draft';
+                  .status-toggle-group
+                    .status-toggle
+                      input#status-draft(
+                        type="radio"
+                        name="status"
+                        value="draft"
+                        checked=(currentStatus === 'draft')
+                      )
+                      label.status-toggle-label(for="status-draft")
+                        i.bi.bi-pencil-fill.status-icon.status-draft
+                        span Draft
+                        small.text-muted Disimpan sebagai draft
+                    
+                    .status-toggle
+                      input#status-published(
+                        type="radio"
+                        name="status"
+                        value="published"
+                        checked=(currentStatus === 'published')
+                      )
+                      label.status-toggle-label(for="status-published")
+                        i.bi.bi-send-check-fill.status-icon.status-published
+                        span Published
+                        small.text-muat
+                               
+          .news-form-section
+            .section-title
+              i.bi.bi-file-text
+              | Konten Berita
+            
+            .mb-3
+              label.form-label(for="content")
+                i.bi.bi-pencil-square
+                | Konten Lengkap
+                span.badge.badge-required Wajib
+              textarea.form-control#content(
+                name="content"
+                rows="12"
+                placeholder="Tulis konten berita Anda disini..."
+              )= articleSafe.content || ''
+              
+              .d-flex.justify-content-between.mt-2
+                small.form-text
+                  i.bi.bi-lightbulb
+                  | Gunakan format HTML untuk styling yang lebih kaya
+                .char-counter#content-counter 0 karakter
 
-        .col-md-4
-          .mb-3
-            label.form-label(for="thumbnail") Thumbnail / Foto Berita
-            if articleSafe.thumbnail_url
-              .mb-2
-                img.img-fluid.rounded.border(
-                  src=articleSafe.thumbnail_url,
-                  alt=articleSafe.title || 'Thumbnail',
-                  style="max-height: 140px; object-fit: cover;"
-                )
-            input.form-control#thumbnail(
-              type="file"
-              name="thumbnail"
-              accept="image/*"
-            )
-            small.text-muted
-              | Format gambar (JPG/PNG), max ±3MB.
+          //- Hidden Fields and Actions
+          .form-actions
+            button.btn.btn-submit(type="submit" id="submit-btn")
+              if isEdit
+                i.bi.bi-save-fill
+                | Simpan Perubahan
+              else
+                i.bi.bi-plus-circle-fill
+                | Simpan Berita
+            
+            a.btn.btn-back(href="/subadmin/news")
+              i.bi.bi-arrow-left
+              | Kembali ke Daftar
 
-        .col-md-4
-          .mb-3
-            label.form-label(for="excerpt") Excerpt / Ringkasan
-            textarea.form-control#excerpt(
-              name="excerpt"
-              rows="3"
-            )= articleSafe.excerpt || ''
-
-      .mb-3
-        label.form-label(for="content") Konten Lengkap
-        textarea.form-control#content(
-          name="content"
-          rows="8"
-        )= articleSafe.content || ''
-
-      button.btn.btn-danger.mt-2(type="submit")
-        if isEdit
-          i.bi.bi-save.me-1
-          | Simpan Perubahan
-        else
-          i.bi.bi-plus-circle.me-1
-          | Simpan Berita
+  script.
+    (function() {
+      // Auto generate slug from title
+      const titleInput = document.getElementById('title');
+      const slugInput = document.getElementById('slug');
+      const slugPreview = document.getElementById('slug-preview');
+      const slugPreviewValue = slugPreview.querySelector('.slug-preview-value');
+      
+      function generateSlug(text) {
+        return text
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .trim();
+      }
+      
+      function updateSlugPreview() {
+        const slug = slugInput.value || generateSlug(titleInput.value);
+        const baseUrl = window.location.origin;
+        slugPreviewValue.innerHTML = `${baseUrl}/news/${slug}`;
+        slugPreview.classList.add('active');
+      }
+      
+      if (titleInput && slugInput) {
+        titleInput.addEventListener('input', function() {
+          // Update character counter for title
+          const counter = document.getElementById('title-counter');
+          const length = this.value.length;
+          counter.textContent = `${length} / 200 karakter`;
+          
+          if (length > 180) {
+            counter.classList.add('warning');
+            counter.classList.remove('danger');
+          } else if (length > 190) {
+            counter.classList.add('danger');
+            counter.classList.remove('warning');
+          } else {
+            counter.classList.remove('warning', 'danger');
+          }
+          
+          // Auto generate slug if slug field is empty
+          if (!slugInput.value) {
+            updateSlugPreview();
+          }
+        });
+        
+        slugInput.addEventListener('input', function() {
+          if (this.value) {
+            updateSlugPreview();
+          } else {
+            slugPreview.classList.remove('active');
+          }
+        });
+        
+        // Initialize slug preview if there's existing value
+        if (slugInput.value) {
+          updateSlugPreview();
+        }
+      }
+      
+      // Content character counter
+      const contentInput = document.getElementById('content');
+      if (contentInput) {
+        const contentCounter = document.getElementById('content-counter');
+        
+        contentInput.addEventListener('input', function() {
+          const length = this.value.length;
+          contentCounter.textContent = `${length.toLocaleString()} karakter`;
+          
+          if (length > 10000) {
+            contentCounter.classList.add('warning');
+          } else {
+            contentCounter.classList.remove('warning');
+          }
+        });
+        
+        // Initialize counter
+        contentCounter.textContent = `${contentInput.value.length.toLocaleString()} karakter`;
+      }
+      
+      // File upload handling
+      const fileUploadArea = document.getElementById('file-upload-area');
+      const thumbnailInput = document.getElementById('thumbnail');
+      const thumbnailPreviewImg = document.getElementById('thumbnail-preview-img');
+      
+      function handleDragOver(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fileUploadArea.classList.add('dragover');
+      }
+      
+      function handleDragLeave(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fileUploadArea.classList.remove('dragover');
+      }
+      
+      function handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fileUploadArea.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          thumbnailInput.files = files;
+          handleFileSelect({ target: thumbnailInput });
+        }
+      }
+      
+      function handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (file) {
+          // Validate file size (3MB)
+          if (file.size > 3 * 1024 * 1024) {
+            alert('Ukuran file terlalu besar! Maksimal 3MB.');
+            thumbnailInput.value = '';
+            return;
+          }
+          
+          // Validate file type
+          const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+          if (!validTypes.includes(file.type)) {
+            alert('Format file tidak didukung! Gunakan JPG, PNG, atau WebP.');
+            thumbnailInput.value = '';
+            return;
+          }
+          
+          // Show preview
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            if (!thumbnailPreviewImg) {
+              // Create preview if doesn't exist
+              const container = document.querySelector('.thumbnail-preview-container');
+              if (container) {
+                const img = document.createElement('img');
+                img.id = 'thumbnail-preview-img';
+                img.className = 'thumbnail-preview';
+                img.src = event.target.result;
+                img.alt = 'Preview thumbnail';
+                container.insertBefore(img, container.firstChild);
+              }
+            } else {
+              thumbnailPreviewImg.src = event.target.result;
+            }
+            
+            // Hide upload area
+            fileUploadArea.style.display = 'none';
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+      
+      function removeThumbnail() {
+        if (confirm('Hapus thumbnail ini?')) {
+          thumbnailInput.value = '';
+          if (thumbnailPreviewImg) {
+            thumbnailPreviewImg.remove();
+          }
+          fileUploadArea.style.display = 'block';
+        }
+      }
+      
+      // Initialize file upload handlers
+      if (fileUploadArea && thumbnailInput) {
+        fileUploadArea.addEventListener('dragover', handleDragOver);
+        fileUploadArea.addEventListener('dragleave', handleDragLeave);
+        fileUploadArea.addEventListener('drop', handleDrop);
+      }
+      
+      // Auto fill published_at if empty and status is published
+      const statusPublished = document.getElementById('status-published');
+      const publishedAtInput = document.getElementById('published_at');
+      
+      if (statusPublished && publishedAtInput) {
+        statusPublished.addEventListener('change', function() {
+          if (this.checked && !publishedAtInput.value) {
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            publishedAtInput.value = formattedDate;
+          }
+        });
+      }
+      
+      // Form submission handling
+      const form = document.querySelector('form');
+      const submitBtn = document.getElementById('submit-btn');
+      
+      if (form && submitBtn) {
+        form.addEventListener('submit', function(e) {
+          // Validate required fields
+          const title = document.getElementById('title').value.trim();
+          const sportId = document.getElementById('sport_id').value;
+          const content = document.getElementById('content').value.trim();
+          
+          if (!title || !sportId || !content) {
+            e.preventDefault();
+            alert('Harap isi semua field yang wajib diisi!');
+            return;
+          }
+          
+          // Show loading state
+          const originalText = submitBtn.innerHTML;
+          submitBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            ${isEdit ? 'Menyimpan perubahan...' : 'Menyimpan berita...'}
+          `;
+          submitBtn.disabled = true;
+          
+          // Re-enable button after 5 seconds (in case of error)
+          setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+          }, 5000);
+        });
+      }
+      
+      // Auto-dismiss alerts
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        setTimeout(() => {
+          const bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        }, 5000);
+      });
+      
+      // Initialize form with existing data
+      document.addEventListener('DOMContentLoaded', function() {
+        // If thumbnail exists, hide upload area
+        if (thumbnailPreviewImg) {
+          fileUploadArea.style.display = 'none';
+        }
+        
+        // Update counters
+        if (titleInput) {
+          titleInput.dispatchEvent(new Event('input'));
+        }
+        
+        if (contentInput) {
+          contentInput.dispatchEvent(new Event('input'));
+        }
+      });
+    })();

@@ -3,123 +3,681 @@ extends ../layout/main
 block content
   - const m = match || {};
 
-  .container.py-4
-    h1.fw-bold.mb-3 Edit Pertandingan
+  style.
+    /* Match Edit Form Page Styles */
+    .match-edit-page {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Header Section */
+    .edit-form-header {
+      background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      animation: fadeInDown 0.6s ease-out;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .edit-form-header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .edit-form-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      margin: 0;
+    }
+    
+    .match-id-badge {
+      background: rgba(255, 59, 48, 0.15);
+      color: #FF3B30;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: 2px solid rgba(255, 59, 48, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    /* Alerts */
+    .alert {
+      border-radius: 12px;
+      border: none;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      animation: slideInDown 0.4s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .alert-danger {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-left: 4px solid #dc2626;
+    }
+    
+    .alert-success {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+      border-left: 4px solid #059669;
+    }
+    
+    .alert i {
+      font-size: 1.2rem;
+    }
+    
+    /* Form Card */
+    .edit-form-card {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid #f0f0f0;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Form Sections */
+    .form-section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .section-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      color: #1C1C1E;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .section-title i {
+      color: #FF3B30;
+      font-size: 1.5rem;
+    }
+    
+    .section-description {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    
+    /* Form Elements */
+    .form-label {
+      color: #1C1C1E;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .form-label i {
+      color: #FF3B30;
+      font-size: 1rem;
+    }
+    
+    .form-label .badge {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      color: #FF3B30;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 1px solid #ffeded;
+    }
+    
+    .badge-required {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+    
+    .form-control,
+    .form-select {
+      border: 2px solid #e8e8e8;
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #FF3B30;
+      box-shadow: 0 0 0 0.25rem rgba(255, 59, 48, 0.15);
+      background: white;
+    }
+    
+    .form-control:hover,
+    .form-select:hover {
+      border-color: #d0d0d0;
+      background: white;
+    }
+    
+    /* Status Select */
+    .status-select-wrapper {
+      position: relative;
+    }
+    
+    .status-indicator {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10;
+    }
+    
+    .status-indicator.scheduled { background: #f59e0b; }
+    .status-indicator.ongoing { background: #3b82f6; }
+    .status-indicator.finished { background: #10b981; }
+    .status-indicator.cancelled { background: #6c757d; }
+    
+    .status-select {
+      padding-left: 3rem !important;
+    }
+    
+    /* Help Text */
+    .form-text {
+      color: #6c757d;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .form-text i {
+      color: #FF3B30;
+      font-size: 0.9rem;
+    }
+    
+    /* Action Buttons */
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 2px solid #f0f0f0;
+      margin-top: 2rem;
+    }
+    
+    .btn-submit {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      border: none;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 59, 48, 0.4);
+      color: white;
+    }
+    
+    .btn-back {
+      background: white;
+      border: 2px solid #e8e8e8;
+      color: #6c757d;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      justify-content: center;
+    }
+    
+    .btn-back:hover {
+      background: #f8f9fa;
+      border-color: #1C1C1E;
+      color: #1C1C1E;
+      transform: translateY(-2px);
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .edit-form-header {
+        padding: 1.5rem;
+      }
+      
+      .edit-form-header h1 {
+        font-size: 2rem;
+      }
+      
+      .edit-form-card {
+        padding: 2rem;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .match-edit-page {
+        padding: 1rem 0;
+      }
+      
+      .edit-form-header {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .edit-form-header h1 {
+        font-size: 1.75rem;
+      }
+      
+      .edit-form-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+      }
+      
+      .section-title {
+        font-size: 1.3rem;
+      }
+      
+      .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+      }
+      
+      .form-control,
+      .form-select {
+        padding: 0.8rem 1rem;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn-submit,
+      .btn-back {
+        width: 100%;
+      }
+    }
 
-    if flash && flash.error && flash.error.length
-      each msg in flash.error
-        .alert.alert-danger(role="alert")= msg
-    if flash && flash.success && flash.success.length
-      each msg in flash.success
-        .alert.alert-success(role="alert")= msg
+  .match-edit-page
+    .container
+      //- Header Section
+      .edit-form-header
+        .d-flex.justify-content-between.align-items-start.flex-wrap.gap-3
+          div
+            h1
+              i.bi.bi-pencil-square
+              | Edit Pertandingan
+            p
+              i.bi.bi-info-circle.me-2
+              | Perbarui informasi pertandingan yang sudah ada
+          
+          if m.id
+            .match-id-badge
+              i.bi.bi-hash
+              | ID: #{m.id}
 
-    form(method="post" action=`/subadmin/matches/${m.id}/edit`)
-      .row.g-3
-        .col-md-4
-          .mb-3
-            label.form-label(for="sport_id") Cabang Olahraga
-            select.form-select#sport_id(name="sport_id" required)
-              option(value="") -- Pilih cabang --
-              if sports && sports.length
-                each s in sports
-                  option(
-                    value=s.id
-                    selected=(m.sport_id === s.id)
-                  )= s.name
+      //- Flash Messages
+      if flash && flash.error && flash.error.length
+        each msg in flash.error
+          .alert.alert-danger(role="alert")
+            i.bi.bi-exclamation-triangle-fill
+            span= msg
+      
+      if flash && flash.success && flash.success.length
+        each msg in flash.success
+          .alert.alert-success(role="alert")
+            i.bi.bi-check-circle-fill
+            span= msg
 
-        .col-md-4
-          .mb-3
-            label.form-label(for="event_id") Event (opsional, isi ID)
-            input.form-control#event_id(
-              type="number"
-              name="event_id"
-              min="1"
-              value=m.event_id || ''
-            )
+      //- Form Card
+      .edit-form-card
+        form(method="post" action=`/subadmin/matches/${m.id}/edit`)
+          
+          //- Section 1: Basic Info
+          .form-section
+            .section-title
+              i.bi.bi-info-circle-fill
+              | Informasi Dasar
+            .section-description
+              | Update cabang olahraga, event, dan venue untuk pertandingan.
+            
+            .row.g-3
+              .col-md-6
+                .mb-3
+                  label.form-label(for="sport_id")
+                    i.bi.bi-trophy
+                    | Cabang Olahraga
+                    span.badge.badge-required Wajib
+                  select.form-select#sport_id(name="sport_id" required)
+                    option(value="" disabled) -- Pilih cabang olahraga --
+                    if sports && sports.length
+                      each s in sports
+                        option(
+                          value=s.id
+                          selected=(m.sport_id === s.id)
+                        )= s.name
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Pilih cabang olahraga yang sesuai
+              
+              .col-md-6
+                .mb-3
+                  label.form-label(for="venue_id")
+                    i.bi.bi-geo-alt
+                    | Venue
+                    span.badge Opsional
+                  select.form-select#venue_id(name="venue_id")
+                    option(value="") -- Pilih venue --
+                    if venues && venues.length
+                      each v in venues
+                        option(
+                          value=v.id
+                          selected=(m.venue_id === v.id)
+                        )= v.name
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Lokasi pertandingan (boleh kosong)
+              
+              .col-12
+                .mb-3
+                  label.form-label(for="event_id")
+                    i.bi.bi-calendar-event
+                    | Event ID
+                    span.badge Opsional
+                  input.form-control#event_id(
+                    type="number"
+                    name="event_id"
+                    min="1"
+                    value=m.event_id || ''
+                    placeholder="Masukkan ID event (contoh: 123)"
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Jika pertandingan ini bagian dari event tertentu
 
-        .col-md-4
-          .mb-3
-            label.form-label(for="venue_id") Venue (opsional)
-            select.form-select#venue_id(name="venue_id")
-              option(value="") -- Pilih venue --
-              if venues && venues.length
-                each v in venues
-                  option(
-                    value=v.id
-                    selected=(m.venue_id === v.id)
-                  )= v.name
+          //- Section 2: Teams
+          .form-section
+            .section-title
+              i.bi.bi-people-fill
+              | Tim yang Bertanding
+            .section-description
+              | Update tim rumah dan tim tamu (opsional).
+            
+            .row.g-3
+              .col-md-6
+                .mb-3
+                  label.form-label(for="home_team_id")
+                    i.bi.bi-house-fill
+                    | Tim Rumah
+                    span.badge Opsional
+                  select.form-select#home_team_id(name="home_team_id")
+                    option(value="") -- Pilih tim rumah --
+                    if teams && teams.length
+                      each t in teams
+                        option(
+                          value=t.id
+                          selected=(m.home_team_id === t.id)
+                        )= t.name
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Tim yang bermain di kandang
+              
+              .col-md-6
+                .mb-3
+                  label.form-label(for="away_team_id")
+                    i.bi.bi-car-front-fill
+                    | Tim Tamu
+                    span.badge Opsional
+                  select.form-select#away_team_id(name="away_team_id")
+                    option(value="") -- Pilih tim tamu --
+                    if teams && teams.length
+                      each t in teams
+                        option(
+                          value=t.id
+                          selected=(m.away_team_id === t.id)
+                        )= t.name
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Tim yang bermain di tandang
 
-      .row.g-3
-        .col-md-6
-          .mb-3
-            label.form-label(for="home_team_id") Tim Rumah (opsional)
-            select.form-select#home_team_id(name="home_team_id")
-              option(value="") -- Pilih tim rumah --
-              if teams && teams.length
-                each t in teams
-                  option(
-                    value=t.id
-                    selected=(m.home_team_id === t.id)
-                  )= t.name
-        .col-md-6
-          .mb-3
-            label.form-label(for="away_team_id") Tim Tamu (opsional)
-            select.form-select#away_team_id(name="away_team_id")
-              option(value="") -- Pilih tim tamu --
-              if teams && teams.length
-                each t in teams
-                  option(
-                    value=t.id
-                    selected=(m.away_team_id === t.id)
-                  )= t.name
+          //- Section 3: Match Details
+          .form-section
+            .section-title
+              i.bi.bi-card-heading
+              | Detail Pertandingan
+            .section-description
+              | Update judul, waktu, dan status pertandingan.
+            
+            .mb-3
+              label.form-label(for="title")
+                i.bi.bi-text-left
+                | Judul Pertandingan
+                span.badge.badge-required Wajib
+              input.form-control#title(
+                type="text"
+                name="title"
+                required
+                value=m.title || ''
+                placeholder="Contoh: Final Basket Putra - SMKN 8 vs SMAN 1"
+              )
+              small.form-text
+                i.bi.bi-info-circle
+                | Buat judul yang jelas dan informatif
+            
+            - let startVal = '';
+            - let endVal = '';
+            - try {
+            -   if (m.start_time) startVal = new Date(m.start_time).toISOString().slice(0,16);
+            -   if (m.end_time) endVal = new Date(m.end_time).toISOString().slice(0,16);
+            - } catch (e) {}
+            
+            .row.g-3
+              .col-md-6
+                .mb-3
+                  label.form-label(for="start_time")
+                    i.bi.bi-clock
+                    | Waktu Mulai
+                    span.badge.badge-required Wajib
+                  input.form-control#start_time(
+                    type="datetime-local"
+                    name="start_time"
+                    required
+                    value=startVal
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Kapan pertandingan dimulai
+              
+              .col-md-6
+                .mb-3
+                  label.form-label(for="end_time")
+                    i.bi.bi-clock-history
+                    | Waktu Berakhir
+                    span.badge Opsional
+                  input.form-control#end_time(
+                    type="datetime-local"
+                    name="end_time"
+                    value=endVal
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Estimasi waktu selesai (boleh kosong)
+            
+            .mb-3
+              label.form-label(for="status")
+                i.bi.bi-toggle-on
+                | Status Pertandingan
+                span.badge.badge-required Wajib
+              .status-select-wrapper
+                - const currentStatus = m.status || 'scheduled';
+                span.status-indicator(class=currentStatus)
+                select.form-select.status-select#status(name="status" required)
+                  option(value="scheduled" selected=(currentStatus === 'scheduled')) 🟡 Dijadwalkan
+                  option(value="ongoing" selected=(currentStatus === 'ongoing')) 🔵 Berlangsung
+                  option(value="finished" selected=(currentStatus === 'finished')) 🟢 Selesai
+                  option(value="cancelled" selected=(currentStatus === 'cancelled')) ⚫ Dibatalkan
+              small.form-text
+                i.bi.bi-info-circle
+                | Update status sesuai kondisi pertandingan saat ini
 
-      .mb-3
-        label.form-label(for="title") Judul Pertandingan
-        input.form-control#title(
-          type="text"
-          name="title"
-          required
-          value=m.title || ''
-        )
+          //- Action Buttons
+          .form-actions
+            button.btn.btn-submit(type="submit")
+              i.bi.bi-save-fill
+              span Simpan Perubahan
+            
+            a.btn.btn-back(href="/subadmin/matches")
+              i.bi.bi-arrow-left
+              span Kembali ke Daftar
 
-      - let startVal = '';
-      - let endVal = '';
-      - try {
-      -   if (m.start_time) startVal = new Date(m.start_time).toISOString().slice(0,16);
-      -   if (m.end_time) endVal = new Date(m.end_time).toISOString().slice(0,16);
-      - } catch (e) {}
-
-      .row.g-3
-        .col-md-6
-          .mb-3
-            label.form-label(for="start_time") Waktu Mulai
-            input.form-control#start_time(
-              type="datetime-local"
-              name="start_time"
-              required
-              value=startVal
-            )
-        .col-md-6
-          .mb-3
-            label.form-label(for="end_time") Waktu Berakhir (opsional)
-            input.form-control#end_time(
-              type="datetime-local"
-              name="end_time"
-              value=endVal
-            )
-
-      .mb-3
-        label.form-label(for="status") Status
-        select.form-select#status(name="status")
-          - const currentStatus = m.status || 'scheduled';
-          option(value="scheduled" selected=(currentStatus === 'scheduled')) Dijadwalkan
-          option(value="ongoing" selected=(currentStatus === 'ongoing')) Berlangsung
-          option(value="finished" selected=(currentStatus === 'finished')) Selesai
-          option(value="cancelled" selected=(currentStatus === 'cancelled')) Dibatalkan
-
-      button.btn.btn-danger(type="submit")
-        i.bi.bi-save.me-1
-        | Simpan Perubahan
-      a.btn.btn-outline-secondary.ms-2(href="/subadmin/matches")
-        i.bi.bi-arrow-left.me-1
-        | Kembali
+  //- Custom JavaScript
+  script.
+    (function() {
+      // Auto dismiss alerts
+      var alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          alert.style.opacity = '0';
+          alert.style.transform = 'translateY(-20px)';
+          setTimeout(function() {
+            alert.remove();
+          }, 500);
+        }, 5000);
+      });
+      
+      // Form validation
+      var form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          var btn = form.querySelector('.btn-submit');
+          if (btn) {
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
+            btn.disabled = true;
+          }
+        });
+      }
+      
+      // Update status indicator color
+      var statusSelect = document.getElementById('status');
+      var statusIndicator = document.querySelector('.status-indicator');
+      
+      if (statusSelect && statusIndicator) {
+        statusSelect.addEventListener('change', function() {
+          var value = this.value;
+          statusIndicator.className = 'status-indicator ' + value;
+        });
+      }
+      
+      // Validate end time >= start time
+      var startTimeInput = document.getElementById('start_time');
+      var endTimeInput = document.getElementById('end_time');
+      
+      if (startTimeInput && endTimeInput) {
+        startTimeInput.addEventListener('change', function() {
+          if (this.value) {
+            endTimeInput.min = this.value;
+          }
+        });
+      }
+      
+      // Validate teams (home and away should be different)
+      var homeTeamSelect = document.getElementById('home_team_id');
+      var awayTeamSelect = document.getElementById('away_team_id');
+      
+      if (homeTeamSelect && awayTeamSelect) {
+        function validateTeams() {
+          var homeValue = homeTeamSelect.value;
+          var awayValue = awayTeamSelect.value;
+          
+          if (homeValue && awayValue && homeValue === awayValue) {
+            awayTeamSelect.setCustomValidity('Tim tamu harus berbeda dengan tim rumah');
+          } else {
+            awayTeamSelect.setCustomValidity('');
+          }
+        }
+        
+        homeTeamSelect.addEventListener('change', validateTeams);
+        awayTeamSelect.addEventListener('change', validateTeams);
+      }
+      
+      // Character counter for title
+      var titleInput = document.getElementById('title');
+      if (titleInput) {
+        var maxLength = 200;
+        var counter = document.createElement('small');
+        counter.className = 'form-text text-end d-block mt-1';
+        counter.style.color = '#6c757d';
+        titleInput.parentNode.appendChild(counter);
+        
+        function updateCounter() {
+          var length = titleInput.value.length;
+          counter.textContent = length + ' / ' + maxLength + ' karakter';
+          
+          if (length > maxLength * 0.9) {
+            counter.style.color = '#FF3B30';
+          } else {
+            counter.style.color = '#6c757d';
+          }
+        }
+        
+        titleInput.maxLength = maxLength;
+        titleInput.addEventListener('input', updateCounter);
+        updateCounter();
+      }
+    })();
