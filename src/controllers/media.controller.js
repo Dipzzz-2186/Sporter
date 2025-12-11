@@ -86,6 +86,7 @@ exports.listVideos = async (req, res) => {
     res.render("videos/list", {
         title: "Video Pertandingan - SPORTER",
         videos: rows,
+        getSportIcon: getSportIconClass   // <--- KIRIM KE PUG
     });
 };
 
