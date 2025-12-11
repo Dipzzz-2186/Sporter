@@ -1,0 +1,121 @@
+extends ../layout/main
+
+block content
+  style.
+    /* reuse many styles from matches.pug — keep it compact for news */
+    .news-page { padding: 2rem 0; min-height: 100vh; background: linear-gradient(135deg,#f5f7fa 0%,#eef2f7 100%); }
+    .news-header { background: linear-gradient(135deg,#111827 0%,#1f2937 100%); color: white; border-radius: 20px; padding: 1.6rem; margin-bottom: 1.5rem; }
+    .news-header h1 { font-family: 'Bebas Neue', cursive; font-size: 2rem; background: linear-gradient(135deg,#FF3B30 0%,#FF9500 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .card-news { background: white; border-radius: 16px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); overflow: hidden; }
+    .news-table thead th { text-transform: uppercase; font-size: .8rem; }
+    .news-row-title { font-weight:700; color:#111827; }
+    .news-meta { color:#6b7280; font-size:.85rem; }
+    .btn-add-news { background: linear-gradient(135deg,#FF3B30 0%,#FF9500 100%); color:white; padding:.6rem 1.1rem; border-radius:10px; text-decoration:none; display:inline-flex; gap:.5rem; align-items:center; }
+    .action-buttons { display:flex; gap:.5rem; justify-content:flex-end; }
+    .empty-state { padding:3.5rem; text-align:center; border-radius:12px; background:white; border:2px dashed #e6e8eb; }
+
+  .news-page
+    .container
+      .news-header
+        .row.align-items-center
+          .col-md-8
+            h1
+              i.bi.bi-newspaper.me-2
+              | Kelola Berita
+            p.text-muted.mb-0
+              | Buat, edit, dan hapus artikel berita yang relevan dengan cabang olahraga kamu.
+          .col-md-4.text-md-end
+            a.btn-add-news(href="/subadmin/news/create")
+              i.bi.bi-plus-circle
+              span Tambah Berita
+
+      if flash && flash.error && flash.error.length
+        each msg in flash.error
+          .alert.alert-danger(role="alert")
+            i.bi.bi-exclamation-triangle-fill.me-2
+            span= msg
+
+      if flash && flash.success && flash.success.length
+        each msg in flash.success
+          .alert.alert-success(role="alert")
+            i.bi.bi-check-circle-fill.me-2
+            span= msg
+
+      if news && news.length
+        .card.card-news.mt-3
+          .card-body.p-0
+            .table-responsive
+              table.table.table-hover.mb-0.news-table
+                thead
+                  tr
+                    th ID
+                    th Cabang
+                    th Judul
+                    th Excerpt
+                    th Tgl Publish
+                    th Status
+                    th.text-end Aksi
+                tbody
+                  each a in news
+                    tr
+                      td
+                        span.badge.bg-light.text-dark= a.id
+                      td
+                        if a.sport_name
+                          span.badge.bg-white.text-danger= a.sport_name
+                        else
+                          span.text-muted -
+                      td
+                        .news-row-title= a.title
+                        if a.slug
+                          div.news-meta
+                            small= a.slug
+                      td
+                        if a.excerpt
+                          = a.excerpt.length > 120 ? a.excerpt.slice(0,120) + '...' : a.excerpt
+                        else
+                          span.text-muted -
+                      td
+                        if a.published_at
+                          = new Date(a.published_at).toLocaleString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+                        else
+                          span.text-muted -
+                      td
+                        if a.status === 'published'
+                          span.badge.bg-success.text-white Published
+                        else
+                          span.badge.bg-secondary.text-white= a.status || 'draft'
+                      td.text-end
+                        .action-buttons
+                          a.btn.btn-sm.btn-outline-primary(href=`/subadmin/news/${a.id}/edit`, title="Edit")
+                            i.bi.bi-pencil-fill
+                          form.d-inline(method="post" action=`/subadmin/news/${a.id}/delete` onsubmit="return confirm('Yakin ingin menghapus berita ini?');")
+                            button.btn.btn-sm.btn-outline-danger(type="submit" title="Hapus")
+                              i.bi.bi-trash-fill
+      else
+        .empty-state.mt-3
+          i.bi.bi-newspaper-x.fs-1.mb-3
+          h4 Belum Ada Berita
+          p.text-muted Tambahkan berita untuk cabang olahraga yang kamu kelola.
+          a.btn-add-news.mt-3(href="/subadmin/news/create")
+            i.bi.bi-plus-circle
+            span Tambah Berita
+
+  // small client script: auto-dismiss and nicer confirm (reuse from matches)
+  script.
+    (function(){
+      var alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert){ setTimeout(function(){ alert.style.opacity='0'; alert.style.transform='translateY(-12px)'; setTimeout(()=>alert.remove(),450); },4500); });
+
+      // progressive enhancement for delete forms
+      document.querySelectorAll('form[action*="/delete"]').forEach(function(form){
+        form.addEventListener('submit', function(e){
+          if (!confirm('⚠️ Yakin ingin menghapus berita ini? Tindakan ini tidak bisa dibatalkan.')) {
+            e.preventDefault();
+            return false;
+          }
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>'; }
+        });
+      });
+    })();

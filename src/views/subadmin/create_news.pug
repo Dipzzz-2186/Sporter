@@ -1,0 +1,131 @@
+extends ../layout/main
+
+block content
+  - const isEdit = mode === 'edit';
+  - const articleSafe = article || {};
+
+  .container.py-4
+    .d-flex.justify-content-between.align-items-center.mb-3
+      div
+        h1.fw-bold.mb-1= isEdit ? 'Edit Berita' : 'Buat Berita'
+        p.text-muted.mb-0
+          | Tulis dan kelola artikel untuk cabang olahraga yang Anda kelola.
+      a.btn.btn-outline-secondary(href="/subadmin/news")
+        i.bi.bi-arrow-left.me-1
+        | Kembali
+
+    if flash && flash.error && flash.error.length
+      each msg in flash.error
+        .alert.alert-danger(role="alert")= msg
+    if flash && flash.success && flash.success.length
+      each msg in flash.success
+        .alert.alert-success(role="alert")= msg
+
+    form(
+      method="post"
+      action=isEdit ? `/subadmin/news/${articleSafe.id}/edit` : "/subadmin/news/create"
+      enctype="multipart/form-data"
+    )
+      .row.g-3
+        .col-md-8
+          .mb-3
+            label.form-label(for="title") Judul Berita
+            input.form-control#title(
+              type="text"
+              name="title"
+              required
+              value=articleSafe.title || ''
+            )
+        .col-md-4
+          .mb-3
+            label.form-label(for="slug") Slug (opsional)
+            input.form-control#slug(
+              type="text"
+              name="slug"
+              placeholder="otomatis dari judul jika dikosongkan"
+              value=articleSafe.slug || ''
+            )
+
+      .row.g-3
+        .col-md-4
+          .mb-3
+            label.form-label(for="sport_id") Cabang Olahraga
+            select.form-select#sport_id(name="sport_id" required)
+              option(value="") -- Pilih Cabang --
+              if sports && sports.length
+                each s in sports
+                  option(
+                    value=s.id
+                    selected=(articleSafe.sport_id && articleSafe.sport_id === s.id)
+                  )= s.name
+        .col-md-4
+          .mb-3
+            label.form-label(for="event_id") Event Terkait (opsional)
+            select.form-select#event_id(name="event_id")
+              option(value="") -- Tanpa Event --
+              if events && events.length
+                each e in events
+                  option(
+                    value=e.id
+                    selected=(articleSafe.event_id && articleSafe.event_id === e.id)
+                  )= e.title
+        .col-md-4
+          .mb-3
+            label.form-label(for="status") Status
+            select.form-select#status(name="status")
+              - const currentStatus = articleSafe.status || 'draft';
+              option(value="draft" selected=(currentStatus === 'draft')) Draft
+              option(value="published" selected=(currentStatus === 'published')) Published
+
+      .row.g-3
+        .col-md-4
+          .mb-3
+            label.form-label(for="published_at") Tanggal Publish (opsional)
+            - let pubValue = '';
+            - if (articleSafe.published_at) { pubValue = String(articleSafe.published_at).slice(0,10); }
+            input.form-control#published_at(
+              type="date"
+              name="published_at"
+              value=pubValue
+            )
+
+        .col-md-4
+          .mb-3
+            label.form-label(for="thumbnail") Thumbnail / Foto Berita
+            if articleSafe.thumbnail_url
+              .mb-2
+                img.img-fluid.rounded.border(
+                  src=articleSafe.thumbnail_url,
+                  alt=articleSafe.title || 'Thumbnail',
+                  style="max-height: 140px; object-fit: cover;"
+                )
+            input.form-control#thumbnail(
+              type="file"
+              name="thumbnail"
+              accept="image/*"
+            )
+            small.text-muted
+              | Format gambar (JPG/PNG), max ±3MB.
+
+        .col-md-4
+          .mb-3
+            label.form-label(for="excerpt") Excerpt / Ringkasan
+            textarea.form-control#excerpt(
+              name="excerpt"
+              rows="3"
+            )= articleSafe.excerpt || ''
+
+      .mb-3
+        label.form-label(for="content") Konten Lengkap
+        textarea.form-control#content(
+          name="content"
+          rows="8"
+        )= articleSafe.content || ''
+
+      button.btn.btn-danger.mt-2(type="submit")
+        if isEdit
+          i.bi.bi-save.me-1
+          | Simpan Perubahan
+        else
+          i.bi.bi-plus-circle.me-1
+          | Simpan Berita

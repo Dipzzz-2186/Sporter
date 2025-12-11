@@ -26,6 +26,14 @@ async function loadSportsList(user) {
     return rows;
 }
 
+function safeRedirectBack(req, res, fallback = '/subadmin') {
+    const ref = req.get('Referrer') || req.get('Referer') || '';
+    if (ref && typeof ref === 'string' && ref.trim() !== '') {
+        return res.redirect(ref);
+    }
+    return res.redirect(fallback);
+}
+
 // render dashboard untuk subadmin
 exports.renderDashboard = async (req, res) => {
     try {
@@ -194,7 +202,7 @@ exports.renderCreateEvent = async (req, res) => {
     } catch (err) {
         console.error(err);
         req.flash('error', 'Gagal memuat form event.');
-        res.redirect('back');
+        return safeRedirectBack(req, res, '/subadmin');
     }
 };
 
@@ -204,7 +212,7 @@ exports.createEvent = async (req, res) => {
         // check assigned sport if subadmin
         if (req.session.user.role === 'subadmin') {
             const [rows] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, sport_id]);
-            if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return res.redirect('back'); }
+            if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin'); }
         }
         await db.query(
             `INSERT INTO events (sport_id, title, slug, description, start_date, end_date, venue_id, organizer_id, status, created_at, updated_at)
@@ -216,7 +224,7 @@ exports.createEvent = async (req, res) => {
     } catch (err) {
         console.error('createEvent', err);
         req.flash('error', 'Gagal membuat event.');
-        return res.redirect('back');
+        return safeRedirectBack(req, res, '/subadmin');
     }
 };
 
@@ -234,7 +242,7 @@ exports.createNews = async (req, res) => {
         // assigned check
         if (req.session.user.role === 'subadmin') {
             const [rows] = await db.query('SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1', [req.session.user.id, sport_id]);
-            if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return res.redirect('back'); }
+            if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin'); }
         }
         await db.query(
             `INSERT INTO news_articles (sport_id, event_id, author_id, title, slug, excerpt, content, status, published_at, created_at, updated_at)
@@ -246,7 +254,7 @@ exports.createNews = async (req, res) => {
     } catch (err) {
         console.error('createNews', err);
         req.flash('error', 'Gagal membuat berita.');
-        return res.redirect('back');
+        return safeRedirectBack(req, res, '/subadmin');
     }
 };
 
@@ -569,21 +577,21 @@ exports.addMatchScore = async (req, res) => {
         const { period, home_score, away_score } = req.body;
         // optional: verify subadmin owns sport
         const [mRows] = await db.query('SELECT sport_id FROM matches WHERE id = ? LIMIT 1', [matchId]);
-        if (!mRows.length) { req.flash('error', 'Match tidak ditemukan'); return res.redirect('back'); }
+        if (!mRows.length) { req.flash('error', 'Match tidak ditemukan'); return safeRedirectBack(req, res, '/subadmin'); }
         const sportId = mRows[0].sport_id;
         if (req.session.user.role === 'subadmin') {
             const [rows] = await db.query('SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1', [req.session.user.id, sportId]);
-            if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return res.redirect('back'); }
+            if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin'); }
         }
         await db.query('INSERT INTO match_scores (match_id, period, home_score, away_score, created_at) VALUES (?, ?, ?, ?, NOW())', [matchId, period, home_score || 0, away_score || 0]);
         // update match aggregate (optional)
         await db.query('UPDATE matches SET home_score = home_score + ?, away_score = away_score + ?, updated_at = NOW() WHERE id = ?', [Number(home_score) || 0, Number(away_score) || 0, matchId]);
         req.flash('success', 'Score ditambahkan.');
-        return res.redirect('back');
+        return safeRedirectBack(req, res, '/subadmin');
     } catch (err) {
         console.error('addMatchScore', err);
         req.flash('error', 'Gagal menambahkan score.');
-        return res.redirect('back');
+        return safeRedirectBack(req, res, '/subadmin');
     }
 };
 
@@ -772,6 +780,177 @@ exports.createTicketType = async (req, res) => {
     } catch (err) {
         console.error('createTicketType', err);
         req.flash('error', 'Gagal membuat ticket type.');
-        return res.redirect('back');
+        return safeRedirectBack(req, res, '/subadmin');
+    }
+};
+// Subadmin — listNews (tambahkan sebelum exports.renderCreateNews atau di bagian NEWS)
+exports.listNews = async (req, res) => {
+    try {
+        // tentukan sport yang boleh diakses user ini
+        let sportIds = [];
+        if (req.session.user.role === 'admin') {
+            const [all] = await db.query('SELECT id FROM sports');
+            sportIds = all.map(r => r.id);
+        } else {
+            const [rows] = await db.query('SELECT sport_id FROM user_sports WHERE user_id = ?', [req.session.user.id]);
+            sportIds = rows.map(r => r.sport_id);
+        }
+
+        if (!sportIds || sportIds.length === 0) {
+            return res.render('subadmin/news', { title: 'Berita - SubAdmin', news: [] });
+        }
+
+        const placeholders = sportIds.map(() => '?').join(',');
+        const [news] = await db.query(
+            `SELECT n.id, n.title, n.slug, n.status, n.published_at, s.name as sport_name
+       FROM news_articles n
+       LEFT JOIN sports s ON s.id = n.sport_id
+       WHERE (n.sport_id IS NULL OR n.sport_id IN (${placeholders}))
+       ORDER BY n.published_at DESC, n.created_at DESC
+       LIMIT 100`,
+            [...sportIds]
+        );
+
+        return res.render('subadmin/news', { title: 'Berita - SubAdmin', news });
+    } catch (err) {
+        console.error('subadmin.listNews error', err);
+        req.flash('error', 'Gagal memuat daftar berita.');
+        return res.redirect('/subadmin');
+    }
+};
+// render edit using the same create_news view (mode='edit')
+exports.renderEditNews = async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        if (!id) { req.flash('error', 'ID berita tidak valid'); return safeRedirectBack(req, res, '/subadmin/news'); }
+
+        const [[article]] = await db.query('SELECT * FROM news_articles WHERE id = ? LIMIT 1', [id]);
+        if (!article) { req.flash('error', 'Berita tidak ditemukan'); return safeRedirectBack(req, res, '/subadmin/news'); }
+
+        // permission: if subadmin, ensure they own the sport (if article has sport_id)
+        if (req.session.user.role === 'subadmin' && article.sport_id) {
+            const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, article.sport_id]);
+            if (!ok.length) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin/news'); }
+        }
+
+        const sports = await loadSportsList(req.session.user);
+        const [events] = await db.query('SELECT id, title, sport_id FROM events ORDER BY start_date DESC');
+
+        // render the existing create_news view but with mode edit
+        return res.render('subadmin/create_news', {
+            title: 'Edit Berita',
+            mode: 'edit',
+            article,
+            sports,
+            events
+        });
+    } catch (err) {
+        console.error('renderEditNews', err);
+        req.flash('error', 'Gagal memuat form edit berita.');
+        return safeRedirectBack(req, res, '/subadmin/news');
+    }
+};
+
+// helper: simple slugify
+function slugify(str) {
+    if (!str) return '';
+    return String(str)
+        .trim()
+        .toLowerCase()
+        .replace(/<\/?[^>]+(>|$)/g, '')         // strip html
+        .replace(/[\u2018\u2019\u201C\u201D']/g, '') // quotes
+        .replace(/[^a-z0-9\s-]/g, '')           // keep alnum, space, dash
+        .replace(/\s+/g, '-')                   // spaces -> dash
+        .replace(/-+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+exports.updateNews = async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        if (!id) { req.flash('error', 'ID tidak valid'); return safeRedirectBack(req, res, '/subadmin/news'); }
+
+        const thumbnailFile = req.file;
+        const {
+            sport_id,
+            event_id,
+            title = '',
+            slug: incomingSlug,
+            excerpt,
+            content,
+            status = 'draft',
+            published_at
+        } = req.body || {};
+
+        // ensure title present
+        if (!title || !String(title).trim()) {
+            req.flash('error', 'Judul wajib diisi.');
+            return safeRedirectBack(req, res, '/subadmin/news');
+        }
+
+        // fetch article for permission/existing values
+        const [[article]] = await db.query('SELECT * FROM news_articles WHERE id = ? LIMIT 1', [id]);
+        if (!article) { req.flash('error', 'Berita tidak ditemukan'); return safeRedirectBack(req, res, '/subadmin/news'); }
+
+        // permission: subadmin must be assigned to sport
+        if (req.session.user.role === 'subadmin' && sport_id) {
+            const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, sport_id]);
+            if (!ok.length) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin/news'); }
+        }
+
+        // build slug: prefer incomingSlug, else from title, ensure not empty
+        let finalSlug = incomingSlug && String(incomingSlug).trim() ? slugify(incomingSlug) : slugify(title);
+        if (!finalSlug) finalSlug = 'article-' + Date.now();
+
+        // thumbnail path if uploaded, otherwise keep existing
+        const thumbnailPath = thumbnailFile ? `/uploads/news/${thumbnailFile.filename}` : (article.thumbnail_url || null);
+
+        await db.query(
+            `UPDATE news_articles
+       SET sport_id = ?, event_id = ?, title = ?, slug = ?, excerpt = ?, content = ?, status = ?, published_at = ?, thumbnail_url = ?, updated_at = NOW()
+       WHERE id = ?`,
+            [
+                sport_id || null,
+                event_id || null,
+                title.trim(),
+                finalSlug,
+                excerpt || null,
+                content || '',
+                status || 'draft',
+                published_at || null,
+                thumbnailPath,
+                id
+            ]
+        );
+
+        req.flash('success', 'Berita berhasil disimpan.');
+        return res.redirect('/subadmin/news');
+    } catch (err) {
+        console.error('updateNews Error:', err);
+        req.flash('error', 'Gagal mengupdate berita. Cek server log.');
+        return safeRedirectBack(req, res, '/subadmin/news');
+    }
+};
+
+exports.deleteNews = async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        if (!id) { req.flash('error', 'ID tidak valid'); return safeRedirectBack(req, res, '/subadmin/news'); }
+
+        const [[article]] = await db.query('SELECT * FROM news_articles WHERE id = ? LIMIT 1', [id]);
+        if (!article) { req.flash('error', 'Berita tidak ditemukan'); return safeRedirectBack(req, res, '/subadmin/news'); }
+
+        if (req.session.user.role === 'subadmin' && article.sport_id) {
+            const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, article.sport_id]);
+            if (!ok.length) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin/news'); }
+        }
+
+        await db.query('DELETE FROM news_articles WHERE id = ?', [id]);
+        req.flash('success', 'Berita berhasil dihapus.');
+        return safeRedirectBack(req, res, '/subadmin/news');
+    } catch (err) {
+        console.error('deleteNews', err);
+        req.flash('error', 'Gagal menghapus berita.');
+        return safeRedirectBack(req, res, '/subadmin/news');
     }
 };

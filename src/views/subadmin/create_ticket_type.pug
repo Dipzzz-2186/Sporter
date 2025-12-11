@@ -1,0 +1,34 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    h3.mb-3 Buat Jenis Tiket
+    form(method="post" action="/subadmin/tickets/create")
+      .mb-3
+        label.form-label Event (opsional)
+        select.form-select(name="event_id")
+          option(value="") -- Pilih event --
+          each e in events
+            option(value=e.id)= e.title
+
+      .mb-3
+        label.form-label Match (opsional)
+        select.form-select(name="match_id")
+          option(value="") -- Pilih match --
+          each m in matches
+            option(value=m.id)= m.title
+
+      .mb-3
+        label.form-label Nama Tipe
+        input.form-control(type="text" name="name" required)
+
+      .mb-3
+        label.form-label Harga
+        input.form-control(type="number" step="0.01" name="price" required)
+
+      .mb-3
+        label.form-label Kuota
+        input.form-control(type="number" name="quota" required)
+
+      button.btn.btn-primary(type="submit") Simpan Tipe Tiket
+      a.btn.btn-secondary.ms-2(href="/events") Batal
