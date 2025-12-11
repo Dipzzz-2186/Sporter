@@ -311,35 +311,98 @@ exports.addMatchScore = async (req, res) => {
 /* -------------------------
    VIDEOS (VOD/highlight) - NOT livestream
    ------------------------- */
+/* -------------------------
+   VIDEOS (VOD/highlight) - NOT livestream
+   ------------------------- */
 exports.renderCreateVideo = async (req, res) => {
+  try {
     const sports = await loadSportsList(req.session.user);
-    res.render('subadmin/create_video', { sports });
+    return res.render("subadmin/create_video", {
+      title: "Tambah Video - Subadmin",
+      sports,
+    });
+  } catch (err) {
+    console.error("renderCreateVideo error", err);
+    req.flash("error", "Gagal memuat form video.");
+    return res.redirect("/subadmin");
+  }
 };
 
+
 exports.createVideo = async (req, res) => {
-    try {
-        const { sport_id, event_id, match_id, title, type, platform, url, start_time, end_time } = req.body;
-        if (type === 'livestream') {
-            req.flash('error', 'Gunakan form livestream untuk menambahkan live stream.');
-            return res.redirect('back');
-        }
-        if (req.session.user.role === 'subadmin') {
-            const [rows] = await db.query('SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1', [req.session.user.id, sport_id]);
-            if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return res.redirect('back'); }
-        }
-        await db.query(
-            `INSERT INTO videos (sport_id, event_id, match_id, title, type, platform, url, start_time, end_time, is_live, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`,
-            [sport_id || null, event_id || null, match_id || null, title, type, platform || null, url, start_time || null, end_time || null]
-        );
-        req.flash('success', 'Video berhasil ditambahkan.');
-        return res.redirect('/subadmin');
-    } catch (err) {
-        console.error('createVideo', err);
-        req.flash('error', 'Gagal menambahkan video.');
-        return res.redirect('back');
+  try {
+    const {
+      sport_id,
+      event_id,
+      match_id,
+      title,
+      type,
+      platform,
+      url,
+      start_time,
+      end_time,
+    } = req.body;
+
+    // Validasi basic
+    if (!sport_id || !title || !type || !url) {
+      req.flash(
+        "error",
+        "Cabang olahraga, judul, tipe, dan URL wajib diisi."
+      );
+      return res.redirect("/subadmin/videos/create");
     }
+
+    // Form ini khusus VOD / Highlight, bukan livestream
+    if (type === "livestream") {
+      req.flash(
+        "error",
+        "Untuk livestream, gunakan form khusus livestream."
+      );
+      return res.redirect("/subadmin/livestreams/create");
+    }
+
+    // Cek hak akses subadmin ke sport_id
+    if (req.session.user && req.session.user.role === "subadmin") {
+      const [rows] = await db.query(
+        "SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1",
+        [req.session.user.id, sport_id]
+      );
+      if (rows.length === 0) {
+        req.flash(
+          "error",
+          "Akses ditolak. Kamu tidak punya izin untuk cabang olahraga ini."
+        );
+        return res.redirect("/subadmin/videos/create");
+      }
+    }
+
+    // Insert ke tabel videos
+    await db.query(
+      `INSERT INTO videos 
+       (sport_id, event_id, match_id, title, type, platform, url, start_time, end_time, is_live, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`,
+      [
+        sport_id || null,
+        event_id || null,
+        match_id || null,
+        title,
+        type,
+        platform || null,
+        url,
+        start_time || null,
+        end_time || null,
+      ]
+    );
+
+    req.flash("success", "Video berhasil ditambahkan.");
+    return res.redirect("/subadmin");
+  } catch (err) {
+    console.error("createVideo error", err);
+    req.flash("error", "Gagal menambahkan video. Cek input dan coba lagi.");
+    return res.redirect("/subadmin/videos/create");
+  }
 };
+
 
 /* -------------------------
    LIVESTREAMS (separate)

@@ -3,48 +3,85 @@ extends ../layout/main
 block content
   .container.mt-4
     h3.mb-3 Tambah Video (VOD / Highlight)
+
+    if flash && flash.error && flash.error.length
+      each msg in flash.error
+        .alert.alert-danger(role="alert")= msg
+    if flash && flash.success && flash.success.length
+      each msg in flash.success
+        .alert.alert-success(role="alert")= msg
+
     form(method="post" action="/subadmin/videos/create")
       .mb-3
         label.form-label Cabang Olahraga
-        select.form-select(name="sport_id")
+        select.form-select(name="sport_id" required)
           option(value="") -- Pilih cabang --
-          each s in sports
-            option(value=s.id)= s.name
+          if sports && sports.length
+            each s in sports
+              option(value=s.id)= s.name
 
       .mb-3
-        label.form-label Event (optional)
-        input.form-control(type="text" name="event_id")
+        label.form-label Event (opsional, isi ID event)
+        input.form-control(
+          type="number"
+          name="event_id"
+          min="1"
+          placeholder="ID event (boleh dikosongkan)"
+        )
 
       .mb-3
-        label.form-label Match (optional)
-        input.form-control(type="text" name="match_id")
+        label.form-label Match (opsional, isi ID match)
+        input.form-control(
+          type="number"
+          name="match_id"
+          min="1"
+          placeholder="ID match (boleh dikosongkan)"
+        )
 
       .mb-3
         label.form-label Judul
-        input.form-control(type="text" name="title" required)
+        input.form-control(
+          type="text"
+          name="title"
+          required
+        )
 
       .mb-3
         label.form-label Tipe
-        select.form-select(name="type")
-          option(value="vod") VOD
-          option(value="highlight") Highlight
-          option(value="livestream") Livestream (tidak disarankan)
+        select.form-select(name="type" required)
+          option(value="full_match") Full Match / VOD
+          option(value="highlight") Highlight 
 
       .mb-3
-        label.form-label Platform
-        input.form-control(type="text" name="platform")
+        label.form-label Platform (contoh: youtube, tiktok)
+        input.form-control(
+          type="text"
+          name="platform"
+          placeholder="youtube / tiktok / dll (opsional)"
+        )
 
       .mb-3
-        label.form-label URL / Embed
-        input.form-control(type="text" name="url")
+        label.form-label URL Video
+        input.form-control(
+          type="text"
+          name="url"
+          required
+          placeholder="Link video (YouTube, dll)"
+        )
 
       .mb-3
-        label.form-label Start Time
-        input.form-control(type="datetime-local" name="start_time")
+        label.form-label Start Time (opsional)
+        input.form-control(
+          type="datetime-local"
+          name="start_time"
+        )
 
       .mb-3
-        label.form-label End Time
-        input.form-control(type="datetime-local" name="end_time")
+        label.form-label End Time (opsional)
+        input.form-control(
+          type="datetime-local"
+          name="end_time"
+        )
 
       button.btn.btn-primary(type="submit") Simpan Video
-      a.btn.btn-secondary.ms-2(href="/events") Batal
+      a.btn.btn-secondary.ms-2(href="/subadmin") Batal

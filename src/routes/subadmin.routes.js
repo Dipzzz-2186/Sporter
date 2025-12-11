@@ -24,8 +24,18 @@ router.post('/matches/create', subadminCtrl.createMatch);
 router.post('/matches/:id/scores', subadminCtrl.addMatchScore);
 
 // Videos (VOD/highlights) — ensure videos.type != 'livestream'
-router.get('/videos/create', subadminCtrl.renderCreateVideo);
-router.post('/videos/create', subadminCtrl.createVideo);
+router.get(
+  '/videos/create',
+  requireLogin,
+  requireAdminOrSubadmin,
+  subadminCtrl.renderCreateVideo
+);
+router.post(
+  '/videos/create',
+  requireLogin,
+  requireAdminOrSubadmin,
+  subadminCtrl.createVideo
+);
 
 // Livestreams (separate)
 router.get('/livestreams/create', subadminCtrl.renderCreateLivestream);
