@@ -121,6 +121,7 @@ block content
       font-size: 1rem;
       transition: all 0.3s ease;
       background: white;
+      width: 100%;
     }
     
     .form-control-modern:focus {
@@ -200,7 +201,7 @@ block content
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1rem;
-      max-height: 300px;
+      max-height: 400px;
       overflow-y: auto;
       padding: 1rem;
       background: #F8FAFC;
@@ -210,10 +211,7 @@ block content
     
     /* Sport Checkbox */
     .sport-checkbox {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
+      display: none;
     }
     
     .sport-card {
@@ -235,7 +233,7 @@ block content
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     
-    .sport-checkbox:checked + .sport-card {
+    .sport-checkbox:checked ~ .sport-card {
       border-color: #10B981;
       background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
     }
@@ -282,7 +280,7 @@ block content
       transition: all 0.3s ease;
     }
     
-    .sport-checkbox:checked + .sport-card .checkmark {
+    .sport-checkbox:checked ~ .sport-card .checkmark {
       opacity: 1;
       transform: scale(1);
     }
@@ -326,6 +324,28 @@ block content
     
     .selected-badge i {
       font-size: 0.9rem;
+    }
+    
+    .badge-close {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0;
+      margin-left: 0.25rem;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+      line-height: 1;
+    }
+    
+    .badge-close:hover {
+      opacity: 1;
     }
     
     .no-selection {
@@ -395,7 +415,7 @@ block content
       color: #DC2626;
       font-size: 0.875rem;
       margin-top: 0.25rem;
-      display: flex;
+      display: none;
       align-items: center;
       gap: 0.5rem;
     }
@@ -407,28 +427,6 @@ block content
     
     .form-control-modern.is-invalid:focus {
       box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-    }
-    
-    /* Close button for badges */
-    .badge-close {
-      background: none;
-      border: none;
-      color: inherit;
-      cursor: pointer;
-      font-size: 1rem;
-      margin-left: 0.5rem;
-      padding: 0;
-      width: 16px;
-      height: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.7;
-      transition: opacity 0.3s ease;
-    }
-    
-    .badge-close:hover {
-      opacity: 1;
     }
     
     /* Responsive */
@@ -577,28 +575,29 @@ block content
             h3.sports-title
               i.bi.bi-trophy
               | Pilih Cabang Olahraga
-            button.select-all-btn(type="button" onclick="toggleSelectAll()")
+            button.select-all-btn(type="button" id="selectAllBtn")
               i.bi.bi-check-square
               | Pilih Semua
           
-          .sports-grid
+          .sports-grid#sportsGrid
             each sport in sports
-              - const isChecked = formData && formData.sport_ids && formData.sport_ids.includes(sport.id.toString())
-              input.sport-checkbox(
-                type="checkbox" 
-                name="sport_ids" 
-                id=`sport-${sport.id}` 
-                value=sport.id
-                checked=isChecked
-              )
-              label.sport-card(for=`sport-${sport.id}`)
-                .sport-icon
-                  i.bi.bi-trophy-fill
-                div
-                  .sport-name= sport.name
-                  .sport-desc= sport.description || 'Cabang olahraga'
-                .checkmark
-                  i.bi.bi-check
+              .sport-item
+                input.sport-checkbox(
+                  type="checkbox" 
+                  name="sport_ids" 
+                  id=`sport-${sport.id}` 
+                  value=sport.id
+                  checked=formData && formData.sport_ids && formData.sport_ids.includes(sport.id.toString())
+                  data-sport-name=sport.name
+                )
+                .sport-card(data-sport-id=sport.id)
+                  .sport-icon
+                    i.bi.bi-trophy-fill
+                  div
+                    .sport-name= sport.name
+                    .sport-desc= sport.description || 'Cabang olahraga'
+                  .checkmark
+                    i.bi.bi-check
         
           // Selected Sports Preview
           .selected-sports
@@ -606,7 +605,7 @@ block content
               i.bi.bi-check-circle
               | Cabang yang Dipilih:
             .selected-badges#selectedBadges
-              .no-selection#noSelectionText Belum ada cabang yang dipilih
+              .no-selection Belum ada cabang yang dipilih
         
         // Form Actions
         .form-actions
@@ -618,17 +617,36 @@ block content
             | Batal
 
   script.
-    // Initialize on DOM ready
-    document.addEventListener('DOMContentLoaded', function() {
+    // Global state
+    let isInitialized = false;
+    
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeApp);
+    } else {
+      initializeApp();
+    }
+    
+    function initializeApp() {
+      if (isInitialized) return;
+      isInitialized = true;
+      
+      console.log('🚀 Initializing SubAdmin Form...');
+      setupSportSelection();
+      setupFormValidation();
       updateSelectedBadges();
-      setupEventListeners();
-    });
+      console.log('✅ Form initialized successfully');
+    }
     
     // Toggle password visibility
     function togglePassword(inputId) {
       const input = document.getElementById(inputId);
+      if (!input) return;
+      
       const button = input.parentElement.querySelector('.toggle-password');
-      const icon = button.querySelector('i');
+      const icon = button ? button.querySelector('i') : null;
+      
+      if (!icon) return;
       
       if (input.type === 'password') {
         input.type = 'text';
@@ -641,20 +659,71 @@ block content
       }
     }
     
-    // Toggle select all sports
+    // Setup sport selection
+    function setupSportSelection() {
+      // Setup select all button
+      const selectAllBtn = document.getElementById('selectAllBtn');
+      if (selectAllBtn) {
+        selectAllBtn.addEventListener('click', toggleSelectAll);
+      }
+      
+      // Setup sport card clicks
+      const sportCards = document.querySelectorAll('.sport-card');
+      console.log(`Found ${sportCards.length} sport cards`);
+      
+      sportCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const sportId = this.getAttribute('data-sport-id');
+          const checkbox = document.getElementById(`sport-${sportId}`);
+          
+          if (checkbox) {
+            checkbox.checked = !checkbox.checked;
+            console.log(`Sport ${sportId} toggled to: ${checkbox.checked}`);
+            updateSelectedBadges();
+            updateSelectAllButton();
+          }
+        });
+      });
+      
+      // Setup checkbox change events (for direct checkbox clicks)
+      const checkboxes = document.querySelectorAll('.sport-checkbox');
+      checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          console.log(`Checkbox ${this.id} changed to: ${this.checked}`);
+          updateSelectedBadges();
+          updateSelectAllButton();
+        });
+      });
+    }
+    
+    // Toggle select all
     function toggleSelectAll() {
       const checkboxes = document.querySelectorAll('.sport-checkbox');
-      const selectAllBtn = document.querySelector('.select-all-btn');
+      const selectAllBtn = document.getElementById('selectAllBtn');
       const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+      
+      console.log(`Toggle all sports. Currently all checked: ${allChecked}`);
       
       checkboxes.forEach(checkbox => {
         checkbox.checked = !allChecked;
-        // Trigger change event
-        const event = new Event('change');
-        checkbox.dispatchEvent(event);
       });
       
-      if (!allChecked) {
+      updateSelectedBadges();
+      updateSelectAllButton();
+    }
+    
+    // Update select all button state
+    function updateSelectAllButton() {
+      const selectAllBtn = document.getElementById('selectAllBtn');
+      if (!selectAllBtn) return;
+      
+      const checkboxes = document.querySelectorAll('.sport-checkbox');
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+      
+      if (allChecked) {
         selectAllBtn.innerHTML = '<i class="bi bi-x-square"></i> Batal Pilih Semua';
       } else {
         selectAllBtn.innerHTML = '<i class="bi bi-check-square"></i> Pilih Semua';
@@ -664,15 +733,20 @@ block content
     // Update selected badges display
     function updateSelectedBadges() {
       const selectedBadges = document.getElementById('selectedBadges');
+      if (!selectedBadges) {
+        console.error('selectedBadges element not found');
+        return;
+      }
+      
       const checkboxes = document.querySelectorAll('.sport-checkbox:checked');
+      console.log(`Selected sports count: ${checkboxes.length}`);
       
       if (checkboxes.length === 0) {
-        selectedBadges.innerHTML = '<div class="no-selection" id="noSelectionText">Belum ada cabang yang dipilih</div>';
+        selectedBadges.innerHTML = '<div class="no-selection">Belum ada cabang yang dipilih</div>';
       } else {
         let badgesHTML = '';
         checkboxes.forEach(checkbox => {
-          const sportCard = checkbox.nextElementSibling;
-          const sportName = sportCard.querySelector('.sport-name').textContent;
+          const sportName = checkbox.getAttribute('data-sport-name') || 'Unknown';
           const sportId = checkbox.value;
           
           badgesHTML += `
@@ -693,129 +767,115 @@ block content
       const checkbox = document.getElementById(`sport-${sportId}`);
       if (checkbox) {
         checkbox.checked = false;
-        const event = new Event('change');
-        checkbox.dispatchEvent(event);
+        console.log(`Sport ${sportId} deselected from badge`);
+        updateSelectedBadges();
+        updateSelectAllButton();
       }
-    }
-    
-    // Setup event listeners
-    function setupEventListeners() {
-      // Add click event to sport cards
-      document.querySelectorAll('.sport-card').forEach(card => {
-        card.addEventListener('click', function(e) {
-          // Skip if clicked on badge close button
-          if (e.target.classList.contains('badge-close')) {
-            return;
-          }
-          
-          const checkbox = this.previousElementSibling;
-          checkbox.checked = !checkbox.checked;
-          const event = new Event('change');
-          checkbox.dispatchEvent(event);
-        });
-      });
-      
-      // Add change event to sport checkboxes
-      document.querySelectorAll('.sport-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', updateSelectedBadges);
-      });
-      
-      // Real-time form validation
-      setupFormValidation();
     }
     
     // Setup form validation
     function setupFormValidation() {
-      // Name validation
-      document.getElementById('name').addEventListener('input', function() {
-        if (this.value.trim()) {
-          this.classList.remove('is-invalid');
-          document.getElementById('nameError').style.display = 'none';
-        }
-      });
+      const form = document.getElementById('subadminForm');
+      if (!form) return;
       
-      // Email validation
-      document.getElementById('email').addEventListener('input', function() {
+      // Real-time validation
+      const name = document.getElementById('name');
+      if (name) {
+        name.addEventListener('input', function() {
+          if (this.value.trim()) {
+            this.classList.remove('is-invalid');
+            const error = document.getElementById('nameError');
+            if (error) error.style.display = 'none';
+          }
+        });
+      }
+      
+      const email = document.getElementById('email');
+      if (email) {
+        email.addEventListener('input', function() {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (this.value.trim() && emailRegex.test(this.value)) {
+            this.classList.remove('is-invalid');
+            const error = document.getElementById('emailError');
+            if (error) error.style.display = 'none';
+          }
+        });
+      }
+      
+      const password = document.getElementById('password');
+      if (password) {
+        password.addEventListener('input', function() {
+          if (this.value.length >= 8) {
+            this.classList.remove('is-invalid');
+            const error = document.getElementById('passwordError');
+            if (error) error.style.display = 'none';
+          }
+        });
+      }
+      
+      const confirmPassword = document.getElementById('confirmPassword');
+      if (confirmPassword && password) {
+        confirmPassword.addEventListener('input', function() {
+          if (this.value === password.value) {
+            this.classList.remove('is-invalid');
+            const error = document.getElementById('confirmPasswordError');
+            if (error) error.style.display = 'none';
+          }
+        });
+      }
+      
+      // Form submission validation
+      form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Name validation
+        if (name && !name.value.trim()) {
+          name.classList.add('is-invalid');
+          const error = document.getElementById('nameError');
+          if (error) error.style.display = 'flex';
+          isValid = false;
+        }
+        
+        // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (this.value.trim() && emailRegex.test(this.value)) {
-          this.classList.remove('is-invalid');
-          document.getElementById('emailError').style.display = 'none';
+        if (email && (!email.value.trim() || !emailRegex.test(email.value))) {
+          email.classList.add('is-invalid');
+          const error = document.getElementById('emailError');
+          if (error) error.style.display = 'flex';
+          isValid = false;
         }
-      });
-      
-      // Password validation
-      document.getElementById('password').addEventListener('input', function() {
-        if (this.value.length >= 8) {
-          this.classList.remove('is-invalid');
-          document.getElementById('passwordError').style.display = 'none';
+        
+        // Password validation
+        if (password && password.value.length < 8) {
+          password.classList.add('is-invalid');
+          const error = document.getElementById('passwordError');
+          if (error) error.style.display = 'flex';
+          isValid = false;
         }
-      });
-      
-      // Confirm password validation
-      document.getElementById('confirmPassword').addEventListener('input', function() {
-        const password = document.getElementById('password').value;
-        if (this.value === password) {
-          this.classList.remove('is-invalid');
-          document.getElementById('confirmPasswordError').style.display = 'none';
+        
+        // Confirm password validation
+        if (confirmPassword && password && confirmPassword.value !== password.value) {
+          confirmPassword.classList.add('is-invalid');
+          const error = document.getElementById('confirmPasswordError');
+          if (error) error.style.display = 'flex';
+          isValid = false;
+        }
+        
+        // At least one sport must be selected
+        const sportCheckboxes = document.querySelectorAll('.sport-checkbox:checked');
+        if (sportCheckboxes.length === 0) {
+          alert('Pilih minimal satu cabang olahraga untuk SubAdmin ini');
+          isValid = false;
+        }
+        
+        if (!isValid) {
+          e.preventDefault();
+          // Scroll to first error
+          const firstError = document.querySelector('.is-invalid');
+          if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => firstError.focus(), 300);
+          }
         }
       });
     }
-    
-    // Form submission validation
-    document.getElementById('subadminForm').addEventListener('submit', function(e) {
-      let isValid = true;
-      
-      // Name validation
-      const name = document.getElementById('name');
-      const nameError = document.getElementById('nameError');
-      if (!name.value.trim()) {
-        name.classList.add('is-invalid');
-        nameError.style.display = 'flex';
-        isValid = false;
-      }
-      
-      // Email validation
-      const email = document.getElementById('email');
-      const emailError = document.getElementById('emailError');
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!email.value.trim() || !emailRegex.test(email.value)) {
-        email.classList.add('is-invalid');
-        emailError.style.display = 'flex';
-        isValid = false;
-      }
-      
-      // Password validation
-      const password = document.getElementById('password');
-      const passwordError = document.getElementById('passwordError');
-      if (password.value.length < 8) {
-        password.classList.add('is-invalid');
-        passwordError.style.display = 'flex';
-        isValid = false;
-      }
-      
-      // Confirm password validation
-      const confirmPassword = document.getElementById('confirmPassword');
-      const confirmPasswordError = document.getElementById('confirmPasswordError');
-      if (confirmPassword.value !== password.value) {
-        confirmPassword.classList.add('is-invalid');
-        confirmPasswordError.style.display = 'flex';
-        isValid = false;
-      }
-      
-      // At least one sport must be selected
-      const sportCheckboxes = document.querySelectorAll('.sport-checkbox:checked');
-      if (sportCheckboxes.length === 0) {
-        alert('Pilih minimal satu cabang olahraga untuk SubAdmin ini');
-        isValid = false;
-      }
-      
-      if (!isValid) {
-        e.preventDefault();
-        // Smooth scroll to first error
-        const firstError = document.querySelector('.is-invalid');
-        if (firstError) {
-          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          firstError.focus();
-        }
-      }
-    });
