@@ -8,6 +8,7 @@ const flash = require("connect-flash");
 const app = express();
 const adminRoutes = require("./routes/admin.routes");
 const subadminRoutes = require('./routes/subadmin.routes');
+const eventRoutes = require("./routes/event.routes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -50,7 +51,9 @@ const mediaRoutes = require("./routes/media.routes");
 app.get("/", homeController.renderHome);
 app.use("/sports", sportRoutes);
 app.use("/news", newsRoutes);
+app.use("/", eventRoutes); // <== TAMBAH INI
 app.use("/", authRoutes); // /login, /logout
+
 
 app.use("/", mediaRoutes);
 

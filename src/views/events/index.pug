@@ -1,0 +1,293 @@
+extends ../layout/main
+
+block content
+  style.
+    .events-hero {
+      background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+    }
+    .events-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    .events-hero-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.75rem;
+    }
+    .events-hero-subtitle {
+      color: rgba(255,255,255,0.8);
+      max-width: 520px;
+      font-size: 0.98rem;
+    }
+    .events-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.85);
+    }
+    .events-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(8px);
+    }
+    .events-filter-bar {
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .events-filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .events-chip {
+      border-radius: 999px;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.85rem;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .events-chip.active {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      border-color: transparent;
+      color: #fff;
+    }
+    .events-search-input {
+      max-width: 260px;
+    }
+    .event-card {
+      border-radius: 18px;
+      border: 1px solid #e5e7eb;
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .event-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+      border-color: #FF3B30;
+    }
+    .event-status-badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 999px;
+      padding: 0.2rem 0.6rem;
+      font-weight: 600;
+    }
+    .event-status-upcoming {
+      background: rgba(52,211,153,0.09);
+      color: #059669;
+    }
+    .event-status-ongoing {
+      background: rgba(59,130,246,0.08);
+      color: #2563eb;
+    }
+    .event-status-finished {
+      background: rgba(148,163,184,0.15);
+      color: #475569;
+    }
+    .event-date {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+    .event-location {
+      font-size: 0.85rem;
+      color: #4b5563;
+    }
+    .event-sport {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+    .event-description {
+      font-size: 0.88rem;
+      color: #4b5563;
+      margin-top: 0.5rem;
+    }
+    .event-card-footer {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 4rem 0;
+      color: #6b7280;
+    }
+    .empty-state-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 999px;
+      border: 1px dashed #d1d5db;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 768px) {
+      .events-hero {
+        padding: 2.25rem 1.5rem;
+      }
+      .events-hero-title {
+        font-size: 2rem;
+      }
+      .events-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .events-search-input {
+        max-width: 100%;
+      }
+    }
+
+  .container.py-4
+    .events-hero.mb-4
+      .row.align-items-center
+        .col-lg-8
+          span.events-hero-badge
+            i.bi.bi-calendar-event.me-1
+            | Event & Turnamen Olahraga
+          h1.events-hero-title
+            | Jelajahi Event Olahraga di Seluruh Indonesia
+          p.events-hero-subtitle
+            | Lihat jadwal event, lokasi pertandingan, dan detail turnamen yang sedang dan akan berlangsung.
+          
+          .events-meta.mt-3
+            .events-meta-item
+              i.bi.bi-broadcast.me-1
+              | Event ongoing & upcoming
+            .events-meta-item
+              i.bi.bi-geo-alt.me-1
+              | Arena & venue terbaik
+        .col-lg-4.text-lg-end.mt-3.mt-lg-0
+          small.text-uppercase.text-muted.d-block.mb-1
+            | Terhubung dengan SPORTER
+          p.mb-0.fw-semibold
+            i.bi.bi-lightning-charge-fill.me-1.text-warning
+            | Update event terbaru setiap saat
+
+    .events-filter-bar
+      .events-filter-chips
+        button.events-chip.active(type="button" data-filter="all")
+          i.bi.bi-stars
+          | Semua
+        button.events-chip(type="button" data-filter="upcoming")
+          i.bi.bi-sunrise
+          | Akan Datang
+        button.events-chip(type="button" data-filter="ongoing")
+          i.bi.bi-broadcast-pin
+          | Sedang Berlangsung
+        button.events-chip(type="button" data-filter="finished")
+          i.bi.bi-flag-checkered
+          | Selesai
+      form(d="eventsSearchForm" class="d-flex events-search-input")
+        input.form-control.form-control-sm#eventsSearchInput(type="search" placeholder="Cari nama event / lokasi...")
+    
+    if events && events.length
+      .row.g-3#eventsList
+        each e in events
+          - const statusClass = e.status === 'upcoming' ? 'event-status-upcoming' : (e.status === 'ongoing' ? 'event-status-ongoing' : 'event-status-finished');
+          - const statusLabel = e.status === 'upcoming' ? 'Akan Datang' : (e.status === 'ongoing' ? 'Sedang Berlangsung' : 'Selesai');
+          .col-md-6.col-lg-4.event-item(data-status=e.status data-title=e.title data-venue=e.venue_name)
+            .event-card.p-3
+              .d-flex.justify-content-between.align-items-start.mb-2
+                if e.start_date_formatted
+                  span.event-date
+                    i.bi.bi-calendar3.me-1
+                    if e.end_date_formatted && e.end_date_formatted !== e.start_date_formatted
+                      | #{e.start_date_formatted} - #{e.end_date_formatted}
+                    else
+                      | #{e.start_date_formatted}
+                span.event-status-badge(class=statusClass)= statusLabel
+              h5.mb-1= e.title
+              if e.venue_name
+                .event-location.mb-1
+                  i.bi.bi-geo-alt-fill.me-1
+                  span= e.venue_name
+              if e.sport_name
+                .event-sport
+                  i.bi.bi-trophy-fill.me-1
+                  span= e.sport_name
+              if e.description
+                .event-description
+                  = e.description.length > 110 ? e.description.substring(0, 110) + '...' : e.description
+              .event-card-footer.mt-3
+                a.btn.btn-sm.btn-outline-danger(href=`/events/${e.slug || e.id}`)
+                  i.bi.bi-info-circle.me-1
+                  | Detail
+                a.btn.btn-sm.btn-outline-secondary(href=`/tickets/${e.id}`)
+                  i.bi.bi-ticket-perforated.me-1
+                  | Tiket
+    else
+      .empty-state
+        .empty-state-icon
+          i.bi.bi-calendar-x
+        h3.mb-2 Belum Ada Event
+        p.mb-0 Event dan turnamen olahraga akan segera hadir di platform SPORTER.
+
+  script.
+    (function() {
+      const chips = document.querySelectorAll('.events-chip');
+      const searchInput = document.getElementById('eventsSearchInput');
+      const eventItems = document.querySelectorAll('.event-item');
+
+      function applyFilter() {
+        const activeChip = document.querySelector('.events-chip.active');
+        const filter = activeChip ? activeChip.getAttribute('data-filter') : 'all';
+        const keyword = (searchInput.value || '').toLowerCase();
+
+        eventItems.forEach(function(item) {
+          const status = item.getAttribute('data-status') || '';
+          const title = (item.getAttribute('data-title') || '').toLowerCase();
+          const venue = (item.getAttribute('data-venue') || '').toLowerCase();
+
+          let visibleByStatus = filter === 'all' || status === filter;
+          let visibleBySearch = !keyword || title.includes(keyword) || venue.includes(keyword);
+
+          item.style.display = (visibleByStatus && visibleBySearch) ? '' : 'none';
+        });
+      }
+
+      chips.forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          chips.forEach(function(c) { c.classList.remove('active'); });
+          this.classList.add('active');
+          applyFilter();
+        });
+      });
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          applyFilter();
+        });
+      }
+    })();
