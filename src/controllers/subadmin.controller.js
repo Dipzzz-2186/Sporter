@@ -253,33 +253,312 @@ exports.createNews = async (req, res) => {
 /* -------------------------
    MATCHES (schedule)
    ------------------------- */
+   function normalizeDateTime(value) {
+  if (!value) return null;
+  let v = String(value).trim();
+  if (!v) return null;
+  v = v.replace("T", " "); // dari datetime-local → "YYYY-MM-DD HH:MM"
+  if (v.length === 16) v = v + ":00";
+  return v;
+}
+
+exports.listMatches = async (req, res) => {
+  try {
+    // tentukan sport yang boleh diakses user ini
+    let sportIds = [];
+    if (req.session.user.role === "admin") {
+      const [allSports] = await db.query("SELECT id FROM sports");
+      sportIds = allSports.map((r) => r.id);
+    } else if (req.session.user.role === "subadmin") {
+      const [rows] = await db.query(
+        "SELECT sport_id FROM user_sports WHERE user_id = ?",
+        [req.session.user.id]
+      );
+      sportIds = rows.map((r) => r.sport_id);
+    }
+
+    if (!sportIds.length) {
+      return res.render("subadmin/matches", {
+        title: "Kelola Pertandingan - Subadmin",
+        matches: [],
+      });
+    }
+
+    const placeholders = sportIds.map(() => "?").join(",");
+
+    const [matches] = await db.query(
+      `
+      SELECT 
+        m.id,
+        m.title,
+        m.start_time,
+        m.end_time,
+        m.status,
+        s.name AS sport_name,
+        v.name AS venue_name,
+        e.title AS event_title,
+        ht.name AS home_team_name,
+        at.name AS away_team_name
+      FROM matches m
+      LEFT JOIN sports s ON s.id = m.sport_id
+      LEFT JOIN venues v ON v.id = m.venue_id
+      LEFT JOIN events e ON e.id = m.event_id
+      LEFT JOIN teams ht ON ht.id = m.home_team_id
+      LEFT JOIN teams at ON at.id = m.away_team_id
+      WHERE m.sport_id IN (${placeholders})
+      ORDER BY m.start_time DESC
+      `,
+      sportIds
+    );
+
+    return res.render("subadmin/matches", {
+      title: "Kelola Pertandingan - Subadmin",
+      matches,
+    });
+  } catch (err) {
+    console.error("listMatches error", err);
+    req.flash("error", "Gagal memuat daftar pertandingan.");
+    return res.redirect("/subadmin");
+  }
+};
+
 exports.renderCreateMatch = async (req, res) => {
+  try {
     const sports = await loadSportsList(req.session.user);
-    const [teams] = await db.query('SELECT id, name, sport_id FROM teams ORDER BY name');
-    const [venues] = await db.query('SELECT id, name FROM venues ORDER BY name');
-    res.render('subadmin/create_match', { sports, teams, venues });
+    const [teams] = await db.query(
+      "SELECT id, name, sport_id FROM teams ORDER BY name"
+    );
+    const [venues] = await db.query(
+      "SELECT id, name FROM venues ORDER BY name"
+    );
+
+    return res.render("subadmin/create_match", {
+      title: "Tambah Pertandingan",
+      sports,
+      teams,
+      venues,
+    });
+  } catch (err) {
+    console.error("renderCreateMatch error", err);
+    req.flash("error", "Gagal memuat form pertandingan.");
+    return res.redirect("/subadmin/matches");
+  }
 };
 
 exports.createMatch = async (req, res) => {
-    try {
-        const { event_id, sport_id, home_team_id, away_team_id, title, start_time, end_time, venue_id } = req.body;
-        if (req.session.user.role === 'subadmin') {
-            const [rows] = await db.query('SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1', [req.session.user.id, sport_id]);
-            if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return res.redirect('back'); }
-        }
-        await db.query(
-            `INSERT INTO matches (event_id, sport_id, home_team_id, away_team_id, title, start_time, end_time, venue_id, status, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'scheduled', NOW(), NOW())`,
-            [event_id || null, sport_id, home_team_id || null, away_team_id || null, title || null, start_time, end_time || null, venue_id || null]
-        );
-        req.flash('success', 'Match berhasil dibuat.');
-        return res.redirect('/subadmin');
-    } catch (err) {
-        console.error('createMatch', err);
-        req.flash('error', 'Gagal membuat match.');
-        return res.redirect('back');
+  try {
+    let {
+      event_id,
+      sport_id,
+      home_team_id,
+      away_team_id,
+      title,
+      start_time,
+      end_time,
+      venue_id,
+    } = req.body;
+
+    title = (title || "").trim();
+    const sportId = sport_id ? Number(sport_id) : null;
+    const eventId = event_id ? Number(event_id) : null;
+    const homeId = home_team_id ? Number(home_team_id) : null;
+    const awayId = away_team_id ? Number(away_team_id) : null;
+    const venueId = venue_id ? Number(venue_id) : null;
+
+    if (!sportId || !title || !start_time) {
+      req.flash(
+        "error",
+        "Cabang olahraga, judul, dan waktu mulai wajib diisi."
+      );
+      return res.redirect("/subadmin/matches/create");
     }
+
+    // cek hak akses subadmin ke sport ini
+    if (req.session.user.role === "subadmin") {
+      const [rows] = await db.query(
+        "SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1",
+        [req.session.user.id, sportId]
+      );
+      if (!rows.length) {
+        req.flash(
+          "error",
+          "Akses ditolak. Kamu tidak punya izin untuk cabang olahraga ini."
+        );
+        return res.redirect("/subadmin/matches/create");
+      }
+    }
+
+    const start = normalizeDateTime(start_time);
+    const end = normalizeDateTime(end_time);
+
+    await db.query(
+      `INSERT INTO matches 
+       (event_id, sport_id, home_team_id, away_team_id, title, start_time, end_time, venue_id, status, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'scheduled', NOW(), NOW())`,
+      [eventId || null, sportId, homeId || null, awayId || null, title, start, end, venueId || null]
+    );
+
+    req.flash("success", "Pertandingan berhasil dibuat.");
+    return res.redirect("/subadmin/matches");
+  } catch (err) {
+    console.error("createMatch error >>>", err);
+    req.flash("error", "Gagal membuat pertandingan.");
+    return res.redirect("/subadmin/matches/create");
+  }
 };
+
+exports.renderEditMatch = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID pertandingan tidak valid.");
+      return res.redirect("/subadmin/matches");
+    }
+
+    const [[match]] = await db.query(
+      `SELECT * FROM matches WHERE id = ? LIMIT 1`,
+      [id]
+    );
+    if (!match) {
+      req.flash("error", "Pertandingan tidak ditemukan.");
+      return res.redirect("/subadmin/matches");
+    }
+
+    // cek akses sport
+    if (req.session.user.role === "subadmin") {
+      const [rows] = await db.query(
+        "SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1",
+        [req.session.user.id, match.sport_id]
+      );
+      if (!rows.length) {
+        req.flash("error", "Akses ditolak untuk pertandingan ini.");
+        return res.redirect("/subadmin/matches");
+      }
+    }
+
+    const sports = await loadSportsList(req.session.user);
+    const [teams] = await db.query(
+      "SELECT id, name, sport_id FROM teams ORDER BY name"
+    );
+    const [venues] = await db.query(
+      "SELECT id, name FROM venues ORDER BY name"
+    );
+
+    return res.render("subadmin/edit_match", {
+      title: "Edit Pertandingan",
+      match,
+      sports,
+      teams,
+      venues,
+    });
+  } catch (err) {
+    console.error("renderEditMatch error", err);
+    req.flash("error", "Gagal memuat form edit pertandingan.");
+    return res.redirect("/subadmin/matches");
+  }
+};
+
+exports.updateMatch = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID pertandingan tidak valid.");
+      return res.redirect("/subadmin/matches");
+    }
+
+    let {
+      event_id,
+      sport_id,
+      home_team_id,
+      away_team_id,
+      title,
+      start_time,
+      end_time,
+      venue_id,
+      status,
+    } = req.body;
+
+    title = (title || "").trim();
+    const sportId = sport_id ? Number(sport_id) : null;
+    const eventId = event_id ? Number(event_id) : null;
+    const homeId = home_team_id ? Number(home_team_id) : null;
+    const awayId = away_team_id ? Number(away_team_id) : null;
+    const venueId = venue_id ? Number(venue_id) : null;
+
+    if (!sportId || !title || !start_time) {
+      req.flash(
+        "error",
+        "Cabang olahraga, judul, dan waktu mulai wajib diisi."
+      );
+      return res.redirect(`/subadmin/matches/${id}/edit`);
+    }
+
+    if (!status) status = "scheduled";
+
+    // cek akses sport
+    if (req.session.user.role === "subadmin") {
+      const [rows] = await db.query(
+        "SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1",
+        [req.session.user.id, sportId]
+      );
+      if (!rows.length) {
+        req.flash("error", "Akses ditolak untuk cabang olahraga ini.");
+        return res.redirect("/subadmin/matches");
+      }
+    }
+
+    const start = normalizeDateTime(start_time);
+    const end = normalizeDateTime(end_time);
+
+    await db.query(
+      `UPDATE matches
+       SET event_id = ?, sport_id = ?, home_team_id = ?, away_team_id = ?, 
+           title = ?, start_time = ?, end_time = ?, venue_id = ?, status = ?, updated_at = NOW()
+       WHERE id = ?`,
+      [
+        eventId || null,
+        sportId,
+        homeId || null,
+        awayId || null,
+        title,
+        start,
+        end,
+        venueId || null,
+        status,
+        id,
+      ]
+    );
+
+    req.flash("success", "Pertandingan berhasil diupdate.");
+    return res.redirect("/subadmin/matches");
+  } catch (err) {
+    console.error("updateMatch error", err);
+    req.flash("error", "Gagal mengupdate pertandingan.");
+    return res.redirect("/subadmin/matches");
+  }
+};
+
+exports.deleteMatch = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID pertandingan tidak valid.");
+      return res.redirect("/subadmin/matches");
+    }
+
+    // opsional: cek sport/akses dulu kalau mau ekstra aman
+    await db.query("DELETE FROM matches WHERE id = ?", [id]);
+
+    req.flash("success", "Pertandingan berhasil dihapus.");
+    return res.redirect("/subadmin/matches");
+  } catch (err) {
+    console.error("deleteMatch error", err);
+    req.flash("error", "Gagal menghapus pertandingan.");
+    return res.redirect("/subadmin/matches");
+  }
+};
+
+
 
 /* -------------------------
    MATCH SCORES

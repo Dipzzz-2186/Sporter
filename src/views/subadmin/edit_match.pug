@@ -1,0 +1,125 @@
+extends ../layout/main
+
+block content
+  - const m = match || {};
+
+  .container.py-4
+    h1.fw-bold.mb-3 Edit Pertandingan
+
+    if flash && flash.error && flash.error.length
+      each msg in flash.error
+        .alert.alert-danger(role="alert")= msg
+    if flash && flash.success && flash.success.length
+      each msg in flash.success
+        .alert.alert-success(role="alert")= msg
+
+    form(method="post" action=`/subadmin/matches/${m.id}/edit`)
+      .row.g-3
+        .col-md-4
+          .mb-3
+            label.form-label(for="sport_id") Cabang Olahraga
+            select.form-select#sport_id(name="sport_id" required)
+              option(value="") -- Pilih cabang --
+              if sports && sports.length
+                each s in sports
+                  option(
+                    value=s.id
+                    selected=(m.sport_id === s.id)
+                  )= s.name
+
+        .col-md-4
+          .mb-3
+            label.form-label(for="event_id") Event (opsional, isi ID)
+            input.form-control#event_id(
+              type="number"
+              name="event_id"
+              min="1"
+              value=m.event_id || ''
+            )
+
+        .col-md-4
+          .mb-3
+            label.form-label(for="venue_id") Venue (opsional)
+            select.form-select#venue_id(name="venue_id")
+              option(value="") -- Pilih venue --
+              if venues && venues.length
+                each v in venues
+                  option(
+                    value=v.id
+                    selected=(m.venue_id === v.id)
+                  )= v.name
+
+      .row.g-3
+        .col-md-6
+          .mb-3
+            label.form-label(for="home_team_id") Tim Rumah (opsional)
+            select.form-select#home_team_id(name="home_team_id")
+              option(value="") -- Pilih tim rumah --
+              if teams && teams.length
+                each t in teams
+                  option(
+                    value=t.id
+                    selected=(m.home_team_id === t.id)
+                  )= t.name
+        .col-md-6
+          .mb-3
+            label.form-label(for="away_team_id") Tim Tamu (opsional)
+            select.form-select#away_team_id(name="away_team_id")
+              option(value="") -- Pilih tim tamu --
+              if teams && teams.length
+                each t in teams
+                  option(
+                    value=t.id
+                    selected=(m.away_team_id === t.id)
+                  )= t.name
+
+      .mb-3
+        label.form-label(for="title") Judul Pertandingan
+        input.form-control#title(
+          type="text"
+          name="title"
+          required
+          value=m.title || ''
+        )
+
+      - let startVal = '';
+      - let endVal = '';
+      - try {
+      -   if (m.start_time) startVal = new Date(m.start_time).toISOString().slice(0,16);
+      -   if (m.end_time) endVal = new Date(m.end_time).toISOString().slice(0,16);
+      - } catch (e) {}
+
+      .row.g-3
+        .col-md-6
+          .mb-3
+            label.form-label(for="start_time") Waktu Mulai
+            input.form-control#start_time(
+              type="datetime-local"
+              name="start_time"
+              required
+              value=startVal
+            )
+        .col-md-6
+          .mb-3
+            label.form-label(for="end_time") Waktu Berakhir (opsional)
+            input.form-control#end_time(
+              type="datetime-local"
+              name="end_time"
+              value=endVal
+            )
+
+      .mb-3
+        label.form-label(for="status") Status
+        select.form-select#status(name="status")
+          - const currentStatus = m.status || 'scheduled';
+          option(value="scheduled" selected=(currentStatus === 'scheduled')) Dijadwalkan
+          option(value="ongoing" selected=(currentStatus === 'ongoing')) Berlangsung
+          option(value="finished" selected=(currentStatus === 'finished')) Selesai
+          option(value="cancelled" selected=(currentStatus === 'cancelled')) Dibatalkan
+
+      button.btn.btn-danger(type="submit")
+        i.bi.bi-save.me-1
+        | Simpan Perubahan
+      a.btn.btn-outline-secondary.ms-2(href="/subadmin/matches")
+        i.bi.bi-arrow-left.me-1
+        | Kembali

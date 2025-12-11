@@ -1,0 +1,84 @@
+extends ../layout/main
+
+block content
+  .container.py-4
+    .d-flex.justify-content-between.align-items-center.mb-3
+      div
+        h1.fw-bold.mb-1 Kelola Pertandingan
+        p.text-muted.mb-0
+          | Atur jadwal pertandingan untuk cabang olahraga yang kamu pegang.
+      a.btn.btn-danger(href="/subadmin/matches/create")
+        i.bi.bi-plus-circle.me-1
+        | Tambah Pertandingan
+
+    if flash && flash.error && flash.error.length
+      each msg in flash.error
+        .alert.alert-danger(role="alert")= msg
+    if flash && flash.success && flash.success.length
+      each msg in flash.success
+        .alert.alert-success(role="alert")= msg
+
+    if matches && matches.length
+      .card
+        .card-body
+          .table-responsive
+            table.table.table-hover.align-middle
+              thead
+                tr
+                  th ID
+                  th Cabang
+                  th Judul
+                  th Tim
+                  th Waktu
+                  th Venue
+                  th Status
+                  th.text-end Aksi
+              tbody
+                each m in matches
+                  tr
+                    td= m.id
+                    td= m.sport_name || '-'
+                    td
+                      strong= m.title || 'Tanpa judul'
+                      if m.event_title
+                        br
+                        small.text-muted= m.event_title
+                    td
+                      if m.home_team_name || m.away_team_name
+                        | #{m.home_team_name || '-'} vs #{m.away_team_name || '-'}
+                      else
+                        span.text-muted -
+                    td
+                      - const startStr = m.start_time ? new Date(m.start_time).toLocaleString('id-ID') : null;
+                      - const endStr = m.end_time ? new Date(m.end_time).toLocaleString('id-ID') : null;
+                      if startStr && endStr
+                        | #{startStr} 
+                        br
+                        small.text-muted s/d #{endStr}
+                      else if startStr
+                        | #{startStr}
+                      else
+                        span.text-muted Belum diatur
+                    td= m.venue_name || '-'
+                    td
+                      if m.status === 'scheduled'
+                        span.badge.bg-warning-subtle.text-warning Dijadwalkan
+                      else if m.status === 'ongoing'
+                        span.badge.bg-primary-subtle.text-primary Berlangsung
+                      else if m.status === 'finished'
+                        span.badge.bg-success-subtle.text-success Selesai
+                      else
+                        span.badge.bg-secondary-subtle.text-secondary= m.status || 'N/A'
+                    td.text-end
+                      a.btn.btn-sm.btn-outline-primary.me-1(href=`/subadmin/matches/${m.id}/edit`)
+                        i.bi.bi-pencil
+                      form.d-inline(method="post" action=`/subadmin/matches/${m.id}/delete` onsubmit="return confirm('Yakin hapus pertandingan ini?');")
+                        button.btn.btn-sm.btn-outline-danger(type="submit")
+                          i.bi.bi-trash
+    else
+      .text-center.py-5
+        h4.mb-2 Belum ada pertandingan
+        p.text-muted.mb-3 Tambahkan pertandingan pertama untuk cabang olahraga yang kamu pegang.
+        a.btn.btn-danger(href="/subadmin/matches/create")
+          i.bi.bi-plus-circle.me-1
+          | Tambah Pertandingan

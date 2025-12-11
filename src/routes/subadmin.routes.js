@@ -16,10 +16,48 @@ router.post('/events/create', subadminCtrl.createEvent);
 router.get('/news/create', subadminCtrl.renderCreateNews);
 router.post('/news/create', subadminCtrl.createNews);
 
-// Matches (schedule)
-router.get('/matches/create', subadminCtrl.renderCreateMatch);
-router.post('/matches/create', subadminCtrl.createMatch);
+// MATCHES (jadwal pertandingan)
+router.get(
+  '/matches',
+  requireLogin,
+  requireAdminOrSubadmin,
+  subadminCtrl.listMatches
+);
 
+router.get(
+  '/matches/create',
+  requireLogin,
+  requireAdminOrSubadmin,
+  subadminCtrl.renderCreateMatch
+);
+
+router.post(
+  '/matches/create',
+  requireLogin,
+  requireAdminOrSubadmin,
+  subadminCtrl.createMatch
+);
+
+router.get(
+  '/matches/:id/edit',
+  requireLogin,
+  requireAdminOrSubadmin,
+  subadminCtrl.renderEditMatch
+);
+
+router.post(
+  '/matches/:id/edit',
+  requireLogin,
+  requireAdminOrSubadmin,
+  subadminCtrl.updateMatch
+);
+
+router.post(
+  '/matches/:id/delete',
+  requireLogin,
+  requireAdminOrSubadmin,
+  subadminCtrl.deleteMatch
+);
 // Match scores (for existing match)
 router.post('/matches/:id/scores', subadminCtrl.addMatchScore);
 
