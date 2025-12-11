@@ -2,6 +2,10 @@
 const express = require("express");
 const router = express.Router();
 
+const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
+
 const adminController = require("../controllers/admin.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
@@ -22,6 +26,39 @@ if (typeof adminController.renderDashboard !== "function") {
   throw new Error("renderDashboard bukan function. Pastikan exports.renderDashboard ada di admin.controller.");
 }
 
+// ========== MULTER UNTUK UPLOAD THUMBNAIL NEWS ==========
+const uploadsDir = path.join(__dirname, "..", "public", "uploads", "news");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const base = "news-" + Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, base + ext);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (!file.mimetype.startsWith("image/")) {
+    return cb(new Error("File harus berupa gambar"), false);
+  }
+  cb(null, true);
+};
+
+const uploadNewsThumb = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 3 * 1024 * 1024, // max 3MB
+  },
+});
+
+
 // routes
 router.get("/", authMiddleware.requireAdminOrSubadmin, adminController.renderDashboard);
 
@@ -36,9 +73,43 @@ router.post("/events/:id/edit", authMiddleware.requireAdmin, adminController.upd
 router.post("/events/:id/delete", authMiddleware.requireAdmin, adminController.deleteEvent);
 
 // News management (admin only)
-router.get("/news", authMiddleware.requireAdmin, adminController.listNews);
-router.get("/news/create", authMiddleware.requireAdmin, adminController.renderCreateNews);
-router.post("/news/create", authMiddleware.requireAdmin, adminController.createNews);
+router.get(
+  "/news",
+  authMiddleware.requireAdmin,
+  adminController.listNews
+);
+
+router.get(
+  "/news/create",
+  authMiddleware.requireAdmin,
+  adminController.renderCreateNews
+);
+
+router.post(
+  "/news/create",
+  authMiddleware.requireAdmin,
+  uploadNewsThumb.single("thumbnail"),   // <-- PENTING
+  adminController.createNews
+);
+
+router.get(
+  "/news/:id/edit",
+  authMiddleware.requireAdmin,
+  adminController.renderEditNews
+);
+
+router.post(
+  "/news/:id/edit",
+  authMiddleware.requireAdmin,
+  uploadNewsThumb.single("thumbnail"),   // <-- PENTING
+  adminController.updateNews
+);
+
+router.post(
+  "/news/:id/delete",
+  authMiddleware.requireAdmin,
+  adminController.deleteNews
+);
 
 router.get("/news/:id/edit", authMiddleware.requireAdmin, adminController.renderEditNews);
 router.post("/news/:id/edit", authMiddleware.requireAdmin, adminController.updateNews);

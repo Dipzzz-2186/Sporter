@@ -452,9 +452,17 @@ exports.createNews = async (req, res) => {
     if (!slug || !slug.trim()) slug = makeSlug(title);
     if (!status) status = "draft";
 
+    // kalau ada file yang diupload
+    let thumbnailUrl = null;
+    if (req.file) {
+      // karena app.use(express.static(path.join(__dirname, "public")))
+      // maka path publiknya cukup '/uploads/news/namafile'
+      thumbnailUrl = "/uploads/news/" + req.file.filename;
+    }
+
     await db.query(
       `INSERT INTO news_articles
-       (sport_id, event_id, author_id, title, slug, excerpt, content, status, published_at, created_at, updated_at)
+       (sport_id, event_id, author_id, title, slug, excerpt, content, thumbnail_url, status, published_at, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
       [
         sport_id || null,
@@ -464,6 +472,7 @@ exports.createNews = async (req, res) => {
         slug,
         excerpt || null,
         content || "",
+        thumbnailUrl,
         status,
         published_at || null,
       ]
@@ -542,10 +551,22 @@ exports.updateNews = async (req, res) => {
     if (!slug || !slug.trim()) slug = makeSlug(title);
     if (!status) status = "draft";
 
+    // ambil data lama dulu biar kalau gak upload foto baru,
+    // thumbnail yang lama tetap dipakai
+    const [[current]] = await db.query(
+      `SELECT thumbnail_url FROM news_articles WHERE id = ? LIMIT 1`,
+      [id]
+    );
+
+    let thumbnailUrl = current ? current.thumbnail_url : null;
+    if (req.file) {
+      thumbnailUrl = "/uploads/news/" + req.file.filename;
+    }
+
     await db.query(
       `UPDATE news_articles
        SET sport_id = ?, event_id = ?, title = ?, slug = ?, excerpt = ?,
-           content = ?, status = ?, published_at = ?, updated_at = NOW()
+           content = ?, thumbnail_url = ?, status = ?, published_at = ?, updated_at = NOW()
        WHERE id = ?`,
       [
         sport_id || null,
@@ -554,6 +575,7 @@ exports.updateNews = async (req, res) => {
         slug,
         excerpt || null,
         content || "",
+        thumbnailUrl,
         status,
         published_at || null,
         id,
@@ -568,6 +590,7 @@ exports.updateNews = async (req, res) => {
     return res.redirect("/admin/news");
   }
 };
+
 
 // Handle DELETE berita
 exports.deleteNews = async (req, res) => {
