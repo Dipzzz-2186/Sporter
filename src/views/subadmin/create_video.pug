@@ -1,87 +1,754 @@
 extends ../layout/main
 
 block content
-  .container.mt-4
-    h3.mb-3 Tambah Video (VOD / Highlight)
+  style.
+    /* Video Form Page Styles */
+    .video-form-page {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Header Section */
+    .video-form-header {
+      background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      animation: fadeInDown 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .video-form-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .video-form-header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .video-form-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      margin: 0;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Form Card */
+    .video-form-card {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid #f0f0f0;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Form Sections */
+    .video-form-section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .video-form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .section-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      color: #1C1C1E;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .section-title i {
+      color: #FF3B30;
+      font-size: 1.5rem;
+    }
+    
+    .section-description {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    
+    /* Form Elements */
+    .form-label {
+      color: #1C1C1E;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .form-label i {
+      color: #FF3B30;
+      font-size: 1rem;
+    }
+    
+    .form-label .badge {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      color: #FF3B30;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 1px solid #ffeded;
+    }
+    
+    .badge-required {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+    
+    .form-control,
+    .form-select {
+      border: 2px solid #e8e8e8;
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #FF3B30;
+      box-shadow: 0 0 0 0.25rem rgba(255, 59, 48, 0.15);
+      background: white;
+    }
+    
+    .form-control:hover,
+    .form-select:hover {
+      border-color: #d0d0d0;
+      background: white;
+    }
+    
+    .form-control::placeholder {
+      color: #adb5bd;
+      font-style: italic;
+    }
+    
+    /* Help Text */
+    .form-text {
+      color: #6c757d;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .form-text i {
+      color: #FF3B30;
+      font-size: 0.9rem;
+    }
+    
+    /* Type Radio Cards */
+    .type-radio-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .type-radio-card {
+      position: relative;
+    }
+    
+    .type-radio-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+    }
+    
+    .type-radio-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border: 2px solid #e8e8e8;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    
+    .type-radio-label:hover {
+      background: white;
+      border-color: #FF3B30;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(255, 59, 48, 0.15);
+    }
+    
+    .type-radio-card input[type="radio"]:checked + .type-radio-label {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      border-color: #FF3B30;
+      box-shadow: 0 4px 15px rgba(255, 59, 48, 0.2);
+    }
+    
+    .type-radio-icon {
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #6c757d;
+      transition: all 0.3s ease;
+    }
+    
+    .type-radio-card input[type="radio"]:checked + .type-radio-label .type-radio-icon {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      color: white;
+      transform: scale(1.1);
+    }
+    
+    .type-radio-title {
+      font-weight: 700;
+      color: #1C1C1E;
+      font-size: 1rem;
+    }
+    
+    .type-radio-desc {
+      font-size: 0.8rem;
+      color: #6c757d;
+    }
+    
+    /* Platform Suggestions */
+    .platform-suggestions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+    }
+    
+    .platform-chip {
+      background: #f8f9fa;
+      border: 1px solid #e8e8e8;
+      color: #6c757d;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .platform-chip:hover {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      border-color: #FF3B30;
+      color: #FF3B30;
+      transform: translateY(-2px);
+    }
+    
+    .platform-chip i {
+      font-size: 1rem;
+    }
+    
+    /* URL Preview */
+    .url-preview {
+      background: #f8f9fa;
+      border: 2px dashed #e8e8e8;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 0.75rem;
+      display: none;
+    }
+    
+    .url-preview.active {
+      display: block;
+      animation: fadeInUp 0.3s ease-out;
+    }
+    
+    .url-preview-title {
+      font-weight: 600;
+      color: #1C1C1E;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .url-preview-content {
+      color: #6c757d;
+      font-size: 0.85rem;
+      word-break: break-all;
+    }
+    
+    /* Action Buttons */
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 2px solid #f0f0f0;
+      margin-top: 2rem;
+    }
+    
+    .btn-submit {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      border: none;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 59, 48, 0.4);
+      color: white;
+    }
+    
+    .btn-back {
+      background: white;
+      border: 2px solid #e8e8e8;
+      color: #6c757d;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      justify-content: center;
+    }
+    
+    .btn-back:hover {
+      background: #f8f9fa;
+      border-color: #1C1C1E;
+      color: #1C1C1E;
+      transform: translateY(-2px);
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .video-form-header {
+        padding: 1.5rem;
+      }
+      
+      .video-form-header h1 {
+        font-size: 2rem;
+      }
+      
+      .video-form-card {
+        padding: 2rem;
+      }
+      
+      .type-radio-group {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .video-form-page {
+        padding: 1rem 0;
+      }
+      
+      .video-form-header {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .video-form-header h1 {
+        font-size: 1.75rem;
+      }
+      
+      .video-form-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+      }
+      
+      .section-title {
+        font-size: 1.3rem;
+      }
+      
+      .video-form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+      }
+      
+      .form-control,
+      .form-select {
+        padding: 0.8rem 1rem;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn-submit,
+      .btn-back {
+        width: 100%;
+      }
+    }
 
-    if flash && flash.error && flash.error.length
-      each msg in flash.error
-        .alert.alert-danger(role="alert")= msg
-    if flash && flash.success && flash.success.length
-      each msg in flash.success
-        .alert.alert-success(role="alert")= msg
+  .video-form-page
+    .container
+      //- Header Section
+      .video-form-header
+        h1
+          i.bi.bi-camera-video-fill
+          | Tambah Video
+        p
+          i.bi.bi-info-circle.me-2
+          | Upload video VOD, Highlight, atau Livestream untuk pertandingan
 
-    form(method="post" action="/subadmin/videos/create")
-      .mb-3
-        label.form-label Cabang Olahraga
-        select.form-select(name="sport_id" required)
-          option(value="") -- Pilih cabang --
-          if sports && sports.length
-            each s in sports
-              option(value=s.id)= s.name
+      //- Form Card
+      .video-form-card
+        form(method="post" action="/subadmin/videos/create")
+          
+          //- Section 1: Basic Info
+          .video-form-section
+            .section-title
+              i.bi.bi-info-circle-fill
+              | Informasi Dasar
+            .section-description
+              | Pilih cabang olahraga dan relasi dengan event atau pertandingan.
+            
+            .row.g-3
+              .col-md-6
+                .mb-3
+                  label.form-label(for="sport_id")
+                    i.bi.bi-trophy
+                    | Cabang Olahraga
+                    span.badge Opsional
+                  select.form-select#sport_id(name="sport_id")
+                    option(value="" selected) -- Pilih cabang olahraga --
+                    each s in sports
+                      option(value=s.id)= s.name
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Kategorisasi video berdasarkan cabang olahraga
+              
+              .col-md-6
+                .mb-3
+                  label.form-label(for="event_id")
+                    i.bi.bi-calendar-event
+                    | Event ID
+                    span.badge Opsional
+                  input.form-control#event_id(
+                    type="number"
+                    name="event_id"
+                    min="1"
+                    placeholder="Masukkan ID event (contoh: 123)"
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Jika video terkait event tertentu
+              
+              .col-12
+                .mb-3
+                  label.form-label(for="match_id")
+                    i.bi.bi-flag-fill
+                    | Match ID
+                    span.badge Opsional
+                  input.form-control#match_id(
+                    type="number"
+                    name="match_id"
+                    min="1"
+                    placeholder="Masukkan ID pertandingan (contoh: 456)"
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Jika video untuk pertandingan spesifik
 
-      .mb-3
-        label.form-label Event (opsional, isi ID event)
-        input.form-control(
-          type="number"
-          name="event_id"
-          min="1"
-          placeholder="ID event (boleh dikosongkan)"
-        )
+          //- Section 2: Video Details
+          .video-form-section
+            .section-title
+              i.bi.bi-card-heading
+              | Detail Video
+            .section-description
+              | Berikan judul dan pilih tipe video yang sesuai.
+            
+            .mb-3
+              label.form-label(for="title")
+                i.bi.bi-text-left
+                | Judul Video
+                span.badge.badge-required Wajib
+              input.form-control#title(
+                type="text"
+                name="title"
+                required
+                placeholder="Contoh: Final Basket Putra - SMKN 8 vs SMAN 1 | Full Match"
+              )
+              small.form-text
+                i.bi.bi-info-circle
+                | Buat judul yang deskriptif dan menarik
+            
+            .mb-3
+              label.form-label
+                i.bi.bi-collection-play
+                | Tipe Video
+                span.badge.badge-required Wajib
+              .type-radio-group
+                .type-radio-card
+                  input#type-vod(type="radio" name="type" value="vod" checked)
+                  label.type-radio-label(for="type-vod")
+                    .type-radio-icon
+                      i.bi.bi-play-circle-fill
+                    .type-radio-title VOD
+                    .type-radio-desc Video on Demand - Rekaman lengkap
+                
+                .type-radio-card
+                  input#type-highlight(type="radio" name="type" value="highlight")
+                  label.type-radio-label(for="type-highlight")
+                    .type-radio-icon
+                      i.bi.bi-star-fill
+                    .type-radio-title Highlight
+                    .type-radio-desc Cuplikan momen terbaik
+                
+                .type-radio-card
+                  input#type-livestream(type="radio" name="type" value="livestream")
+                  label.type-radio-label(for="type-livestream")
+                    .type-radio-icon
+                      i.bi.bi-broadcast
+                    .type-radio-title Livestream
+                    .type-radio-desc Siaran langsung (tidak disarankan)
 
-      .mb-3
-        label.form-label Match (opsional, isi ID match)
-        input.form-control(
-          type="number"
-          name="match_id"
-          min="1"
-          placeholder="ID match (boleh dikosongkan)"
-        )
+          //- Section 3: Platform & URL
+          .video-form-section
+            .section-title
+              i.bi.bi-link-45deg
+              | Platform & URL
+            .section-description
+              | Tentukan platform video dan URL/embed code.
+            
+            .mb-3
+              label.form-label(for="platform")
+                i.bi.bi-youtube
+                | Platform Video
+                span.badge Opsional
+              input.form-control#platform(
+                type="text"
+                name="platform"
+                placeholder="YouTube, Vimeo, Facebook, Instagram, dll"
+              )
+              .platform-suggestions
+                span.platform-chip(data-platform="YouTube")
+                  i.bi.bi-youtube
+                  | YouTube
+                span.platform-chip(data-platform="Vimeo")
+                  i.bi.bi-vimeo
+                  | Vimeo
+                span.platform-chip(data-platform="Facebook")
+                  i.bi.bi-facebook
+                  | Facebook
+                span.platform-chip(data-platform="Instagram")
+                  i.bi.bi-instagram
+                  | Instagram
+              small.form-text
+                i.bi.bi-info-circle
+                | Klik chip untuk auto-fill platform
+            
+            .mb-3
+              label.form-label(for="url")
+                i.bi.bi-link
+                | URL / Embed Code
+                span.badge Opsional
+              textarea.form-control#url(
+                name="url"
+                rows="3"
+                placeholder="https://youtube.com/watch?v=... atau <iframe>...</iframe>"
+              )
+              small.form-text
+                i.bi.bi-info-circle
+                | Masukkan URL video atau embed code dari platform
+              #urlPreview.url-preview
+                .url-preview-title
+                  i.bi.bi-check-circle-fill
+                  | URL Terdeteksi
+                .url-preview-content
 
-      .mb-3
-        label.form-label Judul
-        input.form-control(
-          type="text"
-          name="title"
-          required
-        )
+          //- Section 4: Schedule
+          .video-form-section
+            .section-title
+              i.bi.bi-clock
+              | Jadwal (Opsional)
+            .section-description
+              | Atur waktu mulai dan berakhir untuk livestream atau jadwal tayang.
+            
+            .row.g-3
+              .col-md-6
+                .mb-3
+                  label.form-label(for="start_time")
+                    i.bi.bi-clock
+                    | Waktu Mulai
+                    span.badge Opsional
+                  input.form-control#start_time(
+                    type="datetime-local"
+                    name="start_time"
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Untuk livestream atau jadwal tayang
+              
+              .col-md-6
+                .mb-3
+                  label.form-label(for="end_time")
+                    i.bi.bi-clock-history
+                    | Waktu Berakhir
+                    span.badge Opsional
+                  input.form-control#end_time(
+                    type="datetime-local"
+                    name="end_time"
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Estimasi waktu selesai
 
-      .mb-3
-        label.form-label Tipe
-        select.form-select(name="type" required)
-          option(value="full_match") Full Match / VOD
-          option(value="highlight") Highlight 
+          //- Action Buttons
+          .form-actions
+            button.btn.btn-submit(type="submit")
+              i.bi.bi-save-fill
+              span Simpan Video
+            
+            a.btn.btn-back(href="/events")
+              i.bi.bi-arrow-left
+              span Kembali
 
-      .mb-3
-        label.form-label Platform (contoh: youtube, tiktok)
-        input.form-control(
-          type="text"
-          name="platform"
-          placeholder="youtube / tiktok / dll (opsional)"
-        )
-
-      .mb-3
-        label.form-label URL Video
-        input.form-control(
-          type="text"
-          name="url"
-          required
-          placeholder="Link video (YouTube, dll)"
-        )
-
-      .mb-3
-        label.form-label Start Time (opsional)
-        input.form-control(
-          type="datetime-local"
-          name="start_time"
-        )
-
-      .mb-3
-        label.form-label End Time (opsional)
-        input.form-control(
-          type="datetime-local"
-          name="end_time"
-        )
-
-      button.btn.btn-primary(type="submit") Simpan Video
-      a.btn.btn-secondary.ms-2(href="/subadmin") Batal
+  //- Custom JavaScript
+  script.
+    (function() {
+      // Platform chip click handler
+      var platformChips = document.querySelectorAll('.platform-chip');
+      var platformInput = document.getElementById('platform');
+      
+      platformChips.forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          var platform = this.getAttribute('data-platform');
+          platformInput.value = platform;
+          platformInput.focus();
+        });
+      });
+      
+      // URL preview
+      var urlInput = document.getElementById('url');
+      var urlPreview = document.getElementById('urlPreview');
+      var urlPreviewContent = urlPreview.querySelector('.url-preview-content');
+      
+      if (urlInput && urlPreview) {
+        urlInput.addEventListener('input', function() {
+          var value = this.value.trim();
+          if (value) {
+            var displayText = value.length > 100 ? value.substring(0, 100) + '...' : value;
+            urlPreviewContent.textContent = displayText;
+            urlPreview.classList.add('active');
+          } else {
+            urlPreview.classList.remove('active');
+          }
+        });
+      }
+      
+      // Form validation
+      var form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          var btn = form.querySelector('.btn-submit');
+          if (btn) {
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
+            btn.disabled = true;
+          }
+        });
+      }
+      
+      // Auto set end time based on start time
+      var startTimeInput = document.getElementById('start_time');
+      var endTimeInput = document.getElementById('end_time');
+      
+      if (startTimeInput && endTimeInput) {
+        startTimeInput.addEventListener('change', function() {
+          if (this.value && !endTimeInput.value) {
+            var start = new Date(this.value);
+            start.setHours(start.getHours() + 2);
+            start.setMinutes(start.getMinutes() - start.getTimezoneOffset());
+            endTimeInput.value = start.toISOString().slice(0, 16);
+          }
+          endTimeInput.min = this.value;
+        });
+      }
+      
+      // Character counter for title
+      var titleInput = document.getElementById('title');
+      if (titleInput) {
+        var maxLength = 200;
+        var counter = document.createElement('small');
+        counter.className = 'form-text text-end d-block mt-1';
+        counter.style.color = '#6c757d';
+        titleInput.parentNode.appendChild(counter);
+        
+        function updateCounter() {
+          var length = titleInput.value.length;
+          counter.textContent = length + ' / ' + maxLength + ' karakter';
+          
+          if (length > maxLength * 0.9) {
+            counter.style.color = '#FF3B30';
+          } else {
+            counter.style.color = '#6c757d';
+          }
+        }
+        
+        titleInput.maxLength = maxLength;
+        titleInput.addEventListener('input', updateCounter);
+        updateCounter();
+      }
+    })();

@@ -1,84 +1,647 @@
 extends ../layout/main
 
 block content
-  .container.py-4
-    .d-flex.justify-content-between.align-items-center.mb-3
-      div
-        h1.fw-bold.mb-1 Kelola Pertandingan
-        p.text-muted.mb-0
-          | Atur jadwal pertandingan untuk cabang olahraga yang kamu pegang.
-      a.btn.btn-danger(href="/subadmin/matches/create")
-        i.bi.bi-plus-circle.me-1
-        | Tambah Pertandingan
+  style.
+    /* Matches Management Page Styles */
+    .matches-page {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Header Section */
+    .matches-header {
+      background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      animation: fadeInDown 0.6s ease-out;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .matches-header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .matches-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      margin: 0;
+    }
+    
+    .btn-add-match {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      border: none;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-add-match:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 59, 48, 0.4);
+      color: white;
+    }
+    
+    /* Alerts */
+    .alert {
+      border-radius: 12px;
+      border: none;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      animation: slideInDown 0.4s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .alert-danger {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-left: 4px solid #dc2626;
+    }
+    
+    .alert-success {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+      border-left: 4px solid #059669;
+    }
+    
+    .alert i {
+      font-size: 1.2rem;
+    }
+    
+    /* Table Card */
+    .matches-table-card {
+      background: white;
+      border-radius: 20px;
+      border: 2px solid #f0f0f0;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .matches-table-card .card-body {
+      padding: 0;
+    }
+    
+    /* Table Styles */
+    .matches-table {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+    
+    .matches-table thead {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    .matches-table thead th {
+      color: #1C1C1E;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 1.25rem 1rem;
+      border: none;
+      white-space: nowrap;
+    }
+    
+    .matches-table tbody tr {
+      border-bottom: 1px solid #f0f0f0;
+      transition: all 0.3s ease;
+    }
+    
+    .matches-table tbody tr:hover {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      transform: translateX(5px);
+    }
+    
+    .matches-table tbody td {
+      padding: 1.25rem 1rem;
+      vertical-align: middle;
+      border: none;
+    }
+    
+    .match-id {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      color: #FF3B30;
+      letter-spacing: 0.5px;
+    }
+    
+    .match-title {
+      color: #1C1C1E;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .match-event {
+      color: #6c757d;
+      font-size: 0.85rem;
+    }
+    
+    .match-teams {
+      color: #1C1C1E;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .match-teams .vs-badge {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    
+    .match-time {
+      color: #1C1C1E;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    
+    .match-time small {
+      color: #6c757d;
+      display: block;
+      margin-top: 0.25rem;
+    }
+    
+    .sport-badge {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      color: #FF3B30;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      border: 1px solid #ffeded;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .sport-badge i {
+      font-size: 0.9rem;
+    }
+    
+    /* Status Badges */
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .status-badge i {
+      font-size: 1rem;
+    }
+    
+    .status-scheduled {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+    
+    .status-ongoing {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+    
+    .status-finished {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+    
+    .btn-action {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      border: 2px solid;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .btn-action-edit {
+      background: white;
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
+    
+    .btn-action-edit:hover {
+      background: #3b82f6;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn-action-delete {
+      background: white;
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+    
+    .btn-action-delete:hover {
+      background: #ef4444;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      background: white;
+      border: 2px dashed #e0e0e0;
+      border-radius: 24px;
+      padding: 5rem 2rem;
+      text-align: center;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .empty-state-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    
+    .empty-state-icon i {
+      font-size: 4rem;
+      color: #adb5bd;
+    }
+    
+    .empty-state h4 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      color: #1C1C1E;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+      color: #6c757d;
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .matches-header {
+        padding: 1.5rem;
+      }
+      
+      .matches-header h1 {
+        font-size: 2rem;
+      }
+      
+      .matches-table {
+        font-size: 0.85rem;
+      }
+      
+      .matches-table thead th,
+      .matches-table tbody td {
+        padding: 1rem 0.75rem;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .matches-page {
+        padding: 1rem 0;
+      }
+      
+      .matches-header {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .matches-header h1 {
+        font-size: 1.75rem;
+      }
+      
+      .btn-add-match {
+        width: 100%;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+      
+      .matches-table {
+        font-size: 0.8rem;
+      }
+      
+      .matches-table thead th,
+      .matches-table tbody td {
+        padding: 0.75rem 0.5rem;
+      }
+      
+      .match-id {
+        font-size: 1.2rem;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .btn-action {
+        width: 100%;
+      }
+      
+      .empty-state {
+        padding: 3rem 1.5rem;
+      }
+      
+      .empty-state-icon {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .empty-state-icon i {
+        font-size: 3rem;
+      }
+      
+      .empty-state h4 {
+        font-size: 1.6rem;
+      }
+    }
 
-    if flash && flash.error && flash.error.length
-      each msg in flash.error
-        .alert.alert-danger(role="alert")= msg
-    if flash && flash.success && flash.success.length
-      each msg in flash.success
-        .alert.alert-success(role="alert")= msg
+  .matches-page
+    .container
+      //- Header Section
+      .matches-header
+        .row.align-items-center.g-3
+          .col-lg-8
+            h1
+              i.bi.bi-trophy-fill.me-2
+              | Kelola Pertandingan
+            p
+              i.bi.bi-calendar-event.me-2
+              | Atur jadwal pertandingan untuk cabang olahraga yang kamu pegang.
+          
+          .col-lg-4.text-lg-end
+            a.btn-add-match(href="/subadmin/matches/create")
+              i.bi.bi-plus-circle
+              span Tambah Pertandingan
 
-    if matches && matches.length
-      .card
-        .card-body
-          .table-responsive
-            table.table.table-hover.align-middle
-              thead
-                tr
-                  th ID
-                  th Cabang
-                  th Judul
-                  th Tim
-                  th Waktu
-                  th Venue
-                  th Status
-                  th.text-end Aksi
-              tbody
-                each m in matches
+      //- Flash Messages
+      if flash && flash.error && flash.error.length
+        each msg in flash.error
+          .alert.alert-danger(role="alert")
+            i.bi.bi-exclamation-triangle-fill
+            span= msg
+      
+      if flash && flash.success && flash.success.length
+        each msg in flash.success
+          .alert.alert-success(role="alert")
+            i.bi.bi-check-circle-fill
+            span= msg
+
+      //- Matches Table
+      if matches && matches.length
+        .card.matches-table-card.border-0
+          .card-body
+            .table-responsive
+              table.table.matches-table.mb-0
+                thead
                   tr
-                    td= m.id
-                    td= m.sport_name || '-'
-                    td
-                      strong= m.title || 'Tanpa judul'
-                      if m.event_title
-                        br
-                        small.text-muted= m.event_title
-                    td
-                      if m.home_team_name || m.away_team_name
-                        | #{m.home_team_name || '-'} vs #{m.away_team_name || '-'}
-                      else
-                        span.text-muted -
-                    td
-                      - const startStr = m.start_time ? new Date(m.start_time).toLocaleString('id-ID') : null;
-                      - const endStr = m.end_time ? new Date(m.end_time).toLocaleString('id-ID') : null;
-                      if startStr && endStr
-                        | #{startStr} 
-                        br
-                        small.text-muted s/d #{endStr}
-                      else if startStr
-                        | #{startStr}
-                      else
-                        span.text-muted Belum diatur
-                    td= m.venue_name || '-'
-                    td
-                      if m.status === 'scheduled'
-                        span.badge.bg-warning-subtle.text-warning Dijadwalkan
-                      else if m.status === 'ongoing'
-                        span.badge.bg-primary-subtle.text-primary Berlangsung
-                      else if m.status === 'finished'
-                        span.badge.bg-success-subtle.text-success Selesai
-                      else
-                        span.badge.bg-secondary-subtle.text-secondary= m.status || 'N/A'
-                    td.text-end
-                      a.btn.btn-sm.btn-outline-primary.me-1(href=`/subadmin/matches/${m.id}/edit`)
-                        i.bi.bi-pencil
-                      form.d-inline(method="post" action=`/subadmin/matches/${m.id}/delete` onsubmit="return confirm('Yakin hapus pertandingan ini?');")
-                        button.btn.btn-sm.btn-outline-danger(type="submit")
-                          i.bi.bi-trash
-    else
-      .text-center.py-5
-        h4.mb-2 Belum ada pertandingan
-        p.text-muted.mb-3 Tambahkan pertandingan pertama untuk cabang olahraga yang kamu pegang.
-        a.btn.btn-danger(href="/subadmin/matches/create")
-          i.bi.bi-plus-circle.me-1
-          | Tambah Pertandingan
+                    th
+                      i.bi.bi-hash.me-1
+                      | ID
+                    th
+                      i.bi.bi-dribbble.me-1
+                      | Cabang
+                    th
+                      i.bi.bi-card-heading.me-1
+                      | Detail Pertandingan
+                    th
+                      i.bi.bi-people-fill.me-1
+                      | Tim
+                    th
+                      i.bi.bi-clock.me-1
+                      | Waktu
+                    th
+                      i.bi.bi-geo-alt.me-1
+                      | Venue
+                    th
+                      i.bi.bi-info-circle.me-1
+                      | Status
+                    th.text-end
+                      i.bi.bi-gear.me-1
+                      | Aksi
+                tbody
+                  each m in matches
+                    tr
+                      td
+                        .match-id= m.id
+                      
+                      td
+                        if m.sport_name
+                          .sport-badge
+                            i.bi.bi-trophy
+                            span= m.sport_name
+                        else
+                          span.text-muted -
+                      
+                      td
+                        .match-title= m.title || 'Tanpa judul'
+                        if m.event_title
+                          .match-event
+                            i.bi.bi-calendar-event.me-1
+                            = m.event_title
+                      
+                      td
+                        if m.home_team_name || m.away_team_name
+                          .match-teams
+                            span= m.home_team_name || '-'
+                            .vs-badge VS
+                            span= m.away_team_name || '-'
+                        else
+                          span.text-muted -
+                      
+                      td
+                        - const startStr = m.start_time ? new Date(m.start_time).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
+                        - const endStr = m.end_time ? new Date(m.end_time).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
+                        if startStr
+                          .match-time
+                            strong= startStr
+                            if endStr
+                              small
+                                i.bi.bi-arrow-right.me-1
+                                = endStr
+                        else
+                          span.text-muted Belum diatur
+                      
+                      td
+                        if m.venue_name
+                          span
+                            i.bi.bi-geo-alt-fill.me-1.text-danger
+                            = m.venue_name
+                        else
+                          span.text-muted -
+                      
+                      td
+                        if m.status === 'scheduled'
+                          .status-badge.status-scheduled
+                            i.bi.bi-calendar-check
+                            | Dijadwalkan
+                        else if m.status === 'ongoing'
+                          .status-badge.status-ongoing
+                            i.bi.bi-broadcast
+                            | Berlangsung
+                        else if m.status === 'finished'
+                          .status-badge.status-finished
+                            i.bi.bi-check-circle
+                            | Selesai
+                        else
+                          .status-badge
+                            = m.status || 'N/A'
+                      
+                      td
+                        .action-buttons
+                          a.btn.btn-action.btn-action-edit(
+                            href=`/subadmin/matches/${m.id}/edit`
+                            title="Edit Pertandingan"
+                          )
+                            i.bi.bi-pencil-fill
+                          
+                          form.d-inline(
+                            method="post" 
+                            action=`/subadmin/matches/${m.id}/delete`
+                            onsubmit="return confirm('Yakin ingin menghapus pertandingan ini?');"
+                          )
+                            button.btn.btn-action.btn-action-delete(
+                              type="submit"
+                              title="Hapus Pertandingan"
+                            )
+                              i.bi.bi-trash-fill
+      else
+        //- Empty State
+        .empty-state
+          .empty-state-icon
+            i.bi.bi-calendar-x
+          h4 Belum Ada Pertandingan
+          p
+            | Tambahkan pertandingan pertama untuk cabang olahraga yang kamu pegang.
+            br
+            | Mulai jadwalkan pertandingan sekarang!
+          a.btn-add-match(href="/subadmin/matches/create")
+            i.bi.bi-plus-circle
+            span Tambah Pertandingan Pertama
+
+  //- Custom JavaScript
+  script.
+    (function() {
+      // Auto dismiss alerts after 5 seconds
+      var alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          alert.style.opacity = '0';
+          alert.style.transform = 'translateY(-20px)';
+          setTimeout(function() {
+            alert.remove();
+          }, 500);
+        }, 5000);
+      });
+      
+      // Confirm delete with better UX
+      var deleteForms = document.querySelectorAll('form[action*="/delete"]');
+      deleteForms.forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          var btn = form.querySelector('button[type="submit"]');
+          var confirmed = confirm('⚠️ Yakin ingin menghapus pertandingan ini?\n\nData yang sudah dihapus tidak dapat dikembalikan.');
+          
+          if (confirmed) {
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+            btn.disabled = true;
+            form.submit();
+          }
+        });
+      });
+      
+      // Intersection Observer for table rows
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry, index) {
+            if (entry.isIntersecting) {
+              setTimeout(function() {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateX(0)';
+              }, index * 50);
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        });
+        
+        document.querySelectorAll('.matches-table tbody tr').forEach(function(row) {
+          row.style.opacity = '0';
+          row.style.transform = 'translateX(-20px)';
+          row.style.transition = 'all 0.4s ease';
+          observer.observe(row);
+        });
+      }
+    })();

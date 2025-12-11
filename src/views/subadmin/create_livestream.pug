@@ -1,32 +1,702 @@
 extends ../layout/main
 
 block content
-  .container.mt-4
-    h3.mb-3 Tambah Livestream
-    if flash && flash.error
-      .alert.alert-danger= flash.error
-    if flash && flash.success
-      .alert.alert-success= flash.success
+  style.
+    /* Livestream Form Page Styles */
+    .livestream-form-page {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Header Section */
+    .livestream-header {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(220, 38, 38, 0.25);
+      animation: fadeInDown 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .livestream-header::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -5%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: pulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.15; }
+      50% { transform: scale(1.1); opacity: 0.25; }
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .livestream-header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .livestream-header .live-badge {
+      background: white;
+      color: #dc2626;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      animation: livePulse 2s infinite;
+    }
+    
+    @keyframes livePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+    }
+    
+    .livestream-header p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      margin: 0;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Alerts */
+    .alert {
+      border-radius: 12px;
+      border: none;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      animation: slideInDown 0.4s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .alert-danger {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-left: 4px solid #dc2626;
+    }
+    
+    .alert-success {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+      border-left: 4px solid #059669;
+    }
+    
+    .alert i {
+      font-size: 1.2rem;
+    }
+    
+    /* Form Card */
+    .livestream-form-card {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid #f0f0f0;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Form Sections */
+    .form-section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .section-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      color: #1C1C1E;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .section-title i {
+      color: #dc2626;
+      font-size: 1.5rem;
+    }
+    
+    .section-description {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    
+    /* Form Elements */
+    .form-label {
+      color: #1C1C1E;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .form-label i {
+      color: #dc2626;
+      font-size: 1rem;
+    }
+    
+    .form-label .badge {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      color: #dc2626;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 1px solid #ffeded;
+    }
+    
+    .badge-required {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+    
+    .badge-live {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      color: white;
+      animation: livePulse 2s infinite;
+    }
+    
+    .form-control,
+    .form-select {
+      border: 2px solid #e8e8e8;
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 0.25rem rgba(220, 38, 38, 0.15);
+      background: white;
+    }
+    
+    .form-control:hover,
+    .form-select:hover {
+      border-color: #d0d0d0;
+      background: white;
+    }
+    
+    .form-control::placeholder {
+      color: #adb5bd;
+      font-style: italic;
+    }
+    
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    /* Help Text */
+    .form-text {
+      color: #6c757d;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .form-text i {
+      color: #dc2626;
+      font-size: 0.9rem;
+    }
+    
+    /* YouTube URL Helper */
+    .url-helper {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
+      border: 2px solid #ffeded;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 0.75rem;
+    }
+    
+    .url-helper-title {
+      font-weight: 700;
+      color: #dc2626;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .url-example {
+      background: white;
+      border: 1px solid #ffeded;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #dc2626;
+      margin-top: 0.5rem;
+      word-break: break-all;
+    }
+    
+    /* URL Validation Indicator */
+    .url-validation {
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    
+    .url-validation.valid {
+      display: flex;
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+      border: 2px solid #a7f3d0;
+      animation: fadeInUp 0.3s ease-out;
+    }
+    
+    .url-validation.invalid {
+      display: flex;
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border: 2px solid #fecaca;
+      animation: shake 0.4s ease-out;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+    
+    .url-validation i {
+      font-size: 1.2rem;
+    }
+    
+    /* Action Buttons */
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 2px solid #f0f0f0;
+      margin-top: 2rem;
+    }
+    
+    .btn-submit {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      border: none;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+      color: white;
+    }
+    
+    .btn-back {
+      background: white;
+      border: 2px solid #e8e8e8;
+      color: #6c757d;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      justify-content: center;
+    }
+    
+    .btn-back:hover {
+      background: #f8f9fa;
+      border-color: #1C1C1E;
+      color: #1C1C1E;
+      transform: translateY(-2px);
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .livestream-header {
+        padding: 1.5rem;
+      }
+      
+      .livestream-header h1 {
+        font-size: 2rem;
+      }
+      
+      .livestream-form-card {
+        padding: 2rem;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .livestream-form-page {
+        padding: 1rem 0;
+      }
+      
+      .livestream-header {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .livestream-header h1 {
+        font-size: 1.75rem;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .livestream-form-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+      }
+      
+      .section-title {
+        font-size: 1.3rem;
+      }
+      
+      .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+      }
+      
+      .form-control,
+      .form-select {
+        padding: 0.8rem 1rem;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn-submit,
+      .btn-back {
+        width: 100%;
+      }
+    }
 
-    form(method="post" action="/subadmin/livestreams/create")
-      .mb-3
-        label.form-label Cabang Olahraga
-        select.form-select(name="sport_id" required)
-          option(value="") -- Pilih cabang --
-          each s in sports
-            option(value=s.id)= s.name
+  .livestream-form-page
+    .container
+      //- Header Section
+      .livestream-header
+        h1
+          i.bi.bi-broadcast-pin
+          | Tambah Livestream
+          .live-badge
+            i.bi.bi-circle-fill(style="font-size: 0.6rem;")
+            | LIVE
+        p
+          i.bi.bi-info-circle.me-2
+          | Tambahkan livestream YouTube untuk siaran langsung pertandingan
 
-      .mb-3
-        label.form-label Judul
-        input.form-control(type="text" name="title" required)
+      //- Flash Messages
+      if flash && flash.error
+        .alert.alert-danger(role="alert")
+          i.bi.bi-exclamation-triangle-fill
+          span= flash.error
+      
+      if flash && flash.success
+        .alert.alert-success(role="alert")
+          i.bi.bi-check-circle-fill
+          span= flash.success
 
-      .mb-3
-        label.form-label URL (link YouTube saja)
-        input.form-control(type="text" name="url" placeholder="https://www.youtube.com/watch?v=..." required)
+      //- Form Card
+      .livestream-form-card
+        form(method="post" action="/subadmin/livestreams/create")
+          
+          //- Section 1: Basic Info
+          .form-section
+            .section-title
+              i.bi.bi-info-circle-fill
+              | Informasi Dasar
+            .section-description
+              | Pilih cabang olahraga dan berikan judul untuk livestream.
+            
+            .mb-3
+              label.form-label(for="sport_id")
+                i.bi.bi-trophy
+                | Cabang Olahraga
+                span.badge.badge-required Wajib
+              select.form-select#sport_id(name="sport_id" required)
+                option(value="" selected disabled) -- Pilih cabang olahraga --
+                each s in sports
+                  option(value=s.id)= s.name
+              small.form-text
+                i.bi.bi-info-circle
+                | Kategorisasi livestream berdasarkan cabang olahraga
+            
+            .mb-3
+              label.form-label(for="title")
+                i.bi.bi-text-left
+                | Judul Livestream
+                span.badge.badge-required Wajib
+              input.form-control#title(
+                type="text"
+                name="title"
+                required
+                placeholder="Contoh: LIVE - Final Basket Putra SMKN 8 vs SMAN 1"
+              )
+              small.form-text
+                i.bi.bi-info-circle
+                | Gunakan kata LIVE di awal judul untuk menarik perhatian
 
-      .mb-3
-        label.form-label Deskripsi (opsional)
-        textarea.form-control(name="description" rows="3")
+          //- Section 2: YouTube URL
+          .form-section
+            .section-title
+              i.bi.bi-youtube
+              | Link YouTube
+            .section-description
+              | Masukkan URL livestream dari YouTube.
+            
+            .mb-3
+              label.form-label(for="url")
+                i.bi.bi-link-45deg
+                | URL YouTube
+                span.badge.badge-required Wajib
+                span.badge.badge-live LIVE
+              input.form-control#url(
+                type="url"
+                name="url"
+                required
+                placeholder="https://www.youtube.com/watch?v=..."
+              )
+              #urlValidation.url-validation
+              
+              .url-helper
+                .url-helper-title
+                  i.bi.bi-lightbulb-fill
+                  | Format URL yang didukung:
+                .url-example https://www.youtube.com/watch?v=VIDEO_ID
+                .url-example https://youtu.be/VIDEO_ID
+                .url-example https://www.youtube.com/live/VIDEO_ID
+              
+              small.form-text
+                i.bi.bi-info-circle
+                | Copy URL dari livestream YouTube yang sedang berlangsung
 
-      button.btn.btn-primary(type="submit") Simpan Livestream
-      a.btn.btn-secondary.ms-2(href="/livestreams") Batal
+          //- Section 3: Description
+          .form-section
+            .section-title
+              i.bi.bi-card-text
+              | Deskripsi
+            .section-description
+              | Berikan deskripsi singkat tentang livestream (opsional).
+            
+            .mb-3
+              label.form-label(for="description")
+                i.bi.bi-text-paragraph
+                | Deskripsi Livestream
+                span.badge Opsional
+              textarea.form-control#description(
+                name="description"
+                rows="4"
+                placeholder="Deskripsi tentang pertandingan, tim yang bertanding, atau informasi penting lainnya..."
+              )
+              small.form-text
+                i.bi.bi-info-circle
+                | Deskripsi akan membantu penonton memahami konten livestream
+
+          //- Action Buttons
+          .form-actions
+            button.btn.btn-submit(type="submit")
+              i.bi.bi-broadcast
+              span Simpan Livestream
+            
+            a.btn.btn-back(href="/livestreams")
+              i.bi.bi-arrow-left
+              span Batal
+
+  //- Custom JavaScript
+  script.
+    (function() {
+      // URL Validation
+      var urlInput = document.getElementById('url');
+      var urlValidation = document.getElementById('urlValidation');
+      
+      if (urlInput && urlValidation) {
+        urlInput.addEventListener('input', function() {
+          var url = this.value.trim();
+          
+          if (!url) {
+            urlValidation.className = 'url-validation';
+            return;
+          }
+          
+          // YouTube URL patterns
+          var patterns = [
+            /^https?:\/\/(www\.)?youtube\.com\/watch\?v=[\w-]+/,
+            /^https?:\/\/youtu\.be\/[\w-]+/,
+            /^https?:\/\/(www\.)?youtube\.com\/live\/[\w-]+/,
+            /^https?:\/\/(www\.)?youtube\.com\/embed\/[\w-]+/
+          ];
+          
+          var isValid = patterns.some(function(pattern) {
+            return pattern.test(url);
+          });
+          
+          if (isValid) {
+            urlValidation.className = 'url-validation valid';
+            urlValidation.innerHTML = '<i class="bi bi-check-circle-fill"></i><span>URL YouTube valid!</span>';
+          } else {
+            urlValidation.className = 'url-validation invalid';
+            urlValidation.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i><span>URL harus dari YouTube (youtube.com atau youtu.be)</span>';
+          }
+        });
+      }
+      
+      // Auto dismiss alerts
+      var alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          alert.style.opacity = '0';
+          alert.style.transform = 'translateY(-20px)';
+          setTimeout(function() {
+            alert.remove();
+          }, 500);
+        }, 5000);
+      });
+      
+      // Form validation
+      var form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          var url = urlInput.value.trim();
+          var patterns = [
+            /^https?:\/\/(www\.)?youtube\.com\/watch\?v=[\w-]+/,
+            /^https?:\/\/youtu\.be\/[\w-]+/,
+            /^https?:\/\/(www\.)?youtube\.com\/live\/[\w-]+/,
+            /^https?:\/\/(www\.)?youtube\.com\/embed\/[\w-]+/
+          ];
+          
+          var isValid = patterns.some(function(pattern) {
+            return pattern.test(url);
+          });
+          
+          if (!isValid) {
+            e.preventDefault();
+            urlValidation.className = 'url-validation invalid';
+            urlValidation.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i><span>Harap masukkan URL YouTube yang valid</span>';
+            urlInput.focus();
+            return;
+          }
+          
+          var btn = form.querySelector('.btn-submit');
+          if (btn) {
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
+            btn.disabled = true;
+          }
+        });
+      }
+      
+      // Character counter for title
+      var titleInput = document.getElementById('title');
+      if (titleInput) {
+        var maxLength = 150;
+        var counter = document.createElement('small');
+        counter.className = 'form-text text-end d-block mt-1';
+        counter.style.color = '#6c757d';
+        titleInput.parentNode.appendChild(counter);
+        
+        function updateCounter() {
+          var length = titleInput.value.length;
+          counter.textContent = length + ' / ' + maxLength + ' karakter';
+          
+          if (length > maxLength * 0.9) {
+            counter.style.color = '#dc2626';
+          } else {
+            counter.style.color = '#6c757d';
+          }
+        }
+        
+        titleInput.maxLength = maxLength;
+        titleInput.addEventListener('input', updateCounter);
+        updateCounter();
+      }
+      
+      // Character counter for description
+      var descInput = document.getElementById('description');
+      if (descInput) {
+        var maxDescLength = 500;
+        var descCounter = document.createElement('small');
+        descCounter.className = 'form-text text-end d-block mt-1';
+        descCounter.style.color = '#6c757d';
+        descInput.parentNode.appendChild(descCounter);
+        
+        function updateDescCounter() {
+          var length = descInput.value.length;
+          descCounter.textContent = length + ' / ' + maxDescLength + ' karakter';
+          
+          if (length > maxDescLength * 0.9) {
+            descCounter.style.color = '#dc2626';
+          } else {
+            descCounter.style.color = '#6c757d';
+          }
+        }
+        
+        descInput.maxLength = maxDescLength;
+        descInput.addEventListener('input', updateDescCounter);
+        updateDescCounter();
+      }
+    })();
