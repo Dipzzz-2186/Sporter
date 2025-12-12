@@ -121,6 +121,10 @@ router.get("/subadmins", authMiddleware.requireAdmin, adminController.listSubadm
 router.get("/subadmins/create", authMiddleware.requireAdmin, adminController.renderCreateSubadmin);
 router.post("/subadmins/create", authMiddleware.requireAdmin, adminController.createSubadmin);
 
+// edit subadmin
+router.get("/subadmins/:id/edit", adminController.renderEditSubadmin);
+router.post("/subadmins/:id/edit", adminController.updateSubadmin);
+
 // delete subadmin (optional)
 router.post("/subadmins/:id/delete", authMiddleware.requireAdmin, adminController.deleteSubadmin);
 

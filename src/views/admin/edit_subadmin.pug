@@ -1,0 +1,801 @@
+extends ../layout/main
+
+block content
+  style.
+    /* Simplified Hero Section */
+    .edit-hero {
+      background: white;
+      padding: 2rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 2rem;
+    }
+    
+    .hero-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1C1C1E;
+      margin-bottom: 0.5rem;
+    }
+    
+    .page-subtitle {
+      color: #6c757d;
+      font-size: 0.95rem;
+      margin: 0;
+      max-width: 600px;
+    }
+    
+    .hero-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    /* Alert Styles */
+    .alert-container {
+      margin-bottom: 1.5rem;
+    }
+    
+    .modern-alert {
+      border: none;
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      animation: slideInDown 0.3s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .modern-alert-danger {
+      background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+      color: #DC2626;
+      border-left: 4px solid #DC2626;
+    }
+    
+    .modern-alert-success {
+      background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+      color: #059669;
+      border-left: 4px solid #059669;
+    }
+    
+    .modern-alert-info {
+      background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+      color: #1D4ED8;
+      border-left: 4px solid #1D4ED8;
+    }
+    
+    .alert-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    /* Form Container */
+    .form-container {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #F1F5F9;
+    }
+    
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1rem;
+    }
+    
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1C1C1E;
+      margin: 0;
+    }
+    
+    /* Form Labels */
+    .form-label {
+      font-weight: 600;
+      color: #1C1C1E;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .form-label i {
+      color: #F59E0B;
+      font-size: 1.1rem;
+    }
+    
+    /* Form Controls */
+    .form-control-modern {
+      border: 2px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+      width: 100%;
+    }
+    
+    .form-control-modern:focus {
+      border-color: #F59E0B;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+      outline: none;
+    }
+    
+    .form-control-modern:disabled {
+      background-color: #F8FAFC;
+      border-color: #E2E8F0;
+    }
+    
+    /* Password Input */
+    .password-container {
+      position: relative;
+    }
+    
+    .toggle-password {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #6B7280;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: color 0.3s ease;
+    }
+    
+    .toggle-password:hover {
+      color: #F59E0B;
+    }
+    
+    /* Helper Text */
+    .form-text-helper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      color: #6B7280;
+    }
+    
+    .form-text-helper i {
+      font-size: 0.9rem;
+      color: #9CA3AF;
+    }
+    
+    /* Sports Section */
+    .sports-section {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 2px solid #F1F5F9;
+    }
+    
+    .sports-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .sports-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1C1C1E;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .select-all-btn {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      color: #4B5563;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .select-all-btn:hover {
+      background: #F1F5F9;
+      border-color: #D1D5DB;
+    }
+    
+    .sports-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 1rem;
+      background: #F8FAFC;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+    }
+    
+    /* Sport Checkbox */
+    .sport-checkbox {
+      display: none;
+    }
+    
+    .sport-card {
+      background: white;
+      border: 2px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .sport-card:hover {
+      border-color: #F59E0B;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .sport-checkbox:checked ~ .sport-card {
+      border-color: #10B981;
+      background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+    }
+    
+    .sport-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    
+    .sport-name {
+      font-weight: 600;
+      color: #1C1C1E;
+      margin-bottom: 0.25rem;
+    }
+    
+    .sport-desc {
+      font-size: 0.85rem;
+      color: #6B7280;
+    }
+    
+    .checkmark {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 20px;
+      height: 20px;
+      background: #10B981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.75rem;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.3s ease;
+    }
+    
+    .sport-checkbox:checked ~ .sport-card .checkmark {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    /* Selected Sports Preview */
+    .selected-sports {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px dashed #E2E8F0;
+    }
+    
+    .selected-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #4B5563;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .selected-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      min-height: 40px;
+    }
+    
+    .selected-badge {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+      color: #D97706;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid #FDE68A;
+    }
+    
+    .selected-badge i {
+      font-size: 0.9rem;
+    }
+    
+    .badge-close {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0;
+      margin-left: 0.25rem;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+      line-height: 1;
+    }
+    
+    .badge-close:hover {
+      opacity: 1;
+    }
+    
+    .no-selection {
+      color: #9CA3AF;
+      font-style: italic;
+      padding: 0.5rem 0;
+    }
+    
+    /* Form Actions */
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid #F1F5F9;
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+      cursor: pointer;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+    }
+    
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+    
+    .cancel-btn {
+      background: #F8FAFC;
+      color: #4B5563;
+      border: 2px solid #E2E8F0;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    
+    .cancel-btn:hover {
+      background: #F1F5F9;
+      border-color: #D1D5DB;
+      color: #374151;
+      text-decoration: none;
+    }
+    
+    /* Form Validation */
+    .invalid-feedback {
+      color: #DC2626;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .form-control-modern.is-invalid {
+      border-color: #DC2626;
+      background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+    }
+    
+    .form-control-modern.is-invalid:focus {
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+    
+    /* Info Card */
+    .info-card {
+      background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+      border: 1px solid #BFDBFE;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: start;
+      gap: 1rem;
+    }
+    
+    .info-card i {
+      color: #1D4ED8;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+    }
+    
+    .info-card-content {
+      flex: 1;
+    }
+    
+    .info-card-title {
+      font-weight: 600;
+      color: #1E40AF;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+    
+    .info-card-text {
+      color: #1E3A8A;
+      font-size: 0.875rem;
+      margin: 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .edit-hero {
+        padding: 1.5rem 0;
+      }
+      
+      .hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .hero-icon {
+        align-self: flex-start;
+      }
+      
+      .page-title {
+        font-size: 1.5rem;
+      }
+      
+      .form-container {
+        padding: 1.5rem;
+      }
+      
+      .sports-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .submit-btn,
+      .cancel-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+  // Hero Section
+  .edit-hero
+    .container
+      .hero-content
+        div
+          h1.page-title Edit SubAdmin
+          p.page-subtitle Perbarui informasi dan hak akses untuk pengguna SubAdmin
+        .hero-icon
+          i.bi.bi-pencil-square
+
+  .container
+    // Alert Messages
+    if flash.error && flash.error.length
+      .alert-container
+        each msg in flash.error
+          .modern-alert.modern-alert-danger
+            i.bi.bi-exclamation-triangle-fill.alert-icon
+            div= msg
+    
+    if flash.success && flash.success.length
+      .alert-container
+        each msg in flash.success
+          .modern-alert.modern-alert-success
+            i.bi.bi-check-circle-fill.alert-icon
+            div= msg
+
+    // Form Container
+    .form-container
+      form(method="post" action=`/admin/subadmins/${subadmin.id}/edit` id="editSubadminForm")
+        
+        // Basic Information Section
+        .section-header
+          .section-icon
+            i.bi.bi-person-circle
+          h2.section-title Informasi Dasar
+        
+        .row.g-3.mb-4
+          .col-md-6
+            label.form-label(for="name")
+              i.bi.bi-person-circle
+              | Nama Lengkap
+            input.form-control-modern(
+              type="text" 
+              name="name" 
+              id="name" 
+              required
+              placeholder="Masukkan nama lengkap"
+              value=subadmin.name
+            )
+            .invalid-feedback#nameError
+              i.bi.bi-exclamation-circle
+              span Nama lengkap harus diisi
+        
+          .col-md-6
+            label.form-label(for="email")
+              i.bi.bi-envelope
+              | Email
+            input.form-control-modern(
+              type="email" 
+              name="email" 
+              id="email" 
+              required
+              placeholder="contoh@email.com"
+              value=subadmin.email
+            )
+            .invalid-feedback#emailError
+              i.bi.bi-exclamation-circle
+              span Email harus valid
+        
+        // Password Section
+        .section-header.mt-4
+          .section-icon
+            i.bi.bi-shield-lock
+          h2.section-title Ubah Password
+        
+        .info-card
+          i.bi.bi-info-circle
+          .info-card-content
+            .info-card-title Informasi Password
+            p.info-card-text Biarkan kolom password kosong jika tidak ingin mengubah password saat ini
+        
+        .row.g-3.mb-4
+          .col-md-6
+            label.form-label(for="password")
+              i.bi.bi-key
+              | Password Baru (Opsional)
+            .password-container
+              input.form-control-modern(
+                type="password" 
+                name="password" 
+                id="password" 
+                placeholder="Minimal 8 karakter"
+              )
+              button.toggle-password(type="button" onclick="togglePassword('password')")
+                i.bi.bi-eye
+            .form-text-helper
+              i.bi.bi-info-circle
+              span Kosongkan jika tidak ingin mengubah password
+            .invalid-feedback#passwordError
+              i.bi.bi-exclamation-circle
+              span Password minimal 8 karakter
+        
+          .col-md-6
+            label.form-label(for="confirmPassword")
+              i.bi.bi-key-fill
+              | Konfirmasi Password Baru
+            .password-container
+              input.form-control-modern(
+                type="password" 
+                name="confirmPassword" 
+                id="confirmPassword" 
+                placeholder="Ulangi password baru"
+              )
+              button.toggle-password(type="button" onclick="togglePassword('confirmPassword')")
+                i.bi.bi-eye
+            .invalid-feedback#confirmPasswordError
+              i.bi.bi-exclamation-circle
+              span Password harus sama
+        
+        // Sports Selection
+        .sports-section
+          .sports-header
+            h3.sports-title
+              i.bi.bi-trophy
+              | Pilih Cabang Olahraga
+            button.select-all-btn(type="button" id="selectAllBtn")
+              i.bi.bi-check-square
+              | Pilih Semua
+          
+          .sports-grid#sportsGrid
+            each sport in sports
+              .sport-item
+                input.sport-checkbox(
+                  type="checkbox" 
+                  name="sport_ids" 
+                  id=`sport-${sport.id}` 
+                  value=sport.id
+                  checked=(Array.isArray(assignedSports) && assignedSports.includes(sport.id))
+                  data-sport-name=sport.name
+                )
+                .sport-card(data-sport-id=sport.id)
+                  .sport-icon
+                    i.bi.bi-trophy-fill
+                  div
+                    .sport-name= sport.name
+                    .sport-desc= sport.description || 'Cabang olahraga'
+                  .checkmark
+                    i.bi.bi-check
+        
+          // Selected Sports Preview
+          .selected-sports
+            .selected-title
+              i.bi.bi-check-circle
+              | Cabang yang Dipilih:
+            .selected-badges#selectedBadges
+              .no-selection Belum ada cabang yang dipilih
+        
+        // Form Actions
+        .form-actions
+          button.submit-btn(type="submit")
+            i.bi.bi-save
+            | Update SubAdmin
+          a.cancel-btn(href="/admin/subadmins")
+            i.bi.bi-x-circle
+            | Batal
+
+  script.
+    // Toggle show/hide password
+    function togglePassword(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
+    // Update badge preview
+    function updateSelectedBadges() {
+      const badgesContainer = document.getElementById("selectedBadges");
+      const checkboxes = document.querySelectorAll(".sport-checkbox:checked");
+
+      badgesContainer.innerHTML = "";
+
+      if (checkboxes.length === 0) {
+        badgesContainer.innerHTML = '<div class="no-selection">Belum ada cabang yang dipilih</div>';
+        return;
+      }
+
+      checkboxes.forEach(cb => {
+        const name = cb.dataset.sportName;
+        const id = cb.value;
+
+        const badge = document.createElement("div");
+        badge.className = "selected-badge";
+        badge.innerHTML = `
+          <i class="bi bi-trophy-fill"></i> ${name}
+          <button class="badge-close" onclick="removeSport(${id})">
+            &times;
+          </button>
+        `;
+
+        badgesContainer.appendChild(badge);
+      });
+    }
+
+    // Remove badge (uncheck the checkbox)
+    function removeSport(id) {
+      const checkbox = document.getElementById("sport-" + id);
+      checkbox.checked = false;
+      updateSelectedBadges();
+      updateSelectAllButton();
+    }
+
+    // Select all / unselect all
+    document.getElementById("selectAllBtn").addEventListener("click", function () {
+      const checkboxes = document.querySelectorAll(".sport-checkbox");
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+      checkboxes.forEach(cb => (cb.checked = !allChecked));
+      updateSelectedBadges();
+      updateSelectAllButton();
+    });
+
+    // Update Select All button state
+    function updateSelectAllButton() {
+      const checkboxes = document.querySelectorAll(".sport-checkbox");
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+      const btn = document.getElementById("selectAllBtn");
+      btn.innerHTML = allChecked
+        ? '<i class="bi bi-x-square"></i> Hapus Semua'
+        : '<i class="bi bi-check-square"></i> Pilih Semua';
+    }
+
+    // When clicking sport card, toggle checkbox manually
+    document.querySelectorAll(".sport-card").forEach(card => {
+      card.addEventListener("click", function () {
+        const id = this.dataset.sportId;
+        const checkbox = document.getElementById("sport-" + id);
+        checkbox.checked = !checkbox.checked;
+        updateSelectedBadges();
+        updateSelectAllButton();
+      });
+    });
+
+    // Initial state when page loads
+    updateSelectedBadges();
+    updateSelectAllButton();

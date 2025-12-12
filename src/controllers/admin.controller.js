@@ -231,6 +231,127 @@ exports.listSubadmins = async (req, res) => {
   }
 };
 
+
+/**
+ * Render EDIT SubAdmin
+ */
+exports.renderEditSubadmin = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID tidak valid.");
+      return res.redirect("/admin/subadmins");
+    }
+
+    // ambil data subadmin
+    const [[sub]] = await db.query(
+      "SELECT id, name, email FROM users WHERE id = ? AND role = 'subadmin' LIMIT 1",
+      [id]
+    );
+
+    if (!sub) {
+      req.flash("error", "SubAdmin tidak ditemukan.");
+      return res.redirect("/admin/subadmins");
+    }
+
+    // ambil sport yang sudah diassign
+    const [selectedSports] = await db.query(
+      "SELECT sport_id FROM user_sports WHERE user_id = ?",
+      [id]
+    );
+    const selectedIds = selectedSports.map(s => s.sport_id);
+
+    // semua sport untuk ditampilkan dalam checkbox
+    const [sports] = await db.query("SELECT id, name FROM sports ORDER BY name");
+
+    return res.render("admin/edit_subadmin", {
+      title: "Edit SubAdmin - SPORTER",
+      subadmin: sub,
+      sports,
+      selectedIds
+    });
+  } catch (err) {
+    console.error("ERROR renderEditSubadmin:", err);
+    req.flash("error", "Gagal memuat form edit.");
+    return res.redirect("/admin/subadmins");
+  }
+};
+
+
+/**
+ * Update SubAdmin
+ */
+exports.updateSubadmin = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID tidak valid.");
+      return res.redirect("/admin/subadmins");
+    }
+
+    const { name, email, password } = req.body;
+    let sport_ids = req.body.sport_ids || [];
+
+    if (!name || !email) {
+      req.flash("error", "Nama dan email wajib diisi.");
+      return res.redirect(`/admin/subadmins/${id}/edit`);
+    }
+
+    // normalisasi sport_ids → array
+    if (!Array.isArray(sport_ids)) {
+      if (typeof sport_ids === "string" && sport_ids.trim() !== "") {
+        sport_ids = sport_ids.split(",").map(s => s.trim());
+      } else sport_ids = [];
+    }
+    sport_ids = sport_ids.map(Number).filter(Boolean);
+
+    // cek subadmin exists
+    const [[sub]] = await db.query(
+      "SELECT id FROM users WHERE id = ? AND role = 'subadmin' LIMIT 1",
+      [id]
+    );
+    if (!sub) {
+      req.flash("error", "SubAdmin tidak ditemukan.");
+      return res.redirect("/admin/subadmins");
+    }
+
+    // update basic info
+    let sql = "UPDATE users SET name = ?, email = ?";
+    let params = [name, email];
+
+    if (password && password.trim() !== "") {
+      const hash = bcrypt.hashSync(password, SALT_ROUNDS);
+      sql += ", password_hash = ?";
+      params.push(hash);
+    }
+
+    sql += ", updated_at = NOW() WHERE id = ?";
+    params.push(id);
+
+    await db.query(sql, params);
+
+    // replace sports assignment
+    await db.query("DELETE FROM user_sports WHERE user_id = ?", [id]);
+
+    if (sport_ids.length > 0) {
+      const values = sport_ids.map(sid => [
+        id,
+        sid,
+        req.session.user ? req.session.user.id : null
+      ]);
+      await db.query("INSERT INTO user_sports (user_id, sport_id, assigned_by) VALUES ?", [values]);
+    }
+
+    req.flash("success", "SubAdmin berhasil diperbarui.");
+    return res.redirect("/admin/subadmins");
+  } catch (err) {
+    console.error("ERROR updateSubadmin:", err);
+    req.flash("error", "Gagal mengupdate SubAdmin.");
+    return res.redirect("/admin/subadmins");
+  }
+};
+
+
 /**
  * Delete subadmin
  */
