@@ -1,41 +1,454 @@
 extends ../layout/main
 
 block content
-  .container
-    .row.mb-4
-      .col-lg-8
-        h1.fw-bold.text-danger= sport.name
-        if sport.description
-          p.text-secondary= sport.description
-        else
-          p.text-secondary Belum ada deskripsi untuk cabang olahraga ini.
-      .col-lg-4.text-lg-end
-        a.btn.btn-outline-danger.mt-2(href="/sports")
-          i.bi.bi-arrow-left.me-1
-          | Kembali ke daftar sports
-
-    //- Nanti di sini bisa ditambah:
-    //- - list event
-    //- - jadwal pertandingan
-    //- - berita terkait sport ini
-    .alert.alert-light.border
-      | Di halaman ini nanti akan tampil daftar event & jadwal khusus 
-      strong= ' ' + sport.name
-      | .
+  style.
+    /* Sport Detail Page Styles */
+    .sport-detail-page {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      min-height: 100vh;
+      padding: 0;
+    }
     
-    if matches.length
-      h3.mt-4 Jadwal Pertandingan
-      table.table
-        thead
-          tr
-            th Pertandingan
-            th Waktu
-            th Venue
-        tbody
+    /* Hero Section */
+    .sport-hero {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      padding: 4rem 0 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .sport-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.05)"/></svg>');
+      opacity: 0.3;
+    }
+    
+    .sport-hero-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .sport-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      color: white;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      animation: fadeInDown 0.6s ease-out;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .sport-hero h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 4rem;
+      color: white;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 0.6s ease-out 0.2s both;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .sport-description {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 700px;
+      line-height: 1.8;
+      animation: fadeInUp 0.6s ease-out 0.4s both;
+    }
+    
+    .hero-actions {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      animation: fadeInUp 0.6s ease-out 0.6s both;
+    }
+    
+    .btn-hero {
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    
+    .btn-hero-primary {
+      background: white;
+      color: #FF3B30;
+      border: 2px solid white;
+    }
+    
+    .btn-hero-primary:hover {
+      background: rgba(255, 255, 255, 0.9);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-hero-outline {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+    
+    .btn-hero-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-3px);
+    }
+    
+    /* Stats Section */
+    .stats-section {
+      background: #2d2d2d;
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      border-color: #FF3B30;
+      box-shadow: 0 10px 30px rgba(255, 59, 48, 0.2);
+    }
+    
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.8rem;
+      color: white;
+    }
+    
+    .stat-number {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      color: white;
+      margin: 0;
+    }
+    
+    .stat-label {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    /* Content Section */
+    .content-section {
+      padding: 3rem 0;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .section-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      color: white;
+      letter-spacing: 1px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .section-title i {
+      color: #FF3B30;
+      font-size: 1.8rem;
+    }
+    
+    /* Match Cards */
+    .match-card {
+      background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.5s ease-out;
+    }
+    
+    .match-card:hover {
+      transform: translateX(10px);
+      border-color: #FF3B30;
+      box-shadow: 0 5px 20px rgba(255, 59, 48, 0.2);
+    }
+    
+    .match-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .match-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: white;
+      margin: 0;
+    }
+    
+    .match-status {
+      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      color: white;
+      padding: 0.35rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .match-info {
+      display: flex;
+      gap: 2rem;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+    
+    .match-info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .match-info-item i {
+      color: #FF3B30;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+      border-radius: 24px;
+      padding: 4rem 2rem;
+      text-align: center;
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+    }
+    
+    .empty-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, rgba(255, 59, 48, 0.1) 0%, rgba(255, 149, 0, 0.1) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      font-size: 3rem;
+      color: #FF3B30;
+    }
+    
+    .empty-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      color: white;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-text {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.1rem;
+      max-width: 500px;
+      margin: 0 auto 2rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .sport-hero h1 {
+        font-size: 3rem;
+      }
+      
+      .sport-description {
+        font-size: 1rem;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .sport-hero {
+        padding: 3rem 0 2rem;
+      }
+      
+      .sport-hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero-actions {
+        flex-direction: column;
+      }
+      
+      .btn-hero {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .stats-section {
+        padding: 1.5rem 0;
+      }
+      
+      .stat-card {
+        margin-bottom: 1rem;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .match-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .match-info {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+
+  .sport-detail-page
+    //- Hero Section
+    .sport-hero
+      .container
+        .sport-hero-content
+          .sport-badge
+            i.bi.bi-flag-fill
+            | Platform Olahraga #1 Indonesia
+          
+          h1= sport.name
+          
+          if sport.description
+            p.sport-description= sport.description
+          else
+            p.sport-description SPORTER mengumpulkan informasi olahraga Indonesia: event, jadwal pertandingan, skor, klasemen, livestream, dan tiket dalam satu platform yang mudah digunakan.
+          
+          .hero-actions
+            a.btn-hero.btn-hero-primary(href="#jadwal")
+              i.bi.bi-calendar-check
+              | Lihat Jadwal
+            a.btn-hero.btn-hero-outline(href="/sports")
+              i.bi.bi-arrow-left
+              | Kembali
+
+    //- Stats Section
+    .stats-section
+      .container
+        .row.g-4
+          .col-md-4
+            .stat-card
+              .stat-icon
+                i.bi.bi-trophy-fill
+              .stat-number= matches.length
+              .stat-label Pertandingan
+          
+          .col-md-4
+            .stat-card
+              .stat-icon
+                i.bi.bi-calendar-event
+              .stat-number 12
+              .stat-label Event Aktif
+          
+          .col-md-4
+            .stat-card
+              .stat-icon
+                i.bi.bi-people-fill
+              .stat-number 48
+              .stat-label Tim Terdaftar
+
+    //- Content Section
+    .content-section#jadwal
+      .container
+        .section-header
+          .section-title
+            i.bi.bi-calendar-range
+            | Jadwal Pertandingan
+          
+          if matches.length
+            a.btn.btn-outline-light(href="/matches?sport=" + sport.id)
+              | Lihat Semua
+              i.bi.bi-arrow-right.ms-2
+
+        if matches.length
           each m in matches
-            tr
-              td= m.title
-              td= new Date(m.start_time).toLocaleString('id-ID')
-              td= m.venue_name || '-'
-    else
-      p.text-muted Belum ada jadwal untuk cabang ini.
+            .match-card
+              .match-header
+                h3.match-title= m.title
+                .match-status
+                  i.bi.bi-dot.me-1
+                  | Dijadwalkan
+              
+              .match-info
+                .match-info-item
+                  i.bi.bi-clock-fill
+                  span= new Date(m.start_time).toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                
+                if m.venue_name
+                  .match-info-item
+                    i.bi.bi-geo-alt-fill
+                    span= m.venue_name
+                else
+                  .match-info-item
+                    i.bi.bi-geo-alt-fill
+                    span Venue belum ditentukan
+        else
+          .empty-state
+            .empty-icon
+              i.bi.bi-calendar-x
+            .empty-title Belum Ada Jadwal
+            .empty-text Di halaman ini nanti akan tampil daftar event & jadwal khusus untuk cabang olahraga #{sport.name}.
+            a.btn.btn-hero-primary(href="/subadmin/matches/create")
+              i.bi.bi-plus-circle
+              | Tambah Pertandingan
+
+  //- Smooth Scroll Script
+  script.
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
