@@ -558,6 +558,15 @@ block content
           span.user-role-badge
             i.bi.bi-shield-check
             | SubAdmin Dashboard
+
+          // show assigned sports as pills
+          if assignedSports && assignedSports.length
+            .assigned-sports
+              each s in assignedSports
+                span.sport-pill= s.name
+          else
+            small.text-muted.ms-2 Belum ada cabang
+
           p.text-white-75.mt-2.mb-0 Kelola event, jadwal, dan konten untuk cabang olahraga Anda
         .col-md-4.text-md-end.mt-3.mt-md-0
           a.btn.btn-light.btn-lg(href="/admin")
@@ -625,9 +634,15 @@ block content
             h2.section-title
               i.bi.bi-calendar-event
               | Jadwal Mendatang
-            a.section-link(href="/subadmin/matches")
-              | Kelola Semua
-              i.bi.bi-arrow-right
+
+            // right-side controls
+            .d-flex.align-items-center.gap-2
+              a.btn.btn-sm.btn-outline-primary(href="/subadmin/matches")
+                i.bi.bi-list-ul.me-1
+                | Kelola
+              a.btn.btn-sm.btn-primary(href="/subadmin/matches/create")
+                i.bi.bi-plus-lg.me-1
+                | Buat
             
           .dashboard-table
             .table-responsive
@@ -693,10 +708,18 @@ block content
       .col-lg-4
         // Recent News
         .sidebar-card
-          .sidebar-card-header
-            h6
+          .sidebar-card-header.d-flex.justify-content-between.align-items-center
+            h6.mb-0
               i.bi.bi-newspaper.me-2
               | Berita Terbaru
+            .d-flex.align-items-center.gap-2
+              a.btn.btn-sm.btn-outline-primary(href="/subadmin/news")
+                i.bi.bi-list-ul.me-1
+                | Kelola
+              a.btn.btn-sm.btn-primary(href="/subadmin/news/create")
+                i.bi.bi-plus-lg.me-1
+                | Buat
+
           ul.sidebar-list
             if recentNews && recentNews.length
               each n in recentNews
@@ -712,13 +735,21 @@ block content
                   .empty-state-icon.mb-2
                     i.bi.bi-newspaper
                   p.mb-0.text-muted Belum ada berita
-        
+
         // Recent Videos
         .sidebar-card
-          .sidebar-card-header
-            h6
+          .sidebar-card-header.d-flex.justify-content-between.align-items-center
+            h6.mb-0
               i.bi.bi-play-btn.me-2
               | Video Terbaru
+            .d-flex.align-items-center.gap-2
+              a.btn.btn-sm.btn-outline-primary(href="/subadmin/videos")
+                i.bi.bi-list-ul.me-1
+                | Kelola
+              a.btn.btn-sm.btn-primary(href="/subadmin/videos/create")
+                i.bi.bi-plus-lg.me-1
+                | Buat
+
           ul.sidebar-list
             if recentVideos && recentVideos.length
               each v in recentVideos
@@ -734,13 +765,22 @@ block content
                   .empty-state-icon.mb-2
                     i.bi.bi-play-btn
                   p.mb-0.text-muted Belum ada video
+
         
-        // Upcoming Livestreams
+        // Livestream
         .sidebar-card
-          .sidebar-card-header
-            h6
+          .sidebar-card-header.d-flex.justify-content-between.align-items-center
+            h6.mb-0
               i.bi.bi-broadcast.me-2
-              | Livestream Terdekat
+              | Livestream
+            .d-flex.align-items-center.gap-2
+              a.btn.btn-sm.btn-outline-primary(href="/subadmin/livestreams")
+                i.bi.bi-list-ul.me-1
+                | Kelola
+              a.btn.btn-sm.btn-primary(href="/subadmin/livestreams/create")
+                i.bi.bi-plus-lg.me-1
+                | Buat
+
           ul.sidebar-list
             if upcomingLivestreams && upcomingLivestreams.length
               each l in upcomingLivestreams

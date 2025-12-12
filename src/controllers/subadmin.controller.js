@@ -40,16 +40,41 @@ exports.renderDashboard = async (req, res) => {
         const userId = req.session.user.id;
 
         // 1) ambil sports yang di-assign ke subadmin (admin akan di-handle: jika admin, ambil semua sports)
-        let sportFilterSql = '';
-        let sportIds = [];
+      let sportFilterSql = '';
+      const sportIds = Array.isArray(req.allowedSports) ? req.allowedSports : [];
+      let assignedSports = [];
+      try {
         if (req.session.user.role === 'admin') {
-            const [allSports] = await db.query('SELECT id FROM sports');
-            sportIds = allSports.map(r => r.id);
+          // admin -> semua cabang
+          const [allSports] = await db.query('SELECT id, name FROM sports ORDER BY name');
+          assignedSports = allSports;
+        } else if (sportIds.length) {
+          const placeholdersForNames = sportIds.map(() => '?').join(',');
+          const [rows] = await db.query(
+            `SELECT id, name FROM sports WHERE id IN (${placeholdersForNames}) ORDER BY name`,
+            sportIds
+          );
+          assignedSports = rows;
         } else {
-            const [rows] = await db.query('SELECT sport_id FROM user_sports WHERE user_id = ?', [userId]);
-            sportIds = rows.map(r => r.sport_id);
+          assignedSports = []; // tidak ada cabang
         }
+      } catch (e) {
+        console.error('failed to load assignedSports', e);
+        assignedSports = [];
+      }
 
+      if (!sportIds || sportIds.length === 0) {
+        // no assigned sports (subadmin tanpa sport) -> tampilkan dashboard kosong
+        return res.render('subadmin/dashboard', {
+          title: 'SubAdmin Dashboard - SPORTER',
+          stats: { sports: 0, events: 0, matches: 0, videos: 0, livestreams: 0, ticketTypes: 0 },
+          upcomingMatches: [],
+          recentNews: [],
+          recentVideos: [],
+          upcomingLivestreams: [],
+          assignedSports
+        });
+      }
         if (!sportIds || sportIds.length === 0) {
             // no assigned sports
             return res.render('subadmin/dashboard', {
@@ -163,27 +188,52 @@ exports.renderDashboard = async (req, res) => {
             [...sportIds]
         );
 
-        const [upcomingLivestreams] = await db.query(
+      // --- show ALL livestreams for allowed sports (admin = all) ---
+      let upcomingLivestreams = [];
+      try {
+        if (req.session.user.role === 'admin') {
+          const [rows] = await db.query(
             `
-      SELECT v.id, v.title, v.start_time, v.is_live, s.name AS sport_name
+      SELECT v.id, v.title, v.start_time, v.is_live, v.created_at, s.name AS sport_name
       FROM videos v
       LEFT JOIN sports s ON s.id = v.sport_id
-      WHERE v.type = 'livestream' AND (v.start_time >= NOW() OR v.is_live = 1) ${sportFilterSql}
-      ORDER BY v.start_time ASC
-      LIMIT 6
+      WHERE v.type = 'livestream'
+      ORDER BY COALESCE(v.start_time, v.created_at) DESC
+      LIMIT 12
+      `
+          );
+          upcomingLivestreams = rows;
+        } else {
+          // subadmin: only livestreams for assigned sports
+          const placeholders = sportIds.map(() => '?').join(',');
+          const [rows] = await db.query(
+            `
+      SELECT v.id, v.title, v.start_time, v.is_live, v.created_at, s.name AS sport_name
+      FROM videos v
+      LEFT JOIN sports s ON s.id = v.sport_id
+      WHERE v.type = 'livestream'
+        AND s.id IN (${placeholders})
+      ORDER BY COALESCE(v.start_time, v.created_at) DESC
+      LIMIT 12
       `,
             [...sportIds]
-        );
+          );
+          upcomingLivestreams = rows;
+        }
+      } catch (e) {
+        console.error('failed to load livestreams for dashboard', e);
+        upcomingLivestreams = [];
+      }
 
-        return res.render('subadmin/dashboard', {
-            title: 'SubAdmin Dashboard - SPORTER',
-            stats,
-            upcomingMatches: mappedMatches,
-            recentNews,
-            recentVideos,
-            upcomingLivestreams
-        });
-
+      return res.render('subadmin/dashboard', {
+        title: 'SubAdmin Dashboard - SPORTER',
+        stats,
+        upcomingMatches: mappedMatches,
+        recentNews,
+        recentVideos,
+        upcomingLivestreams,
+        assignedSports
+      });
     } catch (err) {
         console.error('renderDashboard subadmin error', err);
         req.flash('error', 'Gagal memuat dashboard.');
@@ -273,16 +323,13 @@ exports.createNews = async (req, res) => {
 exports.listMatches = async (req, res) => {
   try {
     // tentukan sport yang boleh diakses user ini
-    let sportIds = [];
-    if (req.session.user.role === "admin") {
-      const [allSports] = await db.query("SELECT id FROM sports");
-      sportIds = allSports.map((r) => r.id);
-    } else if (req.session.user.role === "subadmin") {
-      const [rows] = await db.query(
-        "SELECT sport_id FROM user_sports WHERE user_id = ?",
-        [req.session.user.id]
-      );
-      sportIds = rows.map((r) => r.sport_id);
+    const sportIds = Array.isArray(req.allowedSports) ? req.allowedSports : [];
+
+    if (!sportIds.length) {
+      return res.render("subadmin/matches", {
+        title: "Kelola Pertandingan - Subadmin",
+        matches: [],
+      });
     }
 
     if (!sportIds.length) {
@@ -785,39 +832,44 @@ exports.createTicketType = async (req, res) => {
 };
 // Subadmin — listNews (tambahkan sebelum exports.renderCreateNews atau di bagian NEWS)
 exports.listNews = async (req, res) => {
-    try {
-        // tentukan sport yang boleh diakses user ini
-        let sportIds = [];
-        if (req.session.user.role === 'admin') {
-            const [all] = await db.query('SELECT id FROM sports');
-            sportIds = all.map(r => r.id);
-        } else {
-            const [rows] = await db.query('SELECT sport_id FROM user_sports WHERE user_id = ?', [req.session.user.id]);
-            sportIds = rows.map(r => r.sport_id);
-        }
+  try {
+    const sportIds = Array.isArray(req.allowedSports) ? req.allowedSports : [];
 
-        if (!sportIds || sportIds.length === 0) {
-            return res.render('subadmin/news', { title: 'Berita - SubAdmin', news: [] });
-        }
-
-        const placeholders = sportIds.map(() => '?').join(',');
-        const [news] = await db.query(
-            `SELECT n.id, n.title, n.slug, n.status, n.published_at, s.name as sport_name
-       FROM news_articles n
-       LEFT JOIN sports s ON s.id = n.sport_id
-       WHERE (n.sport_id IS NULL OR n.sport_id IN (${placeholders}))
-       ORDER BY n.published_at DESC, n.created_at DESC
-       LIMIT 100`,
-            [...sportIds]
-        );
-
-        return res.render('subadmin/news', { title: 'Berita - SubAdmin', news });
-    } catch (err) {
-        console.error('subadmin.listNews error', err);
-        req.flash('error', 'Gagal memuat daftar berita.');
-        return res.redirect('/subadmin');
+    // Jika admin: boleh lihat semua (termasuk global null)
+    if (req.session.user.role === 'admin') {
+      const [news] = await db.query(
+        `SELECT n.id, n.title, n.slug, n.status, n.published_at, s.name as sport_name
+         FROM news_articles n
+         LEFT JOIN sports s ON s.id = n.sport_id
+         ORDER BY n.published_at DESC, n.created_at DESC
+         LIMIT 100`
+      );
+      return res.render('subadmin/news', { title: 'Berita - SubAdmin', news });
     }
+
+    // subadmin: hanya sport yang di-assign
+    if (!sportIds.length) {
+      return res.render('subadmin/news', { title: 'Berita - SubAdmin', news: [] });
+    }
+
+    const placeholders = sportIds.map(() => '?').join(',');
+    const sql = `
+      SELECT n.id, n.title, n.slug, n.status, n.published_at, s.name as sport_name
+      FROM news_articles n
+      LEFT JOIN sports s ON s.id = n.sport_id
+      WHERE n.sport_id IN (${placeholders})
+      ORDER BY n.published_at DESC, n.created_at DESC
+      LIMIT 100
+    `;
+    const [news] = await db.query(sql, sportIds);
+    return res.render('subadmin/news', { title: 'Berita - SubAdmin', news });
+  } catch (err) {
+    console.error('subadmin.listNews error', err);
+    req.flash('error', 'Gagal memuat daftar berita.');
+    return res.redirect('/subadmin');
+  }
 };
+
 // render edit using the same create_news view (mode='edit')
 exports.renderEditNews = async (req, res) => {
     try {

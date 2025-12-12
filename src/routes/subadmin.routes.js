@@ -6,6 +6,7 @@ const { requireLogin, requireAdminOrSubadmin } = require('../middlewares/auth.mi
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { attachAllowedSports } = require('../middlewares/sport.middleware');
 
 const uploadsDir = path.join(__dirname, '..', 'public', 'uploads', 'news');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -31,6 +32,8 @@ const uploadNewsThumb = multer({
   fileFilter,
   limits: { fileSize: 3 * 1024 * 1024 } // 3MB
 });
+// apply to all subadmin routes (after requireLogin & requireAdminOrSubadmin in router usage)
+router.use(requireLogin, requireAdminOrSubadmin, attachAllowedSports);
 
 // dashboard
 router.get('/', requireLogin, requireAdminOrSubadmin, subadminCtrl.renderDashboard);

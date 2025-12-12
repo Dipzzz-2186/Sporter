@@ -320,14 +320,8 @@ block content
       .mt-4
         a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/events' : '/subadmin/events') Kelola Event
         a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/news' : '/subadmin/news') Kelola Berita
-        if currentUser && currentUser.role === 'subadmin'
-          a.btn.btn-outline-secondary.me-2(href='/subadmin/matches') Kelola Jadwal
-          a.btn.btn-outline-secondary.me-2(href='/subadmin/standings') Kelola Klasemen
-        else
-          span.text-muted.me-2 Hanya SubAdmin yang mengelola Jadwal & Klasemen
         a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/videos' : '/subadmin/videos') Kelola Video
         a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/livestreams' : '/subadmin/livestreams') Kelola Livestream
-        a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/tickets' : '/subadmin/tickets') Kelola Ticket Types
         if currentUser && currentUser.role === 'admin'
           a.btn.btn-outline-danger.ms-2(href="/admin/subadmins") Manage Subadmins
 
