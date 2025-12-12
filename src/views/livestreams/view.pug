@@ -1,56 +1,126 @@
 extends ../layout/main
 
 block content
-  .container.mt-4
-    a.btn.btn-light.btn-sm.mb-3(href="javascript:history.back()")
-      i.bi.bi-arrow-left
-      |  Kembali
+  .container.my-5
+    // Breadcrumb Navigation
+    nav(aria-label="breadcrumb")
+      ol.breadcrumb
+        li.breadcrumb-item
+          a(href="/") Home
+        li.breadcrumb-item
+          a(href="/livestreams") Livestreams
+        li.breadcrumb-item.active(aria-current="page")= livestream.title
 
-    .row
+    // Back Button
+    .mb-4
+      a.btn.btn-outline-secondary.btn-sm(href="javascript:history.back()")
+        i.bi.bi-arrow-left.me-2
+        | Kembali
+
+    .row.g-4
+      // Main Content Area
       .col-lg-8
-        h2.mb-2= livestream.title
+        .card.shadow-sm.border-0
+          .card-body.p-0
+            // Live Badge
+            if livestream.is_live
+              .position-absolute.top-0.start-0.m-3(style="z-index: 10")
+                span.badge.bg-danger.fs-6.px-3.py-2
+                  i.bi.bi-circle-fill.me-2(style="font-size: 0.5rem")
+                  | LIVE
 
-        if embedUrl
-          .ratio.ratio-16x9.mb-3
-            iframe(
-              src=embedUrl
-              allowfullscreen
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            )
-        else
-          .alert.alert-warning
-            | Livestream tidak dapat di-embed. 
-            a(href=livestream.url target="_blank") Buka link asli.
+            // Video Player
+            if embedUrl
+              .ratio.ratio-16x9.bg-dark
+                iframe(
+                  src=embedUrl
+                  allowfullscreen
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  loading="lazy"
+                )
+            else
+              .ratio.ratio-16x9.bg-dark.d-flex.align-items-center.justify-content-center
+                .text-center.text-white.p-4
+                  i.bi.bi-play-circle.display-1.mb-3
+                  p.mb-3 Livestream tidak dapat ditampilkan di halaman ini
+                  a.btn.btn-light(href=livestream.url target="_blank" rel="noopener noreferrer")
+                    i.bi.bi-box-arrow-up-right.me-2
+                    | Buka di Platform Asli
 
-        if livestream.start_time
-          p.text-muted.mt-2
-            b Jadwal Mulai :
-            |  #{new Date(livestream.start_time).toLocaleString('id-ID')}
-        if livestream.end_time
-          p.text-muted
-            b Selesai :
-            |  #{new Date(livestream.end_time).toLocaleString('id-ID')}
+            // Title and Description
+            .p-4
+              h1.h3.fw-bold.mb-3= livestream.title
+              
+              // Time Information
+              if livestream.start_time || livestream.end_time
+                .d-flex.flex-wrap.gap-3.text-muted.mb-3
+                  if livestream.start_time
+                    div
+                      i.bi.bi-calendar-event.me-2
+                      small
+                        strong Mulai: 
+                        | #{new Date(livestream.start_time).toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })}
+                  if livestream.end_time
+                    div
+                      i.bi.bi-calendar-check.me-2
+                      small
+                        strong Selesai: 
+                        | #{new Date(livestream.end_time).toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })}
 
+              // Description (if available)
+              if livestream.description
+                .mt-4
+                  h5.fw-semibold.mb-2 Deskripsi
+                  p.text-muted= livestream.description
+
+      // Sidebar
       .col-lg-4
-        .card.shadow-sm
-          .card-body
-            h5.fw-semibold.mb-3 Informasi Livestream
+        // Information Card
+        .card.shadow-sm.border-0.mb-4
+          .card-header.bg-primary.text-white.py-3
+            h5.mb-0.fw-semibold
+              i.bi.bi-info-circle.me-2
+              | Informasi Livestream
+
+          .card-body.p-4
             if livestream.sport_name
-              p.mb-1
-                b Cabang:
-                |  #{livestream.sport_name}
+              .mb-3.pb-3.border-bottom
+                small.text-muted.text-uppercase.d-block.mb-1 Cabang Olahraga
+                .fw-semibold.text-dark= livestream.sport_name
+
             if livestream.event_title
-              p.mb-1
-                b Event:
-                |  #{livestream.event_title}
+              .mb-3.pb-3.border-bottom
+                small.text-muted.text-uppercase.d-block.mb-1 Event
+                .fw-semibold.text-dark= livestream.event_title
+
             if livestream.match_title
-              p.mb-1
-                b Match:
-                |  #{livestream.match_title}
-            p.mt-2.text-muted.small
-              | Status: 
+              .mb-3.pb-3.border-bottom
+                small.text-muted.text-uppercase.d-block.mb-1 Pertandingan
+                .fw-semibold.text-dark= livestream.match_title
+
+            // Status Badge
+            .mt-3
+              small.text-muted.text-uppercase.d-block.mb-2 Status
               if livestream.is_live
-                span.text-success.fw-bold LIVE
+                span.badge.bg-success.px-3.py-2
+                  i.bi.bi-broadcast.me-1
+                  | SEDANG LIVE
               else
-                span.text-secondary Tidak Live
+                span.badge.bg-secondary.px-3.py-2
+                  i.bi.bi-stop-circle.me-1
+                  | Tidak Live
+
+        // Share Card (Optional)
+        .card.shadow-sm.border-0
+          .card-body.p-4.text-center
+            h6.fw-semibold.mb-3 Bagikan Livestream
+            .d-flex.justify-content-center.gap-2
+              a.btn.btn-outline-primary.btn-sm(href="#" title="Bagikan ke Facebook")
+                i.bi.bi-facebook
+              a.btn.btn-outline-info.btn-sm(href="#" title="Bagikan ke Twitter")
+                i.bi.bi-twitter
+              a.btn.btn-outline-success.btn-sm(href="#" title="Bagikan ke WhatsApp")
+                i.bi.bi-whatsapp
+              a.btn.btn-outline-secondary.btn-sm(href="#" title="Salin Link")
+                i.bi.bi-link-45deg
