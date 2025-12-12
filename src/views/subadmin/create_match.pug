@@ -430,8 +430,8 @@ block content
               i.bi.bi-people-fill
               | Tim yang Bertanding
             .section-description
-              | Pilih tim rumah dan tim tamu (opsional).
-            
+              | Pilih tim rumah dan tim tamu (opsional). Kamu juga bisa tambah tim via tombol +.
+
             .row.g-3
               .col-md-6
                 .mb-3
@@ -439,26 +439,38 @@ block content
                     i.bi.bi-house-fill
                     | Tim Rumah
                     span.badge Opsional
-                  select.form-select#home_team_id(name="home_team_id")
-                    option(value="" selected) -- Pilih tim rumah --
-                    if teams && teams.length
-                      each t in teams
-                        option(value=t.id)= t.name
+
+                  .d-flex.gap-2
+                    select.form-select#home_team_id(name="home_team_id")
+                      option(value="" selected) -- Pilih tim rumah --
+                      if teams && teams.length
+                        each t in teams
+                          option(value=t.id data-sport=t.sport_id)= t.name
+
+                    button.btn.btn-outline-danger(type="button" id="btnAddTeamHome")
+                      i.bi.bi-plus-lg
+
                   small.form-text
                     i.bi.bi-info-circle
                     | Tim yang bermain di kandang
-              
+
               .col-md-6
                 .mb-3
                   label.form-label(for="away_team_id")
                     i.bi.bi-car-front-fill
                     | Tim Tamu
                     span.badge Opsional
-                  select.form-select#away_team_id(name="away_team_id")
-                    option(value="" selected) -- Pilih tim tamu --
-                    if teams && teams.length
-                      each t in teams
-                        option(value=t.id)= t.name
+
+                  .d-flex.gap-2
+                    select.form-select#away_team_id(name="away_team_id")
+                      option(value="" selected) -- Pilih tim tamu --
+                      if teams && teams.length
+                        each t in teams
+                          option(value=t.id data-sport=t.sport_id)= t.name
+
+                    button.btn.btn-outline-danger(type="button" id="btnAddTeamAway")
+                      i.bi.bi-plus-lg
+
                   small.form-text
                     i.bi.bi-info-circle
                     | Tim yang bermain di tandang
@@ -526,9 +538,44 @@ block content
               i.bi.bi-arrow-left
               span Kembali ke Daftar
 
+    //- Modal Add Team
+    .modal.fade#addTeamModal(tabindex="-1" aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title Tambah Tim Baru
+            button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+          .modal-body
+            .mb-3
+              label.form-label Cabang Olahraga
+              select.form-select#team_sport_id
+                option(value="" selected disabled) -- pilih sport --
+                if sports && sports.length
+                  each s in sports
+                    option(value=s.id)= s.name
+
+            .mb-3
+              label.form-label Nama Tim
+              input.form-control#team_name(type="text" placeholder="Contoh: SMKN 8 Jakarta")
+
+            .mb-3
+              label.form-label Short Name (opsional)
+              input.form-control#team_short(type="text" placeholder="SMKN8")
+
+            .mb-3
+              label.form-label Kota (opsional)
+              input.form-control#team_city(type="text" placeholder="Jakarta")
+
+            .alert.alert-danger.d-none#teamErr
+            .alert.alert-success.d-none#teamOk
+
+          .modal-footer
+            button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Batal
+            button.btn.btn-danger(type="button" id="btnSaveTeam") Simpan
+
   //- Custom JavaScript
   script.
-    (function() {
+    window.addEventListener('load', function() {
       // Auto dismiss alerts
       var alerts = document.querySelectorAll('.alert');
       alerts.forEach(function(alert) {
@@ -569,7 +616,7 @@ block content
         startTimeInput.addEventListener('change', function() {
           if (this.value && !endTimeInput.value) {
             var start = new Date(this.value);
-            start.setHours(start.getHours() + 2); // Default 2 hours duration
+            start.setHours(start.getHours() + 2);
             start.setMinutes(start.getMinutes() - start.getTimezoneOffset());
             endTimeInput.value = start.toISOString().slice(0, 16);
           }
@@ -621,4 +668,161 @@ block content
         titleInput.addEventListener('input', updateCounter);
         updateCounter();
       }
-    })();
+      
+      // ===== Add Team Modal Logic =====
+      // Wait for DOM to be fully loaded
+      var addTeamModalEl = document.getElementById('addTeamModal');
+      var addTeamModal = null;
+      
+      console.log('addTeamModalEl:', addTeamModalEl);
+      console.log('Bootstrap available:', typeof bootstrap !== 'undefined');
+      
+      // Check if Bootstrap is loaded and element exists
+      if (typeof bootstrap !== 'undefined') {
+        if (addTeamModalEl) {
+          try {
+            addTeamModal = new bootstrap.Modal(addTeamModalEl);
+            console.log('Bootstrap Modal initialized successfully');
+          } catch (err) {
+            console.error('Error initializing modal:', err);
+          }
+        } else {
+          console.error('Modal element #addTeamModal not found in DOM');
+        }
+      } else {
+        console.error('Bootstrap not loaded');
+      }
+
+      var btnAddHome = document.getElementById('btnAddTeamHome');
+      var btnAddAway = document.getElementById('btnAddTeamAway');
+
+      console.log('btnAddHome:', btnAddHome);
+      console.log('btnAddAway:', btnAddAway);
+
+      var sportSelectMain = document.getElementById('sport_id');
+      var teamSport = document.getElementById('team_sport_id');
+
+      var homeSelect = document.getElementById('home_team_id');
+      var awaySelect = document.getElementById('away_team_id');
+
+      var saveBtn = document.getElementById('btnSaveTeam');
+      var errBox = document.getElementById('teamErr');
+      var okBox = document.getElementById('teamOk');
+
+      var activeTarget = 'home';
+
+      function showTeamError(msg) {
+        if (!errBox) return;
+        errBox.textContent = msg;
+        errBox.classList.remove('d-none');
+        if (okBox) okBox.classList.add('d-none');
+      }
+
+      function showTeamOk(msg) {
+        if (!okBox) return;
+        okBox.textContent = msg;
+        okBox.classList.remove('d-none');
+        if (errBox) errBox.classList.add('d-none');
+      }
+
+      function openAddTeam(target) {
+        console.log('openAddTeam called with target:', target);
+        activeTarget = target;
+        if (errBox) errBox.classList.add('d-none');
+        if (okBox) okBox.classList.add('d-none');
+
+        if (sportSelectMain && teamSport) {
+          teamSport.value = sportSelectMain.value || '';
+        }
+        
+        if (addTeamModal) {
+          addTeamModal.show();
+          console.log('Modal should be showing now');
+        } else {
+          console.error('Modal not initialized');
+        }
+      }
+
+      if (btnAddHome) {
+        btnAddHome.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('Home button clicked');
+          openAddTeam('home');
+        });
+        console.log('Home button listener attached');
+      } else {
+        console.error('btnAddHome not found');
+      }
+      
+      if (btnAddAway) {
+        btnAddAway.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('Away button clicked');
+          openAddTeam('away');
+        });
+        console.log('Away button listener attached');
+      } else {
+        console.error('btnAddAway not found');
+      }
+
+      if (saveBtn) {
+        saveBtn.addEventListener('click', async function() {
+          var sport_id = teamSport ? teamSport.value : '';
+          var name = document.getElementById('team_name') ? document.getElementById('team_name').value : '';
+          var short_name = document.getElementById('team_short') ? document.getElementById('team_short').value : '';
+          var city = document.getElementById('team_city') ? document.getElementById('team_city').value : '';
+
+          name = name.trim();
+          if (!sport_id) return showTeamError('Pilih cabang olahraga dulu.');
+          if (!name) return showTeamError('Nama tim wajib diisi.');
+
+          saveBtn.disabled = true;
+          saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
+
+          try {
+            const resp = await fetch('/subadmin/teams/ajax-create', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ sport_id, name, short_name, city })
+            });
+
+            const data = await resp.json().catch(() => ({}));
+            if (!resp.ok || !data.ok) {
+              return showTeamError(data.message || 'Gagal menambahkan tim.');
+            }
+
+            var opt = document.createElement('option');
+            opt.value = data.team.id;
+            opt.textContent = data.team.name;
+            opt.setAttribute('data-sport', String(data.team.sport_id));
+
+            var targetSelect = activeTarget === 'away' ? awaySelect : homeSelect;
+            if (targetSelect) {
+              targetSelect.appendChild(opt.cloneNode(true));
+              targetSelect.value = String(data.team.id);
+            }
+
+            var otherSelect = activeTarget === 'away' ? homeSelect : awaySelect;
+            if (otherSelect) {
+              otherSelect.appendChild(opt.cloneNode(true));
+            }
+
+            showTeamOk('Tim berhasil ditambahkan.');
+            setTimeout(function() {
+              if (addTeamModal) addTeamModal.hide();
+            }, 600);
+
+            document.getElementById('team_name').value = '';
+            document.getElementById('team_short').value = '';
+            document.getElementById('team_city').value = '';
+
+          } catch (e) {
+            console.error(e);
+            showTeamError('Server error. Coba lagi.');
+          } finally {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = 'Simpan';
+          }
+        });
+      }
+    });

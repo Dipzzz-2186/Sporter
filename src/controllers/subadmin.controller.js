@@ -1006,3 +1006,40 @@ exports.deleteNews = async (req, res) => {
         return safeRedirectBack(req, res, '/subadmin/news');
     }
 };
+exports.ajaxCreateTeam = async (req, res) => {
+  try {
+    const { sport_id, name, short_name, city } = req.body;
+
+    const sportId = sport_id ? Number(sport_id) : null;
+    const teamName = (name || '').trim();
+
+    if (!sportId || !teamName) {
+      return res.status(400).json({ ok: false, message: 'sport_id dan name wajib diisi' });
+    }
+
+    // cek akses subadmin ke sport
+    if (req.session.user.role === 'subadmin') {
+      const [rows] = await db.query(
+        'SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1',
+        [req.session.user.id, sportId]
+      );
+      if (!rows.length) {
+        return res.status(403).json({ ok: false, message: 'Akses ditolak untuk sport ini' });
+      }
+    }
+
+    const [result] = await db.query(
+      `INSERT INTO teams (sport_id, name, short_name, city, created_at, updated_at)
+       VALUES (?, ?, ?, ?, NOW(), NOW())`,
+      [sportId, teamName, (short_name || null), (city || null)]
+    );
+
+    return res.json({
+      ok: true,
+      team: { id: result.insertId, name: teamName, sport_id: sportId }
+    });
+  } catch (err) {
+    console.error('ajaxCreateTeam error', err);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+};

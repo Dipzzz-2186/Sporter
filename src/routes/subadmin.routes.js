@@ -73,4 +73,13 @@ router.post('/livestreams/create', requireLogin, requireAdminOrSubadmin, subadmi
 router.get('/tickets/create', requireLogin, requireAdminOrSubadmin, subadminCtrl.renderCreateTicketType);
 router.post('/tickets/create', requireLogin, requireAdminOrSubadmin, subadminCtrl.createTicketType);
 
+
+router.post(
+  '/teams/ajax-create',
+  requireLogin,
+  requireAdminOrSubadmin,
+  subadminCtrl.ajaxCreateTeam
+);
+
+  
 module.exports = router;
