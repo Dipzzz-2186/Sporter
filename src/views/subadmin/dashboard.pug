@@ -673,7 +673,10 @@ block content
         a.action-btn.action-btn-danger(href="/subadmin/livestreams/create")
           i.bi.bi-broadcast
           span Tambah Livestream
-
+          
+        a.action-btn.action-btn-info(href="/subadmin/standings")
+          i.bi.bi-bar-chart-line-fill
+          span Lihat Klasemen
   .container
     // Stats Overview Section
     .stats-grid
@@ -708,10 +711,16 @@ block content
         .stat-label Livestreams
       
       .stat-card
-        .stat-icon.stat-icon-tickets
-          i.bi.bi-ticket-perforated
-        .stat-value= stats.ticketTypes || 0
-        .stat-label Tipe Tiket
+        a(href="/subadmin/standings" style="text-decoration:none; color:inherit; display:block;")
+          .stat-icon.stat-icon-matches
+            i.bi.bi-trophy
+          .stat-value= (typeof stats !== 'undefined' && stats.standingsCount) ? stats.standingsCount : '-'
+          .stat-label Klasemen
+          // small link button
+          .mt-2
+            a.btn.btn-sm.btn-outline-primary(href="/subadmin/standings")
+              i.bi.bi-list-ul.me-1
+              | Buka Klasemen
 
     .row.g-4
       // Main Content - Upcoming Matches

@@ -15,7 +15,14 @@ exports.renderDashboard = async (req, res) => {
     // ambil semua sport karena admin boleh semua
     const [sports] = await db.query('SELECT id FROM sports');
     const sportIds = sports.map(s => s.id);
-
+    const [standings] = await db.query(`
+    SELECT s.team_id, t.name AS team, sp.name AS sport_name, s.played, s.win, s.draw, s.loss, s.pts
+    FROM standings s
+    LEFT JOIN teams t ON t.id = s.team_id
+    LEFT JOIN sports sp ON sp.id = s.sport_id
+    ORDER BY s.pts DESC, (s.goals_for - s.goals_against) DESC, s.goals_for DESC
+    LIMIT 10
+  `);
     if (sportIds.length === 0) {
       return res.render("admin/dashboard", {
         title: "Admin Dashboard - SPORTER",
@@ -25,6 +32,7 @@ exports.renderDashboard = async (req, res) => {
         recentVideos: [],
         upcomingLivestreams: [],
         recentEvents: [],
+        standings: [],
         currentUser: req.session.user
       });
     }
@@ -135,6 +143,7 @@ exports.renderDashboard = async (req, res) => {
       recentVideos,
       upcomingLivestreams,
       upcomingMatches,
+      standings,
       currentUser: req.session.user
     });
 

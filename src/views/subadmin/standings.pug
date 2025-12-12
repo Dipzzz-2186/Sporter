@@ -1,0 +1,64 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    .d-flex.justify-content-between.align-items-center.mb-3
+      h3 Klasemen
+
+      form.mb-3(action="/subadmin/standings" method="get")
+        select.form-select.w-auto.me-2(name="sport_id" onchange="this.form.submit()")
+          option(value="") Pilih Cabang
+          each s in sports
+            option(value=s.id selected=(query && s.id == query.sport_id))= s.name
+
+    // build groups
+    - const groups = [];
+    - if (standings && standings.length) {
+    -   for (let i = 0; i < standings.length; i++) {
+    -     const r = standings[i];
+    -     const sid = r.sport_id || '__nogroup';
+    -     if (!groups.length || groups[groups.length - 1].sport_id !== sid) {
+    -       groups.push({ sport_id: sid, sport_name: r.sport_name, rows: [r] });
+    -     } else {
+    -       groups[groups.length - 1].rows.push(r);
+    -     }
+    -   }
+    - }
+
+    if groups.length
+      each group in groups
+        .mb-4
+          h5.mb-2= group.sport_name
+          .table-responsive
+            table.table.table-hover
+              thead
+                tr
+                  th Tim
+                  th.text-center PJ
+                  th.text-center W
+                  th.text-center D
+                  th.text-center L
+                  th.text-center GF
+                  th.text-center GA
+                  th.text-center GD
+                  th.text-end PTS
+                  th Aksi
+              tbody
+                each row in group.rows
+                  tr
+                    td
+                      b= row.team_name
+                    td.text-center= row.played || 0
+                    td.text-center= row.win || 0
+                    td.text-center= row.draw || 0
+                    td.text-center= row.loss || 0
+                    td.text-center= row.goals_for || 0
+                    td.text-center= row.goals_against || 0
+                    td.text-center= (row.goals_for - row.goals_against)
+                    td.text-end= row.pts || 0
+
+                    td
+                      a.btn.btn-sm.btn-success.me-1(href=`/subadmin/standings/${row.id}/add-win`) +W
+                      a.btn.btn-sm.btn-danger(href=`/subadmin/standings/${row.id}/add-loss`) +L
+    else
+      p.text-muted Belum ada klasemen untuk cabang ini.

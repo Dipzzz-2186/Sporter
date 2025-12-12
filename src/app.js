@@ -34,12 +34,13 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/admin", adminRoutes);
-app.use('/subadmin', subadminRoutes);
-
 // ====== VIEW ENGINE ======
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
+
+// ------- IMPORTANT: load allowedSports middleware BEFORE routes that need it -------
+const loadAllowedSports = require('./middlewares/allowedSports'); // <-- fixed path
+app.use(loadAllowedSports);
 
 // ====== ROUTES ======
 const sportRoutes = require("./routes/sport.routes");
@@ -53,8 +54,10 @@ app.use("/sports", sportRoutes);
 app.use("/news", newsRoutes);
 app.use("/", eventRoutes); // <== TAMBAH INI
 app.use("/", authRoutes); // /login, /logout
-
-
 app.use("/", mediaRoutes);
+
+// mount admin/subadmin AFTER middleware
+app.use("/admin", adminRoutes);
+app.use('/subadmin', subadminRoutes);
 
 module.exports = app;

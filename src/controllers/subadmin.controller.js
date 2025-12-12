@@ -452,6 +452,19 @@ exports.createMatch = async (req, res) => {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'scheduled', NOW(), NOW())`,
       [eventId || null, sportId, homeId || null, awayId || null, title, start, end, venueId || null]
     );
+    if (homeId) {
+      await db.query(`
+    INSERT IGNORE INTO standings (sport_id, team_id, played, win, draw, loss, goals_for, goals_against, pts)
+    VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0)
+  `, [sportId, homeId]);
+    }
+
+    if (awayId) {
+      await db.query(`
+    INSERT IGNORE INTO standings (sport_id, team_id, played, win, draw, loss, goals_for, goals_against, pts)
+    VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0)
+  `, [sportId, awayId]);
+    }
 
     req.flash("success", "Pertandingan berhasil dibuat.");
     return res.redirect("/subadmin/matches");

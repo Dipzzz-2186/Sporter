@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const subadminCtrl = require('../controllers/subadmin.controller');
+const standingsCtrl = require('../controllers/standings.controller');
 const { requireLogin, requireAdminOrSubadmin } = require('../middlewares/auth.middleware');
 const path = require('path');
 const fs = require('fs');
@@ -81,5 +82,10 @@ router.post(
   subadminCtrl.ajaxCreateTeam
 );
 
-  
+// Standings - manual only
+router.get('/standings', standingsCtrl.listStandings);
+
+router.get('/standings/:id/add-win', standingsCtrl.addWin);
+router.get('/standings/:id/add-loss', standingsCtrl.addLoss);
+
 module.exports = router;
