@@ -103,10 +103,14 @@ exports.renderDashboard = async (req, res) => {
       SELECT v.id, v.title, v.start_time, v.is_live, s.name AS sport_name
       FROM videos v
       LEFT JOIN sports s ON s.id = v.sport_id
-      WHERE v.type = 'livestream' AND (v.start_time >= NOW() OR v.is_live = 1)
-      ORDER BY v.start_time ASC
+      WHERE v.type = 'livestream'
+      ORDER BY 
+        v.is_live DESC,
+        v.start_time IS NULL,
+        v.start_time ASC
       LIMIT 6
     `);
+
 
     // Upcoming Matches
     const [upcomingMatches] = await db.query(`
