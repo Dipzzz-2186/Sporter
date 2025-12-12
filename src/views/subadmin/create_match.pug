@@ -711,6 +711,50 @@ block content
 
       var activeTarget = 'home';
 
+      function filterTeamsBySport() { 
+        var sportId = sportSelectMain ? sportSelectMain.value : '';
+
+        // kalau belum pilih sport → tampilkan semua tim
+        var showAll = !sportId;
+
+        [homeSelect, awaySelect].forEach(function(sel) {
+          if (!sel) return;
+
+          Array.from(sel.options).forEach(function(opt) {
+            // option pertama placeholder jangan diapa-apain
+            if (!opt.value) return;
+
+            var optSport = opt.getAttribute('data-sport') || '';
+            var isMatch = String(optSport) === String(sportId);
+
+            // hide/show option
+            opt.hidden = !(showAll || isMatch);
+            opt.disabled = !(showAll || isMatch);
+          });
+
+          // kalau value sekarang gak sesuai sport → reset
+          if (sel.value) {
+            var selected = sel.options[sel.selectedIndex];
+            var selectedSport = selected ? (selected.getAttribute('data-sport') || '') : '';
+            if (!showAll && String(selectedSport) !== String(sportId)) {
+              sel.value = '';
+            }
+          }
+        });
+      }
+      filterTeamsBySport();
+      if (sportSelectMain) {
+        sportSelectMain.addEventListener('change', function () {
+          // reset pilihan tim kalau beda cabang
+          filterTeamsBySport();
+
+          // auto set sport di modal tambah tim
+          if (teamSport) teamSport.value = sportSelectMain.value || '';
+        });
+      }
+
+
+
       function showTeamError(msg) {
         if (!errBox) return;
         errBox.textContent = msg;
