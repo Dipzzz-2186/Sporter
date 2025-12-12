@@ -5,127 +5,239 @@ block content
     /* Dashboard Hero */
     .dashboard-hero {
       background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
-      border-radius: 24px;
-      padding: 2.5rem;
-      margin-bottom: 2rem;
-      color: white;
+      padding: 3rem 0 2rem;
       position: relative;
       overflow: hidden;
-      z-index: 1;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      margin-bottom: 2rem;
     }
     
     .dashboard-hero::before {
       content: '';
       position: absolute;
-      top: -50%;
-      right: -20%;
+      top: -30%;
+      right: -10%;
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
       border-radius: 50%;
       pointer-events: none;
-      z-index: 0;
     }
     
     .dashboard-hero::after {
       content: '';
       position: absolute;
-      bottom: -30%;
+      bottom: -20%;
       left: -10%;
       width: 400px;
       height: 400px;
-      background: radial-gradient(circle, rgba(52, 211, 153, 0.05) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
       border-radius: 50%;
       pointer-events: none;
-      z-index: 0;
     }
     
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* User Greeting */
     .user-greeting {
-      font-size: 2rem;
+      font-size: 2.5rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: white;
+      margin-bottom: 0.75rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      animation: fadeInUp 0.6s ease-out;
     }
     
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Role Badge */
     .user-role-badge {
-      background: rgba(59, 130, 246, 0.15);
-      color: #3B82F6;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      padding: 0.4rem 0.9rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.8s ease-out;
+    }
+    
+    .user-role-badge i {
+      font-size: 1.1rem;
+    }
+    
+    /* Assigned Sports */
+    .assigned-sports {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      animation: fadeInUp 1s ease-out;
+    }
+    
+    .sport-pill {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .sport-pill:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.25) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .sport-pill::before {
+      content: '🏆';
+      font-size: 1rem;
+    }
+    
+    /* No Sports Text */
+    .no-sports-text {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      font-style: italic;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .no-sports-text i {
+      font-size: 1rem;
+    }
+    
+    /* Hero Description */
+    .hero-description {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.05rem;
+      margin-top: 1rem;
+      margin-bottom: 0;
+      line-height: 1.6;
+      animation: fadeInUp 1.2s ease-out;
+    }
+    
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .admin-area-btn:hover {
+      background: #f8fafc;
+      color: #1e3a8a;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+    }
+    
+    .admin-area-btn i {
+      font-size: 1.2rem;
     }
     
     /* Quick Actions */
     .quick-actions {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      margin-top: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
       position: relative;
       z-index: 2;
     }
     
     .action-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: white;
-      padding: 0.75rem 1.25rem;
-      border-radius: 15px;
-      text-decoration: none;
+      background: white;
+      border: none;
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
-      font-weight: 500;
+      gap: 0.75rem;
+      text-decoration: none;
       transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
       position: relative;
-      z-index: 2;
+      overflow: hidden;
+    }
+    
+    .action-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    
+    .action-btn:hover::before {
+      transform: scaleX(1);
     }
     
     .action-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-      color: white;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       text-decoration: none;
     }
     
-    .action-btn-primary {
-      background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
-      border: none;
-      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    .action-btn i {
+      font-size: 2rem;
+      color: currentColor;
     }
     
-    .action-btn-success {
-      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-      border: none;
-      box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+    .action-btn span {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #1C1C1E;
+      text-align: center;
     }
     
-    .action-btn-warning {
-      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-      border: none;
-      box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
-    }
+    /* Action Button Colors */
+    .action-btn-success { color: #10B981; }
+    .action-btn-warning { color: #F59E0B; }
+    .action-btn-info { color: #3B82F6; }
+    .action-btn-danger { color: #EF4444; }
     
-    .action-btn-info {
-      background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
-      border: none;
-      box-shadow: 0 5px 15px rgba(6, 182, 212, 0.3);
-    }
-    
-    .action-btn-danger {
-      background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
-      border: none;
-      box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
-    }
+    /* Animation delays for quick actions */
+    .action-btn:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.2s backwards; }
+    .action-btn:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.3s backwards; }
+    .action-btn:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.4s backwards; }
+    .action-btn:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.5s backwards; }
     
     /* Stats Cards */
     .stats-grid {
@@ -185,6 +297,14 @@ block content
       margin: 0;
     }
     
+    /* Animation delays for stats */
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+    .stat-card:nth-child(5) { animation-delay: 0.5s; }
+    .stat-card:nth-child(6) { animation-delay: 0.6s; }
+    
     /* Content Sections */
     .dashboard-section {
       margin-bottom: 2rem;
@@ -206,26 +326,11 @@ block content
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      margin: 0;
     }
     
     .section-title i {
       color: #3B82F6;
-    }
-    
-    .section-link {
-      color: #3B82F6;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      transition: all 0.3s ease;
-    }
-    
-    .section-link:hover {
-      color: #1D4ED8;
-      gap: 0.5rem;
     }
     
     /* Table Styling */
@@ -256,6 +361,14 @@ block content
       padding: 1rem 1.25rem;
       vertical-align: middle;
       border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .dashboard-table tbody tr {
+      transition: background-color 0.3s ease;
+    }
+    
+    .dashboard-table tbody tr:hover {
+      background-color: #f8fafc;
     }
     
     .match-title {
@@ -355,6 +468,9 @@ block content
       background: #f8fafc;
       padding: 1rem 1.25rem;
       border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     
     .sidebar-card-header h6 {
@@ -447,70 +563,40 @@ block content
       justify-content: center;
       margin: 0 auto 1rem;
       color: #94a3b8;
+      font-size: 1.5rem;
     }
-    
-    /* Quick Links */
-    .quick-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid #f0f0f0;
-    }
-    
-    .quick-link {
-      background: white;
-      border: 1px solid #e2e8f0;
-      color: #4b5563;
-      padding: 0.75rem 1.25rem;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .quick-link:hover {
-      background: #f8fafc;
-      color: #3B82F6;
-      border-color: #3B82F6;
-      transform: translateY(-2px);
-      text-decoration: none;
-    }
-    
-    /* Animations */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Animation delays */
-    .stat-card:nth-child(1) { animation-delay: 0.1s; }
-    .stat-card:nth-child(2) { animation-delay: 0.2s; }
-    .stat-card:nth-child(3) { animation-delay: 0.3s; }
-    .stat-card:nth-child(4) { animation-delay: 0.4s; }
-    .stat-card:nth-child(5) { animation-delay: 0.5s; }
-    .stat-card:nth-child(6) { animation-delay: 0.6s; }
     
     /* Responsive */
     @media (max-width: 768px) {
       .dashboard-hero {
-        padding: 1.75rem;
+        padding: 2rem 0 1.5rem;
       }
       
       .user-greeting {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
       }
       
       .quick-actions {
-        flex-direction: column;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
       }
       
       .action-btn {
+        padding: 1rem;
+      }
+      
+      .action-btn i {
+        font-size: 1.5rem;
+      }
+      
+      .action-btn span {
+        font-size: 0.85rem;
+      }
+      
+      .admin-area-btn {
+        width: 100%;
         justify-content: center;
+        margin-top: 1rem;
       }
       
       .stats-grid {
@@ -529,66 +615,67 @@ block content
       
       .quick-buy-form {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
       }
       
-      .quantity-input {
-        width: 100%;
-      }
-      
+      .quantity-input,
       .buy-btn {
         width: 100%;
       }
-      
-      .quick-links {
-        flex-direction: column;
+    }
+    
+    @media (max-width: 480px) {
+      .quick-actions {
+        grid-template-columns: 1fr;
       }
       
-      .quick-link {
-        justify-content: center;
+      .stats-grid {
+        grid-template-columns: 1fr;
       }
     }
 
-  // Dashboard Hero
+  // Dashboard Hero Section
   .dashboard-hero
     .container
-      .row.align-items-center
-        .col-md-8
-          h1.user-greeting= "Halo, " + (currentUser && currentUser.name ? currentUser.name : 'SubAdmin')
-          span.user-role-badge
-            i.bi.bi-shield-check
-            | SubAdmin Dashboard
+      .hero-content
+        .row.align-items-center
+          .col-md-8
+            h1.user-greeting= "Halo, " + (currentUser && currentUser.name ? currentUser.name : 'SubAdmin')
+            
+            .user-role-badge
+              i.bi.bi-shield-check
+              | SubAdmin Dashboard
 
-          // show assigned sports as pills
-          if assignedSports && assignedSports.length
-            .assigned-sports
-              each s in assignedSports
-                span.sport-pill= s.name
-          else
-            small.text-muted.ms-2 Belum ada cabang
+            if assignedSports && assignedSports.length
+              .assigned-sports
+                each sport in assignedSports
+                  .sport-pill= sport.name
+            else
+              .no-sports-text
+                i.bi.bi-info-circle
+                span Belum ada cabang olahraga yang ditugaskan
 
-          p.text-white-75.mt-2.mb-0 Kelola event, jadwal, dan konten untuk cabang olahraga Anda
-        .col-md-4.text-md-end.mt-3.mt-md-0
-          a.btn.btn-light.btn-lg(href="/admin")
-            i.bi.bi-speedometer2.me-2
-            | Admin Area
-    
-    .quick-actions
-      a.action-btn.action-btn-success(href="/subadmin/matches/create")
-        i.bi.bi-calendar-plus
-        | Jadwal Pertandingan
-      a.action-btn.action-btn-warning(href="/subadmin/news/create")
-        i.bi.bi-newspaper
-        | Buat Berita
-      a.action-btn.action-btn-info(href="/subadmin/videos/create")
-        i.bi.bi-play-btn-fill
-        | Tambah Video
-      a.action-btn.action-btn-danger(href="/subadmin/livestreams/create")
-        i.bi.bi-broadcast
-        | Tambah Livestream
+            p.hero-description Kelola event, jadwal, dan konten untuk cabang olahraga Anda
+      
+      .quick-actions
+        a.action-btn.action-btn-success(href="/subadmin/matches/create")
+          i.bi.bi-calendar-plus
+          span Jadwal Pertandingan
+        
+        a.action-btn.action-btn-warning(href="/subadmin/news/create")
+          i.bi.bi-newspaper
+          span Buat Berita
+        
+        a.action-btn.action-btn-info(href="/subadmin/videos/create")
+          i.bi.bi-play-btn-fill
+          span Tambah Video
+        
+        a.action-btn.action-btn-danger(href="/subadmin/livestreams/create")
+          i.bi.bi-broadcast
+          span Tambah Livestream
 
   .container
-    // Stats Overview
+    // Stats Overview Section
     .stats-grid
       .stat-card
         .stat-icon.stat-icon-sports
@@ -627,7 +714,7 @@ block content
         .stat-label Tipe Tiket
 
     .row.g-4
-      // Upcoming Matches
+      // Main Content - Upcoming Matches
       .col-lg-8
         .dashboard-section
           .section-header
@@ -635,7 +722,6 @@ block content
               i.bi.bi-calendar-event
               | Jadwal Mendatang
 
-            // right-side controls
             .d-flex.align-items-center.gap-2
               a.btn.btn-sm.btn-outline-primary(href="/subadmin/matches")
                 i.bi.bi-list-ul.me-1
@@ -656,37 +742,37 @@ block content
                     th Aksi
                 tbody
                   if upcomingMatches && upcomingMatches.length
-                    each m in upcomingMatches
-                      - const start = new Date(m.start_time || m.start_date || null)
+                    each match in upcomingMatches
+                      - const startTime = new Date(match.start_time || match.start_date || null)
                       tr
                         td
-                          .match-title= m.title || (m.home_team_name ? (m.home_team_name + " vs " + (m.away_team_name||'-')) : 'Match')
-                          if m.match_title
-                            .match-subtitle= m.match_title
-                        td= m.sport_name || '-'
+                          .match-title= match.title || (match.home_team_name ? (match.home_team_name + " vs " + (match.away_team_name||'-')) : 'Match')
+                          if match.match_title
+                            .match-subtitle= match.match_title
+                        td= match.sport_name || '-'
                         td
                           .date-badge
                             i.bi.bi-calendar3
-                            = start.toLocaleDateString('id-ID')
+                            = startTime.toLocaleDateString('id-ID')
                           .text-muted.small.mt-1
                             i.bi.bi-clock
-                            = start.toLocaleTimeString('id-ID')
+                            = ' ' + startTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
                         td
-                          if m.ticket_available === 0
+                          if match.ticket_available === 0
                             span.ticket-badge.ticket-sold-out Sold out
-                          else if !m.can_buy
+                          else if !match.can_buy
                             span.ticket-badge.ticket-disabled Disabled
                           else
-                            span.ticket-badge.ticket-available= m.ticket_available + " tersedia"
+                            span.ticket-badge.ticket-available= match.ticket_available + " tersedia"
                         td
-                          if m.can_buy
+                          if match.can_buy
                             form.quick-buy-form(method="post" action="/purchase/buy")
-                              input(type="hidden" name="ticket_type_id" value=m.default_ticket_type_id)
+                              input(type="hidden" name="ticket_type_id" value=match.default_ticket_type_id)
                               input.quantity-input.form-control.form-control-sm(
                                 type="number" 
                                 name="quantity" 
                                 min="1" 
-                                max=m.ticket_available 
+                                max=match.ticket_available 
                                 value="1"
                               )
                               button.buy-btn.btn-sm(type="submit")
@@ -706,29 +792,27 @@ block content
 
       // Sidebar Content
       .col-lg-4
-        // Recent News
+        // Recent News Card
         .sidebar-card
-          .sidebar-card-header.d-flex.justify-content-between.align-items-center
+          .sidebar-card-header
             h6.mb-0
               i.bi.bi-newspaper.me-2
               | Berita Terbaru
             .d-flex.align-items-center.gap-2
               a.btn.btn-sm.btn-outline-primary(href="/subadmin/news")
-                i.bi.bi-list-ul.me-1
-                | Kelola
+                i.bi.bi-list-ul
               a.btn.btn-sm.btn-primary(href="/subadmin/news/create")
-                i.bi.bi-plus-lg.me-1
-                | Buat
+                i.bi.bi-plus-lg
 
           ul.sidebar-list
             if recentNews && recentNews.length
-              each n in recentNews
+              each newsItem in recentNews
                 li.sidebar-list-item
-                  a(href=`/news/${n.slug}`)
-                    = n.title
+                  a(href=`/news/${newsItem.slug}`)
+                    = newsItem.title
                     small.text-muted.d-block.mt-1
-                      i.bi.bi-clock
-                      = ' ' + (new Date(n.created_at || n.published_at)).toLocaleDateString('id-ID')
+                      i.bi.bi-clock.me-1
+                      = (new Date(newsItem.created_at || newsItem.published_at)).toLocaleDateString('id-ID')
             else
               li.sidebar-list-item
                 .empty-state.py-3
@@ -736,62 +820,56 @@ block content
                     i.bi.bi-newspaper
                   p.mb-0.text-muted Belum ada berita
 
-        // Recent Videos
+        // Recent Videos Card
         .sidebar-card
-          .sidebar-card-header.d-flex.justify-content-between.align-items-center
+          .sidebar-card-header
             h6.mb-0
               i.bi.bi-play-btn.me-2
               | Video Terbaru
             .d-flex.align-items-center.gap-2
               a.btn.btn-sm.btn-outline-primary(href="/subadmin/videos")
-                i.bi.bi-list-ul.me-1
-                | Kelola
+                i.bi.bi-list-ul
               a.btn.btn-sm.btn-primary(href="/subadmin/videos/create")
-                i.bi.bi-plus-lg.me-1
-                | Buat
+                i.bi.bi-plus-lg
 
           ul.sidebar-list
             if recentVideos && recentVideos.length
-              each v in recentVideos
+              each video in recentVideos
                 li.sidebar-list-item
-                  a(href=`/videos/${v.id}`)
-                    = v.title
+                  a(href=`/videos/${video.id}`)
+                    = video.title
                     small.text-muted.d-block.mt-1
-                      i.bi.bi-film
-                      = ' ' + (v.sport_name || '-')
+                      i.bi.bi-film.me-1
+                      = video.sport_name || '-'
             else
               li.sidebar-list-item
                 .empty-state.py-3
                   .empty-state-icon.mb-2
                     i.bi.bi-play-btn
-                  p.mb-0.text-muted Belum ada video
 
-        
-        // Livestream
+        // Livestream Card
         .sidebar-card
-          .sidebar-card-header.d-flex.justify-content-between.align-items-center
+          .sidebar-card-header
             h6.mb-0
               i.bi.bi-broadcast.me-2
               | Livestream
             .d-flex.align-items-center.gap-2
               a.btn.btn-sm.btn-outline-primary(href="/subadmin/livestreams")
-                i.bi.bi-list-ul.me-1
-                | Kelola
+                i.bi.bi-list-ul
               a.btn.btn-sm.btn-primary(href="/subadmin/livestreams/create")
-                i.bi.bi-plus-lg.me-1
-                | Buat
+                i.bi.bi-plus-lg
 
           ul.sidebar-list
             if upcomingLivestreams && upcomingLivestreams.length
-              each l in upcomingLivestreams
+              each livestream in upcomingLivestreams
                 li.sidebar-list-item
                   .livestream-item
-                    .livestream-title= l.title
+                    .livestream-title= livestream.title
                     .livestream-meta
-                      span.livestream-sport= l.sport_name || '-'
-                      i.bi.bi-clock
-                      = (new Date(l.start_time || l.created_at)).toLocaleDateString('id-ID')
-                    a.btn.btn-sm.btn-outline-primary.livestream-btn(href=`/livestreams/${l.id}`)
+                      span.livestream-sport= livestream.sport_name || '-'
+                      i.bi.bi-clock.me-1
+                      = (new Date(livestream.start_time || livestream.created_at)).toLocaleDateString('id-ID')
+                    a.btn.btn-sm.btn-outline-primary.livestream-btn(href=`/livestreams/${livestream.id}`)
                       i.bi.bi-eye.me-1
                       | Tonton
             else
@@ -800,192 +878,3 @@ block content
                   .empty-state-icon.mb-2
                     i.bi.bi-broadcast
                   p.mb-0.text-muted Belum ada livestream
-
-    // Quick Management Links
-    .quick-links
-      a.quick-link(href="/events")
-        i.bi.bi-calendar-event
-        | Kelola Event
-      a.quick-link(href="/news")
-        i.bi.bi-newspaper
-        | Kelola Berita
-      a.quick-link(href="/matches")
-        i.bi.bi-calendar-check
-        | Kelola Jadwal
-      a.quick-link(href="/videos")
-        i.bi.bi-play-btn
-        | Kelola Video
-      a.quick-link(href="/livestreams")
-        i.bi.bi-broadcast
-        | Kelola Livestream
-      a.quick-link(href="/tickets")
-        i.bi.bi-ticket-perforated
-        | Kelola Tiket
-
-  script.
-    document.addEventListener('DOMContentLoaded', function() {
-      // Animate stat counters
-      const statValues = document.querySelectorAll('.stat-value');
-      statValues.forEach((element, index) => {
-        const targetValue = parseInt(element.textContent) || 0;
-        if (targetValue > 0) {
-          let current = 0;
-          const increment = targetValue / 20;
-          const stepTime = 50;
-          
-          const timer = setInterval(() => {
-            current += increment;
-            if (current >= targetValue) {
-              current = targetValue;
-              clearInterval(timer);
-            }
-            element.textContent = Math.floor(current);
-          }, stepTime);
-        }
-      });
-      
-      // Add interactivity to table rows
-      const tableRows = document.querySelectorAll('.dashboard-table tbody tr');
-      tableRows.forEach(row => {
-        row.addEventListener('mouseenter', function() {
-          this.style.backgroundColor = '#f8fafc';
-          this.style.transition = 'background-color 0.3s ease';
-        });
-        
-        row.addEventListener('mouseleave', function() {
-          this.style.backgroundColor = '';
-        });
-      });
-      
-      // Quick buy form validation
-      const buyForms = document.querySelectorAll('.quick-buy-form');
-      buyForms.forEach(form => {
-        const quantityInput = form.querySelector('.quantity-input');
-        const maxTickets = parseInt(quantityInput.getAttribute('max')) || 999;
-        
-        quantityInput.addEventListener('change', function() {
-          let value = parseInt(this.value);
-          if (isNaN(value) || value < 1) {
-            this.value = 1;
-          } else if (value > maxTickets) {
-            this.value = maxTickets;
-          }
-        });
-        
-        quantityInput.addEventListener('input', function() {
-          let value = parseInt(this.value);
-          if (isNaN(value) || value < 1) {
-            this.value = '';
-          }
-        });
-      });
-      
-      // Add click effect to action buttons
-      const actionButtons = document.querySelectorAll('.action-btn');
-      actionButtons.forEach(button => {
-        button.addEventListener('mousedown', function() {
-          this.style.transform = 'scale(0.95)';
-        });
-        
-        button.addEventListener('mouseup', function() {
-          this.style.transform = '';
-        });
-        
-        button.addEventListener('mouseleave', function() {
-          this.style.transform = '';
-        });
-      });
-      
-      // Update time display for livestreams
-      function updateLiveTimes() {
-        const timeElements = document.querySelectorAll('.livestream-meta .bi-clock');
-        timeElements.forEach(element => {
-          const parent = element.parentElement;
-          const dateText = parent.textContent.split('•')[1]?.trim();
-          if (dateText) {
-            const date = new Date(dateText);
-            if (!isNaN(date.getTime())) {
-              const now = new Date();
-              const diffMs = date - now;
-              const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-              
-              if (diffHours > 0 && diffHours < 24) {
-                element.classList.add('text-warning');
-                element.title = `Mulai dalam ${diffHours} jam`;
-              } else if (diffMs <= 0 && diffMs > -3600000) {
-                element.classList.add('text-danger');
-                element.title = 'Sedang berlangsung';
-              }
-            }
-          }
-        });
-      }
-      
-      // Initial update
-      updateLiveTimes();
-      
-      // Update every minute
-      setInterval(updateLiveTimes, 60000);
-      
-      // Add keyboard shortcuts
-      document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey) {
-          switch(e.key) {
-            case 'e':
-              e.preventDefault();
-              window.location.href = '/subadmin/events/create';
-              break;
-            case 'm':
-              e.preventDefault();
-              window.location.href = '/subadmin/matches/create';
-              break;
-            case 'n':
-              e.preventDefault();
-              window.location.href = '/subadmin/news/create';
-              break;
-            case 'v':
-              e.preventDefault();
-              window.location.href = '/subadmin/videos/create';
-              break;
-            case 'l':
-              e.preventDefault();
-              window.location.href = '/subadmin/livestreams/create';
-              break;
-          }
-        }
-      });
-      
-      // Show keyboard shortcuts hint
-      setTimeout(() => {
-        const hint = document.createElement('div');
-        hint.className = 'position-fixed bottom-0 end-0 m-3 p-3 bg-dark text-white rounded-3 shadow-lg';
-        hint.style.zIndex = '1000';
-        hint.innerHTML = `
-          <small class="d-block mb-1">Keyboard Shortcuts:</small>
-          <div class="d-flex gap-2">
-            <kbd class="bg-secondary">Ctrl+E</kbd> Event
-            <kbd class="bg-secondary">Ctrl+M</kbd> Match
-            <kbd class="bg-secondary">Ctrl+N</kbd> News
-          </div>
-        `;
-        hint.style.display = 'none';
-        document.body.appendChild(hint);
-        
-        // Show hint on Ctrl+/ and hide on click
-        document.addEventListener('keydown', function(e) {
-          if (e.ctrlKey && e.key === '/') {
-            e.preventDefault();
-            hint.style.display = hint.style.display === 'none' ? 'block' : 'none';
-          }
-        });
-        
-        hint.addEventListener('click', function() {
-          this.style.display = 'none';
-        });
-        
-        // Auto-hide after 10 seconds
-        setTimeout(() => {
-          hint.style.display = 'none';
-        }, 10000);
-      }, 3000);
-    });
