@@ -9,10 +9,13 @@ const app = express();
 const adminRoutes = require("./routes/admin.routes");
 const subadminRoutes = require('./routes/subadmin.routes');
 const eventRoutes = require("./routes/event.routes");
+const standingsRoutes = require('./routes/standings.routes');
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+
 
 // ====== SESSION & FLASH ======
 app.use(
@@ -33,6 +36,8 @@ app.use((req, res, next) => {
   };
   next();
 });
+
+app.use('/', standingsRoutes);
 
 // ====== VIEW ENGINE ======
 app.set("view engine", "pug");

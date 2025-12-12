@@ -1,0 +1,107 @@
+extends ../layout/main
+
+block content
+  style.
+    /* pakai CSS yang sama dari subadmin (copy paste aja) */
+
+  .standings-page
+    .container
+      .standings-header
+        h3
+          i.bi.bi-trophy-fill
+          | Klasemen
+
+      .filter-section
+        .row.align-items-end
+          .col-md-8
+            label.mb-2
+              i.bi.bi-funnel-fill
+              | Filter Berdasarkan Cabang Olahraga
+            select#sportFilter.form-select(name="sport_id")
+              option(value="") Semua Cabang Olahraga
+              each s in sports
+                option(value=s.id selected=(query && s.id == query.sport_id))= s.name
+
+      - const groups = [];
+      - if (standings && standings.length) {
+      -   for (let i = 0; i < standings.length; i++) {
+      -     const r = standings[i];
+      -     const sid = r.sport_id || '__nogroup';
+      -     if (!groups.length || groups[groups.length - 1].sport_id !== sid) {
+      -       groups.push({ sport_id: sid, sport_name: r.sport_name, rows: [r] });
+      -     } else {
+      -       groups[groups.length - 1].rows.push(r);
+      -     }
+      -   }
+      - }
+
+      if groups.length
+        each group in groups
+          .standings-group
+            .group-title
+              .group-title-icon
+                i.bi.bi-flag-fill
+              h5= group.sport_name
+
+            .standings-table
+              .table-responsive
+                table.table.table-hover
+                  thead
+                    tr
+                      th #
+                      th Tim
+                      th.text-center PJ
+                      th.text-center M
+                      th.text-center S
+                      th.text-center K
+                      th.text-center GM
+                      th.text-center GK
+                      th.text-center SG
+                      th.text-end Poin
+                  tbody
+                    each row, index in group.rows
+                      tr
+                        td
+                          if index === 0
+                            span.position-badge.position-1 1
+                          else if index === 1
+                            span.position-badge.position-2 2
+                          else if index === 2
+                            span.position-badge.position-3 3
+                          else
+                            span.position-badge.position-other= index + 1
+                        td
+                          .team-name
+                            i.bi.bi-shield-fill-check
+                            b= row.team_name
+                        td.text-center.stat-cell= row.played || 0
+                        td.text-center.stat-cell= row.win || 0
+                        td.text-center.stat-cell= row.draw || 0
+                        td.text-center.stat-cell= row.loss || 0
+                        td.text-center.stat-cell= row.goals_for || 0
+                        td.text-center.stat-cell= row.goals_against || 0
+                        td.text-center.stat-cell= (row.goals_for - row.goals_against)
+                        td.text-end.points-cell= row.pts || 0
+      else
+        .empty-state
+          .empty-state-icon
+            i.bi.bi-clipboard2-x
+          h4 Belum Ada Klasemen
+          p
+            | Klasemen untuk cabang olahraga yang dipilih belum tersedia.
+
+  script.
+    (function() {
+      var sportFilter = document.getElementById('sportFilter');
+      if (!sportFilter) return;
+
+      sportFilter.addEventListener('change', function() {
+        var sportId = this.value;
+        var currentUrl = new URL(window.location.href);
+
+        if (sportId) currentUrl.searchParams.set('sport_id', sportId);
+        else currentUrl.searchParams.delete('sport_id');
+
+        window.location.href = currentUrl.toString();
+      });
+    })();

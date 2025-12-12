@@ -361,12 +361,19 @@ block content
             p.sport-description SPORTER mengumpulkan informasi olahraga Indonesia: event, jadwal pertandingan, skor, klasemen, livestream, dan tiket dalam satu platform yang mudah digunakan.
           
           .hero-actions
-            a.btn-hero.btn-hero-primary(href="#jadwal")
-              i.bi.bi-calendar-check
-              | Lihat Jadwal
-            a.btn-hero.btn-hero-outline(href="/sports")
-              i.bi.bi-arrow-left
-              | Kembali
+          a.btn-hero.btn-hero-primary(href="#jadwal")
+            i.bi.bi-calendar-check
+            | Lihat Jadwal
+
+          a.btn-hero.btn-hero-outline(href="/standings?sport_id=" + sport.id)
+            i.bi.bi-bar-chart-steps
+            | Lihat Klasemen
+
+
+          a.btn-hero.btn-hero-outline(href="/sports")
+            i.bi.bi-arrow-left
+            | Kembali
+
 
     //- Stats Section
     .stats-section
