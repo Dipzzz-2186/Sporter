@@ -23,3 +23,19 @@ block content
       strong= ' ' + sport.name
       | .
     
+    if matches.length
+      h3.mt-4 Jadwal Pertandingan
+      table.table
+        thead
+          tr
+            th Pertandingan
+            th Waktu
+            th Venue
+        tbody
+          each m in matches
+            tr
+              td= m.title
+              td= new Date(m.start_time).toLocaleString('id-ID')
+              td= m.venue_name || '-'
+    else
+      p.text-muted Belum ada jadwal untuk cabang ini.
