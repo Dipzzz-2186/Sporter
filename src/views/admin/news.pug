@@ -1,32 +1,466 @@
 extends ../layout/main
 
 block content
-  .container.py-4
-    .d-flex.justify-content-between.align-items-center.mb-3
-      div
-        h1.fw-bold.mb-1 Kelola Berita
-        p.text-muted.mb-0
-          | Manage semua artikel berita yang tampil di SPORTER.
-      a.btn.btn-danger(href="/admin/news/create")
-        i.bi.bi-plus-circle.me-1
-        | Tambah Berita
+  style.
+    /* News Page Styles - Mengikuti style events */
+    .news-page {
+      background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Header Section */
+    .news-header {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      animation: fadeInDown 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .news-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .news-header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .news-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      margin: 0;
+    }
+    
+    /* Action Button */
+    .btn-add-news {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border: none;
+      color: white;
+      padding: 0.9rem 1.8rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      animation: fadeInUp 0.6s ease-out 0.4s backwards;
+    }
+    
+    .btn-add-news:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
+      color: white;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Alerts */
+    .alert {
+      border-radius: 12px;
+      border: none;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      animation: slideInDown 0.4s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .alert-success {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+      border-left: 4px solid #059669;
+    }
+    
+    .alert-danger {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-left: 4px solid #dc2626;
+    }
+    
+    .alert i {
+      font-size: 1.2rem;
+    }
+    
+    /* News Card Container */
+    .news-card-container {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid #e8edf2;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      animation: fadeInUp 0.6s ease-out 0.2s backwards;
+      margin-bottom: 2rem;
+    }
+    
+    /* News Table */
+    .news-table {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #f8f9fa;
+    }
+    
+    .news-table thead {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+    }
+    
+    .news-table thead th {
+      color: white;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 1.2rem 1rem;
+      border: none;
+      white-space: nowrap;
+    }
+    
+    .news-table tbody tr {
+      transition: all 0.3s ease;
+      border-bottom: 1px solid #e8edf2;
+    }
+    
+    .news-table tbody tr:hover {
+      background: linear-gradient(90deg, rgba(0, 149, 255, 0.05) 0%, rgba(52, 199, 255, 0.05) 100%);
+      transform: scale(1.01);
+    }
+    
+    .news-table tbody td {
+      padding: 1.2rem 1rem;
+      vertical-align: middle;
+      font-size: 0.95rem;
+    }
+    
+    /* News Row Styling */
+    .news-row-title {
+      font-weight: 700;
+      color: #0B1F3F;
+      font-size: 1.05rem;
+      line-height: 1.4;
+      margin-bottom: 0.4rem;
+    }
+    
+    .news-row-slug {
+      color: #5a6c7d;
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+    
+    .news-row-info {
+      color: #0B1F3F;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    
+    /* Badges */
+    .news-table .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    
+    .badge.bg-success-subtle {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
+      color: #059669 !important;
+      border: 1px solid #a7f3d0;
+    }
+    
+    .badge.bg-secondary-subtle {
+      background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%) !important;
+      color: #5a6c7d !important;
+      border: 1px solid #d1d5db;
+    }
+    
+    .badge.bg-warning-subtle {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+      color: #d97706 !important;
+      border: 1px solid #fde68a;
+    }
+    
+    /* Thumbnail */
+    .news-thumbnail {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid #e8edf2;
+      transition: all 0.3s ease;
+    }
+    
+    .news-table tbody tr:hover .news-thumbnail {
+      border-color: #0095FF;
+      transform: scale(1.1);
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+    
+    .action-buttons .btn {
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 2px solid;
+    }
+    
+    .action-buttons .btn-outline-secondary {
+      border-color: #e8edf2;
+      color: #5a6c7d;
+      background: white;
+    }
+    
+    .action-buttons .btn-outline-secondary:hover {
+      background: #f8f9fa;
+      border-color: #0095FF;
+      color: #0095FF;
+      transform: translateY(-2px);
+    }
+    
+    .action-buttons .btn-outline-primary {
+      border-color: #0095FF;
+      color: #0095FF;
+      background: white;
+    }
+    
+    .action-buttons .btn-outline-primary:hover {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.3);
+    }
+    
+    .action-buttons .btn-outline-danger {
+      border-color: #dc2626;
+      color: #dc2626;
+      background: white;
+    }
+    
+    .action-buttons .btn-outline-danger:hover {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 2px dashed #e8edf2;
+      border-radius: 24px;
+      padding: 4rem 2rem;
+      text-align: center;
+      animation: fadeInUp 0.6s ease-out;
+      margin-top: 2rem;
+    }
+    
+    .empty-state-icon {
+      width: 120px;
+      height: 120px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      animation: float 3s ease-in-out infinite;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    
+    .empty-state-icon i {
+      font-size: 4rem;
+      color: #0095FF;
+    }
+    
+    .empty-state h4 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      color: #0B1F3F;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+      color: #5a6c7d;
+      font-size: 1.15rem;
+      margin: 0 auto 2rem;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .news-header {
+        padding: 1.5rem;
+      }
+      
+      .news-header h1 {
+        font-size: 2rem;
+      }
+      
+      .news-card-container {
+        padding: 1.5rem;
+      }
+      
+      .news-table thead th,
+      .news-table tbody td {
+        padding: 1rem 0.75rem;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .action-buttons .btn {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .news-page {
+        padding: 1.5rem 0;
+      }
+      
+      .news-header {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .news-header h1 {
+        font-size: 1.75rem;
+      }
+      
+      .news-card-container {
+        padding: 1rem;
+        border-radius: 16px;
+      }
+      
+      .news-table {
+        font-size: 0.85rem;
+      }
+      
+      .news-thumbnail {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .empty-state {
+        padding: 3rem 1.5rem;
+      }
+      
+      .empty-state-icon {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .empty-state-icon i {
+        font-size: 3rem;
+      }
+      
+      .empty-state h4 {
+        font-size: 2rem;
+      }
+    }
+    
+    /* Animation delays for table rows */
+    .news-table tbody tr:nth-child(1) { animation-delay: 0.1s; }
+    .news-table tbody tr:nth-child(2) { animation-delay: 0.2s; }
+    .news-table tbody tr:nth-child(3) { animation-delay: 0.3s; }
+    .news-table tbody tr:nth-child(4) { animation-delay: 0.4s; }
+    .news-table tbody tr:nth-child(5) { animation-delay: 0.5s; }
 
-    if flash && flash.error && flash.error.length
-      each msg in flash.error
-        .alert.alert-danger(role="alert")= msg
-    if flash && flash.success && flash.success.length
-      each msg in flash.success
-        .alert.alert-success(role="alert")= msg
+  .news-page
+    .container
+      // Header Section
+      .news-header
+        .row.align-items-center
+          .col-md-8
+            h1
+              i.bi.bi-newspaper.me-2
+              | Kelola Berita
+            p
+              | Manage semua artikel berita yang tampil di SPORTER.
+          .col-md-4.text-md-end
+            a.btn-add-news(href="/admin/news/create")
+              i.bi.bi-plus-circle
+              span Tambah Berita
 
-    if news && news.length
-      .card
-        .card-body
+      // Flash Messages
+      if flash && flash.success && flash.success.length
+        .alert.alert-success(role="alert")
+          i.bi.bi-check-circle-fill.me-2
+          each msg in flash.success
+            div= msg
+      
+      if flash && flash.error && flash.error.length
+        .alert.alert-danger(role="alert")
+          i.bi.bi-exclamation-triangle-fill.me-2
+          each msg in flash.error
+            div= msg
+
+      // News List
+      if news && news.length
+        .news-card-container
           .table-responsive
-            table.table.table-hover.align-middle
+            table.table.table-hover.mb-0.news-table
               thead
                 tr
+                  th Thumbnail
                   th ID
-                  th Judul
+                  th Judul Berita
                   th Cabang
                   th Event
                   th Status
@@ -35,14 +469,32 @@ block content
               tbody
                 each n in news
                   tr
-                    td= n.id
                     td
-                      strong= n.title
+                      if n.thumbnail_url
+                        img.news-thumbnail(
+                          src=n.thumbnail_url,
+                          alt=n.title,
+                          onerror="this.src='https://via.placeholder.com/60x60?text=No+Image'"
+                        )
+                      else
+                        img.news-thumbnail(
+                          src="https://via.placeholder.com/60x60?text=No+Image",
+                          alt="No Thumbnail"
+                        )
+                    td
+                      span.badge.bg-light.text-dark= n.id
+                    td
+                      .news-row-title= n.title
                       if n.slug
-                        br
-                        small.text-muted= n.slug
-                    td= n.sport_name || '-'
-                    td= n.event_title || '-'
+                        .news-row-slug= n.slug
+                      if n.excerpt
+                        small.text-muted.d-block.mt-1
+                          i.bi.bi-quote.me-1
+                          | #{n.excerpt.length > 100 ? n.excerpt.substring(0, 100) + '...' : n.excerpt}
+                    td
+                      .news-row-info= n.sport_name || '-'
+                    td
+                      .news-row-info= n.event_title || '-'
                     td
                       if n.status === 'published'
                         span.badge.bg-success-subtle.text-success Published
@@ -52,23 +504,142 @@ block content
                         span.badge.bg-warning-subtle.text-warning= n.status
                     td
                       if n.published_at
-                        - const pub = new Date(n.published_at).toLocaleDateString('id-ID');
-                        span= pub
+                        - const pubDate = new Date(n.published_at);
+                        - const now = new Date();
+                        - const timeDiff = now - pubDate;
+                        - const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                        
+                        .news-row-info
+                          = pubDate.toLocaleDateString('id-ID')
+                        small.text-muted
+                          if daysDiff === 0
+                            i.bi.bi-clock.me-1
+                            | Hari ini
+                          else if daysDiff === 1
+                            i.bi.bi-clock-history.me-1
+                            | Kemarin
+                          else if daysDiff < 7
+                            i.bi.bi-calendar-week.me-1
+                            | #{daysDiff} hari lalu
+                          else
+                            i.bi.bi-calendar-date.me-1
+                            | #{Math.floor(daysDiff/7)} minggu lalu
                       else
                         span.text-muted -
                     td.text-end
-                      if n.slug
-                        a.btn.btn-sm.btn-outline-secondary.me-1(href=`/news/${n.slug}` target="_blank")
-                          i.bi.bi-box-arrow-up-right
-                      a.btn.btn-sm.btn-outline-primary.me-1(href=`/admin/news/${n.id}/edit`)
-                        i.bi.bi-pencil
-                      form.d-inline(method="post" action=`/admin/news/${n.id}/delete` onsubmit="return confirm('Yakin hapus berita ini?');")
-                        button.btn.btn-sm.btn-outline-danger(type="submit")
-                          i.bi.bi-trash
-    else
-      .text-center.py-5
-        h4.mb-2 Belum ada berita
-        p.text-muted.mb-3 Tambahkan artikel berita pertama untuk SPORTER.
-        a.btn.btn-danger(href="/admin/news/create")
-          i.bi.bi-plus-circle.me-1
-          | Tambah Berita
+                      .action-buttons
+                        if n.slug
+                          a.btn.btn-sm.btn-outline-secondary(
+                            href=`/news/${n.slug}`,
+                            target="_blank",
+                            title="Lihat di Frontend"
+                          )
+                            i.bi.bi-box-arrow-up-right
+                            span.d-none.d-sm-inline.ms-1 Lihat
+                        a.btn.btn-sm.btn-outline-primary(
+                          href=`/admin/news/${n.id}/edit`,
+                          title="Edit Berita"
+                        )
+                          i.bi.bi-pencil
+                          span.d-none.d-sm-inline.ms-1 Edit
+                        form.d-inline(
+                          method="post",
+                          action=`/admin/news/${n.id}/delete`,
+                          onsubmit="return confirm('Yakin hapus berita ini?');"
+                        )
+                          button.btn.btn-sm.btn-outline-danger(
+                            type="submit",
+                            title="Hapus Berita"
+                          )
+                            i.bi.bi-trash
+                            span.d-none.d-sm-inline.ms-1 Hapus
+      else
+        .empty-state
+          .empty-state-icon
+            i.bi.bi-newspaper
+          h4 Belum ada berita
+          p.text-muted
+            | Tambahkan berita pertama untuk mulai membagikan informasi olahraga terbaru.
+            br
+            | Berita akan membantu pengguna tetap update dengan perkembangan terkini.
+          a.btn-add-news.mt-3(href="/admin/news/create")
+            i.bi.bi-plus-circle
+            span Tambah Berita Pertama
+
+  // Custom JavaScript
+  script.
+    (function(){
+      // Auto-dismiss alerts with animation
+      var alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert){
+        setTimeout(function(){
+          alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          alert.style.opacity = '0';
+          alert.style.transform = 'translateY(-12px)';
+          setTimeout(() => alert.remove(), 450);
+        }, 4500);
+      });
+
+      // Progressive enhancement for delete forms
+      document.querySelectorAll('form[action*="/delete"]').forEach(function(form){
+        form.addEventListener('submit', function(e){
+          if (!confirm('⚠️ Yakin ingin menghapus berita ini? Tindakan ini tidak bisa dibatalkan.')) {
+            e.preventDefault();
+            return false;
+          }
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menghapus...';
+          }
+        });
+      });
+
+      // Add hover animations to table rows
+      var rows = document.querySelectorAll('.news-table tbody tr');
+      rows.forEach(function(row, index) {
+        row.style.animation = 'fadeInUp 0.6s ease-out ' + (0.1 + index * 0.1) + 's backwards';
+        
+        row.addEventListener('mouseenter', function() {
+          this.style.transition = 'all 0.3s ease';
+        });
+      });
+
+      // Image error handling
+      document.querySelectorAll('.news-thumbnail').forEach(function(img){
+        img.addEventListener('error', function(){
+          this.src = 'https://via.placeholder.com/60x60?text=No+Image';
+        });
+      });
+
+      // Intersection Observer for animations
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        });
+
+        // Observe all cards and tables
+        document.querySelectorAll('.news-card-container, .empty-state').forEach(function(el) {
+          observer.observe(el);
+        });
+      }
+
+      // Thumbnail hover effect
+      document.querySelectorAll('.news-thumbnail').forEach(function(img){
+        img.addEventListener('mouseenter', function(){
+          this.style.transform = 'scale(1.1)';
+        });
+        
+        img.addEventListener('mouseleave', function(){
+          this.style.transform = 'scale(1)';
+        });
+      });
+    })();

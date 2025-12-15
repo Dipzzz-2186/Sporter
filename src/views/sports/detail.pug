@@ -4,14 +4,14 @@ block content
   style.
     /* Sport Detail Page Styles */
     .sport-detail-page {
-      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
       min-height: 100vh;
       padding: 0;
     }
     
     /* Hero Section */
     .sport-hero {
-      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       padding: 4rem 0 3rem;
       position: relative;
       overflow: hidden;
@@ -92,11 +92,12 @@ block content
       align-items: center;
       gap: 0.5rem;
       text-decoration: none;
+      margin-right: 3px;
     }
     
     .btn-hero-primary {
       background: white;
-      color: #FF3B30;
+      color: #0095FF;
       border: 2px solid white;
     }
     
@@ -119,13 +120,13 @@ block content
     
     /* Stats Section */
     .stats-section {
-      background: #2d2d2d;
+      background: #152844;
       padding: 2rem 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .stat-card {
-      background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
+      background: linear-gradient(135deg, #1a3454 0%, #152844 100%);
       border-radius: 16px;
       padding: 1.5rem;
       text-align: center;
@@ -135,14 +136,14 @@ block content
     
     .stat-card:hover {
       transform: translateY(-5px);
-      border-color: #FF3B30;
-      box-shadow: 0 10px 30px rgba(255, 59, 48, 0.2);
+      border-color: #0095FF;
+      box-shadow: 0 10px 30px rgba(0, 149, 255, 0.2);
     }
     
     .stat-icon {
       width: 60px;
       height: 60px;
-      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -192,13 +193,13 @@ block content
     }
     
     .section-title i {
-      color: #FF3B30;
+      color: #0095FF;
       font-size: 1.8rem;
     }
     
     /* Match Cards */
     .match-card {
-      background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+      background: linear-gradient(135deg, #152844 0%, #0B1F3F 100%);
       border-radius: 16px;
       padding: 1.5rem;
       margin-bottom: 1rem;
@@ -209,8 +210,8 @@ block content
     
     .match-card:hover {
       transform: translateX(10px);
-      border-color: #FF3B30;
-      box-shadow: 0 5px 20px rgba(255, 59, 48, 0.2);
+      border-color: #0095FF;
+      box-shadow: 0 5px 20px rgba(0, 149, 255, 0.2);
     }
     
     .match-header {
@@ -228,7 +229,7 @@ block content
     }
     
     .match-status {
-      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       color: white;
       padding: 0.35rem 1rem;
       border-radius: 20px;
@@ -250,12 +251,12 @@ block content
     }
     
     .match-info-item i {
-      color: #FF3B30;
+      color: #0095FF;
     }
     
     /* Empty State */
     .empty-state {
-      background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+      background: linear-gradient(135deg, #152844 0%, #0B1F3F 100%);
       border-radius: 24px;
       padding: 4rem 2rem;
       text-align: center;
@@ -265,14 +266,14 @@ block content
     .empty-icon {
       width: 120px;
       height: 120px;
-      background: linear-gradient(135deg, rgba(255, 59, 48, 0.1) 0%, rgba(255, 149, 0, 0.1) 100%);
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.1) 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 2rem;
       font-size: 3rem;
-      color: #FF3B30;
+      color: #0095FF;
     }
     
     .empty-title {
@@ -361,19 +362,17 @@ block content
             p.sport-description SPORTER mengumpulkan informasi olahraga Indonesia: event, jadwal pertandingan, skor, klasemen, livestream, dan tiket dalam satu platform yang mudah digunakan.
           
           .hero-actions
-          a.btn-hero.btn-hero-primary(href="#jadwal")
-            i.bi.bi-calendar-check
-            | Lihat Jadwal
+            a.btn-hero.btn-hero-primary(href="#jadwal")
+              i.bi.bi-calendar-check
+              | Lihat Jadwal
 
-          a.btn-hero.btn-hero-outline(href="/standings?sport_id=" + sport.id)
-            i.bi.bi-bar-chart-steps
-            | Lihat Klasemen
+            a.btn-hero.btn-hero-outline(href="/standings?sport_id=" + sport.id)
+              i.bi.bi-bar-chart-steps
+              | Lihat Klasemen
 
-
-          a.btn-hero.btn-hero-outline(href="/sports")
-            i.bi.bi-arrow-left
-            | Kembali
-
+            a.btn-hero.btn-hero-outline(href="/sports")
+              i.bi.bi-arrow-left
+              | Kembali
 
     //- Stats Section
     .stats-section

@@ -4,7 +4,7 @@ block content
   style.
     /* Hero Section with Modern Gradient */
     .events-hero {
-      background: linear-gradient(135deg, #222831 0%, #393E46 100%);
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
       position: relative;
       overflow: hidden;
       padding: 5rem 0;
@@ -25,7 +25,7 @@ block content
       right: -20%;
       width: 800px;
       height: 800px;
-      background: radial-gradient(circle, rgba(52, 211, 153, 0.15) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
       border-radius: 50%;
       animation: float 8s ease-in-out infinite;
     }
@@ -37,7 +37,7 @@ block content
       left: -10%;
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(255, 149, 0, 0.1) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(52, 199, 255, 0.1) 0%, transparent 70%);
       border-radius: 50%;
       animation: float 10s ease-in-out infinite reverse;
     }
@@ -59,21 +59,21 @@ block content
     }
     
     .events-hero-badge {
-      background: rgba(52, 211, 153, 0.15) !important;
-      color: #34D399 !important;
-      border: 2px solid rgba(52, 211, 153, 0.3);
+      background: rgba(0, 149, 255, 0.15) !important;
+      color: #0095FF !important;
+      border: 2px solid rgba(0, 149, 255, 0.3);
       padding: 0.6rem 1.2rem;
       font-size: 0.95rem;
       backdrop-filter: blur(10px);
-      animation: pulseGreen 2s infinite;
+      animation: pulseBlue 2s infinite;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
     }
     
-    @keyframes pulseGreen {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4); }
-      50% { box-shadow: 0 0 0 10px rgba(52, 211, 153, 0); }
+    @keyframes pulseBlue {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 149, 255, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(0, 149, 255, 0); }
     }
     
     .events-hero h1 {
@@ -90,7 +90,7 @@ block content
     }
     
     .events-hero .text-success {
-      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -117,7 +117,7 @@ block content
       padding: 1.5rem;
       text-align: center;
       transition: all 0.3s ease;
-      border: 2px solid #f0f0f0;
+      border: 2px solid #e8edf2;
       height: 100%;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
       animation: fadeInUp 0.6s ease-out backwards;
@@ -125,14 +125,14 @@ block content
     
     .stat-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(52, 211, 153, 0.15);
-      border-color: #34D399;
+      box-shadow: 0 15px 40px rgba(0, 149, 255, 0.15);
+      border-color: #0095FF;
     }
     
     .stat-icon-wrapper {
       width: 60px;
       height: 60px;
-      background: linear-gradient(135deg, rgba(52, 211, 153, 0.1) 0%, rgba(52, 211, 153, 0.2) 100%);
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.2) 100%);
       border-radius: 15px;
       display: inline-flex;
       align-items: center;
@@ -142,13 +142,13 @@ block content
     }
     
     .stat-card:hover .stat-icon-wrapper {
-      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       transform: rotate(5deg) scale(1.1);
     }
     
     .stat-icon-wrapper i {
       font-size: 1.8rem;
-      color: #34D399;
+      color: #0095FF;
       transition: color 0.3s ease;
     }
     
@@ -159,13 +159,13 @@ block content
     .stat-value {
       font-size: 2rem;
       font-weight: 700;
-      color: #1C1C1E;
+      color: #0B1F3F;
       line-height: 1;
       margin-bottom: 0.25rem;
     }
     
     .stat-label {
-      color: #6c757d;
+      color: #5a6c7d;
       font-size: 0.9rem;
       margin: 0;
     }
@@ -179,7 +179,7 @@ block content
     }
     
     .events-filter-container {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
       border-radius: 20px;
       padding: 2rem;
       animation: fadeInUp 0.6s ease-out;
@@ -192,13 +192,13 @@ block content
     .filter-header h3 {
       font-family: 'Bebas Neue', cursive;
       font-size: 2rem;
-      color: #1C1C1E;
+      color: #0B1F3F;
       letter-spacing: 1px;
       margin-bottom: 0.5rem;
     }
     
     .filter-header p {
-      color: #6c757d;
+      color: #5a6c7d;
       font-size: 1rem;
       margin: 0;
     }
@@ -212,11 +212,11 @@ block content
     
     .events-chip {
       background: white;
-      border: 2px solid #e0e0e0;
+      border: 2px solid #d0d0d0;
       border-radius: 50px;
       padding: 0.75rem 1.5rem;
       font-weight: 600;
-      color: #6c757d;
+      color: #5a6c7d;
       transition: all 0.3s ease;
       display: inline-flex;
       align-items: center;
@@ -226,11 +226,11 @@ block content
     
     .events-chip:hover,
     .events-chip.active {
-      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
-      border-color: #34D399;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border-color: #0095FF;
       color: white;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(52, 211, 153, 0.3);
+      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.3);
     }
     
     .events-chip i {
@@ -245,7 +245,7 @@ block content
     .search-input {
       width: 100%;
       padding: 0.875rem 1rem 0.875rem 3rem;
-      border: 2px solid #e0e0e0;
+      border: 2px solid #d0d0d0;
       border-radius: 15px;
       font-size: 0.95rem;
       transition: all 0.3s ease;
@@ -254,8 +254,8 @@ block content
     
     .search-input:focus {
       outline: none;
-      border-color: #34D399;
-      box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+      border-color: #0095FF;
+      box-shadow: 0 0 0 3px rgba(0, 149, 255, 0.1);
     }
     
     .search-icon {
@@ -263,7 +263,7 @@ block content
       left: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      color: #6c757d;
+      color: #5a6c7d;
       font-size: 1.1rem;
     }
     
@@ -285,13 +285,13 @@ block content
     .section-header h2 {
       font-family: 'Bebas Neue', cursive;
       font-size: 2.5rem;
-      color: #1C1C1E;
+      color: #0B1F3F;
       letter-spacing: 1px;
       margin-bottom: 0.5rem;
     }
     
     .section-header p {
-      color: #6c757d;
+      color: #5a6c7d;
       font-size: 1.05rem;
       margin: 0;
     }
@@ -299,7 +299,7 @@ block content
     .sporter-event-card {
       border-radius: 20px;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 2px solid #f0f0f0;
+      border: 2px solid #e8edf2;
       overflow: hidden;
       position: relative;
       animation: fadeInUp 0.6s ease-out backwards;
@@ -314,18 +314,18 @@ block content
       left: 0;
       right: 0;
       height: 5px;
-      background: linear-gradient(90deg, #34D399 0%, #10B981 100%);
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
       transform: scaleX(0);
       transition: transform 0.4s ease;
       z-index: 2;
     }
     
     .sporter-event-card.upcoming::before {
-      background: linear-gradient(90deg, #34D399 0%, #10B981 100%);
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
     }
     
     .sporter-event-card.ongoing::before {
-      background: linear-gradient(90deg, #3B82F6 0%, #1D4ED8 100%);
+      background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
     }
     
     .sporter-event-card.finished::before {
@@ -338,8 +338,8 @@ block content
     
     .sporter-event-card:hover {
       transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(52, 211, 153, 0.15);
-      border-color: #34D399;
+      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
+      border-color: #0095FF;
     }
     
     .event-card-header {
@@ -352,7 +352,7 @@ block content
       position: absolute;
       top: -15px;
       left: 1.75rem;
-      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       color: white;
       padding: 0.5rem 1rem;
       border-radius: 20px;
@@ -361,11 +361,11 @@ block content
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      box-shadow: 0 5px 15px rgba(52, 211, 153, 0.3);
+      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.3);
     }
     
     .event-date-badge.ongoing {
-      background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+      background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
     }
     
     .event-date-badge.finished {
@@ -386,19 +386,19 @@ block content
     }
     
     .status-upcoming {
-      background: rgba(52, 211, 153, 0.1);
-      color: #059669;
+      background: rgba(0, 149, 255, 0.1);
+      color: #0080e0;
     }
     
     .status-ongoing {
-      background: rgba(59, 130, 246, 0.1);
-      color: #2563eb;
-      animation: pulseBlue 2s infinite;
+      background: rgba(16, 185, 129, 0.1);
+      color: #059669;
+      animation: pulseGreen 2s infinite;
     }
     
-    @keyframes pulseBlue {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
-      50% { box-shadow: 0 0 0 5px rgba(59, 130, 246, 0); }
+    @keyframes pulseGreen {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+      50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
     }
     
     .status-finished {
@@ -411,7 +411,7 @@ block content
     }
     
     .sporter-event-card h5 {
-      color: #1C1C1E;
+      color: #0B1F3F;
       font-weight: 700;
       font-size: 1.25rem;
       line-height: 1.4;
@@ -424,7 +424,7 @@ block content
     }
     
     .event-meta-item {
-      color: #6c757d;
+      color: #5a6c7d;
       font-size: 0.9rem;
       margin-bottom: 0.5rem;
       display: flex;
@@ -433,19 +433,19 @@ block content
     }
     
     .event-meta-item i {
-      color: #34D399;
+      color: #0095FF;
       font-size: 1rem;
       width: 20px;
     }
     
     .event-sport-badge {
-      background: rgba(52, 211, 153, 0.1) !important;
-      color: #059669 !important;
+      background: rgba(0, 149, 255, 0.1) !important;
+      color: #0080e0 !important;
       padding: 0.4rem 0.9rem;
       border-radius: 20px;
       font-size: 0.8rem;
       font-weight: 600;
-      border: 1px solid rgba(52, 211, 153, 0.2);
+      border: 1px solid rgba(0, 149, 255, 0.2);
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
@@ -457,7 +457,7 @@ block content
     }
     
     .event-description {
-      color: #6c757d;
+      color: #5a6c7d;
       font-size: 0.9rem;
       line-height: 1.6;
       margin-bottom: 1.5rem;
@@ -485,26 +485,26 @@ block content
     
     .sporter-event-card .btn-outline-success {
       background: transparent;
-      border: 2px solid #34D399;
-      color: #059669;
+      border: 2px solid #0095FF;
+      color: #0080e0;
     }
     
     .sporter-event-card .btn-outline-success:hover {
-      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       color: white;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(52, 211, 153, 0.3);
+      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.3);
     }
     
     .sporter-event-card .btn-outline-secondary {
       background: transparent;
-      border: 2px solid #e0e0e0;
-      color: #6c757d;
+      border: 2px solid #d0d0d0;
+      color: #5a6c7d;
     }
     
     .sporter-event-card .btn-outline-secondary:hover {
       background: #f8f9fa;
-      border-color: #6c757d;
+      border-color: #5a6c7d;
       color: #4B5563;
       transform: translateY(-2px);
     }
@@ -539,13 +539,13 @@ block content
     .events-empty-state h3 {
       font-family: 'Bebas Neue', cursive;
       font-size: 2rem;
-      color: #1C1C1E;
+      color: #0B1F3F;
       letter-spacing: 1px;
       margin-bottom: 0.75rem;
     }
     
     .events-empty-state p {
-      color: #6c757d;
+      color: #5a6c7d;
       font-size: 1.05rem;
       margin: 0;
     }
@@ -656,33 +656,33 @@ block content
           .row.mt-4.g-3
             .col-6.col-md-3
               .d-flex.align-items-center.gap-2
-                i.bi.bi-check-circle-fill.text-success.fs-5
+                i.bi.bi-check-circle-fill.text-info.fs-5
                 div
-                  .h4.mb-0.fw-bold #{events ? events.filter(e => e.status === 'upcoming').length : '0'}
+                  .h4.mb-0.fw-bold.text-white #{events ? events.filter(e => e.status === 'upcoming').length : '0'}
                   small.text-white-50.fs-7 Akan Datang
             .col-6.col-md-3
               .d-flex.align-items-center.gap-2
-                i.bi.bi-broadcast.text-primary.fs-5
+                i.bi.bi-broadcast.text-success.fs-5
                 div
-                  .h4.mb-0.fw-bold #{events ? events.filter(e => e.status === 'ongoing').length : '0'}
+                  .h4.mb-0.fw-bold.text-white #{events ? events.filter(e => e.status === 'ongoing').length : '0'}
                   small.text-white-50.fs-7 Berlangsung
             .col-6.col-md-3
               .d-flex.align-items-center.gap-2
                 i.bi.bi-geo-alt.text-warning.fs-5
                 div
-                  .h4.mb-0.fw-bold #{events ? new Set(events.map(e => e.venue_name)).size : '0'}
+                  .h4.mb-0.fw-bold.text-white #{events ? new Set(events.map(e => e.venue_name)).size : '0'}
                   small.text-white-50.fs-7 Venue
             .col-6.col-md-3
               .d-flex.align-items-center.gap-2
                 i.bi.bi-trophy.text-info.fs-5
                 div
-                  .h4.mb-0.fw-bold #{events ? new Set(events.map(e => e.sport_name)).size : '0'}
+                  .h4.mb-0.fw-bold.text-white #{events ? new Set(events.map(e => e.sport_name)).size : '0'}
                   small.text-white-50.fs-7 Cabang
         
         .col-lg-5.text-center
-          .sporter-hero-illustration.mx-auto(style="padding: 2.5rem 2rem; background: rgba(52, 211, 153, 0.08); border-color: rgba(52, 211, 153, 0.2);")
-            i.bi.bi-trophy-fill
-            p.mb-0.fs-6
+          .sporter-hero-illustration.mx-auto(style="padding: 2.5rem 2rem; background: rgba(0, 149, 255, 0.08); border: 2px solid rgba(0, 149, 255, 0.2); border-radius: 30px; backdrop-filter: blur(10px);")
+            i.bi.bi-trophy-fill(style="font-size: 6rem; color: rgba(255, 255, 255, 0.3);")
+            p.mb-0.fs-6.text-white-50
               | Jadwal Lengkap • Lokasi Akurat • Tiket Terintegrasi
 
   // STATS SECTION
@@ -758,7 +758,7 @@ block content
         if events && events.length > 0
           .d-flex.align-items-center.gap-2
             span.text-muted.small#events-count #{events.length} Event Tersedia
-            i.bi.bi-calendar-check.text-success
+            i.bi.bi-calendar-check.text-primary
 
       if !events || events.length === 0
         .events-empty-state
@@ -1005,14 +1005,14 @@ block content
           
           searchInput.parentElement.appendChild(clearButton);
           
-          searchInput.addEventListener('input',            function() {
-              if (this.value.trim() !== '') {
-                clearButton.style.display = 'block';
-              } else {
-                clearButton.style.display = 'none';
-              }
-              applyFilter();
-            });
+          searchInput.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+              clearButton.style.display = 'block';
+            } else {
+              clearButton.style.display = 'none';
+            }
+            applyFilter();
+          });
           
           // Enter key untuk search
           searchInput.addEventListener('keydown', function(e) {
@@ -1143,7 +1143,7 @@ block content
           .event-image-fallback {
             width: 100%;
             height: 200px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1156,13 +1156,13 @@ block content
           }
           
           .events-chip:focus {
-            outline: 2px solid #34D399;
+            outline: 2px solid #0095FF;
             outline-offset: 2px;
           }
           
           .search-input:focus {
-            border-color: #34D399;
-            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+            border-color: #0095FF;
+            box-shadow: 0 0 0 3px rgba(0, 149, 255, 0.1);
           }
           
           @keyframes slideInRight {
@@ -1194,15 +1194,15 @@ block content
           }
           
           .status-ongoing.pulse {
-            animation: pulseBlue 1.5s infinite;
+            animation: pulseGreen 1.5s infinite;
           }
           
-          @keyframes pulseBlue {
+          @keyframes pulseGreen {
             0%, 100% {
-              box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+              box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
             }
             50% {
-              box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+              box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
             }
           }
           
@@ -1252,12 +1252,12 @@ block content
             }
             
             .stat-icon-wrapper {
-              background: rgba(52, 211, 153, 0.2);
+              background: rgba(0, 149, 255, 0.2);
             }
             
             .stat-card:hover {
-              border-color: #34D399;
-              box-shadow: 0 15px 40px rgba(52, 211, 153, 0.2);
+              border-color: #0095FF;
+              box-shadow: 0 15px 40px rgba(0, 149, 255, 0.2);
             }
           }
           

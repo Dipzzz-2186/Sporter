@@ -2,20 +2,406 @@ extends ../layout/main
 
 block content
   style.
-    /* reuse many styles from matches.pug — keep it compact for news */
-    .news-page { padding: 2rem 0; min-height: 100vh; background: linear-gradient(135deg,#f5f7fa 0%,#eef2f7 100%); }
-    .news-header { background: linear-gradient(135deg,#111827 0%,#1f2937 100%); color: white; border-radius: 20px; padding: 1.6rem; margin-bottom: 1.5rem; }
-    .news-header h1 { font-family: 'Bebas Neue', cursive; font-size: 2rem; background: linear-gradient(135deg,#FF3B30 0%,#FF9500 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .card-news { background: white; border-radius: 16px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); overflow: hidden; }
-    .news-table thead th { text-transform: uppercase; font-size: .8rem; }
-    .news-row-title { font-weight:700; color:#111827; }
-    .news-meta { color:#6b7280; font-size:.85rem; }
-    .btn-add-news { background: linear-gradient(135deg,#FF3B30 0%,#FF9500 100%); color:white; padding:.6rem 1.1rem; border-radius:10px; text-decoration:none; display:inline-flex; gap:.5rem; align-items:center; }
-    .action-buttons { display:flex; gap:.5rem; justify-content:flex-end; }
-    .empty-state { padding:3.5rem; text-align:center; border-radius:12px; background:white; border:2px dashed #e6e8eb; }
+    /* News Page Styles */
+    .news-page {
+      background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Header Section */
+    .news-header {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      color: white;
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInDown 0.6s ease-out;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .news-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    .news-header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .news-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      margin: 0;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Action Button */
+    .btn-add-news {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border: none;
+      color: white;
+      padding: 0.9rem 1.8rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      animation: fadeInUp 0.6s ease-out 0.4s backwards;
+    }
+    
+    .btn-add-news:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
+      color: white;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* News Card Container */
+    .news-card-container {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid #e8edf2;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      animation: fadeInUp 0.6s ease-out 0.2s backwards;
+      margin-bottom: 2rem;
+    }
+    
+    /* News Table */
+    .news-table {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #f8f9fa;
+    }
+    
+    .news-table thead {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+    }
+    
+    .news-table thead th {
+      color: white;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 1.2rem 1rem;
+      border: none;
+      white-space: nowrap;
+    }
+    
+    .news-table tbody tr {
+      transition: all 0.3s ease;
+      border-bottom: 1px solid #e8edf2;
+    }
+    
+    .news-table tbody tr:hover {
+      background: linear-gradient(90deg, rgba(0, 149, 255, 0.05) 0%, rgba(52, 199, 255, 0.05) 100%);
+      transform: scale(1.01);
+    }
+    
+    .news-table tbody td {
+      padding: 1.2rem 1rem;
+      vertical-align: middle;
+      font-size: 0.95rem;
+    }
+    
+    /* News Row Styling */
+    .news-row-title {
+      font-weight: 700;
+      color: #0B1F3F;
+      font-size: 1.05rem;
+      line-height: 1.4;
+      margin-bottom: 0.4rem;
+    }
+    
+    .news-meta {
+      color: #5a6c7d;
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+    
+    .news-excerpt {
+      color: #5a6c7d;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      max-width: 300px;
+    }
+    
+    /* Badges */
+    .news-table .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    
+    .badge.bg-light {
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%) !important;
+      color: #0095FF !important;
+      border: 1px solid #d6edff;
+    }
+    
+    .badge.bg-white {
+      background: white !important;
+      color: #0095FF !important;
+      border: 1px solid #d6edff;
+      box-shadow: 0 2px 8px rgba(0, 149, 255, 0.15);
+    }
+    
+    .badge.bg-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    
+    .badge.bg-secondary {
+      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+      box-shadow: 0 2px 8px rgba(107, 114, 128, 0.3);
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+    
+    .action-buttons .btn {
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 2px solid;
+    }
+    
+    .action-buttons .btn-outline-primary {
+      border-color: #0095FF;
+      color: #0095FF;
+      background: white;
+    }
+    
+    .action-buttons .btn-outline-primary:hover {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.3);
+    }
+    
+    .action-buttons .btn-outline-danger {
+      border-color: #dc2626;
+      color: #dc2626;
+      background: white;
+    }
+    
+    .action-buttons .btn-outline-danger:hover {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 2px dashed #e8edf2;
+      border-radius: 24px;
+      padding: 4rem 2rem;
+      text-align: center;
+      animation: fadeInUp 0.6s ease-out;
+      margin-top: 2rem;
+    }
+    
+    .empty-state-icon {
+      width: 120px;
+      height: 120px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      animation: float 3s ease-in-out infinite;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    
+    .empty-state-icon i {
+      font-size: 4rem;
+      color: #0095FF;
+    }
+    
+    .empty-state h4 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      color: #0B1F3F;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+      color: #5a6c7d;
+      font-size: 1.15rem;
+      margin: 0 auto 2rem;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+    
+    /* Alerts */
+    .alert {
+      border-radius: 12px;
+      border: none;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      animation: slideInDown 0.4s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .alert-danger {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-left: 4px solid #dc2626;
+    }
+    
+    .alert-success {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+      border-left: 4px solid #059669;
+    }
+    
+    .alert i {
+      font-size: 1.2rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .news-header {
+        padding: 1.5rem;
+      }
+      
+      .news-header h1 {
+        font-size: 2rem;
+      }
+      
+      .news-card-container {
+        padding: 1.5rem;
+      }
+      
+      .news-table thead th,
+      .news-table tbody td {
+        padding: 1rem 0.75rem;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .action-buttons .btn {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .news-page {
+        padding: 1.5rem 0;
+      }
+      
+      .news-header {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .news-header h1 {
+        font-size: 1.75rem;
+      }
+      
+      .news-card-container {
+        padding: 1rem;
+        border-radius: 16px;
+      }
+      
+      .news-table {
+        font-size: 0.85rem;
+      }
+      
+      .empty-state {
+        padding: 3rem 1.5rem;
+      }
+      
+      .empty-state-icon {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .empty-state-icon i {
+        font-size: 3rem;
+      }
+      
+      .empty-state h4 {
+        font-size: 2rem;
+      }
+    }
+    
+    /* Animation delays for table rows */
+    .news-table tbody tr:nth-child(1) { animation-delay: 0.1s; }
+    .news-table tbody tr:nth-child(2) { animation-delay: 0.2s; }
+    .news-table tbody tr:nth-child(3) { animation-delay: 0.3s; }
+    .news-table tbody tr:nth-child(4) { animation-delay: 0.4s; }
+    .news-table tbody tr:nth-child(5) { animation-delay: 0.5s; }
 
   .news-page
     .container
+      // Header Section
       .news-header
         .row.align-items-center
           .col-md-8
@@ -29,6 +415,7 @@ block content
               i.bi.bi-plus-circle
               span Tambah Berita
 
+      // Flash Messages
       if flash && flash.error && flash.error.length
         each msg in flash.error
           .alert.alert-danger(role="alert")
@@ -41,73 +428,87 @@ block content
             i.bi.bi-check-circle-fill.me-2
             span= msg
 
+      // News List
       if news && news.length
-        .card.card-news.mt-3
-          .card-body.p-0
-            .table-responsive
-              table.table.table-hover.mb-0.news-table
-                thead
+        .news-card-container
+          .table-responsive
+            table.table.table-hover.mb-0.news-table
+              thead
+                tr
+                  th ID
+                  th Cabang
+                  th Judul
+                  th Ringkasan
+                  th Tgl Publish
+                  th Status
+                  th.text-end Aksi
+              tbody
+                each a in news
                   tr
-                    th ID
-                    th Cabang
-                    th Judul
-                    th Excerpt
-                    th Tgl Publish
-                    th Status
-                    th.text-end Aksi
-                tbody
-                  each a in news
-                    tr
-                      td
-                        span.badge.bg-light.text-dark= a.id
-                      td
-                        if a.sport_name
-                          span.badge.bg-white.text-danger= a.sport_name
-                        else
-                          span.text-muted -
-                      td
-                        .news-row-title= a.title
-                        if a.slug
-                          div.news-meta
-                            small= a.slug
-                      td
-                        if a.excerpt
-                          = a.excerpt.length > 120 ? a.excerpt.slice(0,120) + '...' : a.excerpt
-                        else
-                          span.text-muted -
-                      td
-                        if a.published_at
-                          = new Date(a.published_at).toLocaleString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
-                        else
-                          span.text-muted -
-                      td
-                        if a.status === 'published'
-                          span.badge.bg-success.text-white Published
-                        else
-                          span.badge.bg-secondary.text-white= a.status || 'draft'
-                      td.text-end
-                        .action-buttons
-                          a.btn.btn-sm.btn-outline-primary(href=`/subadmin/news/${a.id}/edit`, title="Edit")
-                            i.bi.bi-pencil-fill
-                          form.d-inline(method="post" action=`/subadmin/news/${a.id}/delete` onsubmit="return confirm('Yakin ingin menghapus berita ini?');")
-                            button.btn.btn-sm.btn-outline-danger(type="submit" title="Hapus")
-                              i.bi.bi-trash-fill
+                    td
+                      span.badge.bg-light.text-dark= a.id
+                    td
+                      if a.sport_name
+                        span.badge.bg-white.text-danger= a.sport_name
+                      else
+                        span.text-muted -
+                    td
+                      .news-row-title= a.title
+                      if a.slug
+                        div.news-meta
+                          small= a.slug
+                    td
+                      if a.excerpt
+                        .news-excerpt= a.excerpt.length > 120 ? a.excerpt.slice(0,120) + '...' : a.excerpt
+                      else
+                        span.text-muted -
+                    td
+                      if a.published_at
+                        = new Date(a.published_at).toLocaleString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+                      else
+                        span.text-muted -
+                    td
+                      if a.status === 'published'
+                        span.badge.bg-success.text-white Published
+                      else
+                        span.badge.bg-secondary.text-white= a.status || 'draft'
+                    td.text-end
+                      .action-buttons
+                        a.btn.btn-sm.btn-outline-primary(href=`/subadmin/news/${a.id}/edit`, title="Edit")
+                          i.bi.bi-pencil-fill
+                          span.d-none.d-sm-inline.ms-1 Edit
+                        form.d-inline(method="post" action=`/subadmin/news/${a.id}/delete` onsubmit="return confirm('Yakin ingin menghapus berita ini?');")
+                          button.btn.btn-sm.btn-outline-danger(type="submit" title="Hapus")
+                            i.bi.bi-trash-fill
+                            span.d-none.d-sm-inline.ms-1 Hapus
       else
-        .empty-state.mt-3
-          i.bi.bi-newspaper-x.fs-1.mb-3
+        .empty-state
+          .empty-state-icon
+            i.bi.bi-newspaper-x
           h4 Belum Ada Berita
-          p.text-muted Tambahkan berita untuk cabang olahraga yang kamu kelola.
+          p.text-muted
+            | Tambahkan berita untuk cabang olahraga yang kamu kelola.
+            br
+            | Berita akan membantu pengguna mendapatkan informasi terbaru.
           a.btn-add-news.mt-3(href="/subadmin/news/create")
             i.bi.bi-plus-circle
-            span Tambah Berita
+            span Tambah Berita Pertama
 
-  // small client script: auto-dismiss and nicer confirm (reuse from matches)
+  // Custom JavaScript
   script.
     (function(){
+      // Auto-dismiss alerts with animation
       var alerts = document.querySelectorAll('.alert');
-      alerts.forEach(function(alert){ setTimeout(function(){ alert.style.opacity='0'; alert.style.transform='translateY(-12px)'; setTimeout(()=>alert.remove(),450); },4500); });
+      alerts.forEach(function(alert){
+        setTimeout(function(){
+          alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          alert.style.opacity = '0';
+          alert.style.transform = 'translateY(-12px)';
+          setTimeout(() => alert.remove(), 450);
+        }, 4500);
+      });
 
-      // progressive enhancement for delete forms
+      // Progressive enhancement for delete forms
       document.querySelectorAll('form[action*="/delete"]').forEach(function(form){
         form.addEventListener('submit', function(e){
           if (!confirm('⚠️ Yakin ingin menghapus berita ini? Tindakan ini tidak bisa dibatalkan.')) {
@@ -115,7 +516,40 @@ block content
             return false;
           }
           var btn = form.querySelector('button[type="submit"]');
-          if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>'; }
+          if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menghapus...';
+          }
         });
       });
+
+      // Add hover animations to table rows
+      var rows = document.querySelectorAll('.news-table tbody tr');
+      rows.forEach(function(row, index) {
+        row.style.animation = 'fadeInUp 0.6s ease-out ' + (0.1 + index * 0.1) + 's backwards';
+        
+        row.addEventListener('mouseenter', function() {
+          this.style.transition = 'all 0.3s ease';
+        });
+      });
+
+      // Intersection Observer for animations
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        });
+
+        // Observe all cards and tables
+        document.querySelectorAll('.news-card-container, .empty-state').forEach(function(el) {
+          observer.observe(el);
+        });
+      }
     })();

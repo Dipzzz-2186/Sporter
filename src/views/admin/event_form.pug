@@ -1,76 +1,652 @@
 extends ../layout/main
 
 block content
+  style.
+    /* Event Form Page Styles - Mengikuti style create video */
+    .event-form-page {
+      background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Header Section */
+    .event-form-header {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      animation: fadeInDown 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .event-form-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .event-form-header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .event-form-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      margin: 0;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Form Card */
+    .event-form-card {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid #e8edf2;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Form Sections */
+    .event-form-section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #e8edf2;
+    }
+    
+    .event-form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .section-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .section-title i {
+      color: #0095FF;
+      font-size: 1.5rem;
+    }
+    
+    .section-description {
+      color: #5a6c7d;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    
+    /* Form Elements */
+    .form-label {
+      color: #0B1F3F;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .form-label i {
+      color: #0095FF;
+      font-size: 1rem;
+    }
+    
+    .form-label .badge {
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      color: #0095FF;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 1px solid #d6edff;
+    }
+    
+    .badge-required {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+    
+    .form-control,
+    .form-select {
+      border: 2px solid #e8edf2;
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #0095FF;
+      box-shadow: 0 0 0 0.25rem rgba(0, 149, 255, 0.15);
+      background: white;
+    }
+    
+    .form-control:hover,
+    .form-select:hover {
+      border-color: #c9d6e4;
+      background: white;
+    }
+    
+    .form-control::placeholder {
+      color: #adb5bd;
+      font-style: italic;
+    }
+    
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    /* Date Inputs */
+    .date-input-group {
+      position: relative;
+    }
+    
+    .date-input-group i {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #0095FF;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+    
+    /* Help Text */
+    .form-text {
+      color: #5a6c7d;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .form-text i {
+      color: #0095FF;
+      font-size: 0.9rem;
+    }
+    
+    /* Action Buttons */
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 2px solid #e8edf2;
+      margin-top: 2rem;
+    }
+    
+    .btn-submit {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border: none;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
+      color: white;
+    }
+    
+    .btn-back {
+      background: white;
+      border: 2px solid #e8edf2;
+      color: #5a6c7d;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      justify-content: center;
+    }
+    
+    .btn-back:hover {
+      background: #f8f9fa;
+      border-color: #0B1F3F;
+      color: #0B1F3F;
+      transform: translateY(-2px);
+    }
+    
+    /* Flash Messages */
+    .alert {
+      border-radius: 12px;
+      border: none;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+      animation: slideInDown 0.4s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .alert-danger {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-left: 4px solid #dc2626;
+    }
+    
+    .alert-success {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+      border-left: 4px solid #059669;
+    }
+    
+    .alert i {
+      font-size: 1.2rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .event-form-header {
+        padding: 1.5rem;
+      }
+      
+      .event-form-header h1 {
+        font-size: 2rem;
+      }
+      
+      .event-form-card {
+        padding: 2rem;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .event-form-page {
+        padding: 1rem 0;
+      }
+      
+      .event-form-header {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .event-form-header h1 {
+        font-size: 1.75rem;
+      }
+      
+      .event-form-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+      }
+      
+      .section-title {
+        font-size: 1.3rem;
+      }
+      
+      .event-form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+      }
+      
+      .form-control,
+      .form-select {
+        padding: 0.8rem 1rem;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn-submit,
+      .btn-back {
+        width: 100%;
+      }
+    }
+
   - const isEdit = mode === 'edit';
 
-  .container.py-4
-    .d-flex.justify-content-between.align-items-center.mb-3
-      div
-        h1.fw-bold.mb-1= isEdit ? 'Edit Event' : 'Buat Event'
-        p.text-muted.mb-0
+  .event-form-page
+    .container
+      //- Header Section (sama seperti create video)
+      .event-form-header
+        h1
+          i.bi.bi-calendar-event-fill
+          | #{isEdit ? 'Edit Event' : 'Buat Event'}
+        p
+          i.bi.bi-info-circle.me-2
           | Kelola detail event olahraga untuk ditampilkan di SPORTER.
-      a.btn.btn-outline-secondary(href="/admin/events")
-        i.bi.bi-arrow-left.me-1
-        | Kembali
 
-    if flash && flash.error && flash.error.length
-      .alert.alert-danger(role="alert")= flash.error[0]
-    if flash && flash.success && flash.success.length
-      .alert.alert-success(role="alert")= flash.success[0]
+      //- Flash Messages
+      if flash && flash.error && flash.error.length
+        .alert.alert-danger(role="alert")
+          i.bi.bi-exclamation-triangle-fill.me-2
+          each msg in flash.error
+            div= msg
+      
+      if flash && flash.success && flash.success.length
+        .alert.alert-success(role="alert")
+          i.bi.bi-check-circle-fill.me-2
+          each msg in flash.success
+            div= msg
 
-    form(method="post" action=isEdit ? `/admin/events/${event.id}/edit` : "/admin/events/create")
-      .row.g-3
-        .col-md-6
-          .mb-3
-            label.form-label(for="title") Judul Event
-            input.form-control#title(type="text" name="title" required value=event.title || '')
-        .col-md-6
-          .mb-3
-            label.form-label(for="slug") Slug (opsional)
-            input.form-control#slug(type="text" name="slug" placeholder="otomatis dari judul jika dikosongkan" value=event.slug || '')
+      //- Form Card (layout sama seperti create video)
+      .event-form-card
+        form(method="post" action=isEdit ? `/admin/events/${event.id}/edit` : "/admin/events/create")
+          
+          //- Section 1: Basic Information
+          .event-form-section
+            .section-title
+              i.bi.bi-info-circle-fill
+              | Informasi Dasar
+            .section-description
+              | Isi detail utama event termasuk judul dan identifikasi unik.
+            
+            .row.g-3
+              .col-md-8
+                .mb-3
+                  label.form-label(for="title")
+                    i.bi.bi-card-heading
+                    | Judul Event
+                    span.badge.badge-required Wajib
+                  input.form-control#title(
+                    type="text"
+                    name="title"
+                    required
+                    placeholder="Masukkan judul event yang menarik"
+                    value=event.title || ''
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Gunakan judul yang deskriptif dan menarik perhatian
+              
+              .col-md-4
+                .mb-3
+                  label.form-label(for="slug")
+                    i.bi.bi-link
+                    | Slug URL
+                    span.badge Opsional
+                  input.form-control#slug(
+                    type="text"
+                    name="slug"
+                    placeholder="otomatis dari judul jika dikosongkan"
+                    value=event.slug || ''
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Kosongkan untuk generate otomatis dari judul
 
-      .row.g-3
-        .col-md-4
-          .mb-3
-            label.form-label(for="sport_id") Cabang Olahraga
-            select.form-select#sport_id(name="sport_id")
-              option(value="") -- Pilih Cabang --
-              each s in sports
-                option(value=s.id selected=(event.sport_id && event.sport_id === s.id))= s.name
-        .col-md-4
-          .mb-3
-            label.form-label(for="venue_id") Venue
-            select.form-select#venue_id(name="venue_id")
-              option(value="") -- Pilih Venue --
-              each v in venues
-                option(value=v.id selected=(event.venue_id && event.venue_id === v.id))= v.name
-        .col-md-4
-          .mb-3
-            label.form-label(for="status") Status
-            select.form-select#status(name="status")
-              - const currentStatus = event.status || 'upcoming';
-              option(value="upcoming" selected=(currentStatus === 'upcoming')) Akan Datang
-              option(value="ongoing" selected=(currentStatus === 'ongoing')) Berlangsung
-              option(value="finished" selected=(currentStatus === 'finished')) Selesai
+          //- Section 2: Category & Status
+          .event-form-section
+            .section-title
+              i.bi.bi-tags-fill
+              | Kategori & Status
+            .section-description
+              | Tentukan cabang olahraga, lokasi, dan status event.
+            
+            .row.g-3
+              .col-md-4
+                .mb-3
+                  label.form-label(for="sport_id")
+                    i.bi.bi-trophy
+                    | Cabang Olahraga
+                    span.badge.badge-required Wajib
+                  select.form-select#sport_id(name="sport_id" required)
+                    option(value="" disabled selected) -- Pilih Cabang --
+                    each s in sports
+                      option(
+                        value=s.id
+                        selected=(event.sport_id && event.sport_id === s.id)
+                      )= s.name
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Pilih cabang olahraga untuk event ini
+              
+              .col-md-4
+                .mb-3
+                  label.form-label(for="venue_id")
+                    i.bi.bi-geo-alt
+                    | Venue / Lokasi
+                    span.badge Opsional
+                  select.form-select#venue_id(name="venue_id")
+                    option(value="" selected) -- Pilih Venue --
+                    each v in venues
+                      option(
+                        value=v.id
+                        selected=(event.venue_id && event.venue_id === v.id)
+                      )= v.name
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Tempat penyelenggaraan event
+              
+              .col-md-4
+                .mb-3
+                  label.form-label(for="status")
+                    i.bi.bi-hourglass-split
+                    | Status Event
+                    span.badge.badge-required Wajib
+                  select.form-select#status(name="status" required)
+                    - const currentStatus = event.status || 'upcoming';
+                    option(value="upcoming" selected=(currentStatus === 'upcoming')) Akan Datang
+                    option(value="ongoing" selected=(currentStatus === 'ongoing')) Berlangsung
+                    option(value="finished" selected=(currentStatus === 'finished')) Selesai
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Tentukan status saat ini dari event
 
-      .row.g-3
-        .col-md-6
-          .mb-3
-            label.form-label(for="start_date") Tanggal Mulai
-            input.form-control#start_date(type="date" name="start_date" required value=event.start_date ? event.start_date.toISOString().slice(0,10) : '')
-        .col-md-6
-          .mb-3
-            label.form-label(for="end_date") Tanggal Selesai (opsional)
-            input.form-control#end_date(type="date" name="end_date" value=event.end_date ? event.end_date.toISOString().slice(0,10) : '')
+          //- Section 3: Schedule
+          .event-form-section
+            .section-title
+              i.bi.bi-clock
+              | Jadwal Event
+            .section-description
+              | Atur tanggal mulai dan selesai event.
+            
+            .row.g-3
+              .col-md-6
+                .mb-3.date-input-group
+                  label.form-label(for="start_date")
+                    i.bi.bi-calendar-plus
+                    | Tanggal Mulai
+                    span.badge.badge-required Wajib
+                  input.form-control#start_date(
+                    type="date"
+                    name="start_date"
+                    required
+                    value=event.start_date ? event.start_date.toISOString().slice(0,10) : ''
+                  )
+                  i.bi.bi-calendar-event
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Tanggal mulai event
+              
+              .col-md-6
+                .mb-3.date-input-group
+                  label.form-label(for="end_date")
+                    i.bi.bi-calendar-check
+                    | Tanggal Selesai
+                    span.badge Opsional
+                  input.form-control#end_date(
+                    type="date"
+                    name="end_date"
+                    value=event.end_date ? event.end_date.toISOString().slice(0,10) : ''
+                  )
+                  i.bi.bi-calendar-event
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Tanggal berakhir event (jika lebih dari 1 hari)
 
-      .mb-3
-        label.form-label(for="description") Deskripsi
-        textarea.form-control#description(name="description" rows="4")= event.description || ''
+          //- Section 4: Description
+          .event-form-section
+            .section-title
+              i.bi.bi-text-paragraph
+              | Deskripsi
+            .section-description
+              | Jelaskan event secara detail untuk memberikan informasi yang jelas.
+            
+            .mb-3
+              textarea.form-control#description(
+                name="description"
+                rows="4"
+                placeholder="Deskripsi lengkap tentang event, termasuk informasi penting untuk peserta..."
+              )= event.description || ''
+              small.form-text
+                i.bi.bi-lightbulb
+                | Jelaskan event secara detail untuk memberikan informasi yang jelas kepada pengguna
 
-      button.btn.btn-danger.mt-2(type="submit")
-        if isEdit
-          i.bi.bi-save.me-1
-          | Simpan Perubahan
-        else
-          i.bi.bi-plus-circle.me-1
-          | Simpan Event
+          //- Action Buttons (sama seperti create video)
+          .form-actions
+            button.btn.btn-submit(type="submit")
+              if isEdit
+                i.bi.bi-save-fill
+                span Simpan Perubahan
+              else
+                i.bi.bi-plus-circle-fill
+                span Simpan Event
+            
+            a.btn.btn-back(href="javascript:void(0);" onclick="history.back()")
+              i.bi.bi-arrow-left
+              span Kembali
+
+  //- Custom JavaScript (disesuaikan dengan create video)
+  script.
+    (function() {
+      //- Auto-dismiss alerts
+      var alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          alert.style.opacity = '0';
+          alert.style.transform = 'translateY(-12px)';
+          setTimeout(() => alert.remove(), 450);
+        }, 4500);
+      });
+
+      //- Auto generate slug from title (sama seperti create video)
+      var titleInput = document.getElementById('title');
+      var slugInput = document.getElementById('slug');
+      
+      if (titleInput && slugInput) {
+        titleInput.addEventListener('input', function() {
+          if (!slugInput.value) {
+            var text = this.value.toLowerCase()
+              .replace(/[^a-z0-9\s-]/g, '')
+              .replace(/\s+/g, '-')
+              .replace(/-+/g, '-')
+              .trim();
+            slugInput.value = text;
+          }
+        });
+      }
+
+      //- Form submission loading state (sama seperti create video)
+      var form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          var btn = form.querySelector('.btn-submit');
+          if (btn) {
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 
+                           (#{isEdit} ? 'Menyimpan...' : 'Membuat...');
+            btn.disabled = true;
+          }
+        });
+      }
+
+      //- Date validation (sama seperti create video)
+      var startDateInput = document.getElementById('start_date');
+      var endDateInput = document.getElementById('end_date');
+      
+      if (startDateInput && endDateInput) {
+        startDateInput.addEventListener('change', function() {
+          endDateInput.min = this.value;
+          
+          if (endDateInput.value && endDateInput.value < this.value) {
+            endDateInput.value = '';
+          }
+        });
+        
+        //- Auto set end date based on start date
+        startDateInput.addEventListener('change', function() {
+          if (this.value && !endDateInput.value) {
+            var start = new Date(this.value);
+            start.setDate(start.getDate() + 1);
+            endDateInput.value = start.toISOString().slice(0,10);
+          }
+        });
+      }
+
+      //- Character counter for title (sama seperti create video)
+      if (titleInput) {
+        var maxLength = 200;
+        var counter = document.createElement('small');
+        counter.className = 'form-text text-end d-block mt-1';
+        counter.style.color = '#5a6c7d';
+        titleInput.parentNode.appendChild(counter);
+        
+        function updateCounter() {
+          var length = titleInput.value.length;
+          counter.textContent = length + ' / ' + maxLength + ' karakter';
+          
+          if (length > maxLength * 0.9) {
+            counter.style.color = '#0095FF';
+          } else {
+            counter.style.color = '#5a6c7d';
+          }
+        }
+        
+        titleInput.maxLength = maxLength;
+        titleInput.addEventListener('input', updateCounter);
+        updateCounter();
+      }
+    })();
