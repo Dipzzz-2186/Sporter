@@ -1,31 +1,657 @@
-extends ../layout/main
+doctype html
+html(lang="id")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Register - SPORTER
+    
+    // Bootstrap
+    link(
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    )
+    
+    // Bootstrap Icons
+    link(
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    )
+    
+    // Google Font
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com" crossorigin)
+    link(
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    )
+    
+    style.
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 2rem 0;
+      }
+      
+      /* Background Animation */
+      body::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, rgba(255, 59, 48, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+      }
+      
+      body::after {
+        content: '';
+        position: absolute;
+        bottom: -40%;
+        left: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255, 149, 0, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 10s ease-in-out infinite reverse;
+      }
+      
+      @keyframes float {
+        0%, 100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(50px, -50px) scale(1.1);
+        }
+      }
+      
+      /* Register Container */
+      .register-container {
+        width: 100%;
+        max-width: 520px;
+        padding: 2rem;
+        position: relative;
+        z-index: 2;
+        animation: fadeInUp 0.8s ease-out;
+      }
+      
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      /* Logo Section */
+      .register-logo {
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: fadeInDown 0.8s ease-out;
+      }
+      
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .logo-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        animation: bounce 2s infinite;
+      }
+      
+      @keyframes bounce {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      
+      .logo-icon i {
+        font-size: 3rem;
+        background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      
+      .logo-text {
+        font-family: 'Bebas Neue', cursive;
+        font-size: 2.5rem;
+        letter-spacing: 2px;
+        background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+      }
+      
+      .logo-subtitle {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+      
+      /* Register Card */
+      .register-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 24px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(20px);
+        overflow: hidden;
+        animation: fadeInScale 0.8s ease-out 0.2s backwards;
+      }
+      
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      
+      .register-card .card-body {
+        padding: 3rem;
+      }
+      
+      .register-title {
+        font-family: 'Bebas Neue', cursive;
+        font-size: 2rem;
+        color: #1C1C1E;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+        text-align: center;
+      }
+      
+      .register-title span {
+        background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      
+      .register-subtitle {
+        color: #6c757d;
+        font-size: 0.95rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+      
+      /* Form Elements */
+      .form-label {
+        color: #1C1C1E;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .form-label i {
+        color: #FF3B30;
+        font-size: 1rem;
+      }
+      
+      .form-control {
+        border: 2px solid #e8e8e8;
+        border-radius: 12px;
+        padding: 0.9rem 1.2rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+      }
+      
+      .form-control:focus {
+        border-color: #FF3B30;
+        box-shadow: 0 0 0 0.25rem rgba(255, 59, 48, 0.15);
+        background: white;
+      }
+      
+      .form-control:hover {
+        border-color: #d0d0d0;
+        background: white;
+      }
+      
+      /* Button */
+      .btn-register {
+        background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem;
+        font-weight: 700;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        color: white;
+        width: 100%;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(255, 59, 48, 0.3);
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+      
+      .btn-register:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(255, 59, 48, 0.4);
+        color: white;
+      }
+      
+      .btn-register:active {
+        transform: translateY(-1px);
+      }
+      
+      /* Alerts */
+      .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.25rem;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        animation: slideInDown 0.4s ease-out;
+      }
+      
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .alert-danger {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #991b1b;
+        border-left: 4px solid #dc2626;
+      }
+      
+      .alert-success {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
+        border-left: 4px solid #059669;
+      }
+      
+      .alert i {
+        margin-right: 0.5rem;
+      }
+      
+      /* Login Link */
+      .login-link {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e8e8e8;
+      }
+      
+      .login-link p {
+        color: #6c757d;
+        font-size: 0.95rem;
+        margin-bottom: 0;
+      }
+      
+      .login-link a {
+        color: #FF3B30;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .login-link a:hover {
+        color: #FF9500;
+        transform: translateX(-3px);
+      }
+      
+      /* Password Strength Indicator */
+      .password-strength {
+        height: 4px;
+        background: #e8e8e8;
+        border-radius: 2px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+        display: none;
+      }
+      
+      .password-strength-bar {
+        height: 100%;
+        width: 0;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+      }
+      
+      .password-strength.weak .password-strength-bar {
+        width: 33%;
+        background: #dc2626;
+      }
+      
+      .password-strength.medium .password-strength-bar {
+        width: 66%;
+        background: #f59e0b;
+      }
+      
+      .password-strength.strong .password-strength-bar {
+        width: 100%;
+        background: #059669;
+      }
+      
+      /* Back to Home Link */
+      .back-home {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 10;
+      }
+      
+      .back-home a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.7rem 1.2rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+      
+      .back-home a:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: #FF3B30;
+        transform: translateX(-5px);
+      }
+      
+      /* Responsive */
+      @media (max-width: 767px) {
+        body {
+          padding: 1rem 0;
+        }
+        
+        .register-container {
+          padding: 1rem;
+        }
+        
+        .register-card .card-body {
+          padding: 2rem 1.5rem;
+        }
+        
+        .register-title {
+          font-size: 1.75rem;
+        }
+        
+        .logo-icon {
+          width: 70px;
+          height: 70px;
+        }
+        
+        .logo-icon i {
+          font-size: 2.5rem;
+        }
+        
+        .logo-text {
+          font-size: 2rem;
+        }
+        
+        .back-home {
+          top: 1rem;
+          left: 1rem;
+        }
+        
+        .back-home a {
+          padding: 0.6rem 1rem;
+          font-size: 0.85rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .register-card .card-body {
+          padding: 1.5rem 1.25rem;
+        }
+        
+        .form-control {
+          padding: 0.8rem 1rem;
+        }
+        
+        .btn-register {
+          padding: 0.9rem;
+        }
+      }
 
-block content
-  .container.py-5(style="max-width:520px")
-    h2.mb-3 Register
-    if flash && flash.error && flash.error.length
-      .alert.alert-danger
-        each msg in flash.error
-          div= msg
-    if flash && flash.success && flash.success.length
-      .alert.alert-success
-        each msg in flash.success
-          div= msg
-
-    form(method="POST", action="/register")
-      .mb-3
-        label.form-label Nama
-        input.form-control(type="text", name="name", required, value=(old && old.name ? old.name : ""))
-      .mb-3
-        label.form-label Email
-        input.form-control(type="email", name="email", required, value=(old && old.email ? old.email : ""))
-      .mb-3
-        label.form-label Password
-        input.form-control(type="password", name="password", required)
-      .mb-3
-        label.form-label Konfirmasi Password
-        input.form-control(type="password", name="confirm_password", required)
-      button.btn.btn-primary.w-100(type="submit") Buat Akun
-
-    .text-center.mt-3
-      a(href="/login") Udah punya akun? Login
+  body
+    
+    //- Register Container
+    .register-container
+      //- Logo Section
+      .register-logo
+        .logo-icon
+          i.bi.bi-person-plus-fill
+        .logo-text SPORTER
+      
+      //- Register Card
+      .card.register-card.border-0
+        .card-body
+          h1.register-title
+            | Buat Akun 
+            span Baru
+          p.register-subtitle
+            | Bergabung dengan SPORTER dan nikmati pengalaman olahraga yang lebih seru!
+          
+          //- Flash Messages
+          if flash && flash.error && flash.error.length
+            .alert.alert-danger
+              i.bi.bi-exclamation-triangle-fill
+              each msg in flash.error
+                div= msg
+          
+          if flash && flash.success && flash.success.length
+            .alert.alert-success
+              i.bi.bi-check-circle-fill
+              each msg in flash.success
+                div= msg
+          
+          //- Register Form
+          form(method="POST", action="/register")
+            .mb-3
+              label.form-label(for="name")
+                i.bi.bi-person-fill
+                | Nama Lengkap
+              input#name.form-control(
+                type="text", 
+                name="name", 
+                placeholder="Masukkan nama lengkap",
+                required, 
+                value=old && old.name ? old.name : ''
+              )
+            
+            .mb-3
+              label.form-label(for="email")
+                i.bi.bi-envelope-fill
+                | Email
+              input#email.form-control(
+                type="email", 
+                name="email", 
+                placeholder="contoh@email.com",
+                required, 
+                value=old && old.email ? old.email : ''
+              )
+            
+            .mb-3
+              label.form-label(for="password")
+                i.bi.bi-lock-fill
+                | Password
+              input#password.form-control(
+                type="password", 
+                name="password", 
+                placeholder="Minimal 8 karakter",
+                required
+              )
+              .password-strength#passwordStrength
+                .password-strength-bar
+            
+            .mb-4
+              label.form-label(for="confirm_password")
+                i.bi.bi-shield-check-fill
+                | Konfirmasi Password
+              input#confirm_password.form-control(
+                type="password", 
+                name="confirm_password", 
+                placeholder="Ulangi password",
+                required
+              )
+            
+            button.btn.btn-register(type="submit")
+              i.bi.bi-person-plus-fill
+              span Buat Akun
+          
+          //- Login Link
+          .login-link
+            p
+              | Sudah punya akun? 
+              a(href="/login")
+                i.bi.bi-box-arrow-in-right
+                span Masuk di sini
+    
+    //- Bootstrap JS
+    script(
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+      crossorigin="anonymous"
+    )
+    
+    //- Custom JS
+    script.
+      (function() {
+        // Auto focus on name input
+        var nameInput = document.getElementById('name');
+        if (nameInput && !nameInput.value) {
+          nameInput.focus();
+        }
+        
+        // Password strength checker
+        var passwordInput = document.getElementById('password');
+        var strengthIndicator = document.getElementById('passwordStrength');
+        
+        if (passwordInput && strengthIndicator) {
+          passwordInput.addEventListener('input', function() {
+            var password = this.value;
+            
+            if (password.length === 0) {
+              strengthIndicator.style.display = 'none';
+              strengthIndicator.className = 'password-strength';
+              return;
+            }
+            
+            strengthIndicator.style.display = 'block';
+            
+            var strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            
+            strengthIndicator.className = 'password-strength';
+            if (strength <= 2) {
+              strengthIndicator.classList.add('weak');
+            } else if (strength === 3) {
+              strengthIndicator.classList.add('medium');
+            } else {
+              strengthIndicator.classList.add('strong');
+            }
+          });
+        }
+        
+        // Password confirmation validation
+        var confirmPasswordInput = document.getElementById('confirm_password');
+        if (passwordInput && confirmPasswordInput) {
+          confirmPasswordInput.addEventListener('input', function() {
+            if (this.value !== passwordInput.value) {
+              this.setCustomValidity('Password tidak cocok');
+            } else {
+              this.setCustomValidity('');
+            }
+          });
+          
+          passwordInput.addEventListener('input', function() {
+            if (confirmPasswordInput.value && confirmPasswordInput.value !== this.value) {
+              confirmPasswordInput.setCustomValidity('Password tidak cocok');
+            } else {
+              confirmPasswordInput.setCustomValidity('');
+            }
+          });
+        }
+        
+        // Form validation feedback
+        var form = document.querySelector('form');
+        if (form) {
+          form.addEventListener('submit', function(e) {
+            var btn = form.querySelector('.btn-register');
+            if (btn) {
+              btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Membuat Akun...';
+              btn.disabled = true;
+            }
+          });
+        }
+        
+        // Auto dismiss alerts after 5 seconds
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+          setTimeout(function() {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(function() {
+              alert.remove();
+            }, 500);
+          }, 5000);
+        });
+      })();
