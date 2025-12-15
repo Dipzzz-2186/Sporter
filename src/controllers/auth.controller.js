@@ -79,6 +79,61 @@ exports.handleLogin = async (req, res) => {
   }
 };
 
+
+// GET /register
+exports.renderRegister = (req, res) => {
+  // kalau sudah login, jangan register lagi
+  if (req.session.user) return res.redirect("/");
+
+  res.render("auth/register", {
+    title: "Register - SPORTER",
+    old: {
+      name: req.query.name || "",
+      email: req.query.email || "",
+    },
+  });
+};
+
+// POST /register
+exports.handleRegister = async (req, res) => {
+  const { name, email, password, confirm_password } = req.body;
+
+  if (!name || !email || !password || !confirm_password) {
+    req.flash("error", "Semua field wajib diisi.");
+    return res.redirect(`/register?name=${encodeURIComponent(name||"")}&email=${encodeURIComponent(email||"")}`);
+  }
+
+  if (password.length < 6) {
+    req.flash("error", "Password minimal 6 karakter.");
+    return res.redirect(`/register?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`);
+  }
+
+  if (password !== confirm_password) {
+    req.flash("error", "Konfirmasi password tidak sama.");
+    return res.redirect(`/register?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`);
+  }
+
+  try {
+    const existing = await User.getByEmail(email);
+    if (existing) {
+      req.flash("error", "Email sudah terdaftar. Silakan login.");
+      return res.redirect(`/register?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`);
+    }
+
+    const password_hash = await bcrypt.hash(password, 10);
+
+    // role default user (biar aman)
+    await User.createUser({ name, email, password_hash, role: "user" });
+
+    req.flash("success", "Register berhasil. Silakan login.");
+    return res.redirect(`/login?email=${encodeURIComponent(email)}`);
+  } catch (err) {
+    console.error("Register error:", err);
+    req.flash("error", "Terjadi kesalahan server.");
+    return res.redirect(`/register?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`);
+  }
+};
+
 // ===========================
 // GET /logout
 // ===========================

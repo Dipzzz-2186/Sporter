@@ -1,0 +1,31 @@
+extends ../layout/main
+
+block content
+  .container.py-5(style="max-width:520px")
+    h2.mb-3 Register
+    if flash && flash.error && flash.error.length
+      .alert.alert-danger
+        each msg in flash.error
+          div= msg
+    if flash && flash.success && flash.success.length
+      .alert.alert-success
+        each msg in flash.success
+          div= msg
+
+    form(method="POST", action="/register")
+      .mb-3
+        label.form-label Nama
+        input.form-control(type="text", name="name", required, value=(old && old.name ? old.name : ""))
+      .mb-3
+        label.form-label Email
+        input.form-control(type="email", name="email", required, value=(old && old.email ? old.email : ""))
+      .mb-3
+        label.form-label Password
+        input.form-control(type="password", name="password", required)
+      .mb-3
+        label.form-label Konfirmasi Password
+        input.form-control(type="password", name="confirm_password", required)
+      button.btn.btn-primary.w-100(type="submit") Buat Akun
+
+    .text-center.mt-3
+      a(href="/login") Udah punya akun? Login

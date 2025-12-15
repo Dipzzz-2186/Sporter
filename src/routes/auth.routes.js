@@ -8,6 +8,10 @@ router.get("/login", controller.renderLogin);
 
 // Proses login
 router.post("/login", controller.handleLogin);
+// Register (TAMBAH INI)
+
+router.get("/register", controller.renderRegister);
+router.post("/register", controller.handleRegister);
 
 // Logout
 router.get("/logout", controller.handleLogout);

@@ -16,3 +16,11 @@ exports.getById = async (id) => {
   );
   return rows[0] || null;
 };
+
+exports.createUser = async ({ name, email, password_hash, role = "user" }) => {
+  const [result] = await db.query(
+    "INSERT INTO users (name, email, password_hash, role, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
+    [name, email, password_hash, role]
+  );
+  return result.insertId;
+};
