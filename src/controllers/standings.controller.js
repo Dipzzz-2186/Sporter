@@ -32,59 +32,95 @@ async function syncPadelStandings(sportId) {
 
 exports.listStandings = async (req, res) => {
   try {
-    const [[padel]] = await db.query(
-      `SELECT id, name FROM sports WHERE LOWER(name) = 'padel' LIMIT 1`
+    const allowed = req.allowedSports || [];
+
+    const [sports] = await db.query(
+      `SELECT id, name FROM sports WHERE id IN (?) ORDER BY name`,
+      [allowed]
     );
 
-    if (!padel) {
+    const sportId = req.query.sport_id
+      ? Number(req.query.sport_id)
+      : sports[0]?.id;
+
+    if (!sportId) {
       return res.render('subadmin/standings', {
-        title: 'Klasemen Padel',
         standings: [],
-        sports: [],
-        query: {}
+        sports,
+        query: {},
+        isPadel: false
       });
     }
 
-    // 🔥 AUTO SEED TIM
-    await syncPadelStandings(padel.id);
+    const [[sport]] = await db.query(
+      `SELECT id, name FROM sports WHERE id = ?`,
+      [sportId]
+    );
 
-    const [rows] = await db.query(`
-      SELECT
-        s.id,
-        s.team_id,
-        t.name AS team_name,
+    const isPadel = sport.name.toLowerCase() === 'padel';
+
+    if (isPadel) {
+      await syncPadelStandings(sportId);
+
+      const [rows] = await db.query(`
+        SELECT
+          s.id,
+          t.name AS team_name,
         (
           SELECT COUNT(*)
           FROM matches m
           WHERE m.sport_id = s.sport_id
             AND s.team_id IN (m.home_team_id, m.away_team_id)
         ) AS total_match,
+          s.win,
+          s.loss,
+          s.game_win,
+          s.game_loss,
+          (s.game_win - s.game_loss) AS game_diff,
+          s.pts
+        FROM standings s
+        JOIN teams t ON t.id = s.team_id
+        WHERE s.sport_id = ?
+        ORDER BY s.pts DESC, game_diff DESC
+      `, [sportId]);
+
+      return res.render('subadmin/standings', {
+        standings: rows,
+        sports,
+        query: { sport_id: sportId },
+        isPadel: true
+      });
+    }
+
+    // === CABANG LAIN ===
+    const [rows] = await db.query(`
+      SELECT
+        s.id,
+        t.name AS team_name,
+        s.played,
         s.win,
+        s.draw,
         s.loss,
-        s.game_win,
-        s.game_loss,
-        (s.game_win - s.game_loss) AS game_diff,
+        s.goals_for,
+        s.goals_against,
+        (s.goals_for - s.goals_against) AS goal_diff,
         s.pts
       FROM standings s
       JOIN teams t ON t.id = s.team_id
       WHERE s.sport_id = ?
-      ORDER BY
-        s.pts DESC,
-        game_diff DESC,
-        s.game_win DESC
-    `, [padel.id]);
+      ORDER BY s.pts DESC, goal_diff DESC
+    `, [sportId]);
 
     return res.render('subadmin/standings', {
-      title: 'Klasemen Padel',
       standings: rows,
-      sports: [padel],
-      query: { sport_id: padel.id }
+      sports,
+      query: { sport_id: sportId },
+      isPadel: false
     });
 
   } catch (err) {
     console.error(err);
-    req.flash('error', 'Gagal memuat klasemen padel');
-    return res.redirect('/subadmin');
+    res.redirect('/subadmin');
   }
 };
 
@@ -102,7 +138,7 @@ exports.addWin = async (req, res) => {
     WHERE id = ?
   `, [game_win, game_loss, id]);
 
-  res.redirect('/subadmin/standings');
+  res.redirect(`/subadmin/standings?sport_id=${req.query.sport_id}`);
 };
 
 exports.addLoss = async (req, res) => {
@@ -118,16 +154,18 @@ exports.addLoss = async (req, res) => {
     WHERE id = ?
   `, [game_win, game_loss, id]);
 
-  res.redirect('/subadmin/standings');
+  res.redirect(`/subadmin/standings?sport_id=${req.query.sport_id}`);
 };
 
 exports.submitScore = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params;               // ✅ AMBIL DARI PARAM
   const { game_win, game_loss, result } = req.query;
 
-  if (!id || game_win == null || game_loss == null) {
-    req.flash('error', 'Data skor tidak lengkap');
-    return res.redirect('/subadmin/standings');
+  if (!id || game_win == null || game_loss == null || !result) {
+    return res.status(400).json({
+      success: false,
+      message: 'Data tidak lengkap'
+    });
   }
 
   const win = result === 'win' ? 1 : 0;
@@ -137,13 +175,14 @@ exports.submitScore = async (req, res) => {
   await db.query(`
     UPDATE standings
     SET
-      win = win + ?,
-      loss = loss + ?,
-      game_win = game_win + ?,
+      played    = played + 1,
+      win       = win + ?,
+      loss      = loss + ?,
+      game_win  = game_win + ?,
       game_loss = game_loss + ?,
-      pts = pts + ?
+      pts       = pts + ?
     WHERE id = ?
   `, [win, loss, game_win, game_loss, pts, id]);
 
-  res.redirect('/subadmin/standings');
+  res.json({ success: true });
 };

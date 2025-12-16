@@ -162,7 +162,7 @@ block content
     
     .standings-table thead th {
       background: transparent !important; /* ikut parent */
-      color: black !important;
+      color: white !important;
       font-weight: 600;
       font-size: 0.85rem;
       text-transform: uppercase;
@@ -454,13 +454,28 @@ block content
           i.bi.bi-info-circle
           span.ms-1 Panduan Input Skor
 
+      // === FILTER CABANG (HANYA JIKA LEBIH DARI 1) ===
+      if sports && sports.length > 1
+        .filter-section
+          label.mb-2
+            i.bi.bi-funnel-fill
+            | Pilih Cabang Olahraga
+          select.form-select(
+            name="sport_id"
+            onchange="location.href='?sport_id=' + this.value"
+          )
+            each s in sports
+              option(
+                value=s.id
+                selected=(query && Number(query.sport_id) === s.id)
+              )= s.name
+
       if standings.length
         .standings-group
           .group-title
             .group-title-icon
               i.bi.bi-flag-fill
             h5= standings[0].sport_name
-
           .standings-table
             .table-responsive
               table.table.table-hover
@@ -468,11 +483,23 @@ block content
                   tr
                     th No.
                     th Nama Tim
-                    th.text-center Jumlah Match
-                    th.text-center M-K
-                    th.text-center Selisih Skor
+
+                    if isPadel
+                      th.text-center Jumlah Match
+                      th.text-center M-K
+                      th.text-center Selisih Skor
+                    else
+                      th.text-center PJ
+                      th.text-center M
+                      th.text-center S
+                      th.text-center K
+                      th.text-center GM
+                      th.text-center GK
+                      th.text-center SG
+
                     th.text-center Poin
                     th.text-center Aksi
+
                 tbody
                   each row, index in standings
                     tr
@@ -491,27 +518,47 @@ block content
                           i.bi.bi-shield-fill-check
                           b= row.team_name
 
-                      td.text-center.stat-cell= row.total_match
-
-                      td.text-center.stat-cell #{row.win} - #{row.loss}
-
-                      td.text-center.stat-cell
-                        | #{row.game_win} - #{row.game_loss}
-                        if (row.game_win - row.game_loss) >= 0
-                          span.text-success.ms-1 (+#{row.game_win - row.game_loss})
-                        else
-                          span.text-danger.ms-1 (#{row.game_win - row.game_loss})
+                      if isPadel
+                        td.text-center.stat-cell= row.total_match
+                        td.text-center.stat-cell #{row.win} - #{row.loss}
+                        td.text-center.stat-cell
+                          | #{row.game_win} - #{row.game_loss}
+                          if (row.game_win - row.game_loss) >= 0
+                            span.text-success.ms-1 (+#{row.game_win - row.game_loss})
+                          else
+                            span.text-danger.ms-1 (#{row.game_win - row.game_loss})
+                      else
+                        td.text-center.stat-cell= row.played
+                        td.text-center.stat-cell= row.win
+                        td.text-center.stat-cell= row.draw
+                        td.text-center.stat-cell= row.loss
+                        td.text-center.stat-cell= row.goals_for
+                        td.text-center.stat-cell= row.goals_against
+                        td.text-center.stat-cell
+                          if row.goal_diff >= 0
+                            span.text-success +#{row.goal_diff}
+                          else
+                            span.text-danger #{row.goal_diff}
 
                       td.text-center.points-cell= row.pts
 
                       td.text-center
                         .action-buttons
-                          button.btn.btn-sm.btn-primary(
-                            type="button"
-                            data-id=row.id
-                          )
-                            i.bi.bi-pencil-square
-                            | Input Skor
+                          if isPadel
+                            button.btn.btn-sm.btn-primary(
+                              type="button"
+                              data-id=row.id
+                            )
+                              i.bi.bi-pencil-square
+                              | Input Skor
+                          else
+                            a.btn.btn-sm.btn-success(
+                              href=`/subadmin/standings/${row.id}/add-win?sport_id=${query.sport_id}`
+                            ) +W
+                            a.btn.btn-sm.btn-danger(
+                              href=`/subadmin/standings/${row.id}/add-loss?sport_id=${query.sport_id}`
+                            ) -L
+
       else
         .empty-state
           .empty-state-icon
@@ -595,6 +642,9 @@ block content
 
         .modal-footer
           button.btn.btn-secondary(data-bs-dismiss='modal') Tutup
+
+  script.
+    window.CURRENT_SPORT_ID = #{query && query.sport_id ? query.sport_id : 'null'};
 
   //- Custom JavaScript
   script.
@@ -712,7 +762,16 @@ block content
         }
 
         const action = gw > gl ? 'win' : 'loss';
-        window.location.href =
-          `/subadmin/standings/${id}/submit?game_win=${gw}&game_loss=${gl}&result=${action}`;
+        fetch(
+          `/subadmin/standings/${id}/submit?game_win=${gw}&game_loss=${gl}&result=${action}&sport_id=${window.CURRENT_SPORT_ID}`
+        )
+        .then(res => res.json())
+        .then(() => {
+          // versi simpel
+          location.reload();
+
+          // versi proper (advanced):
+          // update row DOM + re-sort table tanpa reload
+        });
       });
     })();
