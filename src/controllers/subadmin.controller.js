@@ -84,75 +84,56 @@ async function getExpectedTeamSizeForMode(sportId, matchMode) {
 }
 
 async function validateCompetitorForMode({ sportId, competitorTeamId, matchMode }) {
-  if (!competitorTeamId) return;
+  if (!competitorTeamId) throw new Error('Kompetitor wajib dipilih.');
 
   const hasIsIndividual = await columnExists('teams', 'is_individual');
 
-  let t = null;
+  // ambil team
+  let team = null;
   if (hasIsIndividual) {
     const [[row]] = await db.query(
-      'SELECT id, sport_id, is_individual FROM teams WHERE id = ? LIMIT 1',
+      'SELECT id, sport_id, name, is_individual FROM teams WHERE id = ? LIMIT 1',
       [competitorTeamId]
     );
-    t = row;
+    team = row;
+    if (!team) throw new Error('Kompetitor tidak ditemukan.');
 
-    if (!t) throw new Error('Kompetitor tidak ditemukan.');
-
+    // validasi mode vs is_individual
     const expectedIsIndividual = matchMode === 'individual' ? 1 : 0;
-    if (Number(t.is_individual) !== expectedIsIndividual) {
+    if (Number(team.is_individual) !== expectedIsIndividual) {
       throw new Error(
         matchMode === 'individual'
-          ? 'Mode INDIVIDUAL butuh peserta single (is_individual=1). Yang kamu pilih itu mode TEAM.'
-          : 'Mode TEAM butuh tim (is_individual=0). Yang kamu pilih itu mode INDIVIDUAL.'
+          ? 'Mode INDIVIDUAL butuh peserta single (is_individual=1).'
+          : 'Mode TEAM butuh tim (is_individual=0).'
       );
     }
 
-    if (sportId && Number(t.sport_id) !== Number(sportId)) {
+    if (sportId && Number(team.sport_id) !== Number(sportId)) {
       throw new Error('Kompetitor tidak sesuai cabang olahraga yang dipilih.');
     }
   }
 
-  const hasTeamMembers = await tableExists('team_members');
-  if (!hasTeamMembers) return;
-
+  // hitung roster dari athletes (ini roster kamu)
   const [[c]] = await db.query(
     'SELECT COUNT(*) AS member_count FROM athletes WHERE team_id = ?',
     [competitorTeamId]
   );
   const memberCount = Number(c?.member_count || 0);
-  ;
 
-  // ✅ INI KUNCINYA:
-  // Kalau mode individual dan timnya memang is_individual=1,
-  // tapi team_members belum dipakai (0), jangan dianggap error.
-  if (matchMode === 'individual' && hasIsIndividual && t && Number(t.is_individual) === 1 && memberCount === 0) {
+  // ✅ STRICT RULES
+  if (matchMode === 'individual') {
+    if (memberCount !== 1) {
+      throw new Error(`Peserta INDIVIDUAL wajib punya 1 anggota. Sekarang: ${memberCount}.`);
+    }
     return;
   }
 
   const expected = await getExpectedTeamSizeForMode(sportId, matchMode);
-
-    // ✅ INDIVIDUAL: kalau belum pakai team_members, jangan dipaksa harus 1
-    if (matchMode === 'individual') {
-      // kalau 0 artinya data individual belum dimapping ke team_members (normal di setup kamu)
-      if (memberCount === 0) return;
-
-      // kalau sudah ada 1, oke
-      if (memberCount === 1) return;
-
-      // kalau lebih dari 1, baru error
-      throw new Error(`Peserta INDIVIDUAL harus punya 1 anggota. Saat ini member-nya: ${memberCount}.`);
-    }
-
-    // TEAM mode tetap strict
-   // TEAM mode: kalau roster belum diisi (0), anggap belum pakai team_members (skip)
-    if (memberCount === 0) return;
-
-    // kalau roster sudah dipakai, baru strict
-    if (memberCount !== expected) {
-      throw new Error(`Tim harus punya ${expected} anggota. Saat ini member-nya: ${memberCount}.`);
-    }
-
+  if (memberCount !== expected) {
+    throw new Error(`Tim wajib punya ${expected} anggota. Sekarang: ${memberCount}.`);
+  }
 }
+
 
 // render dashboard untuk subadmin
 exports.renderDashboard = async (req, res) => {

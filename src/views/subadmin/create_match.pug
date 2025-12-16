@@ -622,26 +622,23 @@ block content
             button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
           .modal-body
             .mb-3
-              label.form-label Cabang Olahraga
-              select.form-select(name="home_team_id" id="home_team_id")
-              option(value="") -- pilih --
-              each t in teams
-                option(
-                  value=t.id
-                  data-sport-id=t.sport_id
-                  data-individual=(hasIsIndividual ? t.is_individual : 0)
-                )= t.name
+              label.form-label(for="team_sport_id") Cabang Olahraga
+              select.form-select#team_sport_id
+                option(value="") -- pilih cabang --
+                if sports && sports.length
+                  each s in sports
+                    option(value=s.id)= s.name
 
             .mb-3
-              label.form-label Nama Tim
+              label.form-label(for="team_name") Nama Tim
               input.form-control#team_name(type="text" placeholder="Contoh: SMKN 8 Jakarta")
 
             .mb-3
-              label.form-label Short Name (opsional)
+              label.form-label(for="team_short") Short Name (opsional)
               input.form-control#team_short(type="text" placeholder="SMKN8")
 
             .mb-3
-              label.form-label Kota (opsional)
+              label.form-label(for="team_city") Kota (opsional)
               input.form-control#team_city(type="text" placeholder="Jakarta")
 
             .alert.alert-danger.d-none#teamErr
@@ -650,6 +647,7 @@ block content
           .modal-footer
             button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Batal
             button.btn.btn-primary(type="button" id="btnSaveTeam") Simpan
+
     //- ✅ Modal Add Athlete (Tambah Pemain)
     .modal.fade#addAthleteModal(tabindex="-1" aria-hidden="true")
       .modal-dialog
