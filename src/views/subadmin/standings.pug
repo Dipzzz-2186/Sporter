@@ -443,9 +443,11 @@ block content
   .standings-page
     .container
       .standings-header
+        - const currentSport = sports.find(s => String(s.id) === String(query?.sport_id));
+
         h3
           i.bi.bi-trophy-fill
-          | Klasemen Padel 
+          | Klasemen #{currentSport ? currentSport.name : 'Cabang'}
         button.btn.btn-guide(
           type="button"
           data-bs-toggle="modal"
