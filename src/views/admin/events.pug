@@ -145,6 +145,7 @@ block content
     
     .events-table thead th {
       color: white;
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
       font-weight: 600;
       font-size: 0.85rem;
       text-transform: uppercase;
@@ -477,7 +478,7 @@ block content
                         span.badge.bg-secondary-subtle.text-secondary Selesai
                     td.text-end
                       .action-buttons
-                        a.btn.btn-sm.btn-outline-secondary(href=`/events/${e.slug || e.id}` target="_blank" title="Lihat di Frontend")
+                        a.btn.btn-sm.btn-outline-secondary(href=`/events/${e.slug || e.id}` target="_self" title="Lihat di Frontend")
                           i.bi.bi-box-arrow-up-right
                           span.d-none.d-sm-inline.ms-1 Lihat
                         a.btn.btn-sm.btn-outline-primary(href=`/admin/events/${e.id}/edit` title="Edit Event")
