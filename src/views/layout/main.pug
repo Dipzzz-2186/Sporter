@@ -567,6 +567,8 @@ html(lang="id")
         
         #navMain.collapse.navbar-collapse
           ul.navbar-nav.ms-auto.align-items-lg-center
+
+            // ===== BERANDA =====
             li.nav-item
               a.nav-link(
                 href="/"
@@ -575,6 +577,7 @@ html(lang="id")
                 i.bi.bi-house-door-fill.me-2
                 | Beranda
 
+            // ===== CABANG OLAHRAGA =====
             li.nav-item
               a.nav-link(
                 href="/sports"
@@ -583,38 +586,67 @@ html(lang="id")
                 i.bi.bi-dribbble.me-2
                 | Cabang Olahraga
 
-            li.nav-item
-              a.nav-link(
-                href="/events"
-                class=(currentPath.startsWith('/events') ? 'active' : '')
+            // ===== DROPDOWN: KONTEN (EVENT + BERITA) =====
+            li.nav-item.dropdown
+              a.nav-link.dropdown-toggle(
+                href="#"
+                data-bs-toggle="dropdown"
+                class=(
+                  currentPath.startsWith('/events') || currentPath.startsWith('/news')
+                  ? 'active'
+                  : ''
+                )
               )
-                i.bi.bi-calendar-event.me-2
-                | Event
+                i.bi.bi-journal-text.me-2
+                | Konten
 
-            li.nav-item
-              a.nav-link(
-                href="/news"
-                class=(currentPath.startsWith('/news') ? 'active' : '')
+              ul.dropdown-menu
+                li
+                  a.dropdown-item(
+                    href="/events"
+                    class=(currentPath.startsWith('/events') ? 'active' : '')
+                  )
+                    i.bi.bi-calendar-event.me-2
+                    | Event
+                li
+                  a.dropdown-item(
+                    href="/news"
+                    class=(currentPath.startsWith('/news') ? 'active' : '')
+                  )
+                    i.bi.bi-newspaper.me-2
+                    | Berita
+
+            // ===== DROPDOWN: MEDIA (LIVESTREAM + VIDEO) =====
+            li.nav-item.dropdown
+              a.nav-link.dropdown-toggle(
+                href="#"
+                data-bs-toggle="dropdown"
+                class=(
+                  currentPath.startsWith('/livestreams') || currentPath.startsWith('/videos')
+                  ? 'active'
+                  : ''
+                )
               )
-                i.bi.bi-newspaper.me-2
-                | Berita
+                i.bi.bi-play-circle.me-2
+                | Media
 
-            li.nav-item
-              a.nav-link(
-                href="/livestreams"
-                class=(currentPath.startsWith('/livestreams') ? 'active' : '')
-              )
-                i.bi.bi-broadcast.me-2
-                | Livestream
+              ul.dropdown-menu
+                li
+                  a.dropdown-item(
+                    href="/livestreams"
+                    class=(currentPath.startsWith('/livestreams') ? 'active' : '')
+                  )
+                    i.bi.bi-broadcast.me-2
+                    | Livestream
+                li
+                  a.dropdown-item(
+                    href="/videos"
+                    class=(currentPath.startsWith('/videos') ? 'active' : '')
+                  )
+                    i.bi.bi-play-btn.me-2
+                    | Video
 
-            li.nav-item
-              a.nav-link(
-                href="/videos"
-                class=(currentPath.startsWith('/videos') ? 'active' : '')
-              )
-                i.bi.bi-play-btn-fill.me-2
-                | Video
-
+            // ===== STORE =====
             li.nav-item
               a.nav-link(
                 href="/store"
