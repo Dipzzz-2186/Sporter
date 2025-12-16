@@ -591,6 +591,11 @@ html(lang="id")
               a.nav-link(href="/videos" class=(currentPage === 'videos' ? 'active' : ''))
                 i.bi.bi-play-btn-fill.me-2
                 | Video
+            li.nav-item
+              a.nav-link(href="/store" class=(currentPage === 'store' ? 'active' : ''))
+                i.bi.bi-shop.me-2
+                | Store
+
 
             // ==== Auth menu (Login / User dropdown) ====
             if !currentUser
@@ -619,16 +624,16 @@ html(lang="id")
                       i.bi.bi-person-fill.me-2
                       | Profile
 
-                  if currentUser.role === 'admin'
-                    li
-                      a.dropdown-item(href="/admin")
-                        i.bi.bi-speedometer2.me-2
-                        | Admin Dashboard
-                  if currentUser.role === 'subadmin'
-                    li
-                      a.dropdown-item(href="/subadmin")
-                        i.bi.bi-speedometer2.me-2
-                        | Subadmin Dashboard
+                  - let dashboardUrl = '/'
+                  - if (currentUser.role === 'admin') dashboardUrl = '/admin'
+                  - else if (currentUser.role === 'subadmin') dashboardUrl = '/subadmin'
+                  - else if (currentUser.role === 'seller') dashboardUrl = '/seller'
+
+                  li
+                    a.dropdown-item(href=dashboardUrl)
+                      i.bi.bi-speedometer2.me-2
+                      | Dashboard
+
 
                   li
                     hr.dropdown-divider

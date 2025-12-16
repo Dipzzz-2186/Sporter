@@ -128,4 +128,14 @@ router.post("/subadmins/:id/edit", adminController.updateSubadmin);
 // delete subadmin (optional)
 router.post("/subadmins/:id/delete", authMiddleware.requireAdmin, adminController.deleteSubadmin);
 
+// Seller management
+router.get("/sellers", authMiddleware.requireAdmin, adminController.listSellers);
+router.get("/sellers/create", authMiddleware.requireAdmin, adminController.renderCreateSeller);
+router.post("/sellers/create", authMiddleware.requireAdmin, adminController.createSeller);
+
+router.get("/sellers/:id/edit", authMiddleware.requireAdmin, adminController.renderEditSeller);
+router.post("/sellers/:id/edit", authMiddleware.requireAdmin, adminController.updateSeller);
+
+router.post("/sellers/:id/delete", authMiddleware.requireAdmin, adminController.deleteSeller);
+
 module.exports = router;

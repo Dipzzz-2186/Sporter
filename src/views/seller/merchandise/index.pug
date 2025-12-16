@@ -1,0 +1,189 @@
+extends ../../layout/main
+
+block content
+  style.
+    .page-hero {
+      background:white;
+      padding:2rem 0;
+      border-bottom:1px solid #f0f0f0;
+      margin-bottom:2rem;
+    }
+    .page-title {
+      font-size:1.75rem;
+      font-weight:700;
+      margin-bottom:.25rem;
+    }
+    .page-subtitle {
+      color:#6b7280;
+      font-size:.95rem;
+      margin:0;
+    }
+    .action-bar {
+      background:white;
+      border-radius:18px;
+      padding:1.5rem;
+      margin-bottom:2rem;
+      box-shadow:0 5px 20px rgba(0,0,0,.05);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
+      flex-wrap:wrap;
+    }
+    .create-btn {
+      background:linear-gradient(135deg,#7C3AED 0%,#9333EA 100%);
+      color:white;
+      border:none;
+      padding:.8rem 1.5rem;
+      border-radius:12px;
+      font-weight:600;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:.5rem;
+    }
+    .table-container {
+      background:white;
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 5px 30px rgba(0,0,0,.08);
+    }
+    .modern-table th {
+      font-size:.8rem;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:#6b7280;
+      background:#f8fafc;
+    }
+    .modern-table tbody tr:hover {
+      background:#f9fafb;
+    }
+    .badge-status {
+      padding:.35rem .7rem;
+      border-radius:999px;
+      font-size:.75rem;
+      font-weight:700;
+    }
+    .status-active { background:#dcfce7; color:#166534; }
+    .status-inactive { background:#fee2e2; color:#991b1b; }
+    .actions {
+      display:flex;
+      gap:.5rem;
+    }
+    .action-btn {
+      width:36px;
+      height:36px;
+      border-radius:10px;
+      border:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+    }
+    .edit-btn {
+      background:#e0e7ff;
+      color:#3730a3;
+    }
+    .delete-btn {
+      background:#fee2e2;
+      color:#991b1b;
+    }
+    .empty-state {
+      text-align:center;
+      padding:4rem 2rem;
+      color:#6b7280;
+    }
+
+  // HERO
+  .page-hero
+    .container
+      h1.page-title Kelola Merchandise
+      p.page-subtitle Tambah, edit, dan kelola produk merchandise Anda
+
+  .container
+
+    // ALERT
+    if flash && flash.error && flash.error.length
+      each msg in flash.error
+        .alert.alert-danger= msg
+
+    if flash && flash.success && flash.success.length
+      each msg in flash.success
+        .alert.alert-success= msg
+
+    // ACTION BAR
+    .action-bar
+      a.create-btn(href="/seller/merchandise/create")
+        i.bi.bi-plus-lg
+        | Tambah Merchandise
+      input.form-control(type="search" placeholder="Cari merchandise..." oninput="filterTable(this.value)")
+
+    // TABLE
+    if merchandises && merchandises.length
+      .table-container
+        table.table.modern-table.mb-0
+          thead
+            tr
+              th Nama
+              th Cabang
+              th Harga
+              th Stok
+              th Status
+              th.text-end Aksi
+          tbody#merchTable
+            each m in merchandises
+              tr(data-name=m.name)
+                td= m.name
+                td= m.sport_name || 'Semua'
+                td Rp #{Number(m.price).toLocaleString('id-ID')}
+                td= m.stock
+                td
+                  if m.status === 'active'
+                    span.badge-status.status-active Active
+                  else
+                    span.badge-status.status-inactive Inactive
+                td.text-end
+                  .actions
+                    a.action-btn.edit-btn(href=`/seller/merchandise/${m.id}/edit` title="Edit")
+                      i.bi.bi-pencil
+                    button.action-btn.delete-btn(
+                      type="button"
+                      title="Hapus"
+                      onclick=`confirmDelete(${m.id}, '${m.name.replace(/'/g, "\\'")}')`
+                    )
+                      i.bi.bi-trash
+    else
+      .empty-state
+        i.bi.bi-box-seam.fs-1.mb-2
+        p Belum ada merchandise. Tambahkan produk pertama Anda.
+
+  // DELETE MODAL
+  #deleteModal.modal.fade(tabindex="-1")
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h5.modal-title Hapus Merchandise
+          button.btn-close(type="button" data-bs-dismiss="modal")
+        .modal-body
+          p#deleteMessage
+        .modal-footer
+          button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Batal
+          form#deleteForm(method="post")
+            button.btn.btn-danger(type="submit") Hapus
+
+  script.
+    function filterTable(q) {
+      q = q.toLowerCase();
+      document.querySelectorAll('#merchTable tr').forEach(tr => {
+        const name = tr.dataset.name.toLowerCase();
+        tr.style.display = name.includes(q) ? '' : 'none';
+      });
+    }
+
+    function confirmDelete(id, name) {
+      document.getElementById('deleteMessage').textContent =
+        `Anda yakin ingin menghapus merchandise "${name}"?`;
+      document.getElementById('deleteForm').action =
+        `/seller/merchandise/${id}/delete`;
+      new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    }

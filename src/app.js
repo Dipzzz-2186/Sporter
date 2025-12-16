@@ -9,8 +9,8 @@ const app = express();
 const adminRoutes = require("./routes/admin.routes");
 const subadminRoutes = require('./routes/subadmin.routes');
 const eventRoutes = require("./routes/event.routes");
-const standingsRoutes = require('./routes/standings.routes');
-
+const standingsRoutes = require("./routes/standings.routes");
+const sellerRoutes = require("./routes/seller.routes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -60,9 +60,11 @@ app.use("/news", newsRoutes);
 app.use("/", eventRoutes); // <== TAMBAH INI
 app.use("/", authRoutes); // /login, /logout
 app.use("/", mediaRoutes);
+app.use("/", require("./routes/store.routes"));
 
 // mount admin/subadmin AFTER middleware
 app.use("/admin", adminRoutes);
 app.use('/subadmin', subadminRoutes);
+app.use("/seller", sellerRoutes);
 
 module.exports = app;

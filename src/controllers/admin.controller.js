@@ -815,3 +815,177 @@ exports.deleteNews = async (req, res) => {
     return res.redirect("/admin/news");
   }
 };
+
+// SELLER MANAGEMENT CONTROLLERS
+exports.listSellers = async (req, res) => {
+  const [rows] = await db.query(`
+    SELECT id, name, email, created_at
+    FROM users
+    WHERE role = 'seller'
+    ORDER BY created_at DESC
+  `);
+  res.render("admin/sellers", { title: "Manage Seller", sellers: rows });
+};
+
+exports.renderCreateSeller = async (req, res) => {
+  try {
+    const [sports] = await db.query("SELECT id, name FROM sports ORDER BY name");
+    return res.render("admin/create_seller", { title: "Buat Seller - SPORTER", sports });
+  } catch (err) {
+    console.error("ERROR renderCreateSeller:", err);
+    req.flash("error", "Gagal memuat form.");
+    return res.redirect("/admin");
+  }
+};
+
+exports.createSeller = async (req, res) => {
+  const { name, email, password } = req.body;
+  const hash = bcrypt.hashSync(password, 12);
+
+  await db.query(
+    "INSERT INTO users (name,email,password_hash,role,created_at) VALUES (?,?,?,'seller',NOW())",
+    [name, email, hash]
+  );
+
+  req.flash("success", "Seller berhasil dibuat");
+  res.redirect("/admin/sellers");
+};
+/**
+ * Render EDIT Seller
+ */
+exports.renderEditSeller = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID tidak valid.");
+      return res.redirect("/admin/sellers");
+    }
+
+    // ambil data seller
+    const [[sub]] = await db.query(
+      "SELECT id, name, email FROM users WHERE id = ? AND role = 'seller' LIMIT 1",
+      [id]
+    );
+
+    if (!sub) {
+      req.flash("error", "Seller tidak ditemukan.");
+      return res.redirect("/admin/sellers");
+    }
+
+    // ambil sport yang sudah diassign
+    const [selectedSports] = await db.query(
+      "SELECT sport_id FROM user_sports WHERE user_id = ?",
+      [id]
+    );
+    const selectedIds = selectedSports.map(s => s.sport_id);
+
+    // semua sport untuk ditampilkan dalam checkbox
+    const [sports] = await db.query("SELECT id, name FROM sports ORDER BY name");
+
+    return res.render("admin/edit_seller", {
+      title: "Edit Seller - SPORTER",
+      seller: sub,
+      sports,
+      selectedIds
+    });
+  } catch (err) {
+    console.error("ERROR renderEditSeller:", err);
+    req.flash("error", "Gagal memuat form edit.");
+    return res.redirect("/admin/sellers");
+  }
+};
+
+
+/**
+ * Update seller
+ */
+exports.updateSeller = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID tidak valid.");
+      return res.redirect("/admin/sellers");
+    }
+
+    const { name, email, password } = req.body;
+    let sport_ids = req.body.sport_ids || [];
+
+    if (!name || !email) {
+      req.flash("error", "Nama dan email wajib diisi.");
+      return res.redirect(`/admin/sellers/${id}/edit`);
+    }
+
+    // normalisasi sport_ids → array
+    if (!Array.isArray(sport_ids)) {
+      if (typeof sport_ids === "string" && sport_ids.trim() !== "") {
+        sport_ids = sport_ids.split(",").map(s => s.trim());
+      } else sport_ids = [];
+    }
+    sport_ids = sport_ids.map(Number).filter(Boolean);
+
+    // cek seller exists
+    const [[sub]] = await db.query(
+      "SELECT id FROM users WHERE id = ? AND role = 'seller' LIMIT 1",
+      [id]
+    );
+    if (!sub) {
+      req.flash("error", "Seller tidak ditemukan.");
+      return res.redirect("/admin/sellers");
+    }
+
+    // update basic info
+    let sql = "UPDATE users SET name = ?, email = ?";
+    let params = [name, email];
+
+    if (password && password.trim() !== "") {
+      const hash = bcrypt.hashSync(password, SALT_ROUNDS);
+      sql += ", password_hash = ?";
+      params.push(hash);
+    }
+
+    sql += ", updated_at = NOW() WHERE id = ?";
+    params.push(id);
+
+    await db.query(sql, params);
+
+    // replace sports assignment
+    await db.query("DELETE FROM user_sports WHERE user_id = ?", [id]);
+
+    if (sport_ids.length > 0) {
+      const values = sport_ids.map(sid => [
+        id,
+        sid,
+        req.session.user ? req.session.user.id : null
+      ]);
+      await db.query("INSERT INTO user_sports (user_id, sport_id, assigned_by) VALUES ?", [values]);
+    }
+
+    req.flash("success", "Seller berhasil diperbarui.");
+    return res.redirect("/admin/sellers");
+  } catch (err) {
+    console.error("ERROR updateSeller:", err);
+    req.flash("error", "Gagal mengupdate Seller.");
+    return res.redirect("/admin/sellers");
+  }
+};
+
+
+/**
+ * Delete Seller
+ */
+exports.deleteSeller = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) {
+      req.flash("error", "ID tidak valid.");
+      return res.redirect("/admin/sellers");
+    }
+    await db.query("DELETE FROM users WHERE id = ? AND role = 'seller'", [id]);
+    req.flash("success", "Seller dihapus.");
+    return res.redirect("/admin/sellers");
+  } catch (err) {
+    console.error("ERROR deleteSeller:", err);
+    req.flash("error", "Gagal menghapus Seller.");
+    return res.redirect("/admin/sellers");
+  }
+};

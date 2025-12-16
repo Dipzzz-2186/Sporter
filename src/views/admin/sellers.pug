@@ -1,0 +1,146 @@
+extends ../layout/main
+
+block content
+  style.
+    .page-hero {
+      background:white;
+      padding:2rem 0;
+      border-bottom:1px solid #f0f0f0;
+      margin-bottom:2rem;
+    }
+    .page-title {
+      font-size:1.75rem;
+      font-weight:700;
+      margin-bottom:.25rem;
+    }
+    .page-subtitle {
+      color:#6b7280;
+      margin:0;
+    }
+    .action-bar {
+      background:white;
+      border-radius:18px;
+      padding:1.5rem;
+      margin-bottom:2rem;
+      box-shadow:0 5px 20px rgba(0,0,0,.05);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
+      flex-wrap:wrap;
+    }
+    .table-container {
+      background:white;
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 5px 30px rgba(0,0,0,.08);
+    }
+    .modern-table th {
+      font-size:.8rem;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:#6b7280;
+      background:#f8fafc;
+    }
+    .modern-table tbody tr:hover {
+      background:#f9fafb;
+    }
+    .actions {
+      display:flex;
+      gap:.5rem;
+    }
+    .action-btn {
+      width:36px;
+      height:36px;
+      border-radius:10px;
+      border:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+    }
+    .edit-btn {
+      background:#e0e7ff;
+      color:#3730a3;
+    }
+    .delete-btn {
+      background:#fee2e2;
+      color:#991b1b;
+    }
+    .empty-state {
+      text-align:center;
+      padding:4rem 2rem;
+      color:#6b7280;
+    }
+
+  .page-hero
+    .container
+      h1.page-title Kelola Seller
+      p.page-subtitle Kelola akun penjual merchandise
+
+  .container
+
+    if flash && flash.error && flash.error.length
+      each msg in flash.error
+        .alert.alert-danger= msg
+
+    if flash && flash.success && flash.success.length
+      each msg in flash.success
+        .alert.alert-success= msg
+
+    .action-bar
+      a.btn.btn-primary(href="/admin/sellers/create")
+        i.bi.bi-plus-lg.me-1
+        | Buat Seller
+
+      input.form-control(
+        type="search"
+        placeholder="Cari seller..."
+        oninput="filterSeller(this.value)"
+      )
+
+    if sellers && sellers.length
+      .table-container
+        table.table.modern-table.mb-0
+          thead
+            tr
+              th Nama
+              th Email
+              th Dibuat
+              th.text-end Aksi
+          tbody#sellerTable
+            each s in sellers
+              - const d = s.created_at ? new Date(s.created_at) : null
+              tr(data-name=s.name data-email=s.email)
+                td
+                  b= s.name
+                td= s.email
+                td= d ? d.toLocaleDateString('id-ID') : '-'
+                td.text-end
+                  .actions
+                    a.action-btn.edit-btn(
+                      href=`/admin/sellers/${s.id}/edit`
+                      title="Edit Seller"
+                    )
+                      i.bi.bi-pencil
+                    form(
+                      method="post"
+                      action=`/admin/sellers/${s.id}/delete`
+                      onsubmit="return confirm('Hapus seller ini?')"
+                    )
+                      button.action-btn.delete-btn(type="submit")
+                        i.bi.bi-trash
+    else
+      .empty-state
+        i.bi.bi-shop.fs-1.mb-2
+        p Belum ada seller.
+
+  script.
+    function filterSeller(q){
+      q=q.toLowerCase();
+      document.querySelectorAll('#sellerTable tr').forEach(tr=>{
+        const n=tr.dataset.name.toLowerCase();
+        const e=tr.dataset.email.toLowerCase();
+        tr.style.display=(n.includes(q)||e.includes(q))?'':'none';
+      });
+    }

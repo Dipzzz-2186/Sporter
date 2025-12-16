@@ -1,0 +1,174 @@
+extends ../../layout/main
+
+block content
+  style.
+    .page-hero{background:#fff;padding:2rem 0;border-bottom:1px solid #f0f0f0;margin-bottom:2rem}
+    .page-title{font-size:1.75rem;font-weight:700;margin-bottom:.25rem}
+    .page-subtitle{color:#6b7280;margin:0}
+    .action-bar{background:#fff;border-radius:18px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;box-shadow:0 5px 20px rgba(0,0,0,.05);display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+    .table-container{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 5px 30px rgba(0,0,0,.08)}
+    .modern-table th{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;background:#f8fafc}
+    .modern-table tbody tr:hover{background:#f9fafb}
+    .badge{padding:.35rem .7rem;border-radius:999px;font-size:.75rem;font-weight:700}
+    .st-pending{background:#fef3c7;color:#92400e}
+    .st-paid{background:#dbeafe;color:#1e40af}
+    .st-packed{background:#e0e7ff;color:#3730a3}
+    .st-shipped{background:#dcfce7;color:#166534}
+    .st-done{background:#ecfeff;color:#155e75}
+    .st-cancelled{background:#fee2e2;color:#991b1b}
+    .action-btn{border:none;border-radius:10px;padding:.4rem .6rem}
+    .empty{padding:4rem 2rem;text-align:center;color:#6b7280}
+
+  // HERO
+  .page-hero
+    .container
+      h1.page-title Order Merchandise
+      p.page-subtitle Pantau pesanan dan update status pengiriman
+
+  .container
+
+    // ALERT
+    if flash && flash.error && flash.error.length
+      each msg in flash.error
+        .alert.alert-danger= msg
+    if flash && flash.success && flash.success.length
+      each msg in flash.success
+        .alert.alert-success= msg
+
+    // ACTION BAR
+    .action-bar
+      input.form-control(type="search" placeholder="Cari pembeli / status..." oninput="filterOrders(this.value)")
+
+    // TABLE
+    if orders && orders.length
+      .table-container
+        table.table.modern-table.mb-0
+          thead
+            tr
+              th Order ID
+              th Pembeli
+              th Total
+              th Status
+              th Tanggal
+              th.text-end Aksi
+          tbody#ordersTable
+            each o in orders
+              - const d = o.created_at ? new Date(o.created_at) : null
+              tr(
+                data-buyer=(o.buyer_name||'').toLowerCase()
+                data-status=(o.status||'').toLowerCase()
+              )
+                td
+                  code ##{o.id}
+                td= o.buyer_name || '-'
+                td Rp #{Number(o.total||0).toLocaleString('id-ID')}
+                td
+                  span.badge(class=`st-${o.status}`)= o.status
+                td= d ? d.toLocaleDateString('id-ID') : '-'
+                td.text-end
+                  button.btn.btn-sm.btn-outline-primary(
+                    type="button"
+                    onclick=`openDetail(${o.id})`
+                  ) Detail
+    else
+      .empty
+        i.bi.bi-receipt.fs-1.mb-2
+        p Belum ada order masuk.
+
+  // DETAIL MODAL
+  #detailModal.modal.fade(tabindex="-1")
+    .modal-dialog.modal-lg.modal-dialog-centered.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h5.modal-title Detail Order
+          button.btn-close(type="button" data-bs-dismiss="modal")
+        .modal-body
+          // filled by JS
+          #orderDetailLoading.text-muted Memuat detail...
+          #orderDetailContent(style="display:none")
+            .row.g-3
+              .col-md-6
+                b Pembeli
+                p#dBuyer.mb-0
+                small.text-muted#dContact
+              .col-md-6.text-md-end
+                b Status
+                p.mb-0
+                  span.badge#dStatus
+            hr
+            h6 Items
+            table.table.table-sm
+              thead
+                tr
+                  th Produk
+                  th Harga
+                  th Qty
+                  th Subtotal
+              tbody#itemsBody
+            hr
+            .d-flex.justify-content-between
+              b Total
+              b#dTotal
+        .modal-footer
+          form#statusForm(method="post")
+            select.form-select.form-select-sm(name="status" required)
+              option(value="paid") paid
+              option(value="packed") packed
+              option(value="shipped") shipped
+              option(value="done") done
+              option(value="cancelled") cancelled
+            button.btn.btn-primary.btn-sm.ms-2(type="submit") Update Status
+          button.btn.btn-secondary.btn-sm(type="button" data-bs-dismiss="modal") Tutup
+
+  script.
+    function filterOrders(q){
+      q=q.toLowerCase();
+      document.querySelectorAll('#ordersTable tr').forEach(tr=>{
+        const b=tr.dataset.buyer||'';
+        const s=tr.dataset.status||'';
+        tr.style.display=(b.includes(q)||s.includes(q))?'':'none';
+      });
+    }
+
+    async function openDetail(orderId){
+      const modalEl=document.getElementById('detailModal');
+      const modal=new bootstrap.Modal(modalEl);
+      document.getElementById('orderDetailLoading').style.display='block';
+      document.getElementById('orderDetailContent').style.display='none';
+      modal.show();
+
+      try{
+        const res=await fetch(`/seller/orders/${orderId}/detail`);
+        const data=await res.json();
+
+        document.getElementById('dBuyer').textContent=data.buyer_name||'-';
+        document.getElementById('dContact').textContent=
+          [data.buyer_email,data.buyer_phone].filter(Boolean).join(' • ');
+        const st=document.getElementById('dStatus');
+        st.textContent=data.status;
+        st.className=`badge st-${data.status}`;
+        document.getElementById('dTotal').textContent=
+          'Rp '+Number(data.total||0).toLocaleString('id-ID');
+
+        const tb=document.getElementById('itemsBody');
+        tb.innerHTML='';
+        data.items.forEach(it=>{
+          const tr=document.createElement('tr');
+          tr.innerHTML=`
+            <td>${it.name}</td>
+            <td>Rp ${Number(it.price).toLocaleString('id-ID')}</td>
+            <td>${it.qty}</td>
+            <td>Rp ${Number(it.price*it.qty).toLocaleString('id-ID')}</td>`;
+          tb.appendChild(tr);
+        });
+
+        const form=document.getElementById('statusForm');
+        form.action=`/seller/orders/${orderId}/status`;
+        form.querySelector('select[name="status"]').value=data.status;
+
+        document.getElementById('orderDetailLoading').style.display='none';
+        document.getElementById('orderDetailContent').style.display='block';
+      }catch(e){
+        alert('Gagal memuat detail order');
+      }
+    }

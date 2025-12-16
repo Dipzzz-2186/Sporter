@@ -39,10 +39,35 @@ function requireAdminOrSubadmin(req, res, next) {
   return res.redirect('/');
 }
 
+function requireSeller(req, res, next) {
+  if (!isLoggedIn(req)) return redirectToLogin(req, res);
+  if (!req.session.user || req.session.user.role !== 'seller') {
+    return res.redirect('/login');
+  }
+  next();
+}
+
+function requireAdminOrSeller(req, res, next) {
+  if (!isLoggedIn(req)) return redirectToLogin(req, res);
+  const role = req.session.user.role;
+  if (role === 'admin' || role === 'seller') return next();
+  req.flash && req.flash('error', 'Akses ditolak.');
+  return res.redirect('/');
+}
+
+function requireUser(req, res, next) {
+  if (!req.session.user || req.session.user.role !== "user") {
+    return res.redirect("/login?next=" + encodeURIComponent(req.originalUrl));
+  }
+  next();
+};
 // export secara konsisten
 module.exports = {
   requireLogin,
   requireAdmin,
   requireSubadmin,
+  requireSeller,
+  requireAdminOrSeller,
+  requireUser,
   requireAdminOrSubadmin,
 };

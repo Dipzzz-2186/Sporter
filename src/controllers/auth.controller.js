@@ -14,6 +14,9 @@ exports.renderLogin = (req, res) => {
     if (req.session.user.role === "subadmin") {
       return res.redirect("/subadmin");
     }
+    if (req.session.user.role === "seller") {
+      return res.redirect("/seller");
+    }
     return res.redirect("/");
   }
 
@@ -68,10 +71,13 @@ exports.handleLogin = async (req, res) => {
       return res.redirect("/subadmin");
     }
 
-    // USER BIASA
+    if (user.role === "seller") {
+      return res.redirect("/seller");
+    }
+
+    // user biasa
     const nextUrl = req.query.next || "/";
     return res.redirect(nextUrl);
-
   } catch (err) {
     console.error("Login error:", err);
     req.flash("error", "Terjadi kesalahan server.");

@@ -75,6 +75,10 @@ block content
                 a.btn.btn-primary.btn-sm.ms-2(href="/admin/subadmins")
                   i.bi.bi-people-fill.me-1
                   | Manage Subadmins
+              if currentUser && currentUser.role === 'admin'
+                a.btn.btn-warning.ms-2(href="/admin/sellers")
+                  i.bi.bi-shop.me-1
+                  | Manage Seller
 
       // Note: quick-create buttons removed — create must be done via "Kelola" pages
       if flash && flash.success && flash.success.length

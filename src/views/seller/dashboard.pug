@@ -1,0 +1,235 @@
+extends ../layout/main
+
+block content
+  style.
+    .seller-dashboard {
+      background: linear-gradient(135deg,#f5f7fa 0%,#e8ecf1 100%);
+      min-height:100vh;
+      padding:2rem 0;
+    }
+
+    .seller-header {
+      background: linear-gradient(135deg,#7C3AED 0%,#9333EA 100%);
+      border-radius:22px;
+      padding:2rem;
+      color:white;
+      margin-bottom:2rem;
+      box-shadow:0 10px 30px rgba(0,0,0,.15);
+    }
+
+    .seller-header h1 {
+      font-size:2.2rem;
+      font-weight:800;
+      margin-bottom:.25rem;
+    }
+
+    .seller-header p {
+      opacity:.85;
+      margin:0;
+    }
+
+    .stat-card {
+      background:white;
+      border-radius:18px;
+      padding:1.75rem;
+      border:2px solid #eef0f3;
+      transition:.3s;
+      height:100%;
+    }
+
+    .stat-card:hover {
+      transform:translateY(-6px);
+      box-shadow:0 15px 35px rgba(124,58,237,.15);
+      border-color:#7C3AED;
+    }
+
+    .stat-icon {
+      width:56px;
+      height:56px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.6rem;
+      margin-bottom:1rem;
+      background:rgba(124,58,237,.12);
+      color:#7C3AED;
+    }
+
+    .stat-label {
+      font-size:.9rem;
+      color:#6b7280;
+    }
+
+    .stat-number {
+      font-size:2.2rem;
+      font-weight:800;
+      margin:0;
+      color:#111827;
+    }
+
+    .content-card {
+      background:white;
+      border-radius:20px;
+      border:2px solid #eef0f3;
+      overflow:hidden;
+    }
+
+    .content-card .card-header {
+      padding:1.4rem 1.6rem;
+      border-bottom:2px solid #eef0f3;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .content-card .card-header h5 {
+      margin:0;
+      font-weight:700;
+      color:#111827;
+    }
+
+    .content-card .card-header a {
+      font-weight:600;
+      text-decoration:none;
+      color:#7C3AED;
+    }
+
+    .table thead th {
+      font-size:.8rem;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:#6b7280;
+      border:none;
+    }
+
+    .table tbody tr:hover {
+      background:#f9fafb;
+    }
+
+    .badge-status {
+      padding:.35rem .7rem;
+      border-radius:999px;
+      font-size:.75rem;
+      font-weight:700;
+    }
+
+    .status-active { background:#dcfce7; color:#166534; }
+    .status-inactive { background:#fee2e2; color:#991b1b; }
+    .status-paid { background:#dbeafe; color:#1e40af; }
+    .status-pending { background:#fef3c7; color:#92400e; }
+
+  .seller-dashboard
+    .container-fluid
+
+      // HEADER
+      .seller-header
+        .d-flex.justify-content-between.align-items-center.flex-wrap.gap-3
+          div
+            h1 Seller Dashboard
+            p Kelola merchandise dan pantau pesanan Anda
+          .d-flex.gap-2
+            a.btn.btn-light(href="/seller/merchandise/create")
+              i.bi.bi-plus-lg.me-1
+              | Tambah Produk
+            a.btn.btn-outline-light(href="/")
+              i.bi.bi-house-door.me-1
+              | Lihat Website
+
+      // STATS
+      .row.g-3.mb-4
+        .col-6.col-lg-3
+          .stat-card
+            .stat-icon
+              i.bi.bi-box-seam
+            span.stat-label Total Produk
+            h3.stat-number= stats && stats.products ? stats.products : 0
+
+        .col-6.col-lg-3
+          .stat-card
+            .stat-icon
+              i.bi.bi-bag-check
+            span.stat-label Order Masuk
+            h3.stat-number= stats && stats.orders ? stats.orders : 0
+
+        .col-6.col-lg-3
+          .stat-card
+            .stat-icon
+              i.bi.bi-cash-stack
+            span.stat-label Order Dibayar
+            h3.stat-number= stats && stats.paidOrders ? stats.paidOrders : 0
+
+        .col-6.col-lg-3
+          .stat-card
+            .stat-icon
+              i.bi.bi-box-arrow-up
+            span.stat-label Stok Aktif
+            h3.stat-number= stats && stats.activeStock ? stats.activeStock : 0
+
+      // CONTENT ROW
+      .row.g-4
+
+        // MERCHANDISE
+        .col-lg-6
+          .content-card
+            .card-header
+              h5
+                i.bi.bi-box.me-2
+                | Produk Terbaru
+              a(href="/seller/merchandise") Kelola Produk
+            if merchandises && merchandises.length
+              .table-responsive
+                table.table.mb-0
+                  thead
+                    tr
+                      th Nama
+                      th Harga
+                      th Stok
+                      th Status
+                  tbody
+                    each m in merchandises
+                      tr
+                        td= m.name
+                        td Rp #{Number(m.price).toLocaleString('id-ID')}
+                        td= m.stock
+                        td
+                          if m.status === 'active'
+                            span.badge-status.status-active Active
+                          else
+                            span.badge-status.status-inactive Inactive
+            else
+              .p-4.text-center.text-muted
+                | Belum ada produk merchandise
+
+        // ORDERS
+        .col-lg-6
+          .content-card
+            .card-header
+              h5
+                i.bi.bi-receipt.me-2
+                | Order Terbaru
+              a(href="/seller/orders") Lihat Semua
+            if orders && orders.length
+              .table-responsive
+                table.table.mb-0
+                  thead
+                    tr
+                      th Pembeli
+                      th Total
+                      th Status
+                      th Tanggal
+                  tbody
+                    each o in orders
+                      - const d = o.created_at ? new Date(o.created_at) : null
+                      tr
+                        td= o.buyer_name || '-'
+                        td Rp #{Number(o.total).toLocaleString('id-ID')}
+                        td
+                          if o.status === 'paid'
+                            span.badge-status.status-paid Paid
+                          else
+                            span.badge-status.status-pending Pending
+                        td= d ? d.toLocaleDateString('id-ID') : '-'
+            else
+              .p-4.text-center.text-muted
+                | Belum ada order masuk

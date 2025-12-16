@@ -1,0 +1,18 @@
+extends ../layout/main
+
+block content
+  .container
+    h2.mb-4 Store Merchandise
+
+    .row.g-4
+      each p in products
+        .col-md-3
+          .card.h-100
+            if p.image_url
+              img.card-img-top(src=p.image_url)
+            .card-body
+              h6= p.name
+              small.text-muted= p.seller_name
+              p.fw-bold.mt-2 Rp #{Number(p.price).toLocaleString('id-ID')}
+            .card-footer.bg-white.border-0
+              a.btn.btn-primary.w-100(href=`/store/${p.id}`) Lihat

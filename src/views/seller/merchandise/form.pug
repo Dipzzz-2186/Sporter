@@ -1,0 +1,192 @@
+extends ../../layout/main
+
+block content
+  style.
+    .form-hero {
+      background:white;
+      padding:2rem 0;
+      border-bottom:1px solid #f0f0f0;
+      margin-bottom:2rem;
+    }
+    .page-title {
+      font-size:1.75rem;
+      font-weight:700;
+      margin-bottom:.25rem;
+    }
+    .page-subtitle {
+      color:#6b7280;
+      font-size:.95rem;
+      margin:0;
+    }
+    .form-card {
+      background:white;
+      border-radius:20px;
+      padding:2rem;
+      box-shadow:0 5px 25px rgba(0,0,0,.08);
+    }
+    .form-label {
+      font-weight:600;
+      color:#374151;
+    }
+    .form-control, .form-select {
+      border-radius:12px;
+      padding:.75rem 1rem;
+    }
+    .preview-img {
+      max-width:160px;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      margin-top:.75rem;
+    }
+    .action-bar {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
+      flex-wrap:wrap;
+      margin-top:2rem;
+    }
+    .btn-primary {
+      background:linear-gradient(135deg,#7C3AED 0%,#9333EA 100%);
+      border:none;
+      border-radius:12px;
+      padding:.7rem 1.5rem;
+      font-weight:600;
+    }
+
+  // HERO
+  .form-hero
+    .container
+      if mode === 'edit'
+        h1.page-title Edit Merchandise
+        p.page-subtitle Perbarui informasi produk merchandise
+      else
+        h1.page-title Tambah Merchandise
+        p.page-subtitle Tambahkan produk merchandise baru untuk dijual
+
+  .container
+
+    // ALERT
+    if flash && flash.error && flash.error.length
+      each msg in flash.error
+        .alert.alert-danger= msg
+
+    if flash && flash.success && flash.success.length
+      each msg in flash.success
+        .alert.alert-success= msg
+
+    .form-card
+      form(
+        method="post"
+        enctype="multipart/form-data"
+        action= mode === 'edit'
+          ? `/seller/merchandise/${merchandise.id}/edit`
+          : '/seller/merchandise/create'
+      )
+
+        .row.g-3
+          .col-md-8
+            label.form-label Nama Produk
+            input.form-control(
+              type="text"
+              name="name"
+              required
+              value=merchandise.name || ''
+              placeholder="Contoh: Jersey Tim Nasional"
+            )
+
+          .col-md-4
+            label.form-label Cabang Olahraga
+            select.form-select(name="sport_id")
+              option(value="") Semua Cabang
+              each s in sports
+                option(
+                  value=s.id
+                  selected=(merchandise.sport_id && merchandise.sport_id == s.id)
+                )= s.name
+
+          .col-md-12
+            label.form-label Deskripsi
+            textarea.form-control(
+              name="description"
+              rows="4"
+              placeholder="Deskripsi singkat produk"
+            )= merchandise.description || ''
+
+          .col-md-4
+            label.form-label Harga (Rp)
+            input.form-control(
+              type="number"
+              name="price"
+              min="0"
+              required
+              value=merchandise.price || ''
+            )
+
+          .col-md-4
+            label.form-label Stok
+            input.form-control(
+              type="number"
+              name="stock"
+              min="0"
+              required
+              value=merchandise.stock || 0
+            )
+
+          .col-md-4
+            label.form-label Status
+            select.form-select(name="status")
+              option(
+                value="active"
+                selected=!merchandise.status || merchandise.status === 'active'
+              ) Active
+              option(
+                value="inactive"
+                selected=merchandise.status === 'inactive'
+              ) Inactive
+
+          .col-md-12
+            label.form-label Foto Produk
+            input.form-control(
+              type="file"
+              name="image"
+              accept="image/*"
+              onchange="previewImage(this)"
+            )
+
+            if mode === 'edit' && merchandise.image_url
+              img.preview-img(
+                src=merchandise.image_url
+                alt="Preview"
+                id="imagePreview"
+              )
+            else
+              img.preview-img(
+                style="display:none"
+                id="imagePreview"
+              )
+
+        .action-bar
+          a.btn.btn-outline-secondary(href="/seller/merchandise")
+            i.bi.bi-arrow-left.me-1
+            | Kembali
+          button.btn.btn-primary(type="submit")
+            if mode === 'edit'
+              i.bi.bi-save.me-1
+              | Simpan Perubahan
+            else
+              i.bi.bi-plus-lg.me-1
+              | Tambah Merchandise
+
+  script.
+    function previewImage(input) {
+      const img = document.getElementById('imagePreview');
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          img.src = e.target.result;
+          img.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
