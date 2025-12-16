@@ -1,115 +1,668 @@
 extends ../layout/main
 
 block content
-  .container.py-4
-    if !event
-      .row
-        .col-md-8
-          h1.fw-bold.text-danger Event tidak ditemukan
-          p.text-muted.mb-3
+  style.
+    /* Event Detail Page Styles */
+    .event-detail-page {
+      background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Header Section */
+    .event-detail-header {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      border-radius: 24px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      animation: fadeInDown 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .event-detail-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .event-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.8rem;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+      color: white;
+      line-height: 1.2;
+    }
+    
+    .event-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Badge Styling */
+    .event-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .badge-status-upcoming {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #059669;
+      border: 1px solid #a7f3d0;
+    }
+    
+    .badge-status-upcoming:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+    }
+    
+    .badge-status-ongoing {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      color: #0095FF;
+      border: 1px solid #bfdbfe;
+    }
+    
+    .badge-status-ongoing:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.2);
+    }
+    
+    .badge-status-finished {
+      background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+      color: #5a6c7d;
+      border: 1px solid #d1d5db;
+    }
+    
+    .badge-sport {
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      color: #0095FF;
+      border: 1px solid #d6edff;
+    }
+    
+    .badge-sport:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.2);
+    }
+    
+    /* Action Buttons */
+    .event-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .btn-event-action {
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      border: 2px solid;
+    }
+    
+    .btn-back {
+      background: white;
+      border-color: #e8edf2;
+      color: #5a6c7d;
+    }
+    
+    .btn-back:hover {
+      background: #f8f9fa;
+      border-color: #0095FF;
+      color: #0095FF;
+      transform: translateY(-2px);
+    }
+    
+    .btn-tickets {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border-color: #0095FF;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.3);
+    }
+    
+    .btn-tickets:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.4);
+      color: white;
+    }
+    
+    /* Content Cards */
+    .event-content-card {
+      background: white;
+      border-radius: 20px;
+      border: 2px solid #e8edf2;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.6s ease-out;
+      transition: all 0.3s ease;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .event-content-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+    
+    .card-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #e8edf2;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .card-title i {
+      color: #0095FF;
+      font-size: 1.25rem;
+    }
+    
+    /* Info Items */
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid #f0f4f8;
+    }
+    
+    .info-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .info-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .info-icon i {
+      font-size: 1.25rem;
+      color: #0095FF;
+    }
+    
+    .info-content h6 {
+      font-weight: 700;
+      color: #0B1F3F;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+    
+    .info-content p {
+      color: #5a6c7d;
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    
+    /* Description */
+    .event-description {
+      color: #5a6c7d;
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+    
+    /* Quick Actions */
+    .quick-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .quick-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      background: #f8f9fa;
+      border: 2px solid #e8edf2;
+      border-radius: 12px;
+      color: #5a6c7d;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    
+    .quick-action-btn:hover {
+      background: white;
+      border-color: #0095FF;
+      color: #0095FF;
+      transform: translateX(5px);
+    }
+    
+    .quick-action-btn i {
+      font-size: 1.25rem;
+      width: 24px;
+    }
+    
+    /* Not Found State */
+    .not-found-container {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid #e8edf2;
+      padding: 4rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .not-found-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    
+    .not-found-icon i {
+      font-size: 4rem;
+      color: #dc2626;
+    }
+    
+    .not-found-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      color: #0B1F3F;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    
+    .not-found-message {
+      color: #5a6c7d;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .btn-not-found {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border: none;
+      color: white;
+      padding: 0.9rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    
+    .btn-not-found:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
+      color: white;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .event-detail-header {
+        padding: 2rem;
+      }
+      
+      .event-title {
+        font-size: 2.2rem;
+      }
+      
+      .event-content-card {
+        padding: 1.5rem;
+      }
+      
+      .not-found-container {
+        padding: 3rem 1.5rem;
+      }
+      
+      .not-found-icon {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .not-found-icon i {
+        font-size: 3rem;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .event-detail-page {
+        padding: 1.5rem 0;
+      }
+      
+      .event-detail-header {
+        padding: 1.5rem;
+        border-radius: 16px;
+      }
+      
+      .event-title {
+        font-size: 1.8rem;
+      }
+      
+      .event-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .event-actions {
+        flex-direction: column;
+      }
+      
+      .btn-event-action {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .event-content-card {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .card-title {
+        font-size: 1.3rem;
+      }
+      
+      .info-item {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .not-found-title {
+        font-size: 2rem;
+      }
+    }
+
+  .event-detail-page
+    .container
+      if !event
+        // Not Found State
+        .not-found-container
+          .not-found-icon
+            i.bi.bi-calendar-x
+          h2.not-found-title Event tidak ditemukan
+          p.not-found-message
             | Maaf, event yang kamu cari tidak tersedia atau sudah dihapus.
-          a.btn.btn-outline-danger(href="/events")
-            i.bi.bi-arrow-left.me-1
-            | Kembali ke daftar event
-    else
-      .row.mb-3
-        .col-md-8
-          h1.fw-bold.text-danger.mb-1= event.title
+            br
+            | Silakan kembali ke daftar event untuk melihat event lainnya.
+          a.btn-not-found(href="/events")
+            i.bi.bi-arrow-left
+            span Kembali ke daftar event
+      else
+        // Header Section
+        .event-detail-header
+          h1.event-title= event.title
+          
+          .event-meta
+            if event.status
+              a.event-badge(
+                class= event.status === 'upcoming'
+                  ? 'badge-status-upcoming'
+                  : (event.status === 'ongoing'
+                    ? 'badge-status-ongoing'
+                    : 'badge-status-finished')
+              )
+                if event.status === 'upcoming'
+                  i.bi.bi-sunrise
+                  span Akan Datang
+                else if event.status === 'ongoing'
+                  i.bi.bi-broadcast-pin
+                  span Sedang Berlangsung
+                else
+                  i.bi.bi-flag-checkered
+                  span Selesai
+            
+            if event.sport_name
+              a.event-badge.badge-sport(href=`/events?sport=${event.sport_name}`)
+                i.bi.bi-trophy-fill
+                span= event.sport_name
+          
+          .event-actions
+            a.btn-event-action.btn-back(href="/events")
+              i.bi.bi-arrow-left
+              span Kembali ke daftar event
+            a.btn-event-action.btn-tickets(href=`/tickets/${event.id}`)
+              i.bi.bi-ticket-perforated
+              span Lihat Tiket
 
-          if event.status
-            span.badge.me-2(
-              class= event.status === 'upcoming'
-                ? 'bg-success-subtle text-success'
-                : (event.status === 'ongoing'
-                  ? 'bg-primary-subtle text-primary'
-                  : 'bg-secondary-subtle text-secondary')
-            )
-              if event.status === 'upcoming'
-                i.bi.bi-sunrise.me-1
-                | Akan Datang
-              else if event.status === 'ongoing'
-                i.bi.bi-broadcast-pin.me-1
-                | Sedang Berlangsung
-              else
-                i.bi.bi-flag-checkered.me-1
-                | Selesai
-
-          if event.sport_name
-            span.badge.bg-light.text-secondary.border.ms-1
-              i.bi.bi-trophy-fill.me-1
-              = event.sport_name
-
-        .col-md-4.text-md-end.mt-3.mt-md-0
-          a.btn.btn-outline-secondary.btn-sm.me-2(href="/events")
-            i.bi.bi-arrow-left.me-1
-            | Kembali
-          a.btn.btn-danger.btn-sm(href=`/tickets/${event.id}`)
-            i.bi.bi-ticket-perforated.me-1
-            | Lihat Tiket
-
-      .row
-        .col-lg-8
-          .card.mb-3
-            .card-body
-              h6.text-uppercase.text-muted.mb-2 Jadwal & Lokasi
-
-              if event.start_date_formatted
-                p.mb-1
-                  i.bi.bi-calendar3.me-1
-                  if event.end_date_formatted && event.end_date_formatted !== event.start_date_formatted
-                    | #{event.start_date_formatted} - #{event.end_date_formatted}
+        .row
+          .col-lg-8
+            // Schedule & Location Card
+            .event-content-card
+              .card-title
+                i.bi.bi-calendar3
+                span Jadwal & Lokasi
+              
+              .info-item
+                .info-icon
+                  i.bi.bi-calendar3
+                .info-content
+                  h6 Tanggal Event
+                  if event.start_date_formatted
+                    if event.end_date_formatted && event.end_date_formatted !== event.start_date_formatted
+                      p #{event.start_date_formatted} - #{event.end_date_formatted}
+                    else
+                      p #{event.start_date_formatted}
                   else
-                    | #{event.start_date_formatted}
-              else
-                p.mb-1.text-muted
-                  i.bi.bi-calendar3.me-1
-                  | Jadwal belum ditentukan
-
+                    p.text-muted Jadwal belum ditentukan
+              
               if event.venue_name
-                p.mb-1
-                  i.bi.bi-geo-alt-fill.me-1
-                  | #{event.venue_name}
+                .info-item
+                  .info-icon
+                    i.bi.bi-geo-alt-fill
+                  .info-content
+                    h6 Lokasi
+                    p= event.venue_name
+              
               if event.city || event.country
-                p.mb-0
-                  i.bi.bi-geo.me-1
-                  | #{event.city || ''} #{event.country || ''}
+                .info-item
+                  .info-icon
+                    i.bi.bi-geo
+                  .info-content
+                    h6 Alamat
+                    p= `${event.city || ''} ${event.country || ''}`
 
-          .card
-            .card-body
-              h6.text-uppercase.text-muted.mb-2 Tentang Event
+            // About Event Card
+            .event-content-card
+              .card-title
+                i.bi.bi-info-circle
+                span Tentang Event
+              
               if event.description
-                p.mb-0= event.description
+                .event-description
+                  | !{event.description.replace(/\n/g, '<br>')}
               else
-                p.text-muted.mb-0
+                p.text-muted
                   | Belum ada deskripsi detail untuk event ini.
+                  br
+                  | Informasi akan segera diupdate oleh penyelenggara.
 
-        .col-lg-4
-          .card.mb-3
-            .card-body
-              h6.text-uppercase.text-muted.mb-2 Informasi Tambahan
-              dl.row.mb-0
-                if event.organizer
-                  dt.col-5.text-muted Penyelenggara
-                  dd.col-7= event.organizer
-                if event.capacity
-                  dt.col-5.text-muted Kapasitas
-                  dd.col-7= event.capacity
-                if event.registration_url
-                  dt.col-5.text-muted Pendaftaran
-                  dd.col-7
-                    a(href=event.registration_url target="_blank")
-                      i.bi.bi-box-arrow-up-right.me-1
-                      | Buka Link
+          .col-lg-4
+            // Additional Info Card
+            .event-content-card
+              .card-title
+                i.bi.bi-info-square
+                span Informasi Tambahan
+              
+              if event.organizer
+                .info-item
+                  .info-icon
+                    i.bi.bi-people
+                  .info-content
+                    h6 Penyelenggara
+                    p= event.organizer
+              
+              if event.capacity
+                .info-item
+                  .info-icon
+                    i.bi.bi-person-plus
+                  .info-content
+                    h6 Kapasitas
+                    p #{event.capacity} peserta
+              
+              if event.registration_url
+                .info-item
+                  .info-icon
+                    i.bi.bi-link-45deg
+                  .info-content
+                    h6 Pendaftaran
+                    p
+                      a(href=event.registration_url target="_blank")
+                        i.bi.bi-box-arrow-up-right.me-1
+                        | Buka Link Pendaftaran
+              
+              if !event.organizer && !event.capacity && !event.registration_url
+                p.text-muted.text-center.py-3
+                  i.bi.bi-info-circle.me-2
+                  | Belum ada informasi tambahan
 
-          .card
-            .card-body
-              h6.text-uppercase.text-muted.mb-2 Aksi Cepat
-              p.text-muted.mb-3
-                | Simpan event ini atau bagikan ke teman tim olahragamu.
-              .d-flex.gap-2.flex-wrap
-                button.btn.btn-outline-secondary.btn-sm(type="button")
-                  i.bi.bi-bookmark-plus.me-1
-                  | Simpan
-                button.btn.btn-outline-secondary.btn-sm(type="button")
-                  i.bi.bi-share.me-1
-                  | Bagikan
+            // Quick Actions Card
+            .event-content-card
+              .card-title
+                i.bi.bi-lightning
+                span Aksi Cepat
+              
+              .quick-actions
+                button.quick-action-btn(type="button" onclick="handleSaveEvent()")
+                  i.bi.bi-bookmark-plus
+                  span Simpan Event
+                button.quick-action-btn(type="button" onclick="handleShareEvent()")
+                  i.bi.bi-share
+                  span Bagikan Event
+                a.quick-action-btn(href="#")
+                  i.bi.bi-download
+                  span Unduh Jadwal
+                a.quick-action-btn(href="#")
+                  i.bi.bi-calendar-plus
+                  span Tambah ke Kalender
+
+  //- Custom JavaScript
+  script.
+    (function() {
+      // Share Event Functionality
+      function handleShareEvent() {
+        if (navigator.share) {
+          navigator.share({
+            title: '#{event ? event.title : ""}',
+            text: 'Lihat event menarik di SPORTER',
+            url: window.location.href
+          })
+          .then(() => console.log('Successfully shared'))
+          .catch(error => console.log('Error sharing:', error));
+        } else {
+          // Fallback for browsers that don't support Web Share API
+          navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('Link event telah disalin ke clipboard!');
+          });
+        }
+      }
+
+      // Save Event Functionality
+      function handleSaveEvent() {
+        const eventId = '#{event ? event.id : ""}';
+        if (!eventId) return;
+        
+        // Show loading state
+        const btn = document.querySelector('[onclick="handleSaveEvent()"]');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-hourglass-split"></i><span>Menyimpan...</span>';
+        btn.disabled = true;
+        
+        // Simulate API call
+        setTimeout(() => {
+          btn.innerHTML = '<i class="bi bi-bookmark-check-fill text-success"></i><span>Tersimpan!</span>';
+          setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+          }, 2000);
+        }, 1000);
+      }
+
+      // Add intersection observer for animations
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        });
+
+        // Observe all cards
+        document.querySelectorAll('.event-content-card').forEach((card) => {
+          observer.observe(card);
+        });
+      }
+
+      // Add hover effects to cards
+      document.querySelectorAll('.event-content-card').forEach((card) => {
+        card.addEventListener('mouseenter', () => {
+          card.style.transition = 'all 0.3s ease';
+        });
+      });
+
+      // Initialize tooltips
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      const tooltipList = tooltipTriggerList.map((tooltipTriggerEl) => {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    })();

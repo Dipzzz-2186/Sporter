@@ -1,26 +1,645 @@
 extends ../layout/main
 
 block content
-  .container
-    .row.justify-content-center
-      .col-lg-9
-        a.text-decoration-none.text-secondary.small.d-inline-flex.align-items-center.mb-3(href="/news")
-          i.bi.bi-arrow-left.me-1
-          | Kembali ke daftar berita
+  style.
+    /* News Detail Page Styles */
+    .news-detail-page {
+      background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
+      min-height: 100vh;
+      padding: 3rem 0;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #0095FF;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.25rem;
+      background: white;
+      border: 2px solid #e8edf2;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .back-link:hover {
+      background: #f8f9fa;
+      border-color: #0095FF;
+      color: #0B1F3F;
+      transform: translateX(-5px);
+    }
+    
+    .back-link i {
+      font-size: 1rem;
+    }
+    
+    /* Article Container */
+    .article-container {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid #e8edf2;
+      padding: 3rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      animation: fadeInUp 0.8s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Thumbnail */
+    .article-thumbnail {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 20px;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      transition: all 0.5s ease;
+    }
+    
+    .article-thumbnail:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Article Header */
+    .article-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid #e8edf2;
+    }
+    
+    /* Category Badge */
+    .category-badge {
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      color: #0095FF;
+      border: 1px solid #d6edff;
+      padding: 0.5rem 1.25rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .category-badge:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.2);
+    }
+    
+    .category-badge i {
+      font-size: 1rem;
+    }
+    
+    /* Publish Date */
+    .publish-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #5a6c7d;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    
+    .publish-date i {
+      color: #0095FF;
+      font-size: 1rem;
+    }
+    
+    /* Article Title */
+    .article-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 3rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+      margin: 1.5rem 0;
+    }
+    
+    /* Article Meta */
+    .article-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    /* Content Styling */
+    .article-content {
+      color: #5a6c7d;
+      line-height: 1.8;
+      font-size: 1.1rem;
+      margin-top: 2.5rem;
+    }
+    
+    .article-content h1,
+    .article-content h2,
+    .article-content h3,
+    .article-content h4,
+    .article-content h5,
+    .article-content h6 {
+      color: #0B1F3F;
+      font-family: 'Bebas Neue', cursive;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .article-content h1 { font-size: 2.5rem; }
+    .article-content h2 { font-size: 2rem; }
+    .article-content h3 { font-size: 1.75rem; }
+    .article-content h4 { font-size: 1.5rem; }
+    .article-content h5 { font-size: 1.25rem; }
+    .article-content h6 { font-size: 1.1rem; }
+    
+    .article-content p {
+      margin-bottom: 1.5rem;
+      text-align: justify;
+    }
+    
+    .article-content strong {
+      color: #0B1F3F;
+      font-weight: 700;
+    }
+    
+    .article-content em {
+      font-style: italic;
+    }
+    
+    .article-content ul,
+    .article-content ol {
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    
+    .article-content li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .article-content blockquote {
+      border-left: 4px solid #0095FF;
+      padding-left: 1.5rem;
+      margin: 2rem 0;
+      color: #5a6c7d;
+      font-style: italic;
+      font-size: 1.15rem;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #e8edf2;
+    }
+    
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 2rem auto;
+      display: block;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .article-content a {
+      color: #0095FF;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border-bottom: 2px solid transparent;
+    }
+    
+    .article-content a:hover {
+      color: #0B1F3F;
+      border-bottom-color: #0095FF;
+    }
+    
+    /* Action Bar */
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid #e8edf2;
+    }
+    
+    .share-buttons {
+      display: flex;
+      gap: 0.75rem;
+    }
+    
+    .share-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      border: 2px solid;
+      background: white;
+    }
+    
+    .share-btn-facebook {
+      border-color: #1877f2;
+      color: #1877f2;
+    }
+    
+    .share-btn-facebook:hover {
+      background: #1877f2;
+      color: white;
+      transform: translateY(-3px);
+    }
+    
+    .share-btn-twitter {
+      border-color: #1da1f2;
+      color: #1da1f2;
+    }
+    
+    .share-btn-twitter:hover {
+      background: #1da1f2;
+      color: white;
+      transform: translateY(-3px);
+    }
+    
+    .share-btn-whatsapp {
+      border-color: #25d366;
+      color: #25d366;
+    }
+    
+    .share-btn-whatsapp:hover {
+      background: #25d366;
+      color: white;
+      transform: translateY(-3px);
+    }
+    
+    .share-btn-copy {
+      border-color: #0095FF;
+      color: #0095FF;
+      background: white;
+      cursor: pointer;
+    }
+    
+    .share-btn-copy:hover {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      color: white;
+      transform: translateY(-3px);
+    }
+    
+    /* Related News */
+    .related-news {
+      margin-top: 3rem;
+    }
+    
+    .related-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .related-title i {
+      color: #0095FF;
+    }
+    
+    .related-card {
+      background: white;
+      border: 2px solid #e8edf2;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: block;
+      height: 100%;
+    }
+    
+    .related-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      border-color: #0095FF;
+    }
+    
+    .related-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    
+    .related-card-body {
+      padding: 1.25rem;
+    }
+    
+    .related-card-title {
+      font-weight: 700;
+      color: #0B1F3F;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    
+    .related-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .related-card-sport {
+      font-size: 0.8rem;
+      color: #0095FF;
+      font-weight: 600;
+    }
+    
+    .related-card-date {
+      font-size: 0.8rem;
+      color: #5a6c7d;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .news-detail-page {
+        padding: 2rem 0;
+      }
+      
+      .article-container {
+        padding: 2rem;
+      }
+      
+      .article-title {
+        font-size: 2.5rem;
+      }
+      
+      .article-thumbnail {
+        height: 300px;
+      }
+      
+      .article-content h1 { font-size: 2rem; }
+      .article-content h2 { font-size: 1.75rem; }
+      .article-content h3 { font-size: 1.5rem; }
+      .article-content h4 { font-size: 1.25rem; }
+    }
+    
+    @media (max-width: 767px) {
+      .news-detail-page {
+        padding: 1.5rem 0;
+      }
+      
+      .article-container {
+        padding: 1.5rem;
+        border-radius: 16px;
+      }
+      
+      .article-title {
+        font-size: 2rem;
+      }
+      
+      .article-thumbnail {
+        height: 200px;
+        border-radius: 12px;
+      }
+      
+      .article-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .action-bar {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: flex-start;
+      }
+      
+      .share-buttons {
+        align-self: stretch;
+        justify-content: center;
+      }
+      
+      .article-content {
+        font-size: 1rem;
+      }
+      
+      .article-content h1 { font-size: 1.75rem; }
+      .article-content h2 { font-size: 1.5rem; }
+      .article-content h3 { font-size: 1.25rem; }
+      .article-content h4 { font-size: 1.1rem; }
+    }
 
-        if article.thumbnail_url
-          img.img-fluid.rounded.mb-4(src=article.thumbnail_url, alt=article.title)
+  .news-detail-page
+    .container
+      .row.justify-content-center
+        .col-lg-9
+          // Back Link
+          a.back-link(href="/news")
+            i.bi.bi-arrow-left
+            span Kembali ke daftar berita
+          
+          // Article Container
+          .article-container
+            // Thumbnail
+            if article.thumbnail_url
+              img.article-thumbnail(
+                src=article.thumbnail_url,
+                alt=article.title,
+                onerror="this.src='https://via.placeholder.com/800x400?text=No+Image'"
+              )
+            
+            // Article Header
+            .article-header
+              .article-meta
+                if article.sport_name
+                  a.category-badge(href=`/news?sport=${article.sport_name}`)
+                    i.bi.bi-trophy-fill
+                    span= article.sport_name
+                
+                if article.published_at_formatted
+                  span.publish-date
+                    i.bi.bi-calendar-event
+                    span= article.published_at_formatted
+              
+              h1.article-title= article.title
+            
+            // Article Content
+            .article-content
+              | !{article.content.replace(/\n/g, '<br>')}
+            
+            // Action Bar
+            .action-bar
+              a.back-link(href="/news")
+                i.bi.bi-arrow-left
+                span Berita Lainnya
+              
+              .share-buttons
+                a.share-btn.share-btn-facebook(
+                  href=`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`,
+                  target="_blank",
+                  title="Bagikan ke Facebook"
+                )
+                  i.bi.bi-facebook
+                
+                a.share-btn.share-btn-twitter(
+                  href=`https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(article.title)}`,
+                  target="_blank",
+                  title="Bagikan ke Twitter"
+                )
+                  i.bi.bi-twitter
+                
+                a.share-btn.share-btn-whatsapp(
+                  href=`https://wa.me/?text=${encodeURIComponent(article.title + ' - ' + currentUrl)}`,
+                  target="_blank",
+                  title="Bagikan ke WhatsApp"
+                )
+                  i.bi.bi-whatsapp
+                
+                button.share-btn.share-btn-copy(
+                  onclick="copyArticleLink()",
+                  title="Salin Link",
+                  id="copyArticleLinkBtn"
+                )
+                  i.bi.bi-link-45deg
+            
+            // Related News (Optional - if you have related articles)
+            if relatedArticles && relatedArticles.length
+              .related-news
+                h3.related-title
+                  i.bi.bi-newspaper
+                  span Berita Terkait
+                
+                .row.g-3
+                  each related in relatedArticles.slice(0, 3)
+                    .col-md-4
+                      a.related-card(href=`/news/${related.slug || related.id}`)
+                        if related.thumbnail_url
+                          img(
+                            src=related.thumbnail_url,
+                            alt=related.title,
+                            onerror="this.src='https://via.placeholder.com/300x180?text=No+Image'"
+                          )
+                        else
+                          .bg-light.d-flex.align-items-center.justify-content-center(
+                            style="height: 180px;"
+                          )
+                            i.bi.bi-newspaper.text-muted(style="font-size: 2rem;")
+                        .related-card-body
+                          h4.related-card-title= related.title
+                          .related-card-meta
+                            if related.sport_name
+                              span.related-card-sport
+                                i.bi.bi-trophy-fill.me-1
+                                = related.sport_name
+                            if related.published_at_formatted
+                              span.related-card-date
+                                i.bi.bi-calendar-event.me-1
+                                = related.published_at_formatted
 
-        if article.sport_name
-          span.badge.bg-light.text-danger.border.me-2
-            = article.sport_name
+  //- Custom JavaScript
+  script.
+    (function() {
+      // Copy article link to clipboard
+      function copyArticleLink() {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+          const btn = document.getElementById('copyArticleLinkBtn');
+          const originalIcon = btn.innerHTML;
+          btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+          btn.classList.add('share-btn-copy-success');
+          btn.style.background = 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)';
+          btn.style.color = '#059669';
+          btn.style.borderColor = '#a7f3d0';
+          
+          setTimeout(() => {
+            btn.innerHTML = originalIcon;
+            btn.classList.remove('share-btn-copy-success');
+            btn.style.background = '';
+            btn.style.color = '';
+            btn.style.borderColor = '';
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy: ', err);
+          alert('Gagal menyalin link');
+        });
+      }
 
-        if article.published_at_formatted
-          span.text-muted.small
-            i.bi.bi-calendar-event.me-1
-            = article.published_at_formatted
+      // Image error handling
+      document.querySelectorAll('.article-content img').forEach(img => {
+        img.addEventListener('error', function() {
+          this.src = 'https://via.placeholder.com/800x400?text=Image+Not+Found';
+        });
+      });
 
-        h1.fw-bold.mt-3.mb-3= article.title
+      // Lazy loading for images
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              img.src = img.dataset.src;
+              imageObserver.unobserve(img);
+            }
+          });
+        });
 
-        .sporter-article-content
-          p.text-secondary.white-space-pre-line= article.content
+        document.querySelectorAll('.article-content img[data-src]').forEach(img => {
+          imageObserver.observe(img);
+        });
+      }
+
+      // Add animation to article content
+      const articleContent = document.querySelector('.article-content');
+      if (articleContent) {
+        const paragraphs = articleContent.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
+        paragraphs.forEach((p, index) => {
+          p.style.opacity = '0';
+          p.style.transform = 'translateY(20px)';
+          p.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          p.style.transitionDelay = `${index * 0.1}s`;
+          
+          setTimeout(() => {
+            p.style.opacity = '1';
+            p.style.transform = 'translateY(0)';
+          }, 100);
+        });
+      }
+
+      // Intersection Observer for animations
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        });
+
+        // Observe article container
+        const articleContainer = document.querySelector('.article-container');
+        if (articleContainer) {
+          observer.observe(articleContainer);
+        }
+      }
+
+      // Smooth scroll to top on load
+      window.addEventListener('load', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
