@@ -89,4 +89,6 @@ router.get('/standings/:id/add-win', standingsCtrl.addWin);
 router.get('/standings/:id/add-loss', standingsCtrl.addLoss);
 router.get('/standings/:id/submit', standingsCtrl.submitScore);
 
+router.post('/athletes/ajax-create', subadminCtrl.ajaxCreateAthlete);
+
 module.exports = router;
