@@ -523,14 +523,7 @@ block content
                     i.bi.bi-calendar-date
                   .info-content-detail
                     h6 Tanggal
-                    p= new Date(video.start_time).toLocaleString('id-ID', { 
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })
+                    p= new Date(video.start_time).toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
               
               // Platform
               if video.platform
