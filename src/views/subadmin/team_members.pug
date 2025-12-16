@@ -1,0 +1,48 @@
+extends ../layout/main
+
+block content
+  .container.py-4
+    a.btn.btn-sm.btn-outline-secondary.mb-3(href="/subadmin/teams") ← Kembali
+    h3.mb-1= team.name
+    p.text-muted.mb-4 Cabang: #{team.sport_name || '-'}
+
+    .card.mb-4
+      .card-body
+        form(method="POST" action=`/subadmin/teams/${team.id}/members`)
+          .row.g-2.align-items-end
+            .col-md-4
+              label.form-label Nama Anggota
+              input.form-control(type="text" name="name" required)
+            .col-md-3
+              label.form-label Posisi (opsional)
+              input.form-control(type="text" name="position")
+            .col-md-2
+              label.form-label No (opsional)
+              input.form-control(type="text" name="number")
+            .col-md-3
+              label.form-label Tgl Lahir (opsional)
+              input.form-control(type="date" name="birth_date")
+            .col-12.d-grid.mt-2
+              button.btn.btn-primary(type="submit") Tambah Anggota
+
+    if !members || members.length === 0
+      .alert.alert-info Belum ada anggota di tim ini.
+    else
+      table.table.table-striped.align-middle
+        thead
+          tr
+            th Nama
+            th Posisi
+            th No
+            th Dibuat
+            th.text-end Aksi
+        tbody
+          each m in members
+            tr
+              td= m.name
+              td= m.position || '-'
+              td= m.number || '-'
+              td= m.created_at
+              td.text-end
+                form(method="POST" action=`/subadmin/teams/${team.id}/members/${m.id}/delete` style="display:inline")
+                  button.btn.btn-sm.btn-outline-danger(type="submit" onclick="return confirm('Hapus anggota ini?')") Hapus

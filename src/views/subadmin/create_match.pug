@@ -623,11 +623,14 @@ block content
           .modal-body
             .mb-3
               label.form-label Cabang Olahraga
-              select.form-select#team_sport_id
-                option(value="" selected disabled) -- pilih sport --
-                if sports && sports.length
-                  each s in sports
-                    option(value=s.id)= s.name
+              select.form-select(name="home_team_id" id="home_team_id")
+              option(value="") -- pilih --
+              each t in teams
+                option(
+                  value=t.id
+                  data-sport-id=t.sport_id
+                  data-individual=(hasIsIndividual ? t.is_individual : 0)
+                )= t.name
 
             .mb-3
               label.form-label Nama Tim
@@ -657,11 +660,13 @@ block content
           .modal-body
             .mb-3
               label.form-label Cabang Olahraga
-              select.form-select#ath_sport_id
-                option(value="" selected disabled) -- pilih sport --
-                if sports && sports.length
-                  each s in sports
-                    option(value=s.id)= s.name
+              select.form-select(name="participant_ids[]" id="participant_ids" multiple)
+                each t in teams
+                  option(
+                    value=t.id
+                    data-sport-id=t.sport_id
+                    data-individual=(hasIsIndividual ? t.is_individual : 1)
+                  )= t.name
 
             .mb-3
               label.form-label Nama Pemain
@@ -740,6 +745,52 @@ block content
           addAthleteModal.show();
         });
       }
+
+        const sportSel = document.getElementById('sport_id');
+        const modeSel  = document.getElementById('match_mode'); // kalau ada
+        const homeSel  = document.getElementById('home_team_id');
+        const awaySel  = document.getElementById('away_team_id');
+        const partSel  = document.getElementById('participant_ids');
+
+        function filterSelectOptions(selectEl, sportId, wantIndividual) {
+          if (!selectEl) return;
+
+          const options = Array.from(selectEl.options);
+          options.forEach((opt, idx) => {
+            if (idx === 0 && !selectEl.multiple) return; // placeholder
+
+            const optSport = Number(opt.dataset.sportId || 0);
+            const optInd   = Number(opt.dataset.individual || 0);
+
+            const okSport = !sportId || optSport === sportId;
+            const okMode  = (wantIndividual == null) ? true : (optInd === (wantIndividual ? 1 : 0));
+
+            opt.hidden = !(okSport && okMode);
+            opt.disabled = !(okSport && okMode);
+
+            // kalau opsi yang kepilih tiba2 jadi invalid -> unselect
+            if ((opt.hidden || opt.disabled) && opt.selected) opt.selected = false;
+          });
+        }
+
+        function applyFilters() {
+          const sportId = Number(sportSel?.value || 0);
+          const mode = (modeSel?.value || '').toLowerCase();
+          const isIndividual = mode === 'individual';
+
+          // TEAM selects
+          filterSelectOptions(homeSel, sportId, false);
+          filterSelectOptions(awaySel, sportId, false);
+
+          // INDIVIDUAL multiselect
+          filterSelectOptions(partSel, sportId, true);
+        }
+
+        sportSel?.addEventListener('change', applyFilters);
+        modeSel?.addEventListener('change', applyFilters);
+
+        // init on load
+        applyFilters();
 
       var saveAthBtn = document.getElementById('btnSaveAthlete');
       var athErrBox = document.getElementById('athErr');
