@@ -87,5 +87,6 @@ router.get('/standings', standingsCtrl.listStandings);
 
 router.get('/standings/:id/add-win', standingsCtrl.addWin);
 router.get('/standings/:id/add-loss', standingsCtrl.addLoss);
+router.get('/standings/:id/submit', standingsCtrl.submitScore);
 
 module.exports = router;

@@ -161,7 +161,8 @@ block content
     }
     
     .standings-table thead th {
-      color: white;
+      background: transparent !important; /* ikut parent */
+      color: #fff !important;
       font-weight: 600;
       font-size: 0.85rem;
       text-transform: uppercase;
@@ -401,106 +402,199 @@ block content
     .standings-group:nth-child(3) { animation-delay: 0.3s; }
     .standings-group:nth-child(4) { animation-delay: 0.4s; }
 
+    /* Guide Button */
+    .btn-guide {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 10px;
+
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+
+      transition: all 0.25s ease;
+    }
+
+    .btn-guide i {
+      font-size: 0.95rem;
+    }
+
+    .btn-guide:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.6);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-guide:active {
+      transform: translateY(0);
+    }
+
+    .btn-guide:focus {
+      box-shadow: 0 0 0 0.15rem rgba(255, 255, 255, 0.25);
+    }
+
   .standings-page
     .container
-      // Header
       .standings-header
         h3
           i.bi.bi-trophy-fill
-          | Klasemen
-      
-      // Filter Section
-      .filter-section
-        .row.align-items-end
-          .col-md-8
-            label.mb-2
-              i.bi.bi-funnel-fill
-              | Filter Berdasarkan Cabang Olahraga
-            select#sportFilter.form-select(name="sport_id")
-              option(value="") Semua Cabang Olahraga
-              each s in sports
-                option(value=s.id selected=(query && s.id == query.sport_id))= s.name
+          | Klasemen Padel 
+        button.btn.btn-guide(
+          type="button"
+          data-bs-toggle="modal"
+          data-bs-target="#guideModal"
+        )
+          i.bi.bi-info-circle
+          span.ms-1 Panduan Input Skor
 
-      // Build groups
-      - const groups = [];
-      - if (standings && standings.length) {
-      -   for (let i = 0; i < standings.length; i++) {
-      -     const r = standings[i];
-      -     const sid = r.sport_id || '__nogroup';
-      -     if (!groups.length || groups[groups.length - 1].sport_id !== sid) {
-      -       groups.push({ sport_id: sid, sport_name: r.sport_name, rows: [r] });
-      -     } else {
-      -       groups[groups.length - 1].rows.push(r);
-      -     }
-      -   }
-      - }
+      if standings.length
+        .standings-group
+          .group-title
+            .group-title-icon
+              i.bi.bi-flag-fill
+            h5= standings[0].sport_name
 
-      // Display standings
-      if groups.length
-        each group in groups
-          .standings-group
-            .group-title
-              .group-title-icon
-                i.bi.bi-flag-fill
-              h5= group.sport_name
-            
-            .standings-table
-              .table-responsive
-                table.table.table-hover
-                  thead
+          .standings-table
+            .table-responsive
+              table.table.table-hover
+                thead
+                  tr
+                    th No.
+                    th Nama Tim
+                    th.text-center Jumlah Match
+                    th.text-center M-K
+                    th.text-center Selisih Skor
+                    th.text-center Poin
+                    th.text-center Aksi
+                tbody
+                  each row, index in standings
                     tr
-                      th #
-                      th Tim
-                      th.text-center PJ
-                      th.text-center M
-                      th.text-center S
-                      th.text-center K
-                      th.text-center GM
-                      th.text-center GK
-                      th.text-center SG
-                      th.text-end Poin
-                      th.text-center Aksi
-                  tbody
-                    each row, index in group.rows
-                      tr
-                        td
-                          if index === 0
-                            span.position-badge.position-1 1
-                          else if index === 1
-                            span.position-badge.position-2 2
-                          else if index === 2
-                            span.position-badge.position-3 3
-                          else
-                            span.position-badge.position-other= index + 1
-                        td
-                          .team-name
-                            i.bi.bi-shield-fill-check
-                            b= row.team_name
-                        td.text-center.stat-cell= row.played || 0
-                        td.text-center.stat-cell= row.win || 0
-                        td.text-center.stat-cell= row.draw || 0
-                        td.text-center.stat-cell= row.loss || 0
-                        td.text-center.stat-cell= row.goals_for || 0
-                        td.text-center.stat-cell= row.goals_against || 0
-                        td.text-center.stat-cell= (row.goals_for - row.goals_against)
-                        td.text-end.points-cell= row.pts || 0
-                        td.text-center
-                          .action-buttons
-                            a.btn.btn-sm.btn-success(href="#" data-id=row.id data-action="win")
-                              i.bi.bi-plus-circle
-                              | W
-                            a.btn.btn-sm.btn-danger(href="#" data-id=row.id data-action="loss")
-                              i.bi.bi-plus-circle
-                              | L
+                      td
+                        if index === 0
+                          span.position-badge.position-1 1
+                        else if index === 1
+                          span.position-badge.position-2 2
+                        else if index === 2
+                          span.position-badge.position-3 3
+                        else
+                          span.position-badge.position-other= index + 1
+
+                      td
+                        .team-name
+                          i.bi.bi-shield-fill-check
+                          b= row.team_name
+
+                      td.text-center.stat-cell= row.total_match
+
+                      td.text-center.stat-cell #{row.win} - #{row.loss}
+
+                      td.text-center.stat-cell
+                        | #{row.game_win} - #{row.game_loss}
+                        if (row.game_win - row.game_loss) >= 0
+                          span.text-success.ms-1 (+#{row.game_win - row.game_loss})
+                        else
+                          span.text-danger.ms-1 (#{row.game_win - row.game_loss})
+
+                      td.text-center.points-cell= row.pts
+
+                      td.text-center
+                        .action-buttons
+                          button.btn.btn-sm.btn-primary(
+                            type="button"
+                            data-id=row.id
+                          )
+                            i.bi.bi-pencil-square
+                            | Input Skor
       else
         .empty-state
           .empty-state-icon
             i.bi.bi-clipboard2-x
           h4 Belum Ada Klasemen
-          p
-            | Klasemen untuk cabang olahraga yang dipilih belum tersedia.
-            br
-            | Silakan pilih cabang olahraga lain atau tambahkan data klasemen baru.
+          p Belum ada pertandingan padel yang selesai.
+
+  #scoreModal.modal.fade(tabindex='-1')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h5.modal-title Input Skor Padel
+          button.btn-close(type='button', data-bs-dismiss='modal')
+
+        .modal-body
+          small.text-muted
+            | Bingung cara isi?
+            a.ms-1(
+              href="#"
+              data-bs-dismiss="modal"
+              data-bs-toggle="modal"
+              data-bs-target="#guideModal"
+            ) Lihat panduan
+
+          input(type="hidden" id="standingId")
+          input(type="hidden" id="matchAction")
+
+          .mb-3
+            label.form-label Game Menang
+            input.form-control(type="number" id="gameWin" min="0" value="0")
+
+          .mb-3
+            label.form-label Game Kalah
+            input.form-control(type="number" id="gameLoss" min="0" value="0")
+
+        .modal-footer
+          button.btn.btn-secondary(data-bs-dismiss='modal') Batal
+          button.btn.btn-primary(type="button" id="saveScore") Simpan
+
+  #guideModal.modal.fade(tabindex='-1')
+    .modal-dialog.modal-lg.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h5.modal-title
+            i.bi.bi-question-circle-fill.me-2
+            | Panduan Input Skor Padel
+          button.btn-close(type='button', data-bs-dismiss='modal')
+
+        .modal-body
+          h6.text-primary.mb-2 1. Apa itu Game Menang & Game Kalah?
+          p.mb-3
+            | Game Menang adalah jumlah game yang dimenangkan tim.
+            | Game Kalah adalah jumlah game yang kalah dari lawan.
+
+          h6.text-primary.mb-2 2. Contoh Pengisian yang Benar
+          ul
+            li Tim A menang 6–4 → isi:
+              ul
+                li Game Menang: <b>6</b>
+                li Game Kalah: <b>4</b>
+            li Tim kalah 3–6 → isi:
+              ul
+                li Game Menang: <b>3</b>
+                li Game Kalah: <b>6</b>
+
+          h6.text-danger.mb-2 3. Aturan Penting
+          ul
+            li ❌ Game Menang dan Game Kalah <b>tidak boleh sama</b>
+            li ✅ Tim dengan angka lebih besar otomatis dianggap menang
+            li 🏆 Menang mendapat <b>3 poin</b>, kalah <b>0 poin</b>
+
+          h6.text-primary.mb-2 4. Yang Dihitung Sistem
+          ul
+            li Jumlah Match diambil dari <b>jadwal pertandingan</b>
+            li Poin & klasemen dihitung otomatis
+            li Tidak perlu input poin manual
+
+          .alert.alert-warning.mt-3
+            i.bi.bi-exclamation-triangle-fill.me-2
+            | Pastikan skor sudah benar sebelum disimpan. Saat ini skor tidak bisa di-edit ulang.
+
+        .modal-footer
+          button.btn.btn-secondary(data-bs-dismiss='modal') Tutup
 
   //- Custom JavaScript
   script.
@@ -534,83 +628,6 @@ block content
           }, 300);
         });
       }
-      
-      // Handle action buttons (Win/Loss) without reload
-      var actionButtons = document.querySelectorAll('.action-buttons .btn');
-      actionButtons.forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
-          e.preventDefault();
-          
-          var id = this.getAttribute('data-id');
-          var action = this.getAttribute('data-action');
-          var url = '/subadmin/standings/' + id + '/add-' + action;
-          
-          // Disable button during request
-          this.style.opacity = '0.5';
-          this.style.pointerEvents = 'none';
-          var originalText = this.innerHTML;
-          this.innerHTML = '<i class="bi bi-hourglass-split"></i> ...';
-          
-          // Make AJAX request
-          fetch(url, {
-            method: 'GET',
-            headers: {
-              'X-Requested-With': 'XMLHttpRequest'
-            }
-          })
-          .then(function(response) {
-            if (response.ok) {
-              // Find the row and update values
-              var row = btn.closest('tr');
-              var cells = row.querySelectorAll('td');
-              
-              // Update the stats in the row
-              if (action === 'win') {
-                // Increment played, win, and points
-                var playedCell = cells[2];
-                var winCell = cells[3];
-                var ptsCell = cells[9];
-                
-                playedCell.textContent = parseInt(playedCell.textContent) + 1;
-                winCell.textContent = parseInt(winCell.textContent) + 1;
-                ptsCell.textContent = parseInt(ptsCell.textContent) + 3;
-              } else if (action === 'loss') {
-                // Increment played and loss
-                var playedCell = cells[2];
-                var lossCell = cells[5];
-                
-                playedCell.textContent = parseInt(playedCell.textContent) + 1;
-                lossCell.textContent = parseInt(lossCell.textContent) + 1;
-              }
-              
-              // Add success feedback
-              row.style.background = 'rgba(52, 199, 89, 0.1)';
-              setTimeout(function() {
-                row.style.background = '';
-              }, 1000);
-              
-              // Show success notification
-              showNotification('Berhasil', 'Data klasemen berhasil diperbarui!', 'success');
-            } else {
-              showNotification('Error', 'Gagal memperbarui data klasemen.', 'error');
-            }
-            
-            // Re-enable button
-            btn.style.opacity = '1';
-            btn.style.pointerEvents = 'auto';
-            btn.innerHTML = originalText;
-          })
-          .catch(function(error) {
-            console.error('Error:', error);
-            showNotification('Error', 'Terjadi kesalahan saat memperbarui data.', 'error');
-            
-            // Re-enable button
-            btn.style.opacity = '1';
-            btn.style.pointerEvents = 'auto';
-            btn.innerHTML = originalText;
-          });
-        });
-      });
       
       // Simple notification function
       function showNotification(title, message, type) {
@@ -673,5 +690,29 @@ block content
         row.addEventListener('mouseenter', function() {
           this.style.transition = 'all 0.3s ease';
         });
+      });
+      document.querySelectorAll('.action-buttons button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('standingId').value = btn.dataset.id;
+          document.getElementById('gameWin').value = 0;
+          document.getElementById('gameLoss').value = 0;
+
+          new bootstrap.Modal(document.getElementById('scoreModal')).show();
+        });
+      });
+
+      document.getElementById('saveScore').addEventListener('click', () => {
+        const id = document.getElementById('standingId').value;
+        const gw = Number(document.getElementById('gameWin').value);
+        const gl = Number(document.getElementById('gameLoss').value);
+
+        if (gw === gl) {
+          alert('Game menang dan kalah tidak boleh sama');
+          return;
+        }
+
+        const action = gw > gl ? 'win' : 'loss';
+        window.location.href =
+          `/subadmin/standings/${id}/submit?game_win=${gw}&game_loss=${gl}&result=${action}`;
       });
     })();
