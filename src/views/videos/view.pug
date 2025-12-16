@@ -1,51 +1,645 @@
 extends ../layout/main
 
 block content
-  .container.mt-4
-    a.btn.btn-light.btn-sm.mb-3(href="javascript:history.back()")
-      i.bi.bi-arrow-left
-      |  Kembali
+  style.
+    /* Video Detail Page Styles */
+    .video-detail-page {
+      background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Back Button */
+    .back-button {
+      background: white;
+      border: 2px solid #e8edf2;
+      color: #5a6c7d;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .back-button:hover {
+      background: #f8f9fa;
+      border-color: #0095FF;
+      color: #0095FF;
+      transform: translateX(-5px);
+    }
+    
+    .back-button i {
+      font-size: 1rem;
+    }
+    
+    /* Main Content Card */
+    .video-main-card {
+      background: white;
+      border-radius: 20px;
+      border: 2px solid #e8edf2;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      animation: fadeInUp 0.8s ease-out;
+      overflow: hidden;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Video Title */
+    .video-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      padding: 0 2rem;
+      padding-top: 2rem;
+    }
+    
+    /* Video Player Container */
+    .video-player-container {
+      padding: 0 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .video-player-wrapper {
+      position: relative;
+      background: #0B1F3F;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+    
+    .video-player-wrapper:hover {
+      transform: scale(1.005);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+    }
+    
+    .video-player {
+      width: 100%;
+      height: 100%;
+      min-height: 450px;
+      border: none;
+      display: block;
+    }
+    
+    /* Warning Alert */
+    .embed-warning {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 2px solid #fde68a;
+      border-radius: 16px;
+      padding: 1.5rem;
+      color: #92400e;
+      margin: 0 2rem 2rem;
+    }
+    
+    .embed-warning a {
+      color: #0095FF;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .embed-warning a:hover {
+      color: #0B1F3F;
+      text-decoration: underline;
+    }
+    
+    /* Video Description */
+    .video-description {
+      padding: 0 2rem 2rem;
+    }
+    
+    .description-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .description-title i {
+      color: #0095FF;
+    }
+    
+    .description-content {
+      color: #5a6c7d;
+      line-height: 1.7;
+      font-size: 1.05rem;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #e8edf2;
+    }
+    
+    /* Sidebar Card */
+    .sidebar-card {
+      background: white;
+      border-radius: 20px;
+      border: 2px solid #e8edf2;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      animation: fadeInUp 0.8s ease-out 0.2s backwards;
+      overflow: hidden;
+    }
+    
+    .sidebar-card-header {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      padding: 1.25rem 1.5rem;
+      color: white;
+    }
+    
+    .sidebar-card-header h5 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      letter-spacing: 0.5px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .sidebar-card-header h5 i {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .sidebar-card-body {
+      padding: 1.5rem;
+    }
+    
+    /* Info Items */
+    .info-item-detail {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid #e8edf2;
+    }
+    
+    .info-item-detail:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    
+    .info-icon-detail {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .info-icon-detail i {
+      font-size: 1.25rem;
+      color: #0095FF;
+    }
+    
+    .info-content-detail h6 {
+      font-weight: 600;
+      color: #5a6c7d;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+    
+    .info-content-detail p {
+      font-weight: 700;
+      color: #0B1F3F;
+      margin: 0;
+      font-size: 1rem;
+    }
+    
+    /* Type Badge */
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    
+    .type-vod {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      color: #0095FF;
+      border: 1px solid #bfdbfe;
+    }
+    
+    .type-highlight {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+    
+    .type-livestream {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #059669;
+      border: 1px solid #a7f3d0;
+    }
+    
+    /* Related Videos (Optional) */
+    .related-videos {
+      margin-top: 3rem;
+    }
+    
+    .related-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .related-title i {
+      color: #0095FF;
+    }
+    
+    .video-card {
+      background: white;
+      border: 2px solid #e8edf2;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: block;
+      height: 100%;
+    }
+    
+    .video-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      border-color: #0095FF;
+    }
+    
+    .video-card-thumbnail {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .video-card-body {
+      padding: 1rem;
+    }
+    
+    .video-card-title {
+      font-weight: 700;
+      color: #0B1F3F;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .video-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .video-card-type {
+      font-size: 0.8rem;
+      color: #0095FF;
+      font-weight: 600;
+    }
+    
+    .video-card-sport {
+      font-size: 0.8rem;
+      color: #5a6c7d;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .video-title {
+        font-size: 2rem;
+        padding: 0 1.5rem;
+        padding-top: 1.5rem;
+      }
+      
+      .video-player-container {
+        padding: 0 1.5rem;
+      }
+      
+      .video-player {
+        min-height: 350px;
+      }
+      
+      .video-description,
+      .embed-warning {
+        padding: 0 1.5rem 1.5rem;
+      }
+      
+      .sidebar-card-body {
+        padding: 1.25rem;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .video-detail-page {
+        padding: 1.5rem 0;
+      }
+      
+      .video-main-card,
+      .sidebar-card {
+        border-radius: 16px;
+      }
+      
+      .video-title {
+        font-size: 1.6rem;
+        padding: 0 1rem;
+        padding-top: 1.5rem;
+      }
+      
+      .video-player-container {
+        padding: 0 1rem;
+      }
+      
+      .video-player {
+        min-height: 250px;
+      }
+      
+      .video-description,
+      .embed-warning {
+        padding: 0 1rem 1rem;
+      }
+      
+      .description-title {
+        font-size: 1.3rem;
+      }
+      
+      .sidebar-card-header h5 {
+        font-size: 1.3rem;
+      }
+      
+      .info-item-detail {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .related-title {
+        font-size: 1.5rem;
+      }
+    }
 
-    .row
-      .col-lg-8
-        h2.mb-2= video.title
+  .video-detail-page
+    .container
+      // Back Button
+      a.back-button(href="javascript:history.back()")
+        i.bi.bi-arrow-left
+        span Kembali
+      
+      .row.g-4
+        // Main Content
+        .col-lg-8
+          .video-main-card
+            // Video Title
+            h1.video-title= video.title
+            
+            // Video Player
+            .video-player-container
+              if embedUrl
+                .video-player-wrapper
+                  iframe.video-player(
+                    src=embedUrl,
+                    allowfullscreen,
+                    frameborder="0",
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+                    loading="lazy",
+                    title=video.title
+                  )
+              else
+                .embed-warning
+                  p.mb-2
+                    i.bi.bi-exclamation-triangle-fill.me-2
+                    strong Video tidak dapat di-embed
+                  p.mb-0
+                    a(href=video.url target="_blank" rel="noopener noreferrer")
+                      i.bi.bi-box-arrow-up-right
+                      span Buka langsung di #{video.platform || 'platform asli'}
+            
+            // Video Description
+            if video.description
+              .video-description
+                h4.description-title
+                  i.bi.bi-card-text
+                  span Deskripsi
+                .description-content= video.description
+        
+        // Sidebar
+        .col-lg-4
+          .sidebar-card
+            .sidebar-card-header
+              h5
+                i.bi.bi-info-circle
+                span Informasi Video
+            
+            .sidebar-card-body
+              // Type
+              .info-item-detail
+                .info-icon-detail
+                  i.bi.bi-collection-play
+                .info-content-detail
+                  h6 Jenis Video
+                  p
+                    span.type-badge(
+                      class= video.type === 'vod' 
+                        ? 'type-vod' 
+                        : video.type === 'highlight' 
+                        ? 'type-highlight' 
+                        : 'type-livestream'
+                    )
+                      if video.type === 'vod'
+                        i.bi.bi-play-circle-fill
+                        span VOD
+                      else if video.type === 'highlight'
+                        i.bi.bi-star-fill
+                        span Highlight
+                      else
+                        i.bi.bi-broadcast
+                        span Livestream
+              
+              // Sport
+              if video.sport_name
+                .info-item-detail
+                  .info-icon-detail
+                    i.bi.bi-trophy
+                  .info-content-detail
+                    h6 Cabang Olahraga
+                    p= video.sport_name
+              
+              // Event
+              if video.event_title
+                .info-item-detail
+                  .info-icon-detail
+                    i.bi.bi-calendar-event
+                  .info-content-detail
+                    h6 Event Terkait
+                    p= video.event_title
+              
+              // Match
+              if video.match_title
+                .info-item-detail
+                  .info-icon-detail
+                    i.bi.bi-flag
+                  .info-content-detail
+                    h6 Pertandingan
+                    p= video.match_title
+              
+              // Date
+              if video.start_time
+                .info-item-detail
+                  .info-icon-detail
+                    i.bi.bi-calendar-date
+                  .info-content-detail
+                    h6 Tanggal
+                    p= new Date(video.start_time).toLocaleString('id-ID', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })
+              
+              // Platform
+              if video.platform
+                .info-item-detail
+                  .info-icon-detail
+                    i.bi.bi-youtube
+                  .info-content-detail
+                    h6 Platform
+                    p= video.platform
+      
+      // Related Videos (Optional - if you have related videos)
+      if relatedVideos && relatedVideos.length
+        .related-videos
+          h3.related-title
+            i.bi.bi-collection-play-fill
+            span Video Terkait
+          
+          .row.g-3
+            each related in relatedVideos.slice(0, 4)
+              .col-md-6.col-lg-3
+                a.video-card(href=`/videos/${related.slug || related.id}`)
+                  if related.thumbnail_url
+                    img.video-card-thumbnail(
+                      src=related.thumbnail_url,
+                      alt=related.title,
+                      onerror="this.src='https://via.placeholder.com/300x160?text=No+Thumbnail'"
+                    )
+                  else
+                    .bg-dark.d-flex.align-items-center.justify-content-center(
+                      style="height: 160px;"
+                    )
+                      i.bi.bi-play-circle.text-white(style="font-size: 2rem;")
+                  .video-card-body
+                    h5.video-card-title= related.title
+                    .video-card-meta
+                      span.video-card-type
+                        if related.type === 'vod'
+                          i.bi.bi-play-circle-fill.me-1
+                          | VOD
+                        else if related.type === 'highlight'
+                          i.bi.bi-star-fill.me-1
+                          | Highlight
+                        else
+                          i.bi.bi-broadcast.me-1
+                          | Live
+                      if related.sport_name
+                        span.video-card-sport
+                          i.bi.bi-trophy-fill.me-1
+                          = related.sport_name
 
-        if embedUrl
-          .ratio.ratio-16x9.mb-3
-            iframe(
-              src=embedUrl
-              allowfullscreen
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            )
-        else
-          .alert.alert-warning
-            | Video tidak dapat di-embed. 
-            a(href=video.url target="_blank") Buka langsung di YouTube.
+  //- Custom JavaScript
+  script.
+    (function() {
+      // Add loading state to video player
+      const videoPlayer = document.querySelector('.video-player');
+      if (videoPlayer) {
+        videoPlayer.addEventListener('load', function() {
+          this.style.opacity = '1';
+        });
+        videoPlayer.style.opacity = '0';
+        videoPlayer.style.transition = 'opacity 0.5s ease';
+      }
 
-        if video.description
-          p.mt-3.text-muted= video.description
+      // Intersection Observer for animations
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        });
 
-      .col-lg-4
-        .card.shadow-sm
-          .card-body
-            h5.fw-semibold.mb-3 Informasi Video
-            p.mb-1
-              b Jenis: 
-              | #{video.type}
-            if video.sport_name
-              p.mb-1
-                b Cabang: 
-                | #{video.sport_name}
-            if video.event_title
-              p.mb-1
-                b Event: 
-                | #{video.event_title}
-            if video.match_title
-              p.mb-1
-                b Match: 
-                | #{video.match_title}
-            if video.start_time
-              p.mb-1
-                b Tanggal: 
-                | #{new Date(video.start_time).toLocaleString('id-ID')}
+        // Observe main cards
+        document.querySelectorAll('.video-main-card, .sidebar-card').forEach((card) => {
+          observer.observe(card);
+        });
+      }
+
+      // Add hover effects to cards
+      document.querySelectorAll('.video-card').forEach((card) => {
+        card.addEventListener('mouseenter', () => {
+          card.style.transition = 'all 0.3s ease';
+        });
+      });
+
+      // Image error handling for thumbnails
+      document.querySelectorAll('.video-card-thumbnail').forEach((img) => {
+        img.addEventListener('error', function() {
+          this.src = 'https://via.placeholder.com/300x160?text=No+Thumbnail';
+        });
+      });
+
+      // Auto play video if it's a livestream
+      if (#{video.type === 'livestream' ? true : false}) {
+        const liveVideo = document.querySelector('.video-player');
+        if (liveVideo) {
+          setTimeout(() => {
+            liveVideo.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+          }, 2000);
+        }
+      }
+
+      // Smooth scroll to top on load
+      window.addEventListener('load', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
