@@ -653,10 +653,20 @@ block content
     .modal-dialog
       .modal-content
         .modal-header
+        
           h5.modal-title Input Skor Padel
           button.btn-close(type='button', data-bs-dismiss='modal')
 
+
         .modal-body
+          small.text-muted
+            | Bingung cara isi?
+            a.ms-1(
+              href="#"
+              data-bs-dismiss="modal"
+              data-bs-toggle="modal"
+              data-bs-target="#guideModal"
+            ) Lihat panduan
           input(type="hidden" id="matchId")
 
           .mb-3
@@ -671,6 +681,50 @@ block content
           button.btn.btn-secondary(data-bs-dismiss='modal') Batal
           button.btn.btn-primary(type="button" onclick="submitPadelScore()") Simpan
 
+  #guideModal.modal.fade(tabindex='-1')
+    .modal-dialog.modal-lg.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h5.modal-title
+            i.bi.bi-question-circle-fill.me-2
+            | Panduan Input Skor Padel
+          button.btn-close(type='button', data-bs-dismiss='modal')
+
+        .modal-body
+          h6.text-primary.mb-2 1. Apa itu Game Menang & Game Kalah?
+          p.mb-3
+            | Game Menang adalah jumlah game yang dimenangkan tim.
+            | Game Kalah adalah jumlah game yang kalah dari lawan.
+
+          h6.text-primary.mb-2 2. Contoh Pengisian yang Benar
+          ul
+            li Tim A menang 6–4 → isi:
+              ul
+                li Game Menang: <b>6</b>
+                li Game Kalah: <b>4</b>
+            li Tim kalah 3–6 → isi:
+              ul
+                li Game Menang: <b>3</b>
+                li Game Kalah: <b>6</b>
+
+          h6.text-danger.mb-2 3. Aturan Penting
+          ul
+            li ❌ Game Menang dan Game Kalah <b>tidak boleh sama</b>
+            li ✅ Tim dengan angka lebih besar otomatis dianggap menang
+            li 🏆 Menang mendapat <b>3 poin</b>, kalah <b>0 poin</b>
+
+          h6.text-primary.mb-2 4. Yang Dihitung Sistem
+          ul
+            li Jumlah Match diambil dari <b>jadwal pertandingan</b>
+            li Poin & klasemen dihitung otomatis
+            li Tidak perlu input poin manual
+
+          .alert.alert-warning.mt-3
+            i.bi.bi-exclamation-triangle-fill.me-2
+            | Pastikan skor sudah benar sebelum disimpan. Saat ini skor tidak bisa di-edit ulang.
+
+        .modal-footer
+          button.btn.btn-secondary(data-bs-dismiss='modal') Tutup
   //- Custom JavaScript
   script.
     (function() {
