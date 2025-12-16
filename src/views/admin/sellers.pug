@@ -2,145 +2,979 @@ extends ../layout/main
 
 block content
   style.
-    .page-hero {
-      background:white;
-      padding:2rem 0;
-      border-bottom:1px solid #f0f0f0;
-      margin-bottom:2rem;
-    }
-    .page-title {
-      font-size:1.75rem;
-      font-weight:700;
-      margin-bottom:.25rem;
-    }
-    .page-subtitle {
-      color:#6b7280;
-      margin:0;
-    }
-    .action-bar {
-      background:white;
-      border-radius:18px;
-      padding:1.5rem;
-      margin-bottom:2rem;
-      box-shadow:0 5px 20px rgba(0,0,0,.05);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:1rem;
-      flex-wrap:wrap;
-    }
-    .table-container {
-      background:white;
-      border-radius:18px;
-      overflow:hidden;
-      box-shadow:0 5px 30px rgba(0,0,0,.08);
-    }
-    .modern-table th {
-      font-size:.8rem;
-      text-transform:uppercase;
-      letter-spacing:.05em;
-      color:#6b7280;
-      background:#f8fafc;
-    }
-    .modern-table tbody tr:hover {
-      background:#f9fafb;
-    }
-    .actions {
-      display:flex;
-      gap:.5rem;
-    }
-    .action-btn {
-      width:36px;
-      height:36px;
-      border-radius:10px;
-      border:none;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      cursor:pointer;
-    }
-    .edit-btn {
-      background:#e0e7ff;
-      color:#3730a3;
-    }
-    .delete-btn {
-      background:#fee2e2;
-      color:#991b1b;
-    }
-    .empty-state {
-      text-align:center;
-      padding:4rem 2rem;
-      color:#6b7280;
+    :root {
+      --primary-color: #3B82F6;
+      --primary-dark: #1D4ED8;
+      --danger-color: #DC2626;
+      --danger-dark: #B91C1C;
+      --success-color: #059669;
+      --success-dark: #047857;
+      --warning-color: #D97706;
+      --gray-50: #F9FAFB;
+      --gray-100: #F3F4F6;
+      --gray-200: #E5E7EB;
+      --gray-300: #D1D5DB;
+      --gray-400: #9CA3AF;
+      --gray-500: #6B7280;
+      --gray-600: #4B5563;
+      --gray-700: #374151;
+      --gray-800: #1F2937;
+      --gray-900: #111827;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     }
 
-  .page-hero
+    /* Simplified Hero Section */
+    .management-hero {
+      background: white;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--gray-200);
+      margin-bottom: 2rem;
+    }
+    
+    .hero-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 0.5rem;
+    }
+    
+    .page-subtitle {
+      color: var(--gray-600);
+      font-size: 0.95rem;
+      margin: 0;
+      max-width: 600px;
+    }
+    
+    .hero-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--success-color) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-md);
+    }
+    
+    /* Alert Styles */
+    .alert-container {
+      margin-bottom: 1.5rem;
+    }
+    
+    .modern-alert {
+      border: none;
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow-md);
+      animation: slideInDown 0.3s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-left: 4px solid transparent;
+    }
+    
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .modern-alert-danger {
+      background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+      color: var(--danger-color);
+      border-left-color: var(--danger-color);
+    }
+    
+    .modern-alert-success {
+      background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+      color: var(--success-color);
+      border-left-color: var(--success-color);
+    }
+    
+    .alert-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    /* Stats Container */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+    
+    .stat-icon-primary {
+      background: linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%);
+      color: #4F46E5;
+    }
+    
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 0.25rem;
+      line-height: 1;
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+    }
+    
+    /* Action Bar */
+    .action-bar {
+      background: white;
+      border-radius: 18px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border: 1px solid var(--gray-200);
+    }
+    
+    .create-btn {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      padding: 0.875rem 1.75rem;
+      border-radius: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    }
+    
+    .create-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+      color: white;
+      text-decoration: none;
+    }
+    
+    .create-btn:active {
+      transform: scale(0.98);
+    }
+    
+    /* Search Input */
+    .search-container {
+      position: relative;
+      flex: 1;
+      max-width: 400px;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 3rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-500);
+      font-size: 1.1rem;
+    }
+    
+    /* Table Container */
+    .table-container {
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.6s ease-out;
+      border: 1px solid var(--gray-200);
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .modern-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+    }
+    
+    .modern-table thead {
+      background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+    }
+    
+    .modern-table th {
+      padding: 1.25rem 1.5rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--gray-600);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--gray-200);
+    }
+    
+    .modern-table tbody tr {
+      border-bottom: 1px solid var(--gray-100);
+      transition: all 0.3s ease;
+    }
+    
+    .modern-table tbody tr:hover {
+      background-color: var(--gray-50);
+    }
+    
+    .modern-table tbody tr:last-child {
+      border-bottom: none;
+    }
+    
+    .modern-table td {
+      padding: 1.25rem 1.5rem;
+      vertical-align: middle;
+      color: var(--gray-900);
+    }
+    
+    /* Seller Info */
+    .seller-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .seller-avatar {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--success-color) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .seller-details {
+      flex: 1;
+    }
+    
+    .seller-name {
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 0.25rem;
+      font-size: 1.05rem;
+    }
+    
+    .seller-email {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      word-break: break-all;
+    }
+    
+    .seller-id {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--gray-500);
+      background: var(--gray-100);
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 0.25rem;
+    }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    
+    .status-active {
+      background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+      color: var(--success-color);
+      border: 1px solid #A7F3D0;
+    }
+    
+    .status-inactive {
+      background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+      color: var(--gray-600);
+      border: 1px solid var(--gray-300);
+    }
+    
+    /* Date Column */
+    .date-display {
+      background: var(--gray-50);
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--gray-200);
+    }
+    
+    /* Actions Column */
+    .actions-container {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+    }
+    
+    .action-btn {
+      background: transparent;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-600);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .action-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .edit-btn {
+      background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+      color: var(--success-color);
+      border: 1px solid #A7F3D0;
+    }
+    
+    .edit-btn:hover {
+      background: linear-gradient(135deg, #A7F3D0 0%, #6EE7B7 100%);
+      color: var(--success-dark);
+    }
+    
+    .delete-btn {
+      background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+      color: var(--danger-color);
+      border: 1px solid #FCA5A5;
+    }
+    
+    .delete-btn:hover {
+      background: linear-gradient(135deg, #FECACA 0%, #FCA5A5 100%);
+      color: var(--danger-dark);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .empty-state-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: var(--gray-400);
+      font-size: 2.5rem;
+      border: 2px dashed var(--gray-300);
+    }
+    
+    .empty-state-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 0.5rem;
+    }
+    
+    .empty-state-description {
+      color: var(--gray-600);
+      margin-bottom: 1.5rem;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+    
+    /* Confirmation Modal */
+    .confirmation-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease-out;
+      padding: 1rem;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      animation: scaleIn 0.3s ease-out;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--gray-200);
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .modal-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--danger-color);
+      font-size: 1.5rem;
+      margin: 0 auto 1rem;
+    }
+    
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .modal-message {
+      color: var(--gray-600);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+    
+    .modal-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 100px;
+    }
+    
+    .modal-btn-cancel {
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-300);
+    }
+    
+    .modal-btn-cancel:hover {
+      background: var(--gray-200);
+    }
+    
+    .modal-btn-cancel:active {
+      transform: scale(0.98);
+    }
+    
+    .modal-btn-delete {
+      background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+    
+    .modal-btn-delete:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    }
+    
+    .modal-btn-delete:active {
+      transform: scale(0.98);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .management-hero {
+        padding: 1.5rem 0;
+      }
+      
+      .hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        gap: 1rem;
+      }
+      
+      .hero-icon {
+        align-self: flex-start;
+      }
+      
+      .page-title {
+        font-size: 1.5rem;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1.25rem;
+      }
+      
+      .create-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .search-container {
+        max-width: 100%;
+      }
+      
+      .table-container {
+        border-radius: 16px;
+        overflow-x: auto;
+      }
+      
+      .modern-table {
+        min-width: 700px;
+      }
+      
+      .seller-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .seller-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+      
+      .actions-container {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+      
+      .modal-content {
+        padding: 1.5rem;
+        width: 95%;
+      }
+      
+      .modal-actions {
+        flex-direction: column;
+      }
+      
+      .modal-btn {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .hero-content {
+        text-align: center;
+      }
+      
+      .hero-icon {
+        align-self: center;
+      }
+      
+      .page-subtitle {
+        text-align: center;
+      }
+      
+      .action-bar {
+        gap: 0.75rem;
+      }
+      
+      .d-flex.align-items-center.gap-2 {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.75rem;
+      }
+      
+      .search-container {
+        width: 100%;
+      }
+      
+      .btn.btn-outline-secondary.btn-sm {
+        width: 100%;
+      }
+    }
+
+  // Simplified Hero Section
+  .management-hero
     .container
-      h1.page-title Kelola Seller
-      p.page-subtitle Kelola akun penjual merchandise
+      .hero-content
+        div
+          h1.page-title Kelola Seller
+          p.page-subtitle Kelola akun penjual merchandise dengan mudah dan efisien
+        .hero-icon
+          i.bi.bi-shop
 
   .container
-
+    // Stats Cards
+    .stats-container
+      .stat-card
+        .stat-icon.stat-icon-primary
+          i.bi.bi-people-fill
+        .stat-value= sellers ? sellers.length : 0
+        .stat-label Total Seller
+    
+    // Alert Messages
     if flash && flash.error && flash.error.length
-      each msg in flash.error
-        .alert.alert-danger= msg
-
+      .alert-container
+        each msg in flash.error
+          .modern-alert.modern-alert-danger
+            i.bi.bi-exclamation-triangle-fill.alert-icon
+            div= msg
+    
     if flash && flash.success && flash.success.length
-      each msg in flash.success
-        .alert.alert-success= msg
+      .alert-container
+        each msg in flash.success
+          .modern-alert.modern-alert-success
+            i.bi.bi-check-circle-fill.alert-icon
+            div= msg
 
+    // Action Bar
     .action-bar
-      a.btn.btn-primary(href="/admin/sellers/create")
-        i.bi.bi-plus-lg.me-1
-        | Buat Seller
+      a.create-btn(href="/admin/sellers/create")
+        i.bi.bi-plus-lg
+        | Buat Seller Baru
+      
+      .d-flex.align-items-center.gap-2
+        .search-container
+          i.bi.bi-search.search-icon
+          input.search-input.form-control#searchInput(
+            type="search" 
+            placeholder="Cari seller berdasarkan nama atau email..."
+            oninput="filterSeller(this.value)"
+          )
+        button.btn.btn-outline-secondary.btn-sm(onclick="resetSearch()")
+          i.bi.bi-arrow-counterclockwise
 
-      input.form-control(
-        type="search"
-        placeholder="Cari seller..."
-        oninput="filterSeller(this.value)"
-      )
-
+    // Sellers Table
     if sellers && sellers.length
       .table-container
-        table.table.modern-table.mb-0
+        table.modern-table.mb-0
           thead
             tr
-              th Nama
-              th Email
+              th Seller
               th Dibuat
+              th Status
               th.text-end Aksi
+          
           tbody#sellerTable
             each s in sellers
-              - const d = s.created_at ? new Date(s.created_at) : null
-              tr(data-name=s.name data-email=s.email)
+              - const createdDate = s.created_at ? new Date(s.created_at) : null;
+              - const formattedDate = createdDate ? createdDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+              tr(data-id=s.id data-name=s.name data-email=s.email data-created=s.created_at)
                 td
-                  b= s.name
-                td= s.email
-                td= d ? d.toLocaleDateString('id-ID') : '-'
+                  .seller-info
+                    .seller-avatar= s.name.charAt(0).toUpperCase()
+                    .seller-details
+                      .seller-name= s.name
+                      .seller-email= s.email
+                      .seller-id ID: #{s.id}
+                
+                td
+                  .date-display
+                    i.bi.bi-calendar3
+                    = formattedDate
+                
+                td
+                  span.status-badge.status-active
+                    i.bi.bi-check-circle-fill
+                    | Aktif
+                
                 td.text-end
-                  .actions
+                  .actions-container
                     a.action-btn.edit-btn(
                       href=`/admin/sellers/${s.id}/edit`
                       title="Edit Seller"
                     )
                       i.bi.bi-pencil
-                    form(
-                      method="post"
-                      action=`/admin/sellers/${s.id}/delete`
-                      onsubmit="return confirm('Hapus seller ini?')"
+                    button.action-btn.delete-btn(
+                      type="button"
+                      onclick=`showDeleteModal(${s.id}, '${s.name.replace(/'/g, "\\'")}')`
+                      title="Hapus Seller"
                     )
-                      button.action-btn.delete-btn(type="submit")
-                        i.bi.bi-trash
+                      i.bi.bi-trash
+    
     else
       .empty-state
-        i.bi.bi-shop.fs-1.mb-2
-        p Belum ada seller.
+        .empty-state-icon
+          i.bi.bi-shop
+        h3.empty-state-title Belum Ada Seller
+        p.empty-state-description
+          | Seller bertanggung jawab menjual merchandise dan mengelola pesanan.
+          | Buat seller pertama Anda untuk mulai berjualan.
+        a.create-btn(href="/admin/sellers/create")
+          i.bi.bi-plus-lg
+          | Buat Seller Pertama
+
+    // Confirmation Modal
+    #deleteModal.confirmation-modal
+      .modal-content
+        .modal-icon
+          i.bi.bi-exclamation-triangle-fill
+        h3.modal-title Hapus Seller
+        p.modal-message#deleteMessage
+          | Anda yakin ingin menghapus seller ini?
+        .modal-actions
+          button.modal-btn.modal-btn-cancel(type="button" onclick="closeModal()") Batal
+          form#deleteForm(method="post" action="")
+            button.modal-btn.modal-btn-delete(type="submit") Hapus
 
   script.
-    function filterSeller(q){
-      q=q.toLowerCase();
-      document.querySelectorAll('#sellerTable tr').forEach(tr=>{
-        const n=tr.dataset.name.toLowerCase();
-        const e=tr.dataset.email.toLowerCase();
-        tr.style.display=(n.includes(q)||e.includes(q))?'':'none';
+    // Modal Functions
+    function showDeleteModal(id, name) {
+      const modal = document.getElementById('deleteModal');
+      const message = document.getElementById('deleteMessage');
+      const form = document.getElementById('deleteForm');
+      
+      message.textContent = `Anda yakin ingin menghapus seller "${name}"? Seluruh data terkait seller ini akan dihapus permanen. Aksi ini tidak dapat dibatalkan.`;
+      form.action = `/admin/sellers/${id}/delete`;
+      
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal() {
+      const modal = document.getElementById('deleteModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+    
+    // Close modal on background click
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+    
+    // Search functionality
+    function filterSeller(query) {
+      const q = query.toLowerCase();
+      const rows = document.querySelectorAll('#sellerTable tr');
+      
+      rows.forEach(row => {
+        const name = row.dataset.name.toLowerCase();
+        const email = row.dataset.email.toLowerCase();
+        const shouldShow = name.includes(q) || email.includes(q);
+        
+        if (shouldShow) {
+          row.style.display = '';
+          row.style.animation = 'fadeIn 0.3s ease-out';
+        } else {
+          row.style.display = 'none';
+        }
       });
     }
+    
+    // Reset search
+    function resetSearch() {
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.value = '';
+        filterSeller('');
+        searchInput.focus();
+      }
+    }
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      // Ctrl/Cmd + N for new seller
+      if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        e.preventDefault();
+        window.location.href = '/admin/sellers/create';
+      }
+      
+      // Ctrl/Cmd + F for search focus
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      }
+      
+      // Escape to clear search
+      if (e.key === 'Escape') {
+        resetSearch();
+      }
+    });
+    
+    // Add animation to table rows
+    document.addEventListener('DOMContentLoaded', function() {
+      const rows = document.querySelectorAll('#sellerTable tr');
+      rows.forEach((row, index) => {
+        row.style.animationDelay = `${index * 0.05}s`;
+        row.style.animation = 'fadeInUp 0.4s ease-out forwards';
+        row.style.opacity = '0';
+      });
+      
+      // Add custom CSS for animations
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        #sellerTable tr {
+          animation: fadeInUp 0.4s ease-out forwards;
+        }
+        
+        /* Smooth transitions */
+        .modern-table tbody tr {
+          transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        
+        /* Focus styles */
+        .search-input:focus,
+        .action-btn:focus,
+        .create-btn:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .modal-content:focus-within {
+          outline: none;
+        }
+        
+        /* Ripple effect for buttons */
+        .create-btn, .action-btn, .modal-btn {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .create-btn:active:after,
+        .action-btn:active:after,
+        .modal-btn:active:after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 5px;
+          height: 5px;
+          background: rgba(255, 255, 255, 0.5);
+          opacity: 0;
+          border-radius: 100%;
+          transform: scale(1, 1) translate(-50%);
+          transform-origin: 50% 50%;
+          animation: ripple 0.6s ease-out;
+        }
+        
+        @keyframes ripple {
+          0% {
+            transform: scale(0, 0);
+            opacity: 0.5;
+          }
+          100% {
+            transform: scale(20, 20);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    });
