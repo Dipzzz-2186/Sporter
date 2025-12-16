@@ -466,9 +466,38 @@ block content
           .alert.alert-success(role="alert")
             i.bi.bi-check-circle-fill
             span= msg
+      form.mb-3(method="get")
+        .row.g-2.align-items-end
+          .col-md-4
+            label.form-label.fw-bold Cabang Olahraga
+            select.form-select(name="sport_id")
+              option(value="") Semua Cabang
+              each s in sports
+                option(
+                  value=s.id
+                  selected=(query && query.sport_id == s.id)
+                )= s.name
 
+          .col-md-3
+            label.form-label.fw-bold Urutan
+            select.form-select(name="order")
+              option(
+                value="newest"
+                selected=(!query || query.order !== 'oldest')
+              ) Terbaru
+              option(
+                value="oldest"
+                selected=(query && query.order === 'oldest')
+              ) Terlama
+
+          .col-md-2
+            button.btn.btn-primary.w-100(type="submit")
+              i.bi.bi-funnel-fill.me-1
+              | Filter
+              
       //- Matches Table
       if matches && matches.length
+
         .card.matches-table-card.border-0
           .card-body
             .table-responsive
@@ -580,6 +609,16 @@ block content
                       
                       td
                         .action-buttons
+                          if m.sport_name && m.sport_name.toLowerCase() === 'padel' && m.status !== 'finished'
+                            button.btn.btn-sm.btn-primary(
+                              type="button"
+                              data-match-id=m.id
+                              data-home=m.home_team_name
+                              data-away=m.away_team_name
+                              onclick="openScoreModal(this)"
+                            )
+                              i.bi.bi-pencil-square
+                              | Input Skor
                           a.btn.btn-action.btn-action-edit(
                             href=`/subadmin/matches/${m.id}/edit`
                             title="Edit Pertandingan"
@@ -609,6 +648,28 @@ block content
           a.btn-add-match(href="/subadmin/matches/create")
             i.bi.bi-plus-circle
             span Tambah Pertandingan Pertama
+
+  #padelScoreModal.modal.fade(tabindex='-1')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h5.modal-title Input Skor Padel
+          button.btn-close(type='button', data-bs-dismiss='modal')
+
+        .modal-body
+          input(type="hidden" id="matchId")
+
+          .mb-3
+            label.form-label#homeLabel
+            input.form-control(type="number" id="homeScore" min="0")
+
+          .mb-3
+            label.form-label#awayLabel
+            input.form-control(type="number" id="awayScore" min="0")
+
+        .modal-footer
+          button.btn.btn-secondary(data-bs-dismiss='modal') Batal
+          button.btn.btn-primary(type="button" onclick="submitPadelScore()") Simpan
 
   //- Custom JavaScript
   script.
@@ -667,3 +728,33 @@ block content
         });
       }
     })();
+
+  script. 
+    function openScoreModal(btn) {
+      document.getElementById('matchId').value = btn.dataset.matchId;
+      document.getElementById('homeLabel').innerText = btn.dataset.home;
+      document.getElementById('awayLabel').innerText = btn.dataset.away;
+      document.getElementById('homeScore').value = 0;
+      document.getElementById('awayScore').value = 0;
+
+      new bootstrap.Modal(document.getElementById('padelScoreModal')).show();
+    }
+
+    function submitPadelScore() {
+      const matchId = document.getElementById('matchId').value;
+      const home = Number(document.getElementById('homeScore').value);
+      const away = Number(document.getElementById('awayScore').value);
+
+      if (home === away) {
+        alert('Skor tidak boleh seri');
+        return;
+      }
+
+      fetch(`/subadmin/matches/${matchId}/submit-score`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ home_score: home, away_score: away })
+      })
+      .then(res => res.json())
+      .then(() => location.reload());
+    }

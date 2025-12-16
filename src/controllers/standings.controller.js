@@ -186,3 +186,74 @@ exports.submitScore = async (req, res) => {
 
   res.json({ success: true });
 };
+
+exports.submitPadelMatchScore = async (req, res) => {
+  const matchId = Number(req.params.id);
+  const { home_score, away_score } = req.body;
+
+  if (!matchId || home_score == null || away_score == null) {
+    return res.status(400).json({ message: 'Data tidak lengkap' });
+  }
+
+  if (Number(home_score) === Number(away_score)) {
+    return res.status(400).json({ message: 'Skor tidak boleh seri' });
+  }
+
+  // Ambil match + team
+  const [[match]] = await db.query(`
+    SELECT m.id, m.sport_id, m.home_team_id, m.away_team_id
+    FROM matches m
+    JOIN sports s ON s.id = m.sport_id
+    WHERE m.id = ? AND LOWER(s.name) = 'padel'
+  `, [matchId]);
+
+  if (!match) {
+    return res.status(404).json({ message: 'Match padel tidak ditemukan' });
+  }
+
+  const homeWin = Number(home_score) > Number(away_score);
+
+  // Update HOME
+  await db.query(`
+    UPDATE standings
+    SET
+      played = played + 1,
+      win = win + ?,
+      loss = loss + ?,
+      game_win = game_win + ?,
+      game_loss = game_loss + ?,
+      pts = pts + ?
+    WHERE sport_id = ? AND team_id = ?
+  `, [
+    homeWin ? 1 : 0,
+    homeWin ? 0 : 1,
+    home_score,
+    away_score,
+    homeWin ? 3 : 0,
+    match.sport_id,
+    match.home_team_id
+  ]);
+
+  // Update AWAY
+  await db.query(`
+    UPDATE standings
+    SET
+      played = played + 1,
+      win = win + ?,
+      loss = loss + ?,
+      game_win = game_win + ?,
+      game_loss = game_loss + ?,
+      pts = pts + ?
+    WHERE sport_id = ? AND team_id = ?
+  `, [
+    homeWin ? 0 : 1,
+    homeWin ? 1 : 0,
+    away_score,
+    home_score,
+    homeWin ? 0 : 3,
+    match.sport_id,
+    match.away_team_id
+  ]);
+  
+  res.json({ success: true });
+};

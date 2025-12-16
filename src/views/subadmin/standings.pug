@@ -488,6 +488,7 @@ block content
                       th.text-center Jumlah Match
                       th.text-center M-K
                       th.text-center Selisih Skor
+                      th.text-center Poin
                     else
                       th.text-center PJ
                       th.text-center M
@@ -496,9 +497,8 @@ block content
                       th.text-center GM
                       th.text-center GK
                       th.text-center SG
-
-                    th.text-center Poin
-                    th.text-center Aksi
+                      th.text-center Poin
+                      th.text-center Aksi
 
                 tbody
                   each row, index in standings
@@ -545,12 +545,6 @@ block content
                       td.text-center
                         .action-buttons
                           if isPadel
-                            button.btn.btn-sm.btn-primary(
-                              type="button"
-                              data-id=row.id
-                            )
-                              i.bi.bi-pencil-square
-                              | Input Skor
                           else
                             a.btn.btn-sm.btn-success(
                               href=`/subadmin/standings/${row.id}/add-win?sport_id=${query.sport_id}`

@@ -91,4 +91,11 @@ router.get('/standings/:id/submit', standingsCtrl.submitScore);
 
 router.post('/athletes/ajax-create', subadminCtrl.ajaxCreateAthlete);
 
+router.post(
+  '/matches/:id/submit-score',
+  requireLogin,
+  requireAdminOrSubadmin,
+  standingsCtrl.submitPadelMatchScore
+);
+
 module.exports = router;
