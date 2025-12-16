@@ -46,6 +46,10 @@ app.set("views", path.join(__dirname, "views"));
 // ------- IMPORTANT: load allowedSports middleware BEFORE routes that need it -------
 const loadAllowedSports = require('./middlewares/allowedSports'); // <-- fixed path
 app.use(loadAllowedSports);
+app.use((req, res, next) => {
+  res.locals.currentPath = req.path;
+  next();
+});
 
 // ====== ROUTES ======
 const sportRoutes = require("./routes/sport.routes");

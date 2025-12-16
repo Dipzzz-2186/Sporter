@@ -568,34 +568,60 @@ html(lang="id")
         #navMain.collapse.navbar-collapse
           ul.navbar-nav.ms-auto.align-items-lg-center
             li.nav-item
-              a.nav-link(href="/" class=(currentPage === 'home' ? 'active' : ''))
+              a.nav-link(
+                href="/"
+                class=(currentPath === '/' ? 'active' : '')
+              )
                 i.bi.bi-house-door-fill.me-2
                 | Beranda
+
             li.nav-item
-              a.nav-link(href="/sports" class=(currentPage === 'sports' ? 'active' : ''))
+              a.nav-link(
+                href="/sports"
+                class=(currentPath.startsWith('/sports') ? 'active' : '')
+              )
                 i.bi.bi-dribbble.me-2
                 | Cabang Olahraga
+
             li.nav-item
-              a.nav-link(href="/events" class=(currentPage === 'events' ? 'active' : ''))
+              a.nav-link(
+                href="/events"
+                class=(currentPath.startsWith('/events') ? 'active' : '')
+              )
                 i.bi.bi-calendar-event.me-2
                 | Event
+
             li.nav-item
-              a.nav-link(href="/news" class=(currentPage === 'news' ? 'active' : ''))
+              a.nav-link(
+                href="/news"
+                class=(currentPath.startsWith('/news') ? 'active' : '')
+              )
                 i.bi.bi-newspaper.me-2
                 | Berita
+
             li.nav-item
-              a.nav-link(href="/livestreams" class=(currentPage === 'livestreams' ? 'active' : ''))
+              a.nav-link(
+                href="/livestreams"
+                class=(currentPath.startsWith('/livestreams') ? 'active' : '')
+              )
                 i.bi.bi-broadcast.me-2
                 | Livestream
+
             li.nav-item
-              a.nav-link(href="/videos" class=(currentPage === 'videos' ? 'active' : ''))
+              a.nav-link(
+                href="/videos"
+                class=(currentPath.startsWith('/videos') ? 'active' : '')
+              )
                 i.bi.bi-play-btn-fill.me-2
                 | Video
+
             li.nav-item
-              a.nav-link(href="/store" class=(currentPage === 'store' ? 'active' : ''))
+              a.nav-link(
+                href="/store"
+                class=(currentPath.startsWith('/store') ? 'active' : '')
+              )
                 i.bi.bi-shop.me-2
                 | Store
-
 
             // ==== Auth menu (Login / User dropdown) ====
             if !currentUser
