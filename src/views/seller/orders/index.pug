@@ -2,173 +2,1314 @@ extends ../../layout/main
 
 block content
   style.
-    .page-hero{background:#fff;padding:2rem 0;border-bottom:1px solid #f0f0f0;margin-bottom:2rem}
-    .page-title{font-size:1.75rem;font-weight:700;margin-bottom:.25rem}
-    .page-subtitle{color:#6b7280;margin:0}
-    .action-bar{background:#fff;border-radius:18px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;box-shadow:0 5px 20px rgba(0,0,0,.05);display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
-    .table-container{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 5px 30px rgba(0,0,0,.08)}
-    .modern-table th{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;background:#f8fafc}
-    .modern-table tbody tr:hover{background:#f9fafb}
-    .badge{padding:.35rem .7rem;border-radius:999px;font-size:.75rem;font-weight:700}
-    .st-pending{background:#fef3c7;color:#92400e}
-    .st-paid{background:#dbeafe;color:#1e40af}
-    .st-packed{background:#e0e7ff;color:#3730a3}
-    .st-shipped{background:#dcfce7;color:#166534}
-    .st-done{background:#ecfeff;color:#155e75}
-    .st-cancelled{background:#fee2e2;color:#991b1b}
-    .action-btn{border:none;border-radius:10px;padding:.4rem .6rem}
-    .empty{padding:4rem 2rem;text-align:center;color:#6b7280}
+    :root {
+      --primary-color: #0095FF;
+      --primary-dark: #0066CC;
+      --primary-light: #34C7FF;
+      --secondary-dark: #0B1F3F;
+      --secondary-light: #152844;
+      --accent-color: #FF6B35;
+      --success-color: #00CC88;
+      --warning-color: #FFAA00;
+      --danger-color: #FF4757;
+      --gray-50: #F8FAFC;
+      --gray-100: #F1F5F9;
+      --gray-200: #E2E8F0;
+      --gray-300: #CBD5E1;
+      --gray-400: #94A3B8;
+      --gray-500: #64748B;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1E293B;
+      --gray-900: #0F172A;
+      --shadow-sm: 0 2px 8px rgba(0, 149, 255, 0.08);
+      --shadow-md: 0 8px 25px rgba(0, 149, 255, 0.12);
+      --shadow-lg: 0 15px 35px rgba(0, 149, 255, 0.15);
+      --shadow-xl: 0 25px 50px rgba(0, 149, 255, 0.2);
+      --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      --gradient-secondary: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary-light) 100%);
+      --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, #FF8E53 100%);
+    }
 
-  // HERO
-  .page-hero
+    /* Orders Hero */
+    .orders-hero {
+      background: var(--gradient-secondary);
+      padding: 3rem 0;
+      margin-bottom: 2.5rem;
+      border-radius: 0 0 30px 30px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .orders-hero::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .orders-hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .orders-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      color: white;
+      background: linear-gradient(135deg, #FFFFFF 0%, var(--primary-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .orders-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      max-width: 600px;
+    }
+
+    /* Orders Stats */
+    .orders-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      animation: fadeIn 0.6s ease-out 0.2s backwards;
+    }
+
+    .orders-stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 18px;
+      padding: 1.5rem;
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .orders-stat-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .orders-stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .orders-stat-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    /* Orders Filters */
+    .orders-filters {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-lg);
+      border: 2px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .search-container {
+      position: relative;
+      min-width: 300px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.875rem 1rem 0.875rem 3.5rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 15px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary-color);
+      font-size: 1.2rem;
+    }
+
+    .filter-select {
+      padding: 0.875rem 1.25rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 15px;
+      background: white;
+      color: var(--gray-700);
+      font-weight: 600;
+      font-size: 0.95rem;
+      min-width: 160px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.1);
+    }
+
+    .filter-select:hover {
+      border-color: var(--primary-color);
+    }
+
+    /* Orders Table */
+    .orders-table-container {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+      border: 2px solid var(--gray-200);
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.6s ease-out 0.3s backwards;
+    }
+
+    .orders-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 0;
+    }
+
+    .orders-table thead {
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    }
+
+    .orders-table th {
+      padding: 1.25rem 1.5rem;
+      text-align: left;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gray-600);
+      border-bottom: 2px solid var(--gray-200);
+      position: relative;
+    }
+
+    .orders-table th:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 60%;
+      background: var(--gray-300);
+    }
+
+    .orders-table tbody tr {
+      transition: all 0.3s ease;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .orders-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .orders-table tbody tr:hover {
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.03) 0%, rgba(52, 199, 255, 0.03) 100%);
+      transform: translateX(4px);
+    }
+
+    .orders-table td {
+      padding: 1.25rem 1.5rem;
+      color: var(--gray-800);
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .orders-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Order ID */
+    .order-id {
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-weight: 700;
+      color: var(--secondary-dark);
+      background: var(--gray-50);
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    /* Customer Info */
+    .customer-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .customer-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: white;
+      font-weight: 600;
+    }
+
+    .customer-details h6 {
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .customer-details p {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+      margin: 0;
+    }
+
+    /* Order Amount */
+    .order-amount {
+      font-weight: 800;
+      color: var(--primary-color);
+    }
+
+    /* Order Date */
+    .order-date {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--gray-700);
+    }
+
+    .order-date i {
+      color: var(--primary-color);
+      font-size: 1rem;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid transparent;
+    }
+
+    .status-pending {
+      background: linear-gradient(135deg, rgba(255, 170, 0, 0.15) 0%, rgba(255, 200, 80, 0.15) 100%);
+      color: var(--warning-color);
+      border-color: rgba(255, 170, 0, 0.3);
+    }
+
+    .status-paid {
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.15) 0%, rgba(52, 199, 255, 0.15) 100%);
+      color: var(--primary-color);
+      border-color: rgba(0, 149, 255, 0.3);
+    }
+
+    .status-packed {
+      background: linear-gradient(135deg, rgba(148, 163, 184, 0.15) 0%, rgba(203, 213, 225, 0.15) 100%);
+      color: var(--gray-600);
+      border-color: rgba(148, 163, 184, 0.3);
+    }
+
+    .status-shipped {
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.15) 0%, rgba(52, 199, 255, 0.15) 100%);
+      color: var(--primary-dark);
+      border-color: rgba(0, 149, 255, 0.3);
+    }
+
+    .status-delivered {
+      background: linear-gradient(135deg, rgba(0, 204, 136, 0.15) 0%, rgba(0, 230, 153, 0.15) 100%);
+      color: var(--success-color);
+      border-color: rgba(0, 204, 136, 0.3);
+    }
+
+    .status-cancelled {
+      background: linear-gradient(135deg, rgba(255, 71, 87, 0.15) 0%, rgba(255, 107, 53, 0.15) 100%);
+      color: var(--danger-color);
+      border-color: rgba(255, 71, 87, 0.3);
+    }
+
+    /* Action Buttons */
+    .order-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .view-btn {
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.1) 100%);
+      color: var(--primary-color);
+      border: 1px solid rgba(0, 149, 255, 0.2);
+    }
+
+    .view-btn:hover {
+      background: var(--gradient-primary);
+      color: white;
+      border-color: transparent;
+      transform: translateY(-3px);
+    }
+
+    /* Empty State */
+    .empty-orders {
+      text-align: center;
+      padding: 5rem 2rem;
+      animation: fadeInUp 0.6s ease-out;
+      background: white;
+      border-radius: 24px;
+      border: 2px solid var(--gray-200);
+      box-shadow: var(--shadow-md);
+    }
+
+    .empty-orders-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      color: var(--primary-color);
+      font-size: 3rem;
+      border: 3px solid var(--gray-200);
+    }
+
+    .empty-orders-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--secondary-dark);
+      margin-bottom: 1rem;
+    }
+
+    .empty-orders-description {
+      color: var(--gray-600);
+      margin-bottom: 2rem;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+      font-size: 1.05rem;
+    }
+
+    /* Detail Modal */
+    .detail-modal-content {
+      border-radius: 24px;
+      border: 2px solid var(--gray-200);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+    }
+
+    .detail-modal-header {
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+      border-bottom: 2px solid var(--gray-200);
+      padding: 1.5rem 2rem;
+    }
+
+    .detail-modal-title {
+      font-weight: 800;
+      color: var(--secondary-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .detail-modal-body {
+      padding: 2rem;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .detail-section {
+      background: var(--gray-50);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 2px solid var(--gray-200);
+    }
+
+    .detail-section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--secondary-dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .detail-section-title i {
+      color: var(--primary-color);
+    }
+
+    .customer-detail {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .detail-item {
+      margin-bottom: 1rem;
+    }
+
+    .detail-label {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .detail-value {
+      font-weight: 700;
+      color: var(--gray-900);
+      font-size: 1rem;
+    }
+
+    .items-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+    }
+
+    .items-table th {
+      background: var(--gray-100);
+      padding: 1rem;
+      text-align: left;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gray-700);
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .items-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .items-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .item-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: var(--gray-100);
+    }
+
+    .item-name {
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 0.25rem;
+    }
+
+    .item-sku {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+    }
+
+    .price-cell {
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .subtotal-cell {
+      font-weight: 800;
+      color: var(--secondary-dark);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-top: 2px solid var(--gray-200);
+      font-weight: 700;
+      color: var(--secondary-dark);
+    }
+
+    .total-amount {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+
+    .detail-modal-footer {
+      border-top: 2px solid var(--gray-200);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-form {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-select {
+      padding: 0.75rem 1.25rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      background: white;
+      color: var(--gray-700);
+      font-weight: 600;
+      font-size: 0.9rem;
+      min-width: 160px;
+      cursor: pointer;
+    }
+
+    .update-btn {
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.3);
+    }
+
+    .update-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 149, 255, 0.4);
+    }
+
+    /* Loading Animation */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(0, 149, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .orders-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .orders-hero {
+        padding: 2.5rem 0;
+        border-radius: 0 0 24px 24px;
+      }
+
+      .orders-title {
+        font-size: 2rem;
+      }
+
+      .orders-filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-container {
+        min-width: 100%;
+      }
+
+      .orders-table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .customer-info {
+        min-width: 200px;
+      }
+
+      .detail-modal-footer {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .status-form {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .status-select {
+        width: 100%;
+      }
+
+      .update-btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .orders-hero {
+        padding: 2rem 0;
+      }
+
+      .orders-title {
+        font-size: 1.75rem;
+      }
+
+      .orders-subtitle {
+        font-size: 1rem;
+      }
+
+      .orders-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .orders-filters {
+        padding: 1.25rem;
+      }
+
+      .orders-table th,
+      .orders-table td {
+        padding: 1rem;
+      }
+
+      .detail-modal-body {
+        padding: 1.5rem;
+      }
+
+      .detail-section {
+        padding: 1.25rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .orders-hero {
+        padding: 1.5rem 0;
+        border-radius: 0 0 20px 20px;
+      }
+
+      .orders-title {
+        font-size: 1.5rem;
+      }
+
+      .customer-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .order-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .action-btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+
+      .customer-detail {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  // ORDERS HERO
+  .orders-hero
     .container
-      h1.page-title Order Merchandise
-      p.page-subtitle Pantau pesanan dan update status pengiriman
+      .orders-hero-content
+        h1.orders-title Order Merchandise
+        p.orders-subtitle
+          | Pantau dan kelola pesanan dari pelanggan. Update status pengiriman dengan mudah.
+        
+        .orders-stats
+          .orders-stat-card
+            .orders-stat-value
+              i.bi.bi-cart-check
+              span= orders ? orders.length : 0
+            .orders-stat-label Total Pesanan
+          
+          .orders-stat-card
+            .orders-stat-value
+              i.bi.bi-clock-history
+              span= orders ? orders.filter(o => o.status === 'pending').length : 0
+            .orders-stat-label Menunggu Pembayaran
+          
+          .orders-stat-card
+            .orders-stat-value
+              i.bi.bi-truck
+              span= orders ? orders.filter(o => o.status === 'shipped').length : 0
+            .orders-stat-label Dalam Pengiriman
+          
+          .orders-stat-card
+            .orders-stat-value
+              i.bi.bi-currency-exchange
+              span= orders ? orders.reduce((sum, o) => sum + (o.total || 0), 0).toLocaleString('id-ID') : 0
+            .orders-stat-label Total Pendapatan
 
   .container
 
-    // ALERT
-    if flash && flash.error && flash.error.length
-      each msg in flash.error
-        .alert.alert-danger= msg
-    if flash && flash.success && flash.success.length
-      each msg in flash.success
-        .alert.alert-success= msg
+    // ALERTS
+    .alert-container
+      if flash && flash.error && flash.error.length
+        each msg in flash.error
+          .alert.alert-danger(
+            role="alert"
+            style="border-radius: 15px; border: 2px solid var(--danger-color);"
+          )
+            .d-flex.align-items-center
+              i.bi.bi-exclamation-triangle-fill.me-2
+              div= msg
+            button.btn-close(type="button" data-bs-dismiss="alert")
+      
+      if flash && flash.success && flash.success.length
+        each msg in flash.success
+          .alert.alert-success(
+            role="alert"
+            style="border-radius: 15px; border: 2px solid var(--success-color);"
+          )
+            .d-flex.align-items-center
+              i.bi.bi-check-circle-fill.me-2
+              div= msg
+            button.btn-close(type="button" data-bs-dismiss="alert")
 
-    // ACTION BAR
-    .action-bar
-      input.form-control(type="search" placeholder="Cari pembeli / status..." oninput="filterOrders(this.value)")
+    // ORDERS FILTERS
+    .orders-filters
+      .search-container
+        i.bi.bi-search.search-icon
+        input.search-input.form-control(
+          type="search" 
+          placeholder="Cari nama pembeli, ID order, atau status..."
+          oninput="filterOrders(this.value)"
+          id="searchInput"
+        )
+      
+      .d-flex.gap-2
+        select.filter-select#statusFilter(onchange="filterByStatus(this.value)")
+          option(value="") Semua Status
+          option(value="pending") Menunggu Pembayaran
+          option(value="paid") Sudah Dibayar
+          option(value="packed") Dikemas
+          option(value="shipped") Dikirim
+          option(value="delivered") Selesai
+          option(value="cancelled") Dibatalkan
+        
+        select.filter-select#dateFilter(onchange="filterByDate(this.value)")
+          option(value="") Semua Waktu
+          option(value="today") Hari Ini
+          option(value="week") Minggu Ini
+          option(value="month") Bulan Ini
 
-    // TABLE
+    // ORDERS TABLE
     if orders && orders.length
-      .table-container
-        table.table.modern-table.mb-0
+      .orders-table-container
+        table.table.orders-table.mb-0
           thead
             tr
               th Order ID
               th Pembeli
+              th Produk
               th Total
               th Status
               th Tanggal
               th.text-end Aksi
           tbody#ordersTable
             each o in orders
-              - const d = o.created_at ? new Date(o.created_at) : null
+              - const date = o.created_at ? new Date(o.created_at) : new Date()
               tr(
-                data-buyer=(o.buyer_name||'').toLowerCase()
-                data-status=(o.status||'').toLowerCase()
+                data-buyer=(o.buyer_name || '').toLowerCase()
+                data-status=(o.status || '').toLowerCase()
+                data-orderid=o.id
+                data-date=date.getTime()
               )
                 td
-                  code ##{o.id}
-                td= o.buyer_name || '-'
-                td Rp #{Number(o.total||0).toLocaleString('id-ID')}
+                  code.order-id ##{o.id}
                 td
-                  span.badge(class=`st-${o.status}`)= o.status
-                td= d ? d.toLocaleDateString('id-ID') : '-'
+                  .customer-info
+                    .customer-avatar= (o.buyer_name || 'U').charAt(0).toUpperCase()
+                    .customer-details
+                      h6= o.buyer_name || 'Pelanggan'
+                      p
+                        i.bi.bi-envelope.me-1
+                        = o.buyer_email || 'Email tidak tersedia'
+                
+                td
+                  .customer-details
+                    h6= o.product_count ? `${o.product_count} produk` : '1 produk'
+                    p
+                      i.bi.bi-box-seam.me-1
+                      | Lihat detail
+                
+                td.order-amount
+                  | Rp #{Number(o.total || 0).toLocaleString('id-ID')}
+                
+                td
+                  if o.status === 'pending'
+                    span.status-badge.status-pending
+                      i.bi.bi-clock
+                      | Menunggu
+                  else if o.status === 'paid'
+                    span.status-badge.status-paid
+                      i.bi.bi-credit-card
+                      | Dibayar
+                  else if o.status === 'packed'
+                    span.status-badge.status-packed
+                      i.bi.bi-box-seam
+                      | Dikemas
+                  else if o.status === 'shipped'
+                    span.status-badge.status-shipped
+                      i.bi.bi-truck
+                      | Dikirim
+                  else if o.status === 'delivered'
+                    span.status-badge.status-delivered
+                      i.bi.bi-check-circle
+                      | Selesai
+                  else if o.status === 'cancelled'
+                    span.status-badge.status-cancelled
+                      i.bi.bi-x-circle
+                      | Dibatalkan
+                  else
+                    span.status-badge.status-pending
+                      i.bi.bi-clock
+                      | #{o.status}
+                
+                td
+                  .order-date
+                    i.bi.bi-calendar3
+                    = date.toLocaleDateString('id-ID')
+                
                 td.text-end
-                  button.btn.btn-sm.btn-outline-primary(
-                    type="button"
-                    onclick=`openDetail(${o.id})`
-                  ) Detail
+                  .order-actions
+                    button.action-btn.view-btn(
+                      type="button"
+                      onclick=`openOrderDetail(${o.id})`
+                      title="Lihat Detail"
+                    )
+                      i.bi.bi-eye
+                    a.action-btn.view-btn(
+                      href=`https://wa.me/${o.buyer_phone ? o.buyer_phone.replace(/[^0-9]/g, '') : ''}`
+                      target="_blank"
+                      title="Hubungi via WhatsApp"
+                      style="background: linear-gradient(135deg, rgba(0, 204, 136, 0.1) 0%, rgba(0, 230, 153, 0.1) 100%); color: #00CC88; border-color: rgba(0, 204, 136, 0.2);"
+                    )
+                      i.bi.bi-whatsapp
+    
     else
-      .empty
-        i.bi.bi-receipt.fs-1.mb-2
-        p Belum ada order masuk.
+      .empty-orders
+        .empty-orders-icon
+          i.bi.bi-receipt
+        h3.empty-orders-title Belum Ada Pesanan
+        p.empty-orders-description
+          | Pesanan dari pelanggan akan muncul di sini. 
+          | Mulai promosikan produk Anda untuk mendapatkan pesanan pertama!
+        .mt-4
+          a.btn.btn-lg.btn-primary(href="/seller/merchandise" style="background: var(--gradient-primary); border: none;")
+            i.bi.bi-box-seam.me-2
+            | Kelola Produk
 
   // DETAIL MODAL
-  #detailModal.modal.fade(tabindex="-1")
+  #detailModal.modal.fade(tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true")
     .modal-dialog.modal-lg.modal-dialog-centered.modal-dialog-scrollable
-      .modal-content
-        .modal-header
-          h5.modal-title Detail Order
-          button.btn-close(type="button" data-bs-dismiss="modal")
-        .modal-body
-          // filled by JS
-          #orderDetailLoading.text-muted Memuat detail...
-          #orderDetailContent(style="display:none")
-            .row.g-3
-              .col-md-6
-                b Pembeli
-                p#dBuyer.mb-0
-                small.text-muted#dContact
-              .col-md-6.text-md-end
-                b Status
-                p.mb-0
-                  span.badge#dStatus
-            hr
-            h6 Items
-            table.table.table-sm
-              thead
-                tr
-                  th Produk
-                  th Harga
-                  th Qty
-                  th Subtotal
-              tbody#itemsBody
-            hr
-            .d-flex.justify-content-between
-              b Total
-              b#dTotal
-        .modal-footer
-          form#statusForm(method="post")
-            select.form-select.form-select-sm(name="status" required)
-              option(value="paid") paid
-              option(value="packed") packed
-              option(value="shipped") shipped
-              option(value="done") done
-              option(value="cancelled") cancelled
-            button.btn.btn-primary.btn-sm.ms-2(type="submit") Update Status
-          button.btn.btn-secondary.btn-sm(type="button" data-bs-dismiss="modal") Tutup
+      .modal-content.detail-modal-content
+        .modal-header.detail-modal-header
+          h5.modal-title.detail-modal-title
+            i.bi.bi-receipt
+            span Detail Pesanan
+          button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+        
+        .modal-body.detail-modal-body
+          #orderDetailLoading(style="text-align: center; padding: 2rem;")
+            .loading-spinner
+            p.text-muted.mt-2 Memuat detail pesanan...
+          
+          #orderDetailContent(style="display: none;")
+            // Customer Info
+            .detail-section
+              h6.detail-section-title
+                i.bi.bi-person-circle
+                | Informasi Pembeli
+              .customer-detail
+                .detail-item
+                  .detail-label
+                    i.bi.bi-person
+                    | Nama Lengkap
+                  .detail-value#dBuyer -
+                
+                .detail-item
+                  .detail-label
+                    i.bi.bi-envelope
+                    | Email
+                  .detail-value#dEmail -
+                
+                .detail-item
+                  .detail-label
+                    i.bi.bi-telephone
+                    | Telepon
+                  .detail-value#dPhone -
+                
+                .detail-item
+                  .detail-label
+                    i.bi.bi-geo-alt
+                    | Alamat Pengiriman
+                  .detail-value#dAddress -
+            
+            // Order Info
+            .detail-section
+              h6.detail-section-title
+                i.bi.bi-info-circle
+                | Informasi Pesanan
+              .customer-detail
+                .detail-item
+                  .detail-label
+                    i.bi.bi-receipt
+                    | Order ID
+                  .detail-value#dOrderId -
+                
+                .detail-item
+                  .detail-label
+                    i.bi.bi-calendar3
+                    | Tanggal Pesan
+                  .detail-value#dOrderDate -
+                
+                .detail-item
+                  .detail-label
+                    i.bi.bi-truck
+                    | Metode Pengiriman
+                  .detail-value#dShippingMethod -
+                
+                .detail-item
+                  .detail-label
+                    i.bi.bi-cash
+                    | Metode Pembayaran
+                  .detail-value#dPaymentMethod -
+            
+            // Items
+            .detail-section
+              h6.detail-section-title
+                i.bi.bi-cart
+                | Items Pesanan
+              table.items-table
+                thead
+                  tr
+                    th Produk
+                    th Harga
+                    th Qty
+                    th Subtotal
+                tbody#itemsBody
+                tfoot
+                  tr
+                    td(colspan="3" style="text-align: right; font-weight: 700;")
+                      | Total
+                    td.subtotal-cell#dTotal Rp 0
+        
+        .modal-footer.detail-modal-footer
+          form#statusForm.status-form(method="post")
+            select.status-select(name="status" required)
+              option(value="pending") Menunggu Pembayaran
+              option(value="paid") Sudah Dibayar
+              option(value="packed") Dikemas
+              option(value="shipped") Dikirim
+              option(value="delivered") Selesai
+              option(value="cancelled") Dibatalkan
+            button.update-btn(type="submit")
+              i.bi.bi-check-lg.me-2
+              | Update Status
+          button.btn.btn-outline-secondary(
+            type="button" 
+            data-bs-dismiss="modal"
+            style="border-radius: 12px; padding: 0.75rem 1.5rem;"
+          )
+            i.bi.bi-x-lg.me-2
+            | Tutup
 
   script.
-    function filterOrders(q){
-      q=q.toLowerCase();
-      document.querySelectorAll('#ordersTable tr').forEach(tr=>{
-        const b=tr.dataset.buyer||'';
-        const s=tr.dataset.status||'';
-        tr.style.display=(b.includes(q)||s.includes(q))?'':'none';
+    // Filter Orders by Search
+    function filterOrders(query) {
+      const q = query.toLowerCase().trim();
+      const rows = document.querySelectorAll('#ordersTable tr');
+      
+      rows.forEach(row => {
+        const buyer = row.dataset.buyer || '';
+        const orderId = row.dataset.orderid || '';
+        const status = row.dataset.status || '';
+        
+        const shouldShow = q === '' || 
+          buyer.includes(q) || 
+          orderId.toString().includes(q) || 
+          status.includes(q);
+        
+        if (shouldShow) {
+          row.style.display = '';
+          row.style.animation = 'fadeInUp 0.3s ease-out';
+        } else {
+          row.style.display = 'none';
+        }
       });
     }
-
-    async function openDetail(orderId){
-      const modalEl=document.getElementById('detailModal');
-      const modal=new bootstrap.Modal(modalEl);
-      document.getElementById('orderDetailLoading').style.display='block';
-      document.getElementById('orderDetailContent').style.display='none';
-      modal.show();
-
-      try{
-        const res=await fetch(`/seller/orders/${orderId}/detail`);
-        const data=await res.json();
-
-        document.getElementById('dBuyer').textContent=data.buyer_name||'-';
-        document.getElementById('dContact').textContent=
-          [data.buyer_email,data.buyer_phone].filter(Boolean).join(' • ');
-        const st=document.getElementById('dStatus');
-        st.textContent=data.status;
-        st.className=`badge st-${data.status}`;
-        document.getElementById('dTotal').textContent=
-          'Rp '+Number(data.total||0).toLocaleString('id-ID');
-
-        const tb=document.getElementById('itemsBody');
-        tb.innerHTML='';
-        data.items.forEach(it=>{
-          const tr=document.createElement('tr');
-          tr.innerHTML=`
-            <td>${it.name}</td>
-            <td>Rp ${Number(it.price).toLocaleString('id-ID')}</td>
-            <td>${it.qty}</td>
-            <td>Rp ${Number(it.price*it.qty).toLocaleString('id-ID')}</td>`;
-          tb.appendChild(tr);
-        });
-
-        const form=document.getElementById('statusForm');
-        form.action=`/seller/orders/${orderId}/status`;
-        form.querySelector('select[name="status"]').value=data.status;
-
-        document.getElementById('orderDetailLoading').style.display='none';
-        document.getElementById('orderDetailContent').style.display='block';
-      }catch(e){
-        alert('Gagal memuat detail order');
+    
+    // Filter by Status
+    function filterByStatus(status) {
+      const rows = document.querySelectorAll('#ordersTable tr');
+      const dateFilter = document.getElementById('dateFilter').value;
+      
+      rows.forEach(row => {
+        const rowStatus = row.dataset.status;
+        const rowDate = parseInt(row.dataset.date);
+        const now = Date.now();
+        
+        let showByStatus = !status || rowStatus === status;
+        let showByDate = true;
+        
+        // Apply date filter
+        if (dateFilter) {
+          const rowDateObj = new Date(rowDate);
+          const today = new Date();
+          
+          switch(dateFilter) {
+            case 'today':
+              showByDate = rowDateObj.toDateString() === today.toDateString();
+              break;
+            case 'week':
+              const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+              showByDate = rowDate >= oneWeekAgo.getTime();
+              break;
+            case 'month':
+              const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+              showByDate = rowDate >= oneMonthAgo.getTime();
+              break;
+          }
+        }
+        
+        const shouldShow = showByStatus && showByDate;
+        row.style.display = shouldShow ? '' : 'none';
+      });
+    }
+    
+    // Filter by Date
+    function filterByDate(dateRange) {
+      const rows = document.querySelectorAll('#ordersTable tr');
+      const statusFilter = document.getElementById('statusFilter').value;
+      
+      rows.forEach(row => {
+        const rowDate = parseInt(row.dataset.date);
+        const rowStatus = row.dataset.status;
+        const now = Date.now();
+        
+        let showByDate = true;
+        if (dateRange) {
+          const rowDateObj = new Date(rowDate);
+          const today = new Date();
+          
+          switch(dateRange) {
+            case 'today':
+              showByDate = rowDateObj.toDateString() === today.toDateString();
+              break;
+            case 'week':
+              const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+              showByDate = rowDate >= oneWeekAgo.getTime();
+              break;
+            case 'month':
+              const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+              showByDate = rowDate >= oneMonthAgo.getTime();
+              break;
+          }
+        }
+        
+        let showByStatus = !statusFilter || rowStatus === statusFilter;
+        const shouldShow = showByDate && showByStatus;
+        row.style.display = shouldShow ? '' : 'none';
+      });
+    }
+    
+    // Reset all filters
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('statusFilter').value = '';
+      document.getElementById('dateFilter').value = '';
+      
+      const rows = document.querySelectorAll('#ordersTable tr');
+      rows.forEach(row => {
+        row.style.display = '';
+      });
+    }
+    
+    // Open order detail modal
+    async function openOrderDetail(orderId) {
+      const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+      const loadingElement = document.getElementById('orderDetailLoading');
+      const contentElement = document.getElementById('orderDetailContent');
+      
+      // Show loading, hide content
+      loadingElement.style.display = 'block';
+      contentElement.style.display = 'none';
+      
+      try {
+        // Fetch order details
+        const response = await fetch(`/seller/orders/${orderId}/detail`);
+        const data = await response.json();
+        
+        // Update customer info
+        document.getElementById('dBuyer').textContent = data.buyer_name || 'Tidak tersedia';
+        document.getElementById('dEmail').textContent = data.buyer_email || 'Tidak tersedia';
+        document.getElementById('dPhone').textContent = data.buyer_phone || 'Tidak tersedia';
+        document.getElementById('dAddress').textContent = data.shipping_address || 'Tidak tersedia';
+        
+        // Update order info
+        document.getElementById('dOrderId').textContent = `#${data.id}`;
+        document.getElementById('dOrderDate').textContent = data.created_at ? 
+          new Date(data.created_at).toLocaleString('id-ID') : 'Tidak tersedia';
+        document.getElementById('dShippingMethod').textContent = data.shipping_method || 'Standard';
+        document.getElementById('dPaymentMethod').textContent = data.payment_method || 'Transfer Bank';
+        
+        // Update items table
+        const itemsBody = document.getElementById('itemsBody');
+        itemsBody.innerHTML = '';
+        
+        if (data.items && data.items.length > 0) {
+          data.items.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                  ${item.image_url ? 
+                    `<img src="${item.image_url}" alt="${item.name}" class="item-image">` :
+                    `<div class="item-image" style="display: flex; align-items: center; justify-content: center; color: var(--gray-400);">
+                      <i class="bi bi-box-seam"></i>
+                    </div>`
+                  }
+                  <div>
+                    <div class="item-name">${item.name}</div>
+                    ${item.sku ? `<div class="item-sku">SKU: ${item.sku}</div>` : ''}
+                  </div>
+                </div>
+              </td>
+              <td class="price-cell">
+                Rp ${Number(item.price).toLocaleString('id-ID')}
+              </td>
+              <td>
+                ${item.qty}
+              </td>
+              <td class="subtotal-cell">
+                Rp ${Number(item.price * item.qty).toLocaleString('id-ID')}
+              </td>
+            `;
+            itemsBody.appendChild(row);
+          });
+        }
+        
+        // Update total
+        document.getElementById('dTotal').textContent = 
+          `Rp ${Number(data.total || 0).toLocaleString('id-ID')}`;
+        
+        // Update status form
+        const statusForm = document.getElementById('statusForm');
+        statusForm.action = `/seller/orders/${orderId}/status`;
+        statusForm.querySelector('select[name="status"]').value = data.status;
+        
+        // Show content, hide loading
+        loadingElement.style.display = 'none';
+        contentElement.style.display = 'block';
+        
+        // Show modal
+        modal.show();
+        
+      } catch (error) {
+        console.error('Error loading order details:', error);
+        loadingElement.innerHTML = `
+          <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i>
+          <p class="text-danger mt-2">Gagal memuat detail pesanan</p>
+        `;
+        
+        setTimeout(() => {
+          loadingElement.style.display = 'none';
+          alert('Gagal memuat detail pesanan. Silakan coba lagi.');
+        }, 2000);
       }
     }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add row animations
+      const rows = document.querySelectorAll('#ordersTable tr');
+      rows.forEach((row, index) => {
+        row.style.animationDelay = `${index * 0.05}s`;
+        row.style.animation = 'fadeInUp 0.3s ease-out forwards';
+        row.style.opacity = '0';
+      });
+      
+      // Keyboard shortcuts
+      document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + F for search focus
+        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+          e.preventDefault();
+          document.getElementById('searchInput').focus();
+        }
+        
+        // Escape to reset filters
+        if (e.key === 'Escape') {
+          resetFilters();
+        }
+      });
+    });
