@@ -138,4 +138,18 @@ router.post("/sellers/:id/edit", authMiddleware.requireAdmin, adminController.up
 
 router.post("/sellers/:id/delete", authMiddleware.requireAdmin, adminController.deleteSeller);
 
+// src/routes/admin.routes.js
+router.get(
+  '/matches',
+  authMiddleware.requireAdmin,
+  adminController.listMatchesReadOnly
+);
+
+router.get(
+  '/standings',
+  authMiddleware.requireAdmin,
+  adminController.listStandingsReadOnly
+);
+
+
 module.exports = router;

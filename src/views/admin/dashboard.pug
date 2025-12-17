@@ -197,10 +197,8 @@ block content
               h5
                 i.bi.bi-clock.me-2
                 | Jadwal
-              if currentUser && currentUser.role === 'subadmin'
-                a(href='/subadmin/matches') Kelola Jadwal
-              else
-                span.small-muted Hanya SubAdmin
+              a(href='/admin/matches') Kelola Jadwal
+
             if upcomingMatches && upcomingMatches.length
               .table-responsive
                 table.table.admin-table.mb-0
@@ -240,10 +238,8 @@ block content
               h5
                 i.bi.bi-list-ol.me-2
                 | Klasemen
-              if currentUser && currentUser.role === 'subadmin'
-                a(href='/subadmin/standings') Kelola Klasemen
-              else
-                span.small-muted Hanya SubAdmin
+              a(href='/admin/standings') Kelola Klasemen
+              
             if standings && standings.length
               .table-responsive
                 table.table.admin-table.mb-0

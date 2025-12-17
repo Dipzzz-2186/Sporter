@@ -989,3 +989,165 @@ exports.deleteSeller = async (req, res) => {
     return res.redirect("/admin/sellers");
   }
 };
+
+// ========== ADMIN READ-ONLY: MATCHES ==========
+exports.listMatchesReadOnly = async (req, res) => {
+  try {
+    const { sport_id, order } = req.query;
+
+    const [sports] = await db.query(
+      'SELECT id, name FROM sports ORDER BY name'
+    );
+
+    let where = [];
+    let params = [];
+
+    if (sport_id) {
+      where.push('m.sport_id = ?');
+      params.push(sport_id);
+    }
+
+    const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
+    const orderSql =
+      order === 'oldest'
+        ? 'ORDER BY m.created_at ASC'
+        : 'ORDER BY m.created_at DESC';
+
+    const [matches] = await db.query(`
+      SELECT
+        m.id,
+        m.title,
+        m.start_time,
+        m.end_time,
+        m.status,
+        m.match_mode,
+        s.name AS sport_name,
+        v.name AS venue_name,
+        e.title AS event_title,
+        ht.name AS home_team_name,
+        at.name AS away_team_name
+      FROM matches m
+      LEFT JOIN sports s ON s.id = m.sport_id
+      LEFT JOIN venues v ON v.id = m.venue_id
+      LEFT JOIN events e ON e.id = m.event_id
+      LEFT JOIN teams ht ON ht.id = m.home_team_id
+      LEFT JOIN teams at ON at.id = m.away_team_id
+      ${whereSql}
+      ${orderSql}
+    `, params);
+
+    return res.render('subadmin/matches', {
+      title: 'Daftar Pertandingan',
+      matches,
+      sports,
+      query: req.query,
+      isReadOnly: true   // 🔑 KUNCI
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};
+
+// ========== ADMIN READ-ONLY: STANDINGS ==========
+exports.listStandingsReadOnly = async (req, res) => {
+  try {
+    const [sports] = await db.query(
+      'SELECT id, name FROM sports ORDER BY name'
+    );
+
+    const qSport = req.query.sport_id
+      ? Number(req.query.sport_id)
+      : null;
+
+    if (!qSport) {
+      return res.render('standings/index', {
+        title: 'Klasemen',
+        standings: [],
+        sports,
+        query: req.query,
+        isPadel: false,
+        isReadOnly: true
+      });
+    }
+
+    const [[sport]] = await db.query(
+      'SELECT id, name FROM sports WHERE id = ?',
+      [qSport]
+    );
+
+    if (!sport) {
+      return res.render('standings/index', {
+        title: 'Klasemen',
+        standings: [],
+        sports,
+        query: req.query,
+        isPadel: false,
+        isReadOnly: true
+      });
+    }
+
+    const isPadel = sport.name.toLowerCase() === 'padel';
+    let rows = [];
+
+    if (isPadel) {
+      [rows] = await db.query(`
+        SELECT
+          s.id,
+          s.sport_id,
+          sp.name AS sport_name,
+          t.name AS team_name,
+          (
+            SELECT COUNT(*)
+            FROM matches m
+            WHERE m.sport_id = s.sport_id
+              AND s.team_id IN (m.home_team_id, m.away_team_id)
+          ) AS total_match,
+          s.win,
+          s.loss,
+          s.game_win,
+          s.game_loss,
+          (s.game_win - s.game_loss) AS game_diff,
+          s.pts
+        FROM standings s
+        JOIN teams t ON t.id = s.team_id
+        JOIN sports sp ON sp.id = s.sport_id
+        WHERE s.sport_id = ?
+        ORDER BY s.pts DESC, game_diff DESC, s.game_win DESC
+      `, [qSport]);
+    } else {
+      [rows] = await db.query(`
+        SELECT
+          s.id,
+          s.sport_id,
+          sp.name AS sport_name,
+          t.name AS team_name,
+          s.played,
+          s.win,
+          s.draw,
+          s.loss,
+          s.goals_for,
+          s.goals_against,
+          (s.goals_for - s.goals_against) AS goal_diff,
+          s.pts
+        FROM standings s
+        JOIN teams t ON t.id = s.team_id
+        JOIN sports sp ON sp.id = s.sport_id
+        WHERE s.sport_id = ?
+        ORDER BY s.pts DESC, goal_diff DESC, s.goals_for DESC
+      `, [qSport]);
+    }
+
+    return res.render('standings/index', {
+      title: 'Klasemen',
+      standings: rows,
+      sports,
+      query: req.query,
+      isPadel,
+      isReadOnly: true
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};

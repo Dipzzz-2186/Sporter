@@ -444,15 +444,12 @@ block content
           .col-lg-8
             h1
               i.bi.bi-trophy-fill.me-2
-              | Kelola Pertandingan
-            p
-              i.bi.bi-calendar-event.me-2
-              | Atur jadwal pertandingan untuk cabang olahraga yang kamu pegang.
-          
-          .col-lg-4.text-lg-end
-            a.btn-add-match(href="/subadmin/matches/create")
-              i.bi.bi-plus-circle
-              span Tambah Pertandingan
+              | #{isReadOnly ? 'Daftar Pertandingan' : 'Kelola Pertandingan'}
+
+            if !isReadOnly
+              a.btn-add-match(href="/subadmin/matches/create")
+                i.bi.bi-plus-circle
+                span Tambah Pertandingan
 
       //- Flash Messages
       if flash && flash.error && flash.error.length
@@ -525,9 +522,10 @@ block content
                     th
                       i.bi.bi-info-circle.me-1
                       | Status
-                    th.text-end
-                      i.bi.bi-gear.me-1
-                      | Aksi
+                    if !isReadOnly
+                      th.text-end
+                        i.bi.bi-gear.me-1
+                        | Aksi
                 tbody
                   each m in matches
                     tr
@@ -606,35 +604,35 @@ block content
                         else
                           .status-badge
                             = m.status || 'N/A'
-                      
-                      td
-                        .action-buttons
-                          if m.sport_name && m.sport_name.toLowerCase() === 'padel' && m.status !== 'finished'
-                            button.btn.btn-sm.btn-primary(
-                              type="button"
-                              data-match-id=m.id
-                              data-home=m.home_team_name
-                              data-away=m.away_team_name
-                              onclick="openScoreModal(this)"
+                      if !isReadOnly
+                        td
+                          .action-buttons
+                            if m.sport_name && m.sport_name.toLowerCase() === 'padel' && m.status !== 'finished'
+                              button.btn.btn-sm.btn-primary(
+                                type="button"
+                                data-match-id=m.id
+                                data-home=m.home_team_name
+                                data-away=m.away_team_name
+                                onclick="openScoreModal(this)"
+                              )
+                                i.bi.bi-pencil-square
+                                | Input Skor
+                            a.btn.btn-action.btn-action-edit(
+                              href=`/subadmin/matches/${m.id}/edit`
+                              title="Edit Pertandingan"
                             )
-                              i.bi.bi-pencil-square
-                              | Input Skor
-                          a.btn.btn-action.btn-action-edit(
-                            href=`/subadmin/matches/${m.id}/edit`
-                            title="Edit Pertandingan"
-                          )
-                            i.bi.bi-pencil-fill
-                          
-                          form.d-inline(
-                            method="post" 
-                            action=`/subadmin/matches/${m.id}/delete`
-                            onsubmit="return confirm('Yakin ingin menghapus pertandingan ini?');"
-                          )
-                            button.btn.btn-action.btn-action-delete(
-                              type="submit"
-                              title="Hapus Pertandingan"
+                              i.bi.bi-pencil-fill
+                            
+                            form.d-inline(
+                              method="post" 
+                              action=`/subadmin/matches/${m.id}/delete`
+                              onsubmit="return confirm('Yakin ingin menghapus pertandingan ini?');"
                             )
-                              i.bi.bi-trash-fill
+                              button.btn.btn-action.btn-action-delete(
+                                type="submit"
+                                title="Hapus Pertandingan"
+                              )
+                                i.bi.bi-trash-fill
       else
         //- Empty State
         .empty-state
@@ -648,167 +646,169 @@ block content
           a.btn-add-match(href="/subadmin/matches/create")
             i.bi.bi-plus-circle
             span Tambah Pertandingan Pertama
+  if !isReadOnly
+    #padelScoreModal.modal.fade(tabindex='-1')
+      .modal-dialog
+        .modal-content
+          .modal-header
+          
+            h5.modal-title Input Skor Padel
+            button.btn-close(type='button', data-bs-dismiss='modal')
 
-  #padelScoreModal.modal.fade(tabindex='-1')
-    .modal-dialog
-      .modal-content
-        .modal-header
-        
-          h5.modal-title Input Skor Padel
-          button.btn-close(type='button', data-bs-dismiss='modal')
 
+          .modal-body
+            small.text-muted
+              | Bingung cara isi?
+              a.ms-1(
+                href="#"
+                data-bs-dismiss="modal"
+                data-bs-toggle="modal"
+                data-bs-target="#guideModal"
+              ) Lihat panduan
+            input(type="hidden" id="matchId")
 
-        .modal-body
-          small.text-muted
-            | Bingung cara isi?
-            a.ms-1(
-              href="#"
-              data-bs-dismiss="modal"
-              data-bs-toggle="modal"
-              data-bs-target="#guideModal"
-            ) Lihat panduan
-          input(type="hidden" id="matchId")
+            .mb-3
+              label.form-label#homeLabel
+              input.form-control(type="number" id="homeScore" min="0")
 
-          .mb-3
-            label.form-label#homeLabel
-            input.form-control(type="number" id="homeScore" min="0")
+            .mb-3
+              label.form-label#awayLabel
+              input.form-control(type="number" id="awayScore" min="0")
 
-          .mb-3
-            label.form-label#awayLabel
-            input.form-control(type="number" id="awayScore" min="0")
+          .modal-footer
+            button.btn.btn-secondary(data-bs-dismiss='modal') Batal
+            button.btn.btn-primary(type="button" onclick="submitPadelScore()") Simpan
 
-        .modal-footer
-          button.btn.btn-secondary(data-bs-dismiss='modal') Batal
-          button.btn.btn-primary(type="button" onclick="submitPadelScore()") Simpan
+    #guideModal.modal.fade(tabindex='-1')
+      .modal-dialog.modal-lg.modal-dialog-centered
+        .modal-content
+          .modal-header
+            h5.modal-title
+              i.bi.bi-question-circle-fill.me-2
+              | Panduan Input Skor Padel
+            button.btn-close(type='button', data-bs-dismiss='modal')
 
-  #guideModal.modal.fade(tabindex='-1')
-    .modal-dialog.modal-lg.modal-dialog-centered
-      .modal-content
-        .modal-header
-          h5.modal-title
-            i.bi.bi-question-circle-fill.me-2
-            | Panduan Input Skor Padel
-          button.btn-close(type='button', data-bs-dismiss='modal')
+          .modal-body
+            h6.text-primary.mb-2 1. Apa itu Game Menang & Game Kalah?
+            p.mb-3
+              | Game Menang adalah jumlah game yang dimenangkan tim.
+              | Game Kalah adalah jumlah game yang kalah dari lawan.
 
-        .modal-body
-          h6.text-primary.mb-2 1. Apa itu Game Menang & Game Kalah?
-          p.mb-3
-            | Game Menang adalah jumlah game yang dimenangkan tim.
-            | Game Kalah adalah jumlah game yang kalah dari lawan.
+            h6.text-primary.mb-2 2. Contoh Pengisian yang Benar
+            ul
+              li Tim A menang 6–4 → isi:
+                ul
+                  li Game Menang: <b>6</b>
+                  li Game Kalah: <b>4</b>
+              li Tim kalah 3–6 → isi:
+                ul
+                  li Game Menang: <b>3</b>
+                  li Game Kalah: <b>6</b>
 
-          h6.text-primary.mb-2 2. Contoh Pengisian yang Benar
-          ul
-            li Tim A menang 6–4 → isi:
-              ul
-                li Game Menang: <b>6</b>
-                li Game Kalah: <b>4</b>
-            li Tim kalah 3–6 → isi:
-              ul
-                li Game Menang: <b>3</b>
-                li Game Kalah: <b>6</b>
+            h6.text-danger.mb-2 3. Aturan Penting
+            ul
+              li ❌ Game Menang dan Game Kalah <b>tidak boleh sama</b>
+              li ✅ Tim dengan angka lebih besar otomatis dianggap menang
+              li 🏆 Menang mendapat <b>3 poin</b>, kalah <b>0 poin</b>
 
-          h6.text-danger.mb-2 3. Aturan Penting
-          ul
-            li ❌ Game Menang dan Game Kalah <b>tidak boleh sama</b>
-            li ✅ Tim dengan angka lebih besar otomatis dianggap menang
-            li 🏆 Menang mendapat <b>3 poin</b>, kalah <b>0 poin</b>
+            h6.text-primary.mb-2 4. Yang Dihitung Sistem
+            ul
+              li Jumlah Match diambil dari <b>jadwal pertandingan</b>
+              li Poin & klasemen dihitung otomatis
+              li Tidak perlu input poin manual
 
-          h6.text-primary.mb-2 4. Yang Dihitung Sistem
-          ul
-            li Jumlah Match diambil dari <b>jadwal pertandingan</b>
-            li Poin & klasemen dihitung otomatis
-            li Tidak perlu input poin manual
+            .alert.alert-warning.mt-3
+              i.bi.bi-exclamation-triangle-fill.me-2
+              | Pastikan skor sudah benar sebelum disimpan. Saat ini skor tidak bisa di-edit ulang.
 
-          .alert.alert-warning.mt-3
-            i.bi.bi-exclamation-triangle-fill.me-2
-            | Pastikan skor sudah benar sebelum disimpan. Saat ini skor tidak bisa di-edit ulang.
-
-        .modal-footer
-          button.btn.btn-secondary(data-bs-dismiss='modal') Tutup
-  //- Custom JavaScript
-  script.
-    (function() {
-      // Auto dismiss alerts after 5 seconds
-      var alerts = document.querySelectorAll('.alert');
-      alerts.forEach(function(alert) {
-        setTimeout(function() {
-          alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-          alert.style.opacity = '0';
-          alert.style.transform = 'translateY(-20px)';
+          .modal-footer
+            button.btn.btn-secondary(data-bs-dismiss='modal') Tutup
+  if !isReadOnly
+    
+    //- Custom JavaScript
+    script.
+      (function() {
+        // Auto dismiss alerts after 5 seconds
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
           setTimeout(function() {
-            alert.remove();
-          }, 500);
-        }, 5000);
-      });
-      
-      // Confirm delete with better UX
-      var deleteForms = document.querySelectorAll('form[action*="/delete"]');
-      deleteForms.forEach(function(form) {
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-          
-          var btn = form.querySelector('button[type="submit"]');
-          var confirmed = confirm('⚠️ Yakin ingin menghapus pertandingan ini?\n\nData yang sudah dihapus tidak dapat dikembalikan.');
-          
-          if (confirmed) {
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-            btn.disabled = true;
-            form.submit();
-          }
+            alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateY(-20px)';
+            setTimeout(function() {
+              alert.remove();
+            }, 500);
+          }, 5000);
         });
-      });
-      
-      // Intersection Observer for table rows
-      if ('IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry, index) {
-            if (entry.isIntersecting) {
-              setTimeout(function() {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateX(0)';
-              }, index * 50);
+        
+        // Confirm delete with better UX
+        var deleteForms = document.querySelectorAll('form[action*="/delete"]');
+        deleteForms.forEach(function(form) {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var btn = form.querySelector('button[type="submit"]');
+            var confirmed = confirm('⚠️ Yakin ingin menghapus pertandingan ini?\n\nData yang sudah dihapus tidak dapat dikembalikan.');
+            
+            if (confirmed) {
+              btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+              btn.disabled = true;
+              form.submit();
             }
           });
-        }, {
-          threshold: 0.1,
-          rootMargin: '0px 0px -50px 0px'
         });
         
-        document.querySelectorAll('.matches-table tbody tr').forEach(function(row) {
-          row.style.opacity = '0';
-          row.style.transform = 'translateX(-20px)';
-          row.style.transition = 'all 0.4s ease';
-          observer.observe(row);
-        });
+        // Intersection Observer for table rows
+        if ('IntersectionObserver' in window) {
+          var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry, index) {
+              if (entry.isIntersecting) {
+                setTimeout(function() {
+                  entry.target.style.opacity = '1';
+                  entry.target.style.transform = 'translateX(0)';
+                }, index * 50);
+              }
+            });
+          }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+          });
+          
+          document.querySelectorAll('.matches-table tbody tr').forEach(function(row) {
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(-20px)';
+            row.style.transition = 'all 0.4s ease';
+            observer.observe(row);
+          });
+        }
+      })();
+
+    script. 
+      function openScoreModal(btn) {
+        document.getElementById('matchId').value = btn.dataset.matchId;
+        document.getElementById('homeLabel').innerText = btn.dataset.home;
+        document.getElementById('awayLabel').innerText = btn.dataset.away;
+        document.getElementById('homeScore').value = 0;
+        document.getElementById('awayScore').value = 0;
+
+        new bootstrap.Modal(document.getElementById('padelScoreModal')).show();
       }
-    })();
 
-  script. 
-    function openScoreModal(btn) {
-      document.getElementById('matchId').value = btn.dataset.matchId;
-      document.getElementById('homeLabel').innerText = btn.dataset.home;
-      document.getElementById('awayLabel').innerText = btn.dataset.away;
-      document.getElementById('homeScore').value = 0;
-      document.getElementById('awayScore').value = 0;
+      function submitPadelScore() {
+        const matchId = document.getElementById('matchId').value;
+        const home = Number(document.getElementById('homeScore').value);
+        const away = Number(document.getElementById('awayScore').value);
 
-      new bootstrap.Modal(document.getElementById('padelScoreModal')).show();
-    }
+        if (home === away) {
+          alert('Skor tidak boleh seri');
+          return;
+        }
 
-    function submitPadelScore() {
-      const matchId = document.getElementById('matchId').value;
-      const home = Number(document.getElementById('homeScore').value);
-      const away = Number(document.getElementById('awayScore').value);
-
-      if (home === away) {
-        alert('Skor tidak boleh seri');
-        return;
+        fetch(`/subadmin/matches/${matchId}/submit-score`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ home_score: home, away_score: away })
+        })
+        .then(res => res.json())
+        .then(() => location.reload());
       }
-
-      fetch(`/subadmin/matches/${matchId}/submit-score`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ home_score: home, away_score: away })
-      })
-      .then(res => res.json())
-      .then(() => location.reload());
-    }

@@ -493,7 +493,8 @@ block content
                       th.text-center GK
                       th.text-center SG
                       th.text-center Poin
-                      th.text-center Aksi
+                      if !isPadel && !isReadOnly
+                        th.text-center Aksi
 
                 tbody
                   each row, index in standings
@@ -538,185 +539,186 @@ block content
                       td.text-center.points-cell= row.pts
 
                       td.text-center
-                        .action-buttons
-                          if isPadel
-                          else
-                            a.btn.btn-sm.btn-success(
-                              href=`/subadmin/standings/${row.id}/add-win?sport_id=${query.sport_id}`
-                            ) +W
-                            a.btn.btn-sm.btn-danger(
-                              href=`/subadmin/standings/${row.id}/add-loss?sport_id=${query.sport_id}`
-                            ) -L
-
+                        if !isReadOnly
+                          .action-buttons
+                            if isPadel
+                            else
+                              a.btn.btn-sm.btn-success(
+                                href=`/subadmin/standings/${row.id}/add-win?sport_id=${query.sport_id}`
+                              ) +W
+                              a.btn.btn-sm.btn-danger(
+                                href=`/subadmin/standings/${row.id}/add-loss?sport_id=${query.sport_id}`
+                              ) -L
       else
         .empty-state
           .empty-state-icon
             i.bi.bi-clipboard2-x
           h4 Belum Ada Klasemen
           p Belum ada pertandingan padel yang selesai.
-
-  #scoreModal.modal.fade(tabindex='-1')
-    .modal-dialog
-      .modal-content
-        .modal-header
-          h5.modal-title Input Skor Padel
-          button.btn-close(type='button', data-bs-dismiss='modal')
-
-        .modal-body
-          small.text-muted
-            | Bingung cara isi?
-            a.ms-1(
-              href="#"
-              data-bs-dismiss="modal"
-              data-bs-toggle="modal"
-              data-bs-target="#guideModal"
-            ) Lihat panduan
-
-          input(type="hidden" id="standingId")
-          input(type="hidden" id="matchAction")
-
-          .mb-3
-            label.form-label Game Menang
-            input.form-control(type="number" id="gameWin" min="0" value="0")
-
-          .mb-3
-            label.form-label Game Kalah
-            input.form-control(type="number" id="gameLoss" min="0" value="0")
-
-        .modal-footer
-          button.btn.btn-secondary(data-bs-dismiss='modal') Batal
-          button.btn.btn-primary(type="button" id="saveScore") Simpan
-
-
-  script.
-    window.CURRENT_SPORT_ID = #{query && query.sport_id ? query.sport_id : 'null'};
-
-  //- Custom JavaScript
-  script.
-    (function() {
-      // Sport filter without reload
-      var sportFilter = document.getElementById('sportFilter');
-      if (sportFilter) {
-        sportFilter.addEventListener('change', function(e) {
-          var sportId = this.value;
-          var currentUrl = new URL(window.location.href);
           
-          if (sportId) {
-            currentUrl.searchParams.set('sport_id', sportId);
-          } else {
-            currentUrl.searchParams.delete('sport_id');
-          }
-          
-          // Update URL and fetch new data
-          window.history.pushState({}, '', currentUrl);
-          
-          // Show loading state
-          var groups = document.querySelectorAll('.standings-group');
-          groups.forEach(function(group) {
-            group.style.opacity = '0.5';
-            group.style.pointerEvents = 'none';
-          });
-          
-          // Reload page content (you can replace this with AJAX if needed)
-          setTimeout(function() {
-            window.location.reload();
-          }, 300);
-        });
-      }
-      
-      // Simple notification function
-      function showNotification(title, message, type) {
-        var notif = document.createElement('div');
-        notif.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; ' +
-          'background: white; padding: 1rem 1.5rem; border-radius: 12px; ' +
-          'box-shadow: 0 8px 25px rgba(0,0,0,0.15); max-width: 300px; ' +
-          'animation: slideInRight 0.3s ease-out;';
-        
-        var color = type === 'success' ? '#34C759' : '#0095FF';
-        var icon = type === 'success' ? 'check-circle-fill' : 'exclamation-circle-fill';
-        
-        notif.innerHTML = '<div style="display: flex; align-items: start; gap: 0.75rem;">' +
-          '<i class="bi bi-' + icon + '" style="font-size: 1.5rem; color: ' + color + ';"></i>' +
-          '<div>' +
-          '<strong style="color: #0B1F3F; display: block; margin-bottom: 0.25rem;">' + title + '</strong>' +
-          '<p style="color: #5a6c7d; margin: 0; font-size: 0.9rem;">' + message + '</p>' +
-          '</div>' +
-          '</div>';
-        
-        document.body.appendChild(notif);
-        
-        setTimeout(function() {
-          notif.style.animation = 'slideOutRight 0.3s ease-out';
-          setTimeout(function() {
-            document.body.removeChild(notif);
-          }, 300);
-        }, 3000);
-      }
-      
-      // Add animation styles
-      var style = document.createElement('style');
-      style.textContent = '@keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }' +
-        '@keyframes slideOutRight { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100px); } }';
-      document.head.appendChild(style);
-      
-      // Intersection Observer for animations
-      if ('IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              entry.target.style.opacity = '1';
-              entry.target.style.transform = 'translateY(0)';
+  if !isReadOnly
+    #scoreModal.modal.fade(tabindex='-1')
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title Input Skor Padel
+            button.btn-close(type='button', data-bs-dismiss='modal')
+
+          .modal-body
+            small.text-muted
+              | Bingung cara isi?
+              a.ms-1(
+                href="#"
+                data-bs-dismiss="modal"
+                data-bs-toggle="modal"
+                data-bs-target="#guideModal"
+              ) Lihat panduan
+
+            input(type="hidden" id="standingId")
+            input(type="hidden" id="matchAction")
+
+            .mb-3
+              label.form-label Game Menang
+              input.form-control(type="number" id="gameWin" min="0" value="0")
+
+            .mb-3
+              label.form-label Game Kalah
+              input.form-control(type="number" id="gameLoss" min="0" value="0")
+
+          .modal-footer
+            button.btn.btn-secondary(data-bs-dismiss='modal') Batal
+            button.btn.btn-primary(type="button" id="saveScore") Simpan
+
+  if !isReadOnly
+    script.
+      window.CURRENT_SPORT_ID = #{query && query.sport_id ? query.sport_id : 'null'};
+
+    //- Custom JavaScript
+    script.
+      (function() {
+        // Sport filter without reload
+        var sportFilter = document.getElementById('sportFilter');
+        if (sportFilter) {
+          sportFilter.addEventListener('change', function(e) {
+            var sportId = this.value;
+            var currentUrl = new URL(window.location.href);
+            
+            if (sportId) {
+              currentUrl.searchParams.set('sport_id', sportId);
+            } else {
+              currentUrl.searchParams.delete('sport_id');
             }
+            
+            // Update URL and fetch new data
+            window.history.pushState({}, '', currentUrl);
+            
+            // Show loading state
+            var groups = document.querySelectorAll('.standings-group');
+            groups.forEach(function(group) {
+              group.style.opacity = '0.5';
+              group.style.pointerEvents = 'none';
+            });
+            
+            // Reload page content (you can replace this with AJAX if needed)
+            setTimeout(function() {
+              window.location.reload();
+            }, 300);
           });
-        }, {
-          threshold: 0.1,
-          rootMargin: '0px 0px -50px 0px'
-        });
-        
-        // Observe all groups
-        document.querySelectorAll('.standings-group').forEach(function(group) {
-          observer.observe(group);
-        });
-      }
-      
-      // Add hover effects
-      var rows = document.querySelectorAll('.standings-table tbody tr');
-      rows.forEach(function(row) {
-        row.addEventListener('mouseenter', function() {
-          this.style.transition = 'all 0.3s ease';
-        });
-      });
-      document.querySelectorAll('.action-buttons button').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.getElementById('standingId').value = btn.dataset.id;
-          document.getElementById('gameWin').value = 0;
-          document.getElementById('gameLoss').value = 0;
-
-          new bootstrap.Modal(document.getElementById('scoreModal')).show();
-        });
-      });
-
-      document.getElementById('saveScore').addEventListener('click', () => {
-        const id = document.getElementById('standingId').value;
-        const gw = Number(document.getElementById('gameWin').value);
-        const gl = Number(document.getElementById('gameLoss').value);
-
-        if (gw === gl) {
-          alert('Game menang dan kalah tidak boleh sama');
-          return;
         }
-
-        const action = gw > gl ? 'win' : 'loss';
-        fetch(
-          `/subadmin/standings/${id}/submit?game_win=${gw}&game_loss=${gl}&result=${action}&sport_id=${window.CURRENT_SPORT_ID}`
-        )
-        .then(res => res.json())
-        .then(() => {
-          // versi simpel
-          location.reload();
-
-          // versi proper (advanced):
-          // update row DOM + re-sort table tanpa reload
+        
+        // Simple notification function
+        function showNotification(title, message, type) {
+          var notif = document.createElement('div');
+          notif.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; ' +
+            'background: white; padding: 1rem 1.5rem; border-radius: 12px; ' +
+            'box-shadow: 0 8px 25px rgba(0,0,0,0.15); max-width: 300px; ' +
+            'animation: slideInRight 0.3s ease-out;';
+          
+          var color = type === 'success' ? '#34C759' : '#0095FF';
+          var icon = type === 'success' ? 'check-circle-fill' : 'exclamation-circle-fill';
+          
+          notif.innerHTML = '<div style="display: flex; align-items: start; gap: 0.75rem;">' +
+            '<i class="bi bi-' + icon + '" style="font-size: 1.5rem; color: ' + color + ';"></i>' +
+            '<div>' +
+            '<strong style="color: #0B1F3F; display: block; margin-bottom: 0.25rem;">' + title + '</strong>' +
+            '<p style="color: #5a6c7d; margin: 0; font-size: 0.9rem;">' + message + '</p>' +
+            '</div>' +
+            '</div>';
+          
+          document.body.appendChild(notif);
+          
+          setTimeout(function() {
+            notif.style.animation = 'slideOutRight 0.3s ease-out';
+            setTimeout(function() {
+              document.body.removeChild(notif);
+            }, 300);
+          }, 3000);
+        }
+        
+        // Add animation styles
+        var style = document.createElement('style');
+        style.textContent = '@keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }' +
+          '@keyframes slideOutRight { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100px); } }';
+        document.head.appendChild(style);
+        
+        // Intersection Observer for animations
+        if ('IntersectionObserver' in window) {
+          var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+              }
+            });
+          }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+          });
+          
+          // Observe all groups
+          document.querySelectorAll('.standings-group').forEach(function(group) {
+            observer.observe(group);
+          });
+        }
+        
+        // Add hover effects
+        var rows = document.querySelectorAll('.standings-table tbody tr');
+        rows.forEach(function(row) {
+          row.addEventListener('mouseenter', function() {
+            this.style.transition = 'all 0.3s ease';
+          });
         });
-      });
-    })();
+        document.querySelectorAll('.action-buttons button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.getElementById('standingId').value = btn.dataset.id;
+            document.getElementById('gameWin').value = 0;
+            document.getElementById('gameLoss').value = 0;
+
+            new bootstrap.Modal(document.getElementById('scoreModal')).show();
+          });
+        });
+
+        document.getElementById('saveScore').addEventListener('click', () => {
+          const id = document.getElementById('standingId').value;
+          const gw = Number(document.getElementById('gameWin').value);
+          const gl = Number(document.getElementById('gameLoss').value);
+
+          if (gw === gl) {
+            alert('Game menang dan kalah tidak boleh sama');
+            return;
+          }
+
+          const action = gw > gl ? 'win' : 'loss';
+          fetch(
+            `/subadmin/standings/${id}/submit?game_win=${gw}&game_loss=${gl}&result=${action}&sport_id=${window.CURRENT_SPORT_ID}`
+          )
+          .then(res => res.json())
+          .then(() => {
+            // versi simpel
+            location.reload();
+
+            // versi proper (advanced):
+            // update row DOM + re-sort table tanpa reload
+          });
+        });
+      })();
