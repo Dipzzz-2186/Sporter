@@ -450,10 +450,29 @@ block content
           | Klasemen #{currentSport ? currentSport.name : 'Cabang'}
 
         - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin' : '/subadmin'
+        - const mode = (query && query.mode) ? String(query.mode) : 'team';
+        - const sportParam = (query && query.sport_id) ? `sport_id=${query.sport_id}` : '';
 
         a.btn.btn-secondary(href=backUrl)
           i.bi.bi-arrow-left.me-1
           | Kembali
+
+        .mt-3.d-flex.gap-2.flex-wrap
+          a.btn.btn-sm(
+            class=(mode === 'team' ? 'btn-primary' : 'btn-outline-light')
+            href=`/subadmin/standings?${sportParam}&mode=team`
+          )
+            i.bi.bi-people-fill.me-1
+            | Klasemen Tim
+
+          a.btn.btn-sm(
+            class=(mode === 'individual' ? 'btn-primary' : 'btn-outline-light')
+            href=`/subadmin/standings?${sportParam}&mode=individual`
+          )
+            i.bi.bi-person-fill.me-1
+            | Klasemen Individual
+
+
 
       // === FILTER CABANG (HANYA JIKA LEBIH DARI 1) ===
       if sports && sports.length > 1
@@ -461,15 +480,18 @@ block content
           label.mb-2
             i.bi.bi-funnel-fill
             | Pilih Cabang Olahraga
+          - const mode = (query && query.mode) ? String(query.mode) : 'team';
+
           select.form-select(
             name="sport_id"
-            onchange="location.href='?sport_id=' + this.value"
+            onchange=`location.href='?sport_id=' + this.value + '&mode=${mode}'`
           )
             each s in sports
               option(
                 value=s.id
                 selected=(query && Number(query.sport_id) === s.id)
               )= s.name
+
 
       if standings.length
         .standings-group
@@ -483,7 +505,7 @@ block content
                 thead
                   tr
                     th No.
-                    th Nama Tim
+                    th= (mode === 'individual' ? 'Nama Athlete' : 'Nama Tim')
 
                     if isPadel
                       th.text-center Jumlah Match
@@ -517,8 +539,12 @@ block content
 
                       td
                         .team-name
-                          i.bi.bi-shield-fill-check
+                          if mode === 'individual'
+                            i.bi.bi-person-fill-check
+                          else
+                            i.bi.bi-shield-fill-check
                           b= row.team_name
+
 
                       if isPadel
                         td.text-center.stat-cell= row.total_match

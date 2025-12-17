@@ -114,17 +114,17 @@ async function validateCompetitorForMode({ sportId, competitorTeamId, matchMode 
   }
 
   // hitung roster dari athletes (ini roster kamu)
+  // hitung roster dari team_members
   const [[c]] = await db.query(
-    'SELECT COUNT(*) AS member_count FROM athletes WHERE team_id = ?',
+    'SELECT COUNT(*) AS member_count FROM team_members WHERE team_id = ?',
     [competitorTeamId]
   );
   const memberCount = Number(c?.member_count || 0);
 
   // ✅ STRICT RULES
   if (matchMode === 'individual') {
-    if (memberCount !== 1) {
-      throw new Error(`Peserta INDIVIDUAL wajib punya 1 anggota. Sekarang: ${memberCount}.`);
-    }
+    // cukup cek is_individual=1 (udah lu cek di atas)
+    // roster tidak perlu dicek
     return;
   }
 
@@ -1504,29 +1504,29 @@ exports.listTeams = async (req, res) => {
 
 
 // GET /subadmin/teams/:id/members
+// GET /subadmin/teams/:id/members
 exports.renderTeamMembers = async (req, res) => {
   try {
     const teamId = Number(req.params.id);
 
-    const [[team]] = await db.query(
-      `SELECT t.id, t.name, t.sport_id, s.name AS sport_name
-       FROM teams t
-       LEFT JOIN sports s ON s.id = t.sport_id
-       WHERE t.id = ? LIMIT 1`,
-      [teamId]
-    );
-    if (!team) {
-      req.flash('error', 'Tim tidak ditemukan.');
-      return res.redirect('/subadmin/teams');
-    }
+    const team = await assertCanAccessTeam(req, teamId);
 
     const [members] = await db.query(
-      `SELECT id, name, position, number, birth_date, created_at
-       FROM athletes
-       WHERE team_id = ?
-       ORDER BY id DESC`,
+      `SELECT
+          tm.id,
+          tm.athlete_id,
+          a.name,
+          tm.position,
+          tm.number,
+          tm.birth_date,
+          tm.created_at
+      FROM team_members tm
+      JOIN athletes a ON a.id = tm.athlete_id
+      WHERE tm.team_id = ?
+      ORDER BY tm.created_at DESC`,
       [teamId]
     );
+
 
     return res.render('subadmin/team_members', {
       title: 'Kelola Anggota',
@@ -1535,11 +1535,10 @@ exports.renderTeamMembers = async (req, res) => {
     });
   } catch (err) {
     console.error('renderTeamMembers error', err);
-    req.flash('error', 'Gagal memuat anggota tim.');
+    req.flash('error', err.message || 'Gagal memuat anggota tim.');
     return res.redirect('/subadmin/teams');
   }
 };
-
 
 // POST /subadmin/teams/:id/members
 exports.addTeamMember = async (req, res) => {
@@ -1555,16 +1554,26 @@ exports.addTeamMember = async (req, res) => {
       return res.redirect(`/subadmin/teams/${teamId}/members`);
     }
 
-    const [[team]] = await db.query(`SELECT sport_id FROM teams WHERE id=? LIMIT 1`, [teamId]);
+    // ambil team + sport_id
+    const [[team]] = await db.query(`SELECT id, sport_id FROM teams WHERE id=? LIMIT 1`, [teamId]);
     if (!team) {
       req.flash('error', 'Tim tidak ditemukan.');
       return res.redirect('/subadmin/teams');
     }
 
+    // 1) buat athlete
+    const [ins] = await db.query(
+      `INSERT INTO athletes (sport_id, name, created_at, updated_at)
+       VALUES (?, ?, NOW(), NOW())`,
+      [team.sport_id, name]
+    );
+    const athleteId = ins.insertId;
+
+    // 2) link ke team_members
     await db.query(
-      `INSERT INTO athletes (sport_id, team_id, user_id, name, birth_date, number, position, photo_url, created_at, updated_at)
-       VALUES (?, ?, NULL, ?, ?, ?, ?, NULL, NOW(), NOW())`,
-      [team.sport_id, teamId, name, birth_date, number || null, position || null]
+      `INSERT INTO team_members (team_id, athlete_id, position, number, birth_date)
+       VALUES (?, ?, ?, ?, ?)`,
+      [teamId, athleteId, position || null, number || null, birth_date]
     );
 
     req.flash('success', 'Anggota berhasil ditambahkan.');
@@ -1577,14 +1586,14 @@ exports.addTeamMember = async (req, res) => {
 };
 
 
-
 // POST /subadmin/teams/:teamId/members/:memberId/delete
 exports.deleteTeamMember = async (req, res) => {
   try {
     const teamId = Number(req.params.teamId);
     const athleteId = Number(req.params.athleteId);
 
-    await db.query(`DELETE FROM athletes WHERE id = ? AND team_id = ?`, [athleteId, teamId]);
+    // hapus relasi dulu
+    await db.query(`DELETE FROM team_members WHERE team_id = ? AND athlete_id = ?`, [teamId, athleteId]);
 
     req.flash('success', 'Anggota berhasil dihapus.');
     return res.redirect(`/subadmin/teams/${teamId}/members`);
@@ -1594,9 +1603,6 @@ exports.deleteTeamMember = async (req, res) => {
     return res.redirect(`/subadmin/teams/${req.params.teamId}/members`);
   }
 };
-
-
-
 
 
 // ===============================

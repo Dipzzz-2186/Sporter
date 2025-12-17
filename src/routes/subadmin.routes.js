@@ -104,4 +104,5 @@ router.get('/teams/:id/members', subadminCtrl.renderTeamMembers);
 router.post('/teams/:id/members', subadminCtrl.addTeamMember);
 router.post('/teams/:teamId/members/:athleteId/delete', subadminCtrl.deleteTeamMember);
 
+
 module.exports = router;

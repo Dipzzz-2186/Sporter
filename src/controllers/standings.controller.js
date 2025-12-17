@@ -1,42 +1,54 @@
 // src/controllers/standings.controller.js
 const db = require('../config/db');
 
-async function syncPadelStandings(sportId) {
+async function syncPadelStandings(sportId, mode) {
+  const modeWhere =
+    mode === 'individual'
+      ? 'AND t.is_individual = 1'
+      : 'AND (t.is_individual = 0 OR t.is_individual IS NULL)';
+
   await db.query(`
     INSERT INTO standings (
-      sport_id,
-      team_id,
-      played,
-      win,
-      draw,
-      loss,
-      game_win,
-      game_loss,
-      pts
+      sport_id, team_id, played, win, draw, loss, game_win, game_loss, pts
     )
     SELECT DISTINCT
       m.sport_id,
       t.id,
-      0, 0, 0, 0, 0, 0, 0
+      0,0,0,0,0,0,0
     FROM matches m
     JOIN teams t ON t.id IN (m.home_team_id, m.away_team_id)
     WHERE m.sport_id = ?
-    AND NOT EXISTS (
-      SELECT 1
-      FROM standings s
-      WHERE s.sport_id = m.sport_id
-      AND s.team_id = t.id
-    )
+      ${modeWhere}
+      AND NOT EXISTS (
+        SELECT 1 FROM standings s
+        WHERE s.sport_id = m.sport_id AND s.team_id = t.id
+      )
   `, [sportId]);
 }
+
 
 exports.listStandings = async (req, res) => {
   try {
     const allowed = req.allowedSports || [];
+    const mode = (req.query.mode === 'individual') ? 'individual' : 'team';
+    const isIndividual = mode === 'individual';
+    
+
+    const ids = (allowed || []).map(Number).filter(Boolean);
+    if (!ids.length) {
+      return res.render('subadmin/standings', {
+        standings: [],
+        sports: [],
+        query: req.query || {},
+        isPadel: false,
+        mode
+      });
+    }
+
 
     const [sports] = await db.query(
-      `SELECT id, name FROM sports WHERE id IN (?) ORDER BY name`,
-      [allowed]
+      `SELECT id, name FROM sports WHERE id IN (${ids.map(()=>'?').join(',')}) ORDER BY name`,
+      ids
     );
 
     const sportId = req.query.sport_id
@@ -48,7 +60,8 @@ exports.listStandings = async (req, res) => {
         standings: [],
         sports,
         query: {},
-        isPadel: false
+        isPadel: false,
+        mode
       });
     }
 
@@ -57,65 +70,68 @@ exports.listStandings = async (req, res) => {
       [sportId]
     );
 
-    const isPadel = sport.name.toLowerCase() === 'padel';
+   const isPadel = sport.name.toLowerCase() === 'padel';
 
-    if (isPadel) {
-      await syncPadelStandings(sportId);
+    let rows = [];
 
-      const [rows] = await db.query(`
+    if (isPadel && mode === 'individual') {
+      // ✅ Padel Individual: ambil dari ATHLETES
+      ;[rows] = await db.query(`
+        SELECT
+          a.id,
+          a.slug,
+          sp.name AS sport_name,
+          a.name AS athlete_name,
+          a.points,
+          a.match_played,
+          a.match_won,
+          a.match_lost,
+          a.titles,
+          pw.name AS paired_with_name,
+          pw.slug AS paired_with_slug
+        FROM athletes a
+        JOIN sports sp ON sp.id = a.sport_id
+        LEFT JOIN athletes pw ON pw.id = a.paired_with_athlete_id
+        WHERE a.sport_id = ?
+        ORDER BY a.points DESC, a.match_won DESC, a.titles DESC, a.name ASC
+      `, [sportId]);
+
+    } else {
+      // ✅ TEAM (termasuk padel team & cabang lain)
+      if (isPadel) await syncPadelStandings(sportId, mode); // optional: cuma perlu buat padel team
+
+      ;[rows] = await db.query(`
         SELECT
           s.id,
+          s.sport_id,
+          sp.name AS sport_name,
+          t.id AS team_id,
           t.name AS team_name,
-        (
-          SELECT COUNT(*)
-          FROM matches m
-          WHERE m.sport_id = s.sport_id
-            AND s.team_id IN (m.home_team_id, m.away_team_id)
-        ) AS total_match,
+          s.played,
           s.win,
+          s.draw,
           s.loss,
           s.game_win,
           s.game_loss,
-          (s.game_win - s.game_loss) AS game_diff,
           s.pts
         FROM standings s
         JOIN teams t ON t.id = s.team_id
+        JOIN sports sp ON sp.id = s.sport_id
         WHERE s.sport_id = ?
-        ORDER BY s.pts DESC, game_diff DESC
-      `, [sportId]);
-
-      return res.render('subadmin/standings', {
-        standings: rows,
-        sports,
-        query: { sport_id: sportId },
-        isPadel: true
-      });
+          AND COALESCE(t.is_individual, 0) = ?
+        ORDER BY s.pts DESC
+      `, [sportId, 0]); // team = 0
     }
 
-    // === CABANG LAIN ===
-    const [rows] = await db.query(`
-      SELECT
-        s.id,
-        t.name AS team_name,
-        s.played,
-        s.win,
-        s.draw,
-        s.loss,
-        s.goals_for,
-        s.goals_against,
-        (s.goals_for - s.goals_against) AS goal_diff,
-        s.pts
-      FROM standings s
-      JOIN teams t ON t.id = s.team_id
-      WHERE s.sport_id = ?
-      ORDER BY s.pts DESC, goal_diff DESC
-    `, [sportId]);
+
+
 
     return res.render('subadmin/standings', {
       standings: rows,
       sports,
-      query: { sport_id: sportId },
-      isPadel: false
+      query: { ...req.query, sport_id: sportId, mode }, // ✅ KEEP MODE
+      isPadel,
+      mode
     });
 
   } catch (err) {
@@ -138,7 +154,9 @@ exports.addWin = async (req, res) => {
     WHERE id = ?
   `, [game_win, game_loss, id]);
 
-  res.redirect(`/subadmin/standings?sport_id=${req.query.sport_id}`);
+ const mode = req.query.mode === 'individual' ? 'individual' : 'team';
+ res.redirect(`/subadmin/standings?sport_id=${req.query.sport_id}&mode=${mode}`);
+
 };
 
 exports.addLoss = async (req, res) => {

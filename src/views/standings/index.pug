@@ -469,16 +469,37 @@ block content
 
       // ===== FILTER =====
       .filter-section
-        label.mb-2
-          i.bi.bi-funnel-fill
-          | Pilih Cabang Olahraga
-        select#sportFilter.form-select(name="sport_id")
-          option(value="") Semua Cabang
-          each s in sports
-            option(
-              value=s.id
-              selected=(query && Number(query.sport_id) === s.id)
-            )= s.name
+      label.mb-2
+        i.bi.bi-funnel-fill
+        | Pilih Cabang Olahraga
+
+      select#sportFilter.form-select(name="sport_id")
+        option(value="") Semua Cabang
+        each s in sports
+          option(
+            value=s.id
+            selected=(query && Number(query.sport_id) === s.id)
+          )= s.name
+
+      // ===== MODE TOGGLE (DI LUAR SELECT!) =====
+      - const currentMode = (mode || 'team');
+      - const sportId = (query && query.sport_id) ? query.sport_id : '';
+      - const padelIndividual = (isPadel && currentMode === 'individual');
+
+      .d-flex.flex-wrap.gap-2.mt-3
+        a.btn.btn-sm(
+          href='/subadmin/standings?sport_id=' + sportId + '&mode=team'
+          class=(currentMode === 'team' ? 'btn-primary' : 'btn-outline-primary')
+        )
+          i.bi.bi-people-fill.me-1
+          | Klasemen Tim
+
+        a.btn.btn-sm(
+          href='/subadmin/standings?sport_id=' + sportId + '&mode=individual'
+          class=(currentMode === 'individual' ? 'btn-primary' : 'btn-outline-primary')
+        )
+          i.bi.bi-person-badge.me-1
+          | Klasemen Individual
 
       // ===== TABLE =====
       if standings && standings.length
@@ -491,16 +512,17 @@ block content
           .standings-table
             .table-responsive
               table.table.table-hover
-                thead
+                thead 
                   tr
                     th No.
-                    th Nama Tim
-
-                    if isPadel
-                      th.text-center Jumlah Match
-                      th.text-center M-K
-                      th.text-center Selisih Skor
+                    if padelIndividual
+                      th Nama Athlete
+                      th Pasangan
+                      th.text-center MP
+                      th.text-center W-L
+                      th.text-center Titles
                     else
+                      th Nama Tim
                       th.text-center PJ
                       th.text-center M
                       th.text-center S
@@ -508,54 +530,40 @@ block content
                       th.text-center GM
                       th.text-center GK
                       th.text-center SG
-
-                    th.text-center Poin
+                      th.text-center Poin
 
                 tbody
                   each row, index in standings
                     tr
-                      // === RANK BADGE ===
+                      // NO
                       td
-                        if index === 0
-                          span.position-badge.position-1 1
-                        else if index === 1
-                          span.position-badge.position-2 2
-                        else if index === 2
-                          span.position-badge.position-3 3
-                        else
-                          span.position-badge.position-other= index + 1
+                        - const posClass = (index === 0) ? 'position-1' : (index === 1) ? 'position-2' : (index === 2) ? 'position-3' : 'position-other';
+                        span.position-badge(class=posClass)= index + 1
 
-                      // === TEAM ===
-                      td
-                        .team-name
-                          i.bi.bi-shield-fill-check
-                          b= row.team_name
+                      if padelIndividual
+                        td
+                          .team-name
+                            i.bi.bi-person-badge
+                            a.text-decoration-none.fw-bold(href='/athletes/' + row.slug)= row.athlete_name
 
-                      // === DATA ===
-                      if isPadel
-                        td.text-center.stat-cell= row.total_match
-                        td.text-center.stat-cell #{row.win} - #{row.loss}
-                        td.text-center.stat-cell
-                          | #{row.game_win} - #{row.game_loss}
-                          if (row.game_win - row.game_loss) >= 0
-                            span.text-success.ms-1 (+#{row.game_win - row.game_loss})
-                          else
-                            span.text-danger.ms-1 (#{row.game_win - row.game_loss})
+                        td= row.paired_with_name || '-'
+                        td.text-center= row.match_played
+                        td.text-center #{row.match_won} - #{row.match_lost}
+                        td.text-center= row.titles
+                        td.text-center.points-cell= row.points
                       else
-                        td.text-center.stat-cell= row.played
-                        td.text-center.stat-cell= row.win
-                        td.text-center.stat-cell= row.draw
-                        td.text-center.stat-cell= row.loss
-                        td.text-center.stat-cell= row.goals_for
-                        td.text-center.stat-cell= row.goals_against
-                        td.text-center.stat-cell
-                          if row.goal_diff >= 0
-                            span.text-success +#{row.goal_diff}
-                          else
-                            span.text-danger #{row.goal_diff}
+                        td
+                          .team-name
+                            i.bi.bi-people-fill
+                            a.text-decoration-none.fw-bold(href='/teams/' + row.team_id)= row.team_name
 
-                      // === POINTS ===
-                      td.text-center.points-cell= row.pts
+                        td.text-center= row.played
+                        td.text-center= row.win
+                        td.text-center= row.draw
+                        td.text-center= row.loss
+                        td.text-center= row.game_win
+                        td.text-center= row.game_loss
+                        td.text-center.points-cell= row.pts
 
       else
         .empty-state
@@ -563,6 +571,7 @@ block content
             i.bi.bi-clipboard2-x
           h4 Belum Ada Klasemen
           p Belum ada data klasemen untuk cabang ini.
+
 
   // Loading overlay
   #loadingOverlay.loading-overlay
@@ -582,6 +591,10 @@ block content
 
         if (sportId) currentUrl.searchParams.set('sport_id', sportId);
         else currentUrl.searchParams.delete('sport_id');
+        // keep mode (team/athlete) when switching sports
+        var mode = currentUrl.searchParams.get('mode') || 'team';
+        currentUrl.searchParams.set('mode', mode);
+
         
         // Show loading overlay
         if (loadingOverlay) {

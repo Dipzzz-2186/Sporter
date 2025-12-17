@@ -1,0 +1,23 @@
+extends ../layout/main
+
+block content
+  .container.py-4
+    a.btn.btn-sm.btn-outline-secondary.mb-3(href="/standings")
+      i.bi.bi-arrow-left.me-1
+      | Kembali
+
+    h2.fw-bold.mb-1= team.name
+    p.text-muted.mb-4
+      | Cabang: #{team.sport_name}
+
+    .card.shadow-sm.border-0
+      .card-body
+        h5.fw-bold.mb-3 Anggota Tim
+        if members && members.length
+          ul.list-group
+            each m in members
+              li.list-group-item.d-flex.justify-content-between.align-items-center
+                span= m.name
+                small.text-muted= m.email
+        else
+          p.text-muted.mb-0 Belum ada anggota tim.

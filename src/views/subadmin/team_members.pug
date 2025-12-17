@@ -44,5 +44,5 @@ block content
               td= m.number || '-'
               td= m.created_at
               td.text-end
-                form(method="POST" action=`/subadmin/teams/${team.id}/members/${m.id}/delete` style="display:inline")
+                form(method="POST" action=`/subadmin/teams/${team.id}/members/${m.athlete_id}/delete` style="display:inline")
                   button.btn.btn-sm.btn-outline-danger(type="submit" onclick="return confirm('Hapus anggota ini?')") Hapus

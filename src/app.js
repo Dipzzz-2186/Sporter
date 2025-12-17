@@ -11,6 +11,8 @@ const subadminRoutes = require('./routes/subadmin.routes');
 const eventRoutes = require("./routes/event.routes");
 const standingsRoutes = require("./routes/standings.routes");
 const sellerRoutes = require("./routes/seller.routes");
+const athleteRoutes = require('./routes/athlete.routes');
+const teamRoutes = require('./routes/team.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -68,6 +70,9 @@ app.use("/", authRoutes); // /login, /logout
 app.use("/", mediaRoutes);
 app.use("/", require("./routes/store.routes"));
 app.use('/orders', require('./routes/orders.routes'));
+app.use('/athletes', athleteRoutes);
+app.use('/teams', teamRoutes);
+
 
 // mount admin/subadmin AFTER middleware
 app.use("/admin", adminRoutes);
