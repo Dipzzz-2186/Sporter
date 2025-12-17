@@ -5,22 +5,39 @@ block content
     h3 Detail Pesanan ##{order.id}
 
     form(method="POST" action=`/orders/${order.id}/holders`)
+      // ===== INPUT NAMA PEMEGANG (PER TIKET) =====
       each t, i in tickets
         .card.mb-3
           .card-body
             label.form-label
               | Nama Pemegang Tiket #{i + 1}
+
             input.form-control(
               type="text"
               name=`names[${i}][name]`
               value=t.holder_name || ''
               required
             )
-            input(type="hidden" name=`names[${i}][ticket_id]` value=t.id)
 
-            if t.holder_name
-              hr
-              p.text-success.mb-1 ✔ Tiket Valid
-              img(src=qrDemo width="160")
+            input(
+              type="hidden"
+              name=`names[${i}][ticket_id]`
+              value=t.id
+            )
 
-      button.btn.btn-primary.mt-3 Order Ticket
+      // ===== QR CODE (SATU KALI, DI BAWAH) =====
+      .text-center.mt-4
+        hr
+        p.text-success.fw-bold.mb-2
+          i.bi.bi-check-circle-fill.me-1
+          | Tiket Valid
+
+        img(
+          src=qrDemo
+          width="180"
+          alt="QR Ticket"
+        )
+
+      button.btn.btn-primary.mt-4.w-100(type="submit")
+        i.bi.bi-ticket-perforated.me-2
+        | Simpan & Konfirmasi Tiket
