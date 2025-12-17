@@ -1,48 +1,618 @@
 extends ../layout/main
 
 block content
-  .container.py-4
-    a.btn.btn-sm.btn-outline-secondary.mb-3(href="/subadmin/teams") ← Kembali
-    h3.mb-1= team.name
-    p.text-muted.mb-4 Cabang: #{team.sport_name || '-'}
+  style.
+    /* Team Members Page Styles */
+    .team-members-hero {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      padding: 2.5rem 0;
+      position: relative;
+      overflow: hidden;
+    }
 
-    .card.mb-4
+    .team-members-hero::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .team-members-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(52, 199, 255, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .team-header-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .team-back-btn {
+      background: rgba(255, 255, 255, 0.1) !important;
+      border: 2px solid rgba(255, 255, 255, 0.2) !important;
+      color: white !important;
+      backdrop-filter: blur(10px);
+      border-radius: 10px !important;
+      padding: 0.5rem 1.2rem !important;
+      font-size: 0.9rem !important;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .team-back-btn:hover {
+      background: rgba(255, 255, 255, 0.2) !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
+      transform: translateY(-2px);
+    }
+
+    .team-title {
+      color: white;
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.25rem;
+    }
+
+    .team-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+    }
+
+    .team-sport-badge {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      color: white !important;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Add Member Card */
+    .add-member-card {
+      background: white;
+      border-radius: 20px;
+      border: 2px solid #e8edf2;
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .add-member-card:hover {
+      box-shadow: 0 15px 30px rgba(0, 149, 255, 0.1);
+      border-color: #0095FF;
+    }
+
+    .add-member-card .card-header {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-bottom: 2px solid #e8edf2;
+      border-radius: 20px 20px 0 0 !important;
+      padding: 1.5rem;
+    }
+
+    .add-member-title {
+      color: #0B1F3F;
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .add-member-subtitle {
+      color: #5a6c7d;
+      font-size: 0.95rem;
+    }
+
+    .add-member-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .form-control {
+      border: 2px solid #e8edf2;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .form-control:focus {
+      border-color: #0095FF;
+      box-shadow: 0 0 0 0.25rem rgba(0, 149, 255, 0.15);
+    }
+
+    .form-label {
+      color: #0B1F3F;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.3);
+    }
+
+    /* Members Table */
+    .members-table-container {
+      background: white;
+      border-radius: 20px;
+      border: 2px solid #e8edf2;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out 0.2s backwards;
+    }
+
+    .members-table-header {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 1.5rem;
+      border-bottom: 2px solid #e8edf2;
+    }
+
+    .members-table-title {
+      color: #0B1F3F;
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .members-count-badge {
+      background: rgba(0, 149, 255, 0.1);
+      color: #0095FF;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid rgba(0, 149, 255, 0.2);
+    }
+
+    .table {
+      margin-bottom: 0;
+    }
+
+    .table thead th {
+      background: #f8f9fa;
+      color: #0B1F3F;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 1rem 1.5rem;
+      border-bottom: 2px solid #e8edf2;
+      white-space: nowrap;
+    }
+
+    .table tbody td {
+      color: #5a6c7d;
+      padding: 1.25rem 1.5rem;
+      font-size: 0.95rem;
+      vertical-align: middle;
+      border-bottom: 1px solid #e8edf2;
+    }
+
+    .table tbody tr {
+      transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+      background: rgba(0, 149, 255, 0.03);
+      transform: translateX(5px);
+    }
+
+    .table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .member-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .member-name {
+      color: #0B1F3F;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .member-position {
+      background: rgba(40, 167, 69, 0.1);
+      color: #28a745;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .member-number {
+      background: rgba(0, 149, 255, 0.1);
+      color: #0095FF;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .member-date {
+      color: #5a6c7d;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .btn-outline-danger {
+      border: 2px solid #e8edf2;
+      color: #dc3545;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-outline-danger:hover {
+      background: rgba(220, 53, 69, 0.1);
+      border-color: #dc3545;
+      transform: translateY(-2px);
+    }
+
+    /* Empty State */
+    .empty-state-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 2px dashed #d0d0d0;
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      text-align: center;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .empty-state-icon {
+      width: 80px;
+      height: 80px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .empty-state-icon i {
+      font-size: 2.5rem;
+      color: #adb5bd;
+    }
+
+    .empty-state-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.75rem;
+      color: #0B1F3F;
+      letter-spacing: 1px;
+      margin-bottom: 0.75rem;
+    }
+
+    .empty-state-text {
+      color: #5a6c7d;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+      .team-title {
+        font-size: 2rem;
+      }
+      
+      .team-members-hero {
+        padding: 2rem 0;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .team-title {
+        font-size: 1.75rem;
+      }
+      
+      .table-responsive {
+        border-radius: 15px;
+        border: 2px solid #e8edf2;
+      }
+      
+      .table thead {
+        display: none;
+      }
+      
+      .table tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 2px solid #e8edf2;
+        border-radius: 15px;
+        overflow: hidden;
+      }
+      
+      .table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #e8edf2;
+      }
+      
+      .table tbody td:before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: #0B1F3F;
+        font-size: 0.9rem;
+        margin-right: 1rem;
+      }
+      
+      .table tbody td:last-child {
+        border-bottom: none;
+        justify-content: flex-end;
+      }
+      
+      .empty-state-card {
+        padding: 2rem 1.5rem;
+      }
+    }
+
+  // Hero Section
+  .team-members-hero
+    .container
+      .team-header-content
+        a.btn.btn-sm.btn-outline-secondary.mb-3.team-back-btn(href="/subadmin/teams")
+          i.bi.bi-arrow-left
+          | Kembali ke Daftar Tim
+        
+        .d-flex.flex-wrap.justify-content-between.align-items-start.gap-3.mb-3
+          div
+            h3.team-title.mb-2= team.name
+            p.team-subtitle.mb-0 
+              | Kelola anggota tim 
+              span.fw-semibold #{team.name}
+          if team.sport_name
+            span.badge.team-sport-badge
+              i.bi.bi-trophy-fill
+              = team.sport_name
+
+  .container.py-4
+    // Add Member Form
+    .card.add-member-card.mb-4
+      .card-header.border-0
+        .row.align-items-center
+          .col
+            h5.add-member-title.mb-2 Tambah Anggota Baru
+            p.add-member-subtitle.mb-0 Isi data anggota tim di bawah ini
+          .col-auto
+            .add-member-icon
+              i.bi.bi-person-plus-fill
+      
       .card-body
         form(method="POST" action=`/subadmin/teams/${team.id}/members`)
-          .row.g-2.align-items-end
+          .row.g-3
+            .col-md-6
+              label.form-label(for="memberName") Nama Lengkap
+              .input-group
+                span.input-group-text.bg-transparent.border-end-0
+                  i.bi.bi-person.text-primary
+                input.form-control(type="text" id="memberName" name="name" required placeholder="Masukkan nama anggota")
+            
+            .col-md-6
+              label.form-label(for="memberPosition") Posisi
+              .input-group
+                span.input-group-text.bg-transparent.border-end-0
+                  i.bi.bi-gear.text-primary
+                input.form-control(type="text" id="memberPosition" name="position" placeholder="Posisi dalam tim (opsional)")
+            
             .col-md-4
-              label.form-label Nama Anggota
-              input.form-control(type="text" name="name" required)
-            .col-md-3
-              label.form-label Posisi (opsional)
-              input.form-control(type="text" name="position")
-            .col-md-2
-              label.form-label No (opsional)
-              input.form-control(type="text" name="number")
-            .col-md-3
-              label.form-label Tgl Lahir (opsional)
-              input.form-control(type="date" name="birth_date")
-            .col-12.d-grid.mt-2
-              button.btn.btn-primary(type="submit") Tambah Anggota
+              label.form-label(for="memberNumber") Nomor Punggung
+              .input-group
+                span.input-group-text.bg-transparent.border-end-0
+                  i.bi.bi-123.text-primary
+                input.form-control(type="text" id="memberNumber" name="number" placeholder="No (opsional)")
+            
+            .col-md-4
+              label.form-label(for="memberBirthDate") Tanggal Lahir
+              .input-group
+                span.input-group-text.bg-transparent.border-end-0
+                  i.bi.bi-calendar3.text-primary
+                input.form-control(type="date" id="memberBirthDate" name="birth_date")
+            
+            .col-md-4
+              label.form-label(for="memberPhone") No. Telepon (opsional)
+              .input-group
+                span.input-group-text.bg-transparent.border-end-0
+                  i.bi.bi-telephone.text-primary
+                input.form-control(type="tel" id="memberPhone" name="phone" placeholder="08xx-xxxx-xxxx")
+          
+          .d-flex.justify-content-end.mt-4
+            button.btn.btn-primary(type="submit")
+              i.bi.bi-plus-circle-fill.me-2
+              | Tambahkan Anggota
 
+    // Members List
     if !members || members.length === 0
-      .alert.alert-info Belum ada anggota di tim ini.
+      .empty-state-card
+        .empty-state-icon
+          i.bi.bi-people-fill
+        h3.empty-state-title Belum Ada Anggota
+        p.empty-state-text
+          | Tim ini belum memiliki anggota. Tambahkan anggota pertama menggunakan form di atas.
+        a.btn.btn-primary.mt-2(href="#")
+          i.bi.bi-person-plus.me-2
+          | Tambah Anggota
     else
-      table.table.table-striped.align-middle
-        thead
-          tr
-            th Nama
-            th Posisi
-            th No
-            th Dibuat
-            th.text-end Aksi
-        tbody
-          each m in members
-            tr
-              td= m.name
-              td= m.position || '-'
-              td= m.number || '-'
-              td= m.created_at
-              td.text-end
-                form(method="POST" action=`/subadmin/teams/${team.id}/members/${m.athlete_id}/delete` style="display:inline")
-                  button.btn.btn-sm.btn-outline-danger(type="submit" onclick="return confirm('Hapus anggota ini?')") Hapus
+      .members-table-container
+        .members-table-header
+          .d-flex.justify-content-between.align-items-center
+            div
+              h5.members-table-title Daftar Anggota Tim
+              p.mb-0.text-muted Semua anggota yang terdaftar dalam tim
+            span.badge.members-count-badge #{members.length} Anggota
+        
+        .table-responsive
+          table.table.table-hover
+            thead
+              tr
+                th(scope="col") #
+                th(scope="col") Nama Anggota
+                th(scope="col") Posisi
+                th(scope="col") No
+                th(scope="col") Tanggal Bergabung
+                th(scope="col" style="width: 120px;").text-end Aksi
+            tbody
+              each m, index in members
+                tr
+                  td(data-label="#")= index + 1
+                  td(data-label="Nama")
+                    .d-flex.align-items-center.gap-3
+                      .member-avatar
+                        = m.name.charAt(0).toUpperCase()
+                      .member-name= m.name
+                  td(data-label="Posisi")
+                    if m.position
+                      span.member-position= m.position
+                    else
+                      span.text-muted -
+                  td(data-label="No")
+                    if m.number
+                      .member-number= m.number
+                    else
+                      span.text-muted -
+                  td(data-label="Bergabung")
+                    .member-date
+                      i.bi.bi-calendar3.me-2
+                      = m.created_at
+                  td.text-end(data-label="Aksi")
+                    form(method="POST" action=`/subadmin/teams/${team.id}/members/${m.athlete_id}/delete` style="display:inline")
+                      button.btn.btn-outline-danger(type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus anggota ini?')")
+                        i.bi.bi-trash3
+                        span.d-none.d-md-inline Hapus
+
+  script.
+    (function() {
+      // Form validation
+      const form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          const nameInput = document.getElementById('memberName');
+          if (!nameInput.value.trim()) {
+            e.preventDefault();
+            nameInput.focus();
+            nameInput.classList.add('is-invalid');
+            
+            // Add error message
+            if (!nameInput.nextElementSibling || !nameInput.nextElementSibling.classList.contains('invalid-feedback')) {
+              const errorDiv = document.createElement('div');
+              errorDiv.className = 'invalid-feedback';
+              errorDiv.textContent = 'Nama anggota wajib diisi';
+              nameInput.parentNode.appendChild(errorDiv);
+            }
+          }
+        });
+      }
+      
+      // Remove error state on input
+      document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', function() {
+          this.classList.remove('is-invalid');
+          const errorDiv = this.parentNode.querySelector('.invalid-feedback');
+          if (errorDiv) {
+            errorDiv.remove();
+          }
+        });
+      });
+      
+      // Add confirmation for delete
+      document.querySelectorAll('form[action*="delete"]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+          if (!confirm('Anggota yang dihapus tidak dapat dikembalikan. Yakin ingin menghapus?')) {
+            e.preventDefault();
+          }
+        });
+      });
+      
+      // Add hover effects
+      const tableRows = document.querySelectorAll('tbody tr');
+      tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+          this.style.transition = 'all 0.3s ease';
+        });
+      });
+      
+      // Format date display
+      const dateCells = document.querySelectorAll('.member-date');
+      dateCells.forEach(cell => {
+        const dateText = cell.textContent.trim();
+        if (dateText) {
+          const date = new Date(dateText);
+          if (!isNaN(date)) {
+            const formatted = date.toLocaleDateString('id-ID', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            });
+            cell.innerHTML = `<i class="bi bi-calendar3 me-2"></i>${formatted}`;
+          }
+        }
+      });
+    })();
