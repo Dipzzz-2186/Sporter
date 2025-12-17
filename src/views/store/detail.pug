@@ -1,25 +1,1192 @@
 extends ../layout/main
 
 block content
-  .container
-    .row
-      .col-md-6
-        if product.image_url
-          img.img-fluid(src=product.image_url)
-      .col-md-6
-        h3= product.name
-        p.text-muted Seller: #{product.seller_name}
-        h4 Rp #{Number(product.price).toLocaleString('id-ID')}
-        p Stok: #{product.stock}
+  style.
+    :root {
+      --primary-color: #0095FF;
+      --primary-dark: #0066CC;
+      --primary-light: #34C7FF;
+      --secondary-dark: #0B1F3F;
+      --secondary-light: #152844;
+      --accent-color: #FF6B35;
+      --success-color: #00CC88;
+      --warning-color: #FFAA00;
+      --danger-color: #FF4757;
+      --gray-50: #F8FAFC;
+      --gray-100: #F1F5F9;
+      --gray-200: #E2E8F0;
+      --gray-300: #CBD5E1;
+      --gray-400: #94A3B8;
+      --gray-500: #64748B;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1E293B;
+      --gray-900: #0F172A;
+      --shadow-sm: 0 2px 8px rgba(0, 149, 255, 0.08);
+      --shadow-md: 0 8px 25px rgba(0, 149, 255, 0.12);
+      --shadow-lg: 0 15px 35px rgba(0, 149, 255, 0.15);
+      --shadow-xl: 0 25px 50px rgba(0, 149, 255, 0.2);
+      --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      --gradient-secondary: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary-light) 100%);
+      --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, #FF8E53 100%);
+      --gradient-success: linear-gradient(135deg, var(--success-color) 0%, #00E699 100%);
+    }
 
-        if !currentUser
-          a.btn.btn-warning(
-            href=`/login?next=/store/${product.id}`
-          ) Login untuk membeli
-        else if currentUser.role !== 'user'
-          .alert.alert-info Hanya user yang bisa membeli produk
-        else
-          form(method="post" action="/cart/add")
-            input(type="hidden" name="merchandise_id" value=product.id)
-            input.form-control.mb-2(type="number" name="qty" min="1" max=product.stock value="1")
-            button.btn.btn-primary(type="submit") Tambah ke Keranjang
+    /* Product Detail Container */
+    .product-detail-container {
+      padding: 2rem 0;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Breadcrumb */
+    .breadcrumb-nav {
+      margin-bottom: 2rem;
+    }
+
+    .breadcrumb-item a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .breadcrumb-item a:hover {
+      color: var(--primary-dark);
+    }
+
+    /* Product Layout */
+    .product-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 4rem;
+    }
+
+    @media (max-width: 992px) {
+      .product-detail-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    /* Product Gallery */
+    .product-gallery {
+      background: white;
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: var(--shadow-xl);
+      border: 2px solid var(--gray-200);
+    }
+
+    .main-image-container {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    }
+
+    .main-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 2rem;
+      transition: transform 0.5s ease;
+    }
+
+    .main-image:hover {
+      transform: scale(1.05);
+    }
+
+    .image-badge {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      background: var(--gradient-accent);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 2;
+    }
+
+    /* Product Info */
+    .product-info {
+      background: white;
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-xl);
+      border: 2px solid var(--gray-200);
+    }
+
+    .product-category {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.1) 100%);
+      color: var(--primary-color);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(0, 149, 255, 0.2);
+    }
+
+    .product-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--secondary-dark);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .product-seller {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: var(--gray-50);
+      border-radius: 16px;
+      border: 1px solid var(--gray-200);
+    }
+
+    .seller-avatar {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: white;
+      font-weight: 700;
+    }
+
+    .seller-info h5 {
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 0.25rem;
+    }
+
+    .seller-info p {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .seller-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      color: var(--warning-color);
+    }
+
+    /* Product Price */
+    .product-price-section {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .current-price {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .price-label {
+      font-size: 0.95rem;
+      color: var(--gray-600);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .original-price {
+      font-size: 1.2rem;
+      color: var(--gray-400);
+      text-decoration: line-through;
+      margin-left: 0.75rem;
+    }
+
+    /* Stock Status */
+    .stock-status {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      border-radius: 16px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+    }
+
+    .stock-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--gradient-success);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .stock-info h6 {
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 0.25rem;
+    }
+
+    .stock-info p {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      margin: 0;
+    }
+
+    .stock-low .stock-icon {
+      background: var(--gradient-accent);
+    }
+
+    .stock-out .stock-icon {
+      background: linear-gradient(135deg, var(--gray-400) 0%, var(--gray-500) 100%);
+    }
+
+    /* Quantity Selector */
+    .quantity-selector {
+      margin-bottom: 2rem;
+    }
+
+    .quantity-label {
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .qty-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      border: 2px solid var(--gray-300);
+      background: white;
+      color: var(--gray-700);
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qty-btn:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
+    .qty-input {
+      width: 80px;
+      height: 45px;
+      border: 2px solid var(--gray-300);
+      border-radius: 12px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    .qty-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 149, 255, 0.1);
+    }
+
+    .max-stock {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      margin-top: 0.5rem;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn-add-to-cart {
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      padding: 1.25rem;
+      border-radius: 15px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      box-shadow: 0 6px 20px rgba(0, 149, 255, 0.3);
+    }
+
+    .btn-add-to-cart:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 149, 255, 0.4);
+    }
+
+    .btn-add-to-cart:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-buy-now {
+      background: var(--gradient-accent);
+      color: white;
+      border: none;
+      padding: 1.25rem;
+      border-radius: 15px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+    }
+
+    .btn-buy-now:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+      color: white;
+    }
+
+    .btn-wishlist {
+      background: white;
+      color: var(--gray-700);
+      border: 2px solid var(--gray-300);
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .btn-wishlist:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
+    .wishlist-active {
+      background: var(--gradient-accent);
+      color: white;
+      border-color: transparent;
+    }
+
+    /* Login Required */
+    .login-required {
+      background: linear-gradient(135deg, rgba(255, 170, 0, 0.1) 0%, rgba(255, 200, 80, 0.1) 100%);
+      border: 2px solid var(--warning-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-required h5 {
+      color: var(--warning-color);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    /* Product Details Tabs */
+    .product-details-tabs {
+      background: white;
+      border-radius: 24px;
+      box-shadow: var(--shadow-xl);
+      border: 2px solid var(--gray-200);
+      overflow: hidden;
+    }
+
+    .tab-nav {
+      display: flex;
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .tab-btn {
+      padding: 1.25rem 2rem;
+      background: none;
+      border: none;
+      font-weight: 700;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary-color);
+    }
+
+    .tab-btn.active {
+      color: var(--primary-color);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--gradient-primary);
+    }
+
+    .tab-content {
+      padding: 2.5rem;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Description */
+    .product-description {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--gray-700);
+    }
+
+    .description-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--gray-50);
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--gradient-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    /* Specifications */
+    .specs-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+    }
+
+    .specs-table tr {
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .specs-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .specs-table td {
+      padding: 1rem 1.5rem;
+    }
+
+    .specs-table td:first-child {
+      font-weight: 700;
+      color: var(--gray-800);
+      background: var(--gray-50);
+      width: 30%;
+    }
+
+    .specs-table td:last-child {
+      color: var(--gray-700);
+    }
+
+    /* Reviews */
+    .review-item {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .review-item:last-child {
+      border-bottom: none;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .reviewer-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .reviewer-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    .review-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      color: var(--warning-color);
+    }
+
+    .review-content {
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+
+    /* Related Products */
+    .related-products {
+      margin-top: 4rem;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--secondary-dark);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .product-title {
+        font-size: 2rem;
+      }
+
+      .current-price {
+        font-size: 2rem;
+      }
+
+      .main-image-container {
+        height: 400px;
+      }
+
+      .tab-nav {
+        flex-direction: column;
+      }
+
+      .tab-btn {
+        padding: 1rem;
+        text-align: center;
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .tab-btn.active::after {
+        display: none;
+      }
+
+      .tab-content {
+        padding: 1.5rem;
+      }
+
+      .action-buttons {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        padding: 1rem;
+        border-top: 2px solid var(--gray-200);
+        z-index: 100;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .product-title {
+        font-size: 1.75rem;
+      }
+
+      .main-image-container {
+        height: 300px;
+      }
+
+      .quantity-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .qty-input {
+        width: 100%;
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Loading Animation */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(0, 149, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+  // Product Detail Container
+  .product-detail-container
+    .container
+      // Breadcrumb
+      nav.breadcrumb-nav(aria-label="breadcrumb")
+        ol.breadcrumb
+          li.breadcrumb-item
+            a(href="/") Beranda
+          li.breadcrumb-item
+            a(href="/store") Store
+          if product.sport_name
+            li.breadcrumb-item
+              a(href=`/store?category=${product.sport_name.toLowerCase().replace(' ', '-')}`)= product.sport_name
+          li.breadcrumb-item.active(aria-current="page")= product.name
+
+      // Product Grid
+      .product-detail-grid
+        // Product Gallery
+        .product-gallery
+          .main-image-container
+            .image-badge
+              i.bi.bi-trophy
+              span= product.sport_name || 'SPORTER'
+            if product.image_url
+              img.main-image(src=product.image_url alt=product.name)
+            else
+              .main-image(style="display: flex; align-items: center; justify-content: center;")
+                i.bi.bi-t-shirt-fill(style="font-size: 8rem; color: var(--gray-300);")
+          
+          // Thumbnail Gallery (Optional)
+          //- .thumbnail-gallery
+          //-   .thumbnail
+          //-     img(src=product.image_url alt=product.name)
+
+        // Product Info
+        .product-info
+          .product-category
+            i.bi.bi-trophy
+            = product.sport_name || 'Semua Cabang Olahraga'
+          
+          h1.product-title= product.name
+          
+          .product-seller
+            .seller-avatar= product.seller_name ? product.seller_name.charAt(0).toUpperCase() : 'S'
+            .seller-info
+              h5= product.seller_name || 'Sporter Official'
+              p
+                i.bi.bi-shop
+                | Seller Terverifikasi
+                span.seller-rating
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-half
+                  span.ms-1 (4.5)
+          
+          .product-price-section
+            .current-price Rp #{Number(product.price).toLocaleString('id-ID')}
+            .price-label
+              i.bi.bi-tag
+              | Harga Satuan
+              if product.original_price && product.original_price > product.price
+                span.original-price Rp #{Number(product.original_price).toLocaleString('id-ID')}
+          
+          .stock-status(class=product.stock < 10 ? 'stock-low' : product.stock === 0 ? 'stock-out' : '')
+            .stock-icon
+              if product.stock > 10
+                i.bi.bi-check-lg
+              else if product.stock > 0
+                i.bi.bi-exclamation-triangle
+              else
+                i.bi.bi-x-lg
+            .stock-info
+              if product.stock > 10
+                h6 Stok Tersedia
+                p #{product.stock} unit tersedia. Siap dikirim.
+              else if product.stock > 0
+                h6 Stok Menipis
+                p Hanya #{product.stock} unit tersisa. Segera beli!
+              else
+                h6 Stok Habis
+                p Produk sedang tidak tersedia.
+          
+          // Action Buttons
+          if !currentUser
+            .login-required
+              h5
+                i.bi.bi-lock
+                | Login Diperlukan
+              p.mb-3 Login untuk menambahkan produk ini ke keranjang belanja.
+              a.btn.btn-warning(href=`/login?next=/store/${product.id}` style="background: var(--gradient-accent); border: none;")
+                i.bi.bi-box-arrow-in-right.me-2
+                | Login ke Akun Anda
+          
+          else if currentUser.role !== 'user'
+            .login-required
+              h5
+                i.bi.bi-info-circle
+                | Hanya untuk User
+              p.mb-3 Hanya pengguna dengan role user yang dapat membeli produk.
+              a.btn.btn-primary(href="/" style="background: var(--gradient-primary); border: none;")
+                i.bi.bi-arrow-left.me-2
+                | Kembali ke Beranda
+          
+          else
+            .quantity-selector
+              .quantity-label
+                i.bi.bi-cart-plus
+                | Jumlah Pembelian
+              .quantity-controls
+                button.qty-btn(type="button" onclick="decreaseQuantity()") -
+                input.qty-input(type="number" name="qty" min="1" max=product.stock value="1" id="quantityInput" oninput="validateQuantity()")
+                button.qty-btn(type="button" onclick="increaseQuantity()") +
+              .max-stock
+                i.bi.bi-info-circle.me-1
+                | Maksimal #{product.stock} unit
+            
+            .action-buttons
+              form(method="post" action="/cart/add" id="addToCartForm")
+                input(type="hidden" name="merchandise_id" value=product.id)
+                input(type="hidden" name="qty" id="cartQuantity" value="1")
+                button.btn-add-to-cart(type="submit" id="addToCartBtn" class=product.stock === 0 ? 'disabled' : '')
+                  i.bi.bi-cart-plus
+                  | Tambah ke Keranjang
+            
+              a.btn-buy-now(href="#" onclick="buyNow()")
+                i.bi.bi-bag-check
+                | Beli Sekarang
+            
+              button.btn-wishlist(type="button" onclick="toggleWishlist()" id="wishlistBtn")
+                i.bi.bi-heart
+                span Tambah ke Wishlist
+
+      // Product Details Tabs
+      .product-details-tabs
+        .tab-nav
+          button.tab-btn.active(data-tab="description")
+            i.bi.bi-card-text.me-2
+            | Deskripsi
+          button.tab-btn(data-tab="specs")
+            i.bi.bi-list-check.me-2
+            | Spesifikasi
+          button.tab-btn(data-tab="reviews")
+            i.bi.bi-star.me-2
+            | Ulasan (24)
+
+        .tab-content
+          #description.tab-pane.active
+            .product-description
+              if product.description
+                != product.description.replace(/\n/g, '<br>')
+              else
+                p Produk merchandise eksklusif dari SPORTER dengan kualitas premium. Cocok untuk mendukung tim favorit Anda.
+              
+              .description-features
+                .feature-item
+                  .feature-icon
+                    i.bi.bi-award
+                  div
+                    h6.mb-0 Kualitas Premium
+                    p.small.mb-0 Material berkualitas tinggi
+                
+                .feature-item
+                  .feature-icon
+                    i.bi.bi-truck
+                  div
+                    h6.mb-0 Pengiriman Cepat
+                    p.small.mb-0 Siap dikirim dalam 24 jam
+                
+                .feature-item
+                  .feature-icon
+                    i.bi.bi-shield-check
+                  div
+                    h6.mb-0 Garansi 100%
+                    p.small.mb-0 Garansi uang kembali
+                
+                .feature-item
+                  .feature-icon
+                    i.bi.bi-heart
+                  div
+                    h6.mb-0 Support Olahraga
+                    p.small.mb-0 Dukung atlet Indonesia
+          
+          #specs.tab-pane
+            table.specs-table
+              tr
+                td Nama Produk
+                td= product.name
+              tr
+                td Kategori
+                td= product.sport_name || 'Semua Cabang'
+              tr
+                td Seller
+                td= product.seller_name || 'Sporter Official'
+              tr
+                td Material
+                td Katun 100% Premium
+              tr
+                td Ukuran
+                td Universal Fit (L-XL)
+              tr
+                td Warna
+                td Tersedia dalam berbagai warna
+              tr
+                td Berat
+                td 250 gram
+              tr
+                td Negara Asal
+                td Indonesia
+              tr
+                td Garansi
+                td 30 hari garansi uang kembali
+          
+          #reviews.tab-pane
+            .review-item
+              .review-header
+                .reviewer-info
+                  .reviewer-avatar JD
+                  div
+                    h6.mb-0 John Doe
+                    small.text-muted 2 hari yang lalu
+                .review-rating
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-fill
+              .review-content
+                p Produk sangat bagus, kualitas premium! Pengiriman cepat dan packing rapi.
+            
+            .review-item
+              .review-header
+                .reviewer-info
+                  .reviewer-avatar JS
+                  div
+                    h6.mb-0 Jane Smith
+                    small.text-muted 1 minggu yang lalu
+                .review-rating
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-fill
+                  i.bi.bi-star-half
+              .review-content
+                p Suka dengan desainnya, sangat cocok untuk support tim nasional.
+
+      // Related Products
+      .related-products
+        h3.section-title
+          i.bi.bi-box-seam
+          | Produk Lainnya
+        .products-grid
+          // This would be populated with related products from backend
+          .product-card(style="background: white; border-radius: 16px; padding: 1.5rem; border: 2px solid var(--gray-200);")
+            .product-image(style="height: 200px; background: var(--gray-100); border-radius: 12px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center;")
+              i.bi.bi-t-shirt-fill(style="font-size: 3rem; color: var(--gray-300);")
+            h6 Jersey #{product.sport_name || 'Olahraga'}
+            p.text-muted.small Mulai dari Rp 150.000
+            a.btn.btn-sm.btn-primary(href="#" style="background: var(--gradient-primary); border: none; width: 100%;") Lihat Detail
+
+  script.
+    // Quantity Controls
+    const quantityInput = document.getElementById('quantityInput');
+    const cartQuantity = document.getElementById('cartQuantity');
+    const maxStock = #{product.stock || 0};
+    
+    function increaseQuantity() {
+      let current = parseInt(quantityInput.value) || 1;
+      if (current < maxStock) {
+        quantityInput.value = current + 1;
+        cartQuantity.value = current + 1;
+        updateAddToCartButton();
+      }
+    }
+    
+    function decreaseQuantity() {
+      let current = parseInt(quantityInput.value) || 1;
+      if (current > 1) {
+        quantityInput.value = current - 1;
+        cartQuantity.value = current - 1;
+        updateAddToCartButton();
+      }
+    }
+    
+    function validateQuantity() {
+      let value = parseInt(quantityInput.value) || 1;
+      if (value < 1) value = 1;
+      if (value > maxStock) value = maxStock;
+      quantityInput.value = value;
+      cartQuantity.value = value;
+      updateAddToCartButton();
+    }
+    
+    function updateAddToCartButton() {
+      const addToCartBtn = document.getElementById('addToCartBtn');
+      const quantity = parseInt(quantityInput.value) || 1;
+      
+      if (maxStock === 0) {
+        addToCartBtn.innerHTML = '<i class="bi bi-x-circle"></i> Stok Habis';
+        addToCartBtn.disabled = true;
+      } else if (quantity > maxStock) {
+        addToCartBtn.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Melebihi Stok';
+        addToCartBtn.disabled = true;
+      } else {
+        addToCartBtn.innerHTML = '<i class="bi bi-cart-plus"></i> Tambah ke Keranjang';
+        addToCartBtn.disabled = false;
+      }
+    }
+    
+    // Tab Navigation
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tabId = button.getAttribute('data-tab');
+        
+        // Update active button
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        // Show active tab
+        tabPanes.forEach(pane => {
+          pane.classList.remove('active');
+          if (pane.id === tabId) {
+            pane.classList.add('active');
+          }
+        });
+      });
+    });
+    
+    // Add to Cart Form Submission
+    const addToCartForm = document.getElementById('addToCartForm');
+    if (addToCartForm) {
+      addToCartForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('addToCartBtn');
+        const originalText = submitBtn.innerHTML;
+        const quantity = parseInt(cartQuantity.value) || 1;
+        
+        // Show loading
+        submitBtn.innerHTML = '<div class="loading-spinner"></div> Menambahkan...';
+        submitBtn.disabled = true;
+        
+        // Simulate API call
+        setTimeout(() => {
+          // In real app, this would be the fetch call
+          // fetch('/cart/add', {
+          //   method: 'POST',
+          //   body: new FormData(this)
+          // })
+          
+          // Show success message
+          submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Berhasil Ditambahkan!';
+          submitBtn.style.background = 'var(--gradient-success)';
+          
+          // Show notification
+          showNotification('Produk berhasil ditambahkan ke keranjang!');
+          
+          // Reset button after 2 seconds
+          setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+          }, 2000);
+          
+        }, 1000);
+      });
+    }
+    
+    // Buy Now Function
+    function buyNow() {
+      const quantity = parseInt(quantityInput.value) || 1;
+      
+      if (maxStock === 0) {
+        alert('Maaf, stok produk habis.');
+        return;
+      }
+      
+      if (quantity > maxStock) {
+        alert(`Maaf, stok hanya tersisa ${maxStock} unit.`);
+        return;
+      }
+      
+      // Redirect to checkout with this product
+      window.location.href = `/checkout?merchandise_id=${product.id}&qty=${quantity}`;
+    }
+    
+    // Wishlist Toggle
+    function toggleWishlist() {
+      const wishlistBtn = document.getElementById('wishlistBtn');
+      const isActive = wishlistBtn.classList.contains('wishlist-active');
+      
+      if (isActive) {
+        wishlistBtn.classList.remove('wishlist-active');
+        wishlistBtn.innerHTML = '<i class="bi bi-heart"></i> Tambah ke Wishlist';
+        showNotification('Produk dihapus dari wishlist');
+      } else {
+        wishlistBtn.classList.add('wishlist-active');
+        wishlistBtn.innerHTML = '<i class="bi bi-heart-fill"></i> Dalam Wishlist';
+        showNotification('Produk ditambahkan ke wishlist');
+      }
+    }
+    
+    // Notification System
+    function showNotification(message) {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.innerHTML = `
+        <div style="position: fixed; top: 20px; right: 20px; background: var(--gradient-success); color: white; padding: 1rem 1.5rem; border-radius: 12px; box-shadow: var(--shadow-lg); z-index: 9999; animation: slideInRight 0.3s ease-out;">
+          <i class="bi bi-check-circle me-2"></i>
+          ${message}
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => {
+          notification.remove();
+        }, 300);
+      }, 3000);
+      
+      // Add animation styles
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes slideInRight {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(100%); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      updateAddToCartButton();
+      
+      // Add keyboard shortcuts
+      document.addEventListener('keydown', function(e) {
+        // + key to increase quantity
+        if (e.key === '+' || e.key === '=') {
+          e.preventDefault();
+          increaseQuantity();
+        }
+        
+        // - key to decrease quantity
+        if (e.key === '-' || e.key === '_') {
+          e.preventDefault();
+          decreaseQuantity();
+        }
+        
+        // B key for Buy Now
+        if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+          e.preventDefault();
+          buyNow();
+        }
+        
+        // A key for Add to Cart
+        if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+          e.preventDefault();
+          document.getElementById('addToCartForm').dispatchEvent(new Event('submit'));
+        }
+      });
+    });
