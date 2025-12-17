@@ -18,7 +18,19 @@ exports.buyTicket = async (req, res) => {
         const [ttRows] = await conn.query('SELECT * FROM ticket_types WHERE id = ? FOR UPDATE', [ticket_type_id]);
         if (ttRows.length === 0) throw new Error('Ticket type tidak ditemukan.');
         const tt = ttRows[0];
+        // ambil sport slug untuk redirect
+        const [[sportRow]] = await conn.query(
+            `SELECT s.slug
+            FROM sports s
+            JOIN matches m ON m.sport_id = s.id
+            WHERE m.id = ?`,
+            [tt.match_id]
+        );
 
+        if (!sportRow) {
+            throw new Error('Sport tidak ditemukan.');
+        }
+        
         // determine related start time (event or match)
         let startTime = null;
         if (tt.match_id) {
@@ -41,6 +53,20 @@ exports.buyTicket = async (req, res) => {
         const available = tt.quota - tt.sold;
         if (available < qty) {
             throw new Error('Tiket tidak cukup tersedia.');
+        }
+        if (tt.max_per_user && qty > tt.max_per_user) {
+            throw new Error(`Maksimal ${tt.max_per_user} tiket per akun.`);
+        }
+        const [[row]] = await conn.query(`
+        SELECT COALESCE(SUM(oi.quantity), 0) AS bought
+        FROM orders o
+        JOIN order_items oi ON oi.order_id = o.id
+        WHERE o.user_id = ?
+            AND oi.ticket_type_id = ?
+        `, [userId, ticket_type_id]);
+
+        if (tt.max_per_user && row.bought + qty > tt.max_per_user) {
+            throw new Error('Limit pembelian tiket telah tercapai.');
         }
 
         // create order
@@ -72,7 +98,7 @@ exports.buyTicket = async (req, res) => {
         await conn.rollback();
         console.error('buyTicket error', err);
         req.flash('error', err.message || 'Gagal membeli tiket.');
-        return res.redirect('back');
+        return res.redirect(req.get('Referer') || '/sports');
     } finally {
         conn.release();
     }

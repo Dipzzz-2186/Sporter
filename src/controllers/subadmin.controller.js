@@ -571,9 +571,17 @@ exports.createMatch = async (req, res) => {
       end_time,
       venue_id,
       match_mode,
-      participant_ids, // ✅ TAMBAH INI (name="participant_ids[]")
+      participant_ids,
+
+      // ===== TICKETING =====
+      sell_ticket,
+      ticket_name,
+      ticket_price,
+      ticket_quota,
+      ticket_max_per_user,
     } = req.body;
 
+    const maxPerUser = Math.max(1, Number(ticket_max_per_user || 1));
     title = (title || "").trim();
     const sportId = sport_id ? Number(sport_id) : null;
     const eventId = event_id ? Number(event_id) : null;
@@ -587,6 +595,23 @@ exports.createMatch = async (req, res) => {
     if (!sportId || !title || !start_time) {
       req.flash("error", "Cabang olahraga, judul, dan waktu mulai wajib diisi.");
       return res.redirect("/subadmin/matches/create");
+    }
+    // ===== VALIDASI TIKET =====
+    if (Number(sell_ticket) === 1) {
+      if (!ticket_name || !ticket_price || !ticket_quota) {
+        req.flash("error", "Data tiket belum lengkap.");
+        return res.redirect("/subadmin/matches/create");
+      }
+
+      if (Number(ticket_price) < 0) {
+        req.flash("error", "Harga tiket tidak valid.");
+        return res.redirect("/subadmin/matches/create");
+      }
+
+      if (Number(ticket_quota) < 1) {
+        req.flash("error", "Kuota tiket minimal 1.");
+        return res.redirect("/subadmin/matches/create");
+      }
     }
 
     // ✅ KHUSUS INDIVIDUAL: home/away diambil dari TEAMS (is_individual=1)
@@ -684,6 +709,23 @@ exports.createMatch = async (req, res) => {
     }
 
     // === SIMPAN SEMUA PESERTA (INDIVIDUAL) ===
+    // ===== INSERT TICKET TYPE (JIKA JUAL TIKET) =====
+    if (Number(sell_ticket) === 1) {
+      await db.query(
+        `INSERT INTO ticket_types
+   (match_id, event_id, name, price, quota, max_per_user, sold, created_at, updated_at)
+   VALUES (?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`,
+        [
+          matchId,
+          eventId || null,
+          ticket_name.trim(),
+          Number(ticket_price),
+          Number(ticket_quota),
+          maxPerUser
+        ]
+      );
+    }
+
     if (matchMode === "individual" && hasMP) {
       const ids = (Array.isArray(participant_ids) ? participant_ids : [participant_ids])
         .map(Number)
@@ -1557,3 +1599,88 @@ exports.deleteTeamMember = async (req, res) => {
 
 
 
+// ===============================
+// SUBADMIN – LIST TICKET ORDERS
+// ===============================
+exports.renderTicketOrders = async (req, res) => {
+  try {
+    const user = req.session.user;
+    const allowedSports = Array.isArray(req.allowedSports) ? req.allowedSports : [];
+
+    if (user.role === 'subadmin' && !allowedSports.length) {
+      return res.render('subadmin/ticket_orders', {
+        title: 'Order Tiket',
+        orders: [],
+        sports: [],
+        selectedSport: null
+      });
+    }
+
+    const { sport_id } = req.query;
+
+    // filter sport
+    let whereSport = '';
+    let params = [];
+
+    if (user.role === 'admin') {
+      if (sport_id) {
+        whereSport = 'AND s.id = ?';
+        params.push(sport_id);
+      }
+    } else {
+      const placeholders = allowedSports.map(() => '?').join(',');
+      whereSport = `AND s.id IN (${placeholders})`;
+      params.push(...allowedSports);
+
+      if (sport_id) {
+        whereSport += ' AND s.id = ?';
+        params.push(sport_id);
+      }
+    }
+
+    // ambil sports buat dropdown
+    const [sports] = await db.query(
+      `SELECT id, name FROM sports ORDER BY name`
+    );
+
+    // QUERY UTAMA (INI YANG PENTING)
+    const [orders] = await db.query(
+      `
+      SELECT
+        o.id AS order_id,
+        u.name AS user_name,
+        s.name AS sport_name,
+        t.ticket_code,
+        t.holder_name,
+        tt.price,
+        1 AS qty,
+        tt.price AS total_price,
+        o.created_at
+      FROM orders o
+      JOIN users u ON u.id = o.user_id
+      JOIN order_items oi ON oi.order_id = o.id
+      JOIN ticket_types tt ON tt.id = oi.ticket_type_id
+      JOIN tickets t ON t.order_item_id = oi.id
+      LEFT JOIN matches m ON m.id = tt.match_id
+      LEFT JOIN events e ON e.id = tt.event_id
+      JOIN sports s ON s.id = COALESCE(m.sport_id, e.sport_id)
+      WHERE 1=1
+      ${whereSport}
+      ORDER BY o.created_at DESC
+      `,
+      params
+    );
+
+    res.render('subadmin/ticket_orders', {
+      title: 'Order Tiket',
+      orders,
+      sports,
+      selectedSport: sport_id || ''
+    });
+
+  } catch (err) {
+    console.error('renderTicketOrders error', err);
+    req.flash('error', 'Gagal memuat order tiket');
+    res.redirect('/subadmin');
+  }
+};

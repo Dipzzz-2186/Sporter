@@ -1,0 +1,26 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    h3 Detail Pesanan ##{order.id}
+
+    form(method="POST" action=`/orders/${order.id}/holders`)
+      each t, i in tickets
+        .card.mb-3
+          .card-body
+            label.form-label
+              | Nama Pemegang Tiket #{i + 1}
+            input.form-control(
+              type="text"
+              name=`names[${i}][name]`
+              value=t.holder_name || ''
+              required
+            )
+            input(type="hidden" name=`names[${i}][ticket_id]` value=t.id)
+
+            if t.holder_name
+              hr
+              p.text-success.mb-1 ✔ Tiket Valid
+              img(src=qrDemo width="160")
+
+      button.btn.btn-primary.mt-3 Order Ticket

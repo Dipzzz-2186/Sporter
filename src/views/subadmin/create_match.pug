@@ -603,6 +603,77 @@ block content
                     i.bi.bi-info-circle
                     | Estimasi waktu selesai (boleh kosong)
 
+          //- Section 4: Ticketing
+          .form-section
+            .section-title
+              i.bi.bi-ticket-perforated
+              | Penjualan Tiket
+            .section-description
+              | Atur apakah pertandingan ini menjual tiket atau tidak.
+
+            .mb-3
+              label.form-label
+                | Apakah ingin menjual tiket?
+              .form-check
+                input.form-check-input(
+                  type="radio"
+                  name="sell_ticket"
+                  id="sellTicketNo"
+                  value="0"
+                  checked
+                )
+                label.form-check-label(for="sellTicketNo") Tidak
+              .form-check
+                input.form-check-input(
+                  type="radio"
+                  name="sell_ticket"
+                  id="sellTicketYes"
+                  value="1"
+                )
+                label.form-check-label(for="sellTicketYes") Ya
+
+            //- Ticket Options (hidden by default)
+            #ticketOptions(style="display:none;")
+              .row.g-3
+                .col-md-4
+                  .mb-3
+                    label.form-label Tipe Tiket
+                    input.form-control(
+                      type="text"
+                      name="ticket_name"
+                      placeholder="Contoh: Regular / VIP"
+                    )
+
+                .col-md-4
+                  .mb-3
+                    label.form-label Harga per Tiket
+                    input.form-control(
+                      type="number"
+                      name="ticket_price"
+                      min="0"
+                      step="1000"
+                      placeholder="50000"
+                    )
+
+                .col-md-4
+                  .mb-3
+                    label.form-label Kuota Tiket
+                    input.form-control(
+                      type="number"
+                      name="ticket_quota"
+                      min="1"
+                      placeholder="100"
+                    )
+
+              .mb-3
+                label.form-label Maksimal pembelian per user
+                input.form-control(
+                  type="number"
+                  name="ticket_max_per_user"
+                  min="1"
+                  placeholder="2"
+                )
+
           //- Action Buttons
           .form-actions
             button.btn.btn-submit(type="submit")
@@ -1350,4 +1421,22 @@ block content
 
       // panggil pertama kali biar sesuai default
       toggleModeUI();
+      // ===== Ticket Selling Toggle =====
+      const sellYes = document.getElementById('sellTicketYes');
+      const sellNo  = document.getElementById('sellTicketNo');
+      const ticketBox = document.getElementById('ticketOptions');
+
+      function toggleTicketBox() {
+        if (sellYes.checked) {
+          ticketBox.style.display = 'block';
+        } else {
+          ticketBox.style.display = 'none';
+        }
+      }
+
+      sellYes.addEventListener('change', toggleTicketBox);
+      sellNo.addEventListener('change', toggleTicketBox);
+
+      // init
+      toggleTicketBox();
     });

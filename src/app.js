@@ -58,6 +58,7 @@ const newsRoutes = require("./routes/news.routes");
 const homeController = require("./controllers/home.controller");
 const authRoutes = require("./routes/auth.routes");
 const mediaRoutes = require("./routes/media.routes");
+const purchaseRoutes = require('./routes/purchase.routes');
 
 app.get("/", homeController.renderHome);
 app.use("/sports", sportRoutes);
@@ -66,10 +67,12 @@ app.use("/", eventRoutes); // <== TAMBAH INI
 app.use("/", authRoutes); // /login, /logout
 app.use("/", mediaRoutes);
 app.use("/", require("./routes/store.routes"));
+app.use('/orders', require('./routes/orders.routes'));
 
 // mount admin/subadmin AFTER middleware
 app.use("/admin", adminRoutes);
 app.use('/subadmin', subadminRoutes);
 app.use("/seller", sellerRoutes);
+app.use('/purchase', purchaseRoutes);
 
 module.exports = app;

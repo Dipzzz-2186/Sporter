@@ -23,19 +23,52 @@ exports.renderSportDetail = async (req, res) => {
     const sport = await Sport.getBySlug(slug);
 
     if (!sport) return res.status(404).send("Sport tidak ditemukan");
+    const [tickets] = await db.query(`
+      SELECT 
+        tt.id,
+        tt.match_id,
+        tt.name,
+        tt.price,
+        tt.quota,
+        tt.sold,
+        (tt.quota - tt.sold) AS available,
+        tt.max_per_user
+      FROM ticket_types tt
+      JOIN matches m ON m.id = tt.match_id
+      WHERE m.sport_id = ?
+    `, [sport.id]);
+    let userTicketMap = {};
+
+    if (req.session.user) {
+      const userId = req.session.user.id;
+
+      const [rows] = await db.query(`
+    SELECT 
+      oi.ticket_type_id,
+      SUM(oi.quantity) AS total_bought
+    FROM orders o
+    JOIN order_items oi ON oi.order_id = o.id
+    WHERE o.user_id = ?
+    GROUP BY oi.ticket_type_id
+  `, [userId]);
+
+      rows.forEach(r => {
+        userTicketMap[r.ticket_type_id] = r.total_bought;
+      });
+    }
 
     const [matches] = await db.query(
       `SELECT 
-        m.id, m.title, m.start_time, m.end_time,
-        ht.name AS home_team_name,
-        at.name AS away_team_name,
-        v.name AS venue_name
-      FROM matches m
-      LEFT JOIN teams ht ON ht.id = m.home_team_id
-      LEFT JOIN teams at ON at.id = m.away_team_id
-      LEFT JOIN venues v ON v.id = m.venue_id
-      WHERE m.sport_id = ?
-      ORDER BY m.start_time ASC`,
+      m.id, m.title, m.start_time, m.end_time,
+      ht.name AS home_team_name,
+      at.name AS away_team_name,
+      v.name AS venue_name
+    FROM matches m
+    LEFT JOIN teams ht ON ht.id = m.home_team_id
+    LEFT JOIN teams at ON at.id = m.away_team_id
+    LEFT JOIN venues v ON v.id = m.venue_id
+    WHERE m.sport_id = ?
+    ORDER BY m.start_time DESC`,
       [sport.id]
     );
 
@@ -58,7 +91,10 @@ exports.renderSportDetail = async (req, res) => {
       title: sport.name,
       sport,
       matches,
-      standings, // ✅ kirim ke pug
+      standings,
+      tickets,
+      userTicketMap,
+      isLoggedIn: !!req.session.user 
     });
   } catch (err) {
     console.error(err);

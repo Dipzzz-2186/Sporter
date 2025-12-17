@@ -1,0 +1,43 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    h3.mb-3 Order Tiket
+
+    form.mb-3(method="get")
+      select.form-select.w-auto(name="sport_id" onchange="this.form.submit()")
+        option(value="") Semua Cabang
+        each s in sports
+          option(
+            value=s.id
+            selected=(String(selectedSport) === String(s.id))
+          )= s.name
+
+    table.table.table-bordered.table-striped
+      thead
+        tr
+          th Order ID
+          th Cabang
+          th Akun
+          th Holder
+          th Qty
+          th Harga
+          th Total
+          th Tanggal
+
+      tbody
+        if orders.length
+          each o in orders
+            tr
+              td= o.order_id
+              td= o.sport_name
+              td= o.user_name
+              td= o.holder_name || '-'
+              td 1x
+              td Rp #{o.price.toLocaleString('id-ID')}
+              td Rp #{o.total_price.toLocaleString('id-ID')}
+              td= new Date(o.created_at).toLocaleDateString('id-ID')
+        else
+          tr
+            td(colspan="8").text-center.text-muted
+              | Belum ada order

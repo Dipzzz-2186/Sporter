@@ -406,7 +406,11 @@ block content
           .section-title
             i.bi.bi-calendar-range
             | Jadwal Pertandingan
-          
+          - const ticketMap = {};
+          - tickets.forEach(t => {
+          -   if (!ticketMap[t.match_id]) ticketMap[t.match_id] = [];
+          -   ticketMap[t.match_id].push(t);
+          - });
           if matches.length
             a.btn.btn-outline-light(href="/matches?sport=" + sport.id)
               | Lihat Semua
@@ -434,6 +438,27 @@ block content
                   .match-info-item
                     i.bi.bi-geo-alt-fill
                     span Venue belum ditentukan
+
+                - const matchTickets = ticketMap[m.id] || []
+                - const isFuture = new Date(m.start_time) > new Date()
+                - const hasAvailable = matchTickets.some(t => t.available > 0)
+
+                if !isFuture
+                  span.badge.bg-secondary Jadwal lewat
+                else if !hasAvailable
+                  span.badge.bg-danger Tiket habis
+                else
+                  button.btn.btn-success(
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#ticketModal"
+                    data-match-id=m.id
+                  )
+                    i.bi.bi-ticket-perforated
+                    | Beli Tiket
+
+
+
         else
           .empty-state
             .empty-icon
@@ -443,6 +468,16 @@ block content
             a.btn.btn-hero-primary(href="/subadmin/matches/create")
               i.bi.bi-plus-circle
               | Tambah Pertandingan
+
+  .modal.fade#ticketModal(tabindex="-1")
+    .modal-dialog.modal-lg
+      .modal-content
+        .modal-header
+          h5.modal-title Detail Tiket
+          button.btn-close(type="button" data-bs-dismiss="modal")
+        .modal-body
+          #ticketModalBody
+            p.text-muted Memuat data tiket...
 
   //- Smooth Scroll Script
   script.
@@ -457,4 +492,74 @@ block content
           });
         }
       });
+    });
+
+    const tickets = !{JSON.stringify(tickets)};
+    const modal = document.getElementById('ticketModal');
+    const userTicketMap = !{JSON.stringify(userTicketMap || {})};
+    const isLoggedIn = !{JSON.stringify(isLoggedIn)};
+
+    modal.addEventListener('show.bs.modal', e => {
+      const btn = e.relatedTarget;
+      const matchId = btn.getAttribute('data-match-id');
+
+      const list = tickets.filter(t => t.match_id == matchId);
+      const body = document.getElementById('ticketModalBody');
+
+      if (!list.length) {
+        body.innerHTML = '<p>Tiket tidak tersedia</p>';
+        return;
+      }
+
+      body.innerHTML = list.map(t => {
+        // ✅ SUDAH LOGIN
+        const bought = userTicketMap[t.id] || 0;
+        const max = t.max_per_user || 1;
+        const remaining = Math.max(0, max - bought);
+
+        // ❌ BELUM LOGIN
+        if (!isLoggedIn) {
+          return `
+            <div class="border rounded p-3 mb-2">
+              <h6>${t.name}</h6>
+              <p>Harga: Rp ${Number(t.price).toLocaleString()}</p>
+              <p>Sisa kuota: ${t.available}</p>
+              <p>Batas per akun: ${max}</p>
+
+              <a href="/login?next=${encodeURIComponent(location.pathname)}"
+                class="btn btn-warning w-100">
+                Login untuk beli tiket
+              </a>
+            </div>
+          `;
+        }
+        return `
+          <div class="border rounded p-3 mb-2">
+            <h6>${t.name}</h6>
+            <p>Harga: Rp ${Number(t.price).toLocaleString()}</p>
+            <p>Sisa kuota: ${t.available}</p>
+            <p>Batas per akun: ${max}</p>
+            <p>Sudah dibeli: ${bought}</p>
+
+            <form method="POST" action="/purchase/buy">
+              <input type="hidden" name="ticket_type_id" value="${t.id}">
+
+              <input type="number"
+                name="quantity"
+                min="1"
+                max="${remaining}"
+                value="1"
+                class="form-control mb-2"
+                ${remaining <= 0 ? 'disabled' : ''}>
+
+              <button class="btn btn-primary w-100"
+                ${remaining <= 0 ? 'disabled' : ''}>
+                ${remaining <= 0
+                  ? 'Limit pembelian tercapai'
+                  : 'Beli Tiket'}
+              </button>
+            </form>
+          </div>
+        `;
+      }).join('');
     });
