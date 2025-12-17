@@ -448,7 +448,13 @@ block content
         h3
           i.bi.bi-trophy-fill
           | Klasemen #{currentSport ? currentSport.name : 'Cabang'}
-          
+
+        - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin' : '/subadmin'
+
+        a.btn.btn-secondary(href=backUrl)
+          i.bi.bi-arrow-left.me-1
+          | Kembali
+
       // === FILTER CABANG (HANYA JIKA LEBIH DARI 1) ===
       if sports && sports.length > 1
         .filter-section
@@ -555,7 +561,7 @@ block content
             i.bi.bi-clipboard2-x
           h4 Belum Ada Klasemen
           p Belum ada pertandingan padel yang selesai.
-          
+
   if !isReadOnly
     #scoreModal.modal.fade(tabindex='-1')
       .modal-dialog

@@ -450,6 +450,12 @@ block content
               a.btn-add-match(href="/subadmin/matches/create")
                 i.bi.bi-plus-circle
                 span Tambah Pertandingan
+                
+            - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin' : '/subadmin'
+
+            a.btn.btn-secondary(href=backUrl)
+              i.bi.bi-arrow-left.me-1
+              | Kembali
 
       //- Flash Messages
       if flash && flash.error && flash.error.length
