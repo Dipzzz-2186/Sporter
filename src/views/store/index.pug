@@ -129,18 +129,14 @@ block content
       margin-right: auto;
     }
 
-    /* Store Navigation */
+    /* Store Navigation - TIDAK STICKY */
     .store-nav {
-      position: sticky;
-      top: 80px;
-      z-index: 100;
       background: white;
       border-radius: 20px;
-      padding: 1rem 2rem;
+      padding: 1.5rem 2rem;
       margin-bottom: 2.5rem;
       box-shadow: var(--shadow-md);
       border: 2px solid var(--gray-200);
-      backdrop-filter: blur(10px);
       animation: fadeIn 0.5s ease-out;
     }
 
@@ -155,7 +151,7 @@ block content
     .store-category-nav {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
       flex-wrap: wrap;
     }
 
@@ -192,18 +188,18 @@ block content
     .store-controls {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1rem;
       flex-wrap: wrap;
     }
 
     .store-search {
       position: relative;
-      min-width: 300px;
+      min-width: 280px;
     }
 
     .store-search-input {
       width: 100%;
-      padding: 1rem 1rem 1rem 3.5rem;
+      padding: 0.875rem 1rem 0.875rem 3.5rem;
       border: 2px solid var(--gray-200);
       border-radius: 15px;
       font-size: 1rem;
@@ -228,14 +224,14 @@ block content
     }
 
     .filter-select {
-      padding: 1rem 1.5rem;
+      padding: 0.875rem 1.25rem;
       border: 2px solid var(--gray-200);
       border-radius: 15px;
       background: white;
       color: var(--gray-700);
       font-weight: 600;
       font-size: 0.95rem;
-      min-width: 180px;
+      min-width: 160px;
       transition: all 0.3s ease;
       cursor: pointer;
       box-shadow: var(--shadow-sm);
@@ -753,7 +749,7 @@ block content
       box-shadow: 0 6px 15px rgba(0, 149, 255, 0.3);
     }
 
-    /* Floating Cart Button */
+    /* Floating Cart Button - tetap ada */
     .floating-cart {
       position: fixed;
       bottom: 2rem;
@@ -980,17 +976,28 @@ block content
           | Kaos jersey, aksesoris, dan koleksi limited edition dari berbagai cabang olahraga.
 
   .container
-    // Store Navigation
+    // Store Navigation - TIDAK STICKY
     .store-nav
       .store-nav-container
         .store-category-nav
           button.category-btn.active(data-category="all")
-            i.bi.bi-grid
+            i.bi.bi-grid-fill
             | Semua Produk
-          each category in categories || ['Sepak Bola', 'Basket', 'Badminton', 'Renang', 'Tenis']
-            button.category-btn(data-category=category.toLowerCase().replace(' ', '-'))
-              i.bi.bi-trophy
-              = category
+          button.category-btn(data-category="sepak-bola")
+            i.bi.bi-trophy
+            | Sepak Bola
+          button.category-btn(data-category="basket")
+            i.bi.bi-trophy
+            | Basket
+          button.category-btn(data-category="badminton")
+            i.bi.bi-trophy
+            | Badminton
+          button.category-btn(data-category="renang")
+            i.bi.bi-trophy
+            | Renang
+          button.category-btn(data-category="tenis")
+            i.bi.bi-trophy
+            | Tenis
 
         .store-controls
           .store-search
@@ -1020,7 +1027,7 @@ block content
     .store-stats
       .stat-card
         .stat-icon.stat-icon-products
-          i.bi.bi-box-seam
+          i.bi.bi-box-seam-fill
         .stat-value= products ? products.length : 156
         .stat-label Produk Tersedia
       
@@ -1032,7 +1039,7 @@ block content
       
       .stat-card
         .stat-icon.stat-icon-categories
-          i.bi.bi-tags
+          i.bi.bi-tags-fill
         .stat-value= categoriesCount || '15'
         .stat-label Kategori Olahraga
       
@@ -1098,10 +1105,10 @@ block content
             
             .product-actions
               button.btn-add-to-cart(type="button")
-                i.bi.bi-cart-plus
+                i.bi.bi-cart-plus-fill
                 | Tambah ke Keranjang
               a.btn-view-detail(href=`/store/${product.id}`)
-                i.bi.bi-eye
+                i.bi.bi-eye-fill
 
       // Pagination
       .store-pagination
@@ -1127,9 +1134,9 @@ block content
             i.bi.bi-trophy.me-2
             | Lihat Cabang Olahraga
 
-  // Floating Cart Button
+  // Floating Cart Button - tetap ada
   .floating-cart#floatingCart
-    i.bi.bi-cart3
+    i.bi.bi-cart3-fill
     .cart-badge#cartBadge 3
 
   script.
@@ -1237,7 +1244,7 @@ block content
         const productPrice = card.dataset.price;
         
         // Show success animation
-        this.innerHTML = '<i class="bi bi-check-circle"></i> Ditambahkan!';
+        this.innerHTML = '<i class="bi bi-check-circle-fill"></i> Ditambahkan!';
         this.style.background = 'var(--success-color)';
         
         // Update cart badge
@@ -1254,7 +1261,7 @@ block content
         
         // Reset button after 2 seconds
         setTimeout(() => {
-          this.innerHTML = '<i class="bi bi-cart-plus"></i> Tambah ke Keranjang';
+          this.innerHTML = '<i class="bi bi-cart-plus-fill"></i> Tambah ke Keranjang';
           this.style.background = '';
         }, 2000);
         
