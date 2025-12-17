@@ -682,15 +682,16 @@ html(lang="id")
                       i.bi.bi-person-fill.me-2
                       | Profile
 
-                  - let dashboardUrl = '/'
-                  - if (currentUser.role === 'admin') dashboardUrl = '/admin'
-                  - else if (currentUser.role === 'subadmin') dashboardUrl = '/subadmin'
-                  - else if (currentUser.role === 'seller') dashboardUrl = '/seller'
+                  if currentUser.role === 'admin' || currentUser.role === 'subadmin' || currentUser.role === 'seller'
+                    - let dashboardUrl = ''
+                    - if (currentUser.role === 'admin') dashboardUrl = '/admin'
+                    - else if (currentUser.role === 'subadmin') dashboardUrl = '/subadmin'
+                    - else if (currentUser.role === 'seller') dashboardUrl = '/seller'
 
-                  li
-                    a.dropdown-item(href=dashboardUrl)
-                      i.bi.bi-speedometer2.me-2
-                      | Dashboard
+                    li
+                      a.dropdown-item(href=dashboardUrl)
+                        i.bi.bi-speedometer2.me-2
+                        | Dashboard
 
 
                   li
