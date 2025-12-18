@@ -29,17 +29,15 @@ block content
       --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
       --gradient-secondary: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary-light) 100%);
       --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, #FF8E53 100%);
+      --gradient-success: linear-gradient(135deg, var(--success-color) 0%, #00E699 100%);
+      --gradient-warning: linear-gradient(135deg, var(--warning-color) 0%, #FFC850 100%);
     }
 
-    /* Tickets Hero */
-    .tickets-hero {
-      background: var(--gradient-secondary);
+    /* Tickets Page */
+    .tickets-page {
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+      min-height: 100vh;
       padding: 3rem 0;
-      margin-bottom: 2.5rem;
-      border-radius: 0 0 30px 30px;
-      color: white;
-      position: relative;
-      overflow: hidden;
       animation: fadeIn 0.8s ease-out;
     }
 
@@ -48,10 +46,27 @@ block content
       to { opacity: 1; }
     }
 
-    .tickets-hero::before {
+    /* ===== PAGE HEADER (SESUAI DENGAN REFERENSI) ===== */
+    .page-header {
+      background: var(--gradient-secondary);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInDown 0.6s ease-out;
+      box-shadow: var(--shadow-xl);
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header::before {
       content: '';
       position: absolute;
-      top: -30%;
+      top: -50%;
       right: -20%;
       width: 400px;
       height: 400px;
@@ -59,177 +74,245 @@ block content
       border-radius: 50%;
     }
 
-    .tickets-hero-content {
+    .page-header-content {
       position: relative;
       z-index: 2;
     }
 
-    .tickets-title {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 0.75rem;
+    .page-title {
       color: white;
-      background: linear-gradient(135deg, #FFFFFF 0%, var(--primary-light) 100%);
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin: 0 0 0.5rem 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .page-title i {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      margin-right: 0.5rem;
     }
 
-    .tickets-subtitle {
+    .page-subtitle {
       color: rgba(255, 255, 255, 0.9);
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       margin-bottom: 1.5rem;
       max-width: 600px;
+      line-height: 1.6;
     }
 
-    /* Tickets Stats */
-    .tickets-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-      animation: fadeIn 0.6s ease-out 0.2s backwards;
+    /* ===== BACK BUTTON (DARI REFERENSI) ===== */
+    .btn-back-modern {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-top: 1rem;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 12px;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.25s ease;
+      text-decoration: none;
     }
 
-    .tickets-stat-card {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 18px;
-      padding: 1.5rem;
-      color: white;
-      transition: all 0.3s ease;
-      cursor: pointer;
+    .btn-back-modern:hover {
+      background: rgba(255, 255, 255, 0.28);
+      transform: translateX(-3px);
+      color: #fff;
     }
 
-    .tickets-stat-card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .tickets-stat-value {
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 0.25rem;
+    /* ===== HEADER ACTION BUTTONS ===== */
+    .header-actions {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
+      margin-top: 1.5rem;
     }
 
-    .tickets-stat-label {
-      font-size: 0.9rem;
-      opacity: 0.9;
-    }
-
-    /* Tickets Filters */
-    .tickets-filters {
+    /* ===== FILTER CARD ===== */
+    .filter-card {
       background: white;
-      border-radius: 20px;
-      padding: 1.5rem 2rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow-lg);
+      border-radius: 22px;
       border: 2px solid var(--gray-200);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      animation: fadeInUp 0.5s ease-out;
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+      margin-bottom: 2.5rem;
+      animation: slideInUp 0.6s ease-out 0.2s backwards;
     }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .filter-select {
-      padding: 0.875rem 1.25rem;
-      border: 2px solid var(--gray-200);
-      border-radius: 15px;
-      background: white;
-      color: var(--gray-700);
-      font-weight: 600;
-      font-size: 0.95rem;
-      min-width: 200px;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      box-shadow: var(--shadow-sm);
+    .filter-card .card-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 2px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
     }
 
-    .filter-select:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.1);
+    .filter-title {
+      margin: 0;
+      font-weight: 800;
+      color: var(--secondary-dark);
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
 
-    .filter-select:hover {
-      border-color: var(--primary-color);
-    }
-
-    .search-container {
-      position: relative;
-      min-width: 300px;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 0.875rem 1rem 0.875rem 3.5rem;
-      border: 2px solid var(--gray-200);
-      border-radius: 15px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      background: white;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.1);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 1.25rem;
-      top: 50%;
-      transform: translateY(-50%);
+    .filter-title i {
       color: var(--primary-color);
       font-size: 1.2rem;
     }
 
-    .date-filter {
+    .filter-card .card-body {
+      padding: 2rem;
+    }
+
+    .filter-form label {
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 0.75rem;
       display: flex;
-      gap: 1rem;
-    }
-
-    .date-input {
-      padding: 0.875rem 1.25rem;
-      border: 2px solid var(--gray-200);
-      border-radius: 15px;
+      align-items: center;
+      gap: 0.5rem;
       font-size: 0.95rem;
-      min-width: 150px;
     }
 
-    /* Tickets Table */
-    .tickets-table-container {
+    .filter-form label i {
+      color: var(--primary-color);
+      font-size: 0.9rem;
+    }
+
+    .filter-form .form-select,
+    .filter-form .form-control {
+      padding: 0.875rem 1rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
       background: white;
-      border-radius: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-form .form-select:focus,
+    .filter-form .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.1);
+    }
+
+    .filter-form .form-select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%230B1F3F' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 16px 12px;
+      min-width: 180px;
+      cursor: pointer;
+    }
+
+    .btn-filter {
+      background: var(--gradient-primary);
+      border: none;
+      color: white;
+      padding: 0.875rem 1.75rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      width: 100%;
+    }
+
+    .btn-filter:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      background: linear-gradient(135deg, #34C7FF 0%, #0095FF 100%);
+      color: white;
+    }
+
+    /* Export Button */
+    .export-btn {
+      background: var(--gradient-success);
+      color: white;
+      border: none;
+      padding: 0.875rem 1.75rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-md);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .export-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Reset Filter Button */
+    .btn-reset {
+      background: white;
+      color: var(--gray-700);
+      border: 2px solid var(--gray-300);
+      padding: 0.875rem 1.75rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .btn-reset:hover {
+      background: var(--gray-50);
+      border-color: var(--primary-color);
+      transform: translateY(-3px);
+    }
+
+    /* Rest of your existing styles... */
+    /* ===== TICKETS TABLE ===== */
+    .tickets-table-card {
+      background: white;
+      border-radius: 22px;
+      border: 2px solid var(--gray-200);
       overflow: hidden;
       box-shadow: var(--shadow-xl);
-      border: 2px solid var(--gray-200);
-      margin-bottom: 3rem;
-      animation: fadeInUp 0.6s ease-out 0.3s backwards;
+      margin-bottom: 2.5rem;
+      animation: slideInUp 0.6s ease-out 0.3s backwards;
     }
 
     .tickets-table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
-      margin: 0;
     }
 
     .tickets-table thead {
-      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+      background: var(--gradient-secondary);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .tickets-table th {
@@ -239,20 +322,17 @@ block content
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--gray-600);
-      border-bottom: 2px solid var(--gray-200);
-      position: relative;
+      color: white;
+      border-bottom: none;
+      white-space: nowrap;
     }
 
-    .tickets-table th:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 1px;
-      height: 60%;
-      background: var(--gray-300);
+    .tickets-table th:first-child {
+      border-radius: 20px 0 0 0;
+    }
+
+    .tickets-table th:last-child {
+      border-radius: 0 20px 0 0;
     }
 
     .tickets-table tbody tr {
@@ -274,461 +354,369 @@ block content
       color: var(--gray-800);
       font-size: 0.95rem;
       border-bottom: 1px solid var(--gray-200);
+      vertical-align: middle;
     }
 
     .tickets-table tbody tr:last-child td {
       border-bottom: none;
     }
 
-    /* Order ID */
-    .order-id {
-      font-family: 'Monaco', 'Consolas', monospace;
+    .order-number {
       font-weight: 700;
       color: var(--secondary-dark);
-      background: var(--gray-50);
-      padding: 0.5rem 0.75rem;
-      border-radius: 10px;
-      display: inline-block;
-    }
-
-    /* Sport Info */
-    .sport-info {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
-    .sport-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--gradient-primary);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .order-number i {
+      color: var(--primary-color);
       font-size: 1rem;
-      color: white;
     }
 
-    .sport-details h6 {
-      font-weight: 700;
-      color: var(--gray-900);
-      margin-bottom: 0.25rem;
-      font-size: 0.95rem;
-    }
-
-    .sport-details p {
-      font-size: 0.85rem;
-      color: var(--gray-500);
-      margin: 0;
-    }
-
-    /* User Info */
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      background: var(--gradient-accent);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      color: white;
+    .stat-cell {
       font-weight: 600;
-    }
-
-    .user-details h6 {
-      font-weight: 700;
-      color: var(--gray-900);
-      margin-bottom: 0.25rem;
-      font-size: 0.95rem;
-    }
-
-    .user-details p {
-      font-size: 0.85rem;
-      color: var(--gray-500);
-      margin: 0;
-    }
-
-    /* Ticket Holder */
-    .holder-info {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .holder-badge {
-      background: rgba(0, 149, 255, 0.1);
-      color: var(--primary-color);
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      border: 1px solid rgba(0, 149, 255, 0.2);
-    }
-
-    /* Quantity */
-    .quantity-cell {
-      text-align: center;
-      font-weight: 700;
-      color: var(--secondary-dark);
-    }
-
-    .quantity-badge {
-      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.1) 100%);
-      color: var(--primary-color);
-      padding: 0.5rem 0.75rem;
-      border-radius: 12px;
-      font-weight: 700;
-      display: inline-block;
-    }
-
-    /* Price Styling */
-    .price-cell {
-      font-weight: 700;
-      color: var(--primary-color);
-    }
-
-    .total-cell {
-      font-weight: 800;
-      color: var(--secondary-dark);
-    }
-
-    /* Date Styling */
-    .date-cell {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
       color: var(--gray-700);
     }
 
-    .date-cell i {
-      color: var(--primary-color);
-      font-size: 1rem;
+    .price-cell {
+      font-weight: 700;
+      font-size: 1.1rem;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     /* Action Buttons */
-    .action-btn {
-      background: var(--gradient-primary);
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
+    .action-buttons {
+      display: flex;
       gap: 0.5rem;
-      cursor: pointer;
-      text-decoration: none;
+      justify-content: center;
     }
 
-    .action-btn:hover {
+    .btn-action-compact {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+      min-width: 70px;
+    }
+
+    .btn-view {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-view:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.3);
+      box-shadow: var(--shadow-md);
+      color: white;
     }
 
     /* Empty State */
-    .empty-tickets {
-      text-align: center;
-      padding: 5rem 2rem;
-      animation: fadeInUp 0.6s ease-out;
-      background: white;
-      border-radius: 24px;
+    .empty-state {
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
       border: 2px solid var(--gray-200);
-      box-shadow: var(--shadow-md);
+      border-radius: 22px;
+      padding: 4rem 2rem;
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
     }
 
-    .empty-tickets-icon {
-      width: 120px;
-      height: 120px;
-      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    .empty-state-icon {
+      width: 100px;
+      height: 100px;
+      background: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 2rem;
-      color: var(--primary-color);
+      margin: 0 auto 1.5rem;
+      border: 2px solid var(--gray-200);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .empty-state-icon i {
       font-size: 3rem;
-      border: 3px solid var(--gray-200);
+      color: var(--gray-400);
     }
 
-    .empty-tickets-title {
-      font-size: 1.75rem;
-      font-weight: 800;
+    .empty-state h4 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
       color: var(--secondary-dark);
-      margin-bottom: 1rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.75rem;
     }
 
-    .empty-tickets-description {
+    .empty-state p {
       color: var(--gray-600);
-      margin-bottom: 2rem;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.6;
       font-size: 1.05rem;
+      margin: 0;
+      line-height: 1.6;
     }
 
-    /* Export Button */
-    .export-btn {
-      background: var(--gradient-success);
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-    }
-
-    .export-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 204, 136, 0.3);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 1200px) {
-      .tickets-stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
+    /* Responsive */
     @media (max-width: 992px) {
-      .tickets-hero {
-        padding: 2.5rem 0;
-        border-radius: 0 0 24px 24px;
+      .page-header {
+        padding: 2rem;
       }
-
-      .tickets-title {
+      
+      .page-title {
         font-size: 2rem;
       }
-
-      .tickets-filters {
+      
+      .filter-card .card-header {
         flex-direction: column;
         align-items: stretch;
+        gap: 1rem;
       }
-
-      .filter-select,
-      .search-container,
-      .date-filter {
-        width: 100%;
+      
+      .filter-card .card-body {
+        padding: 1.5rem;
       }
-
+      
+      .tickets-table-card {
+        padding: 1.5rem;
+      }
+      
       .tickets-table {
         display: block;
         overflow-x: auto;
       }
-
-      .sport-info,
-      .user-info {
-        min-width: 200px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .tickets-hero {
-        padding: 2rem 0;
-      }
-
-      .tickets-title {
-        font-size: 1.75rem;
-      }
-
-      .tickets-subtitle {
-        font-size: 1rem;
-      }
-
-      .tickets-stats {
-        grid-template-columns: 1fr;
-      }
-
-      .tickets-filters {
-        padding: 1.25rem;
-      }
-
+      
       .tickets-table th,
       .tickets-table td {
         padding: 1rem;
       }
+    }
 
-      .date-filter {
-        flex-direction: column;
+    @media (max-width: 768px) {
+      .tickets-page {
+        padding: 2rem 0;
+      }
+      
+      .page-header {
+        padding: 1.5rem;
+      }
+      
+      .page-title {
+        font-size: 1.5rem;
+      }
+      
+      .page-subtitle {
+        font-size: 1rem;
+      }
+      
+      .tickets-table-card {
+        padding: 1rem;
+      }
+      
+      .tickets-table {
+        min-width: 700px;
+      }
+      
+      .action-buttons {
+        flex-direction: row;
+        gap: 0.3rem;
+      }
+      
+      .btn-action-compact {
+        min-width: 60px;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
       }
     }
 
     @media (max-width: 576px) {
-      .tickets-hero {
-        padding: 1.5rem 0;
-        border-radius: 0 0 20px 20px;
+      .page-header {
+        padding: 1.25rem;
+        border-radius: 16px;
       }
-
-      .tickets-title {
+      
+      .page-title {
+        font-size: 1.4rem;
+      }
+      
+      .empty-state {
+        padding: 3rem 1.5rem;
+      }
+      
+      .empty-state h4 {
         font-size: 1.5rem;
       }
-
-      .sport-info,
-      .user-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-      }
-
-      .sport-icon,
-      .user-avatar {
-        width: 32px;
-        height: 32px;
-        font-size: 0.85rem;
-      }
     }
 
-    /* Loading Animation */
-    .loading-spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(0, 149, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: var(--primary-color);
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-  // TICKETS HERO
-  .tickets-hero
+  .tickets-page
     .container
-      .tickets-hero-content
-        h1.tickets-title Daftar Order Tiket
-        p.tickets-subtitle
-          | Pantau dan kelola semua pemesanan tiket event olahraga dari pelanggan
-
-        .tickets-stats
-          .tickets-stat-card
-            .tickets-stat-value
-              i.bi.bi-ticket-perforated
-              span= orders ? orders.length : 0
-            .tickets-stat-label Total Order Tiket
+      //- ===== IMPROVED PAGE HEADER =====
+      .page-header
+        .page-header-content
+          .d-flex.justify-content-between.align-items-start.mb-3
+            h1.page-title
+              i.bi.bi-ticket-perforated-fill
+              | Daftar Order Tiket
+            
+            - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin' : '/subadmin'
+            a.btn-back-modern(href=backUrl)
+              i.bi.bi-arrow-left.me-1
+              | Kembali
           
-          .tickets-stat-card
-            .tickets-stat-value
-              i.bi.bi-currency-exchange
-              span= orders ? orders.reduce((sum, o) => sum + (o.total_price || 0), 0).toLocaleString('id-ID') : 0
-            .tickets-stat-label Total Pendapatan
-          
-          .tickets-stat-card
-            .tickets-stat-value
-              i.bi.bi-people
-              span= orders ? new Set(orders.map(o => o.user_id)).size : 0
-            .tickets-stat-label Pengguna Unik
-          
-          .tickets-stat-card
-            .tickets-stat-value
-              i.bi.bi-trophy
-              span= sports ? sports.length : 0
-            .tickets-stat-label Cabang Olahraga
+          p.page-subtitle
+            | Pantau dan kelola semua pemesanan tiket event olahraga dari pelanggan
 
-  .container
-    // TICKETS FILTERS
-    .tickets-filters
-      form.filters-form(method="get" style="display: flex; gap: 1rem; flex-wrap: wrap; flex: 1;")
-        select.filter-select(name="sport_id" onchange="this.form.submit()")
-          option(value="") Semua Cabang Olahraga
-          each s in sports
-            option(
-              value=s.id
-              selected=(String(selectedSport) === String(s.id))
-            )= s.name
+      //- Filter Section
+      .filter-card
+        .card-header
+          h3.filter-title
+            i.bi.bi-funnel-fill
+            | Filter Order Tiket
         
-        .search-container
-          i.bi.bi-search.search-icon
-          input.search-input.form-control(
-            type="search" 
-            placeholder="Cari nama pengguna atau holder..."
-            name="search"
-            value=searchQuery || ''
-          )
-        
-        .date-filter
-          input.date-input.form-control(
-            type="date"
-            name="start_date"
-            value=startDate || ''
-            placeholder="Dari tanggal"
-          )
-          input.date-input.form-control(
-            type="date"
-            name="end_date"
-            value=endDate || ''
-            placeholder="Sampai tanggal"
-          )
-          button.action-btn(type="submit")
-            i.bi.bi-funnel
-            | Filter
-        
-        if selectedSport || searchQuery || startDate || endDate
-          a.action-btn(href="/admin/ticket-orders" style="background: var(--gradient-accent);")
-            i.bi.bi-x-lg
-            | Reset Filter
-      
-      button.export-btn(onclick="exportToExcel()")
-        i.bi.bi-file-earmark-excel
-        | Export Excel
+        .card-body
+          form.filter-form(method="get")
+            .row.g-3.align-items-end
+              .col-md-4
+                .mb-2
+                  label.form-label
+                    i.bi.bi-dribbble.me-1
+                    | Cabang Olahraga
+                  select.form-select(name="sport_id" onchange="this.form.submit()")
+                    option(value="") Semua Cabang
+                    each s in sports
+                      option(
+                        value=s.id
+                        selected=(String(selectedSport) === String(s.id))
+                      )= s.name
+              
+              .col-md-4
+                .mb-2
+                  label.form-label
+                    i.bi.bi-search.me-1
+                    | Cari Pesanan
+                  .input-group
+                    span.input-group-text.bg-white
+                      i.bi.bi-search.text-primary
+                    input.form-control(
+                      type="search" 
+                      placeholder="Cari nama pengguna..."
+                      name="search"
+                      value=searchQuery || ''
+                    )
+            
+              .col-md-2
+                .mb-2
+                  label.form-label
+                    i.bi.bi-calendar.me-1
+                    | Dari Tanggal
+                  input.form-control(
+                    type="date"
+                    name="start_date"
+                    value=startDate || ''
+                  )
+              
+              .col-md-2
+                .mb-2
+                  label.form-label
+                    i.bi.bi-calendar.me-1
+                    | Sampai Tanggal
+                  input.form-control(
+                    type="date"
+                    name="end_date"
+                    value=endDate || ''
+                  )
+            
+            .row.mt-2
+              .col-md-12.d-flex.gap-2.justify-content-end
+                button.btn-filter(type="submit")
+                  i.bi.bi-funnel-fill.me-1
+                  | Terapkan Filter
+                
+                if selectedSport || searchQuery || startDate || endDate
+                  a.btn-reset(href="/admin/ticket-orders")
+                    i.bi.bi-x-lg.me-1
+                    | Reset Filter
+                
+                button.export-btn(type="button" onclick="exportToExcel()")
+                  i.bi.bi-file-earmark-excel.me-1
+                  | Export
 
-    // TICKETS TABLE
-    if orders.length
-      table.table.table-bordered
-        thead
-          tr
-            th No
-            th Cabang
-            th Nama Akun
-            th Total Qty
-            th Total Harga
-            th Aksi
-        tbody
-          each o, i in orders
-            tr
-              td #{i + 1}
-              td #{o.sport_name}
-              td #{o.user_name}
-              td #{o.total_qty}
-              td Rp #{Number(o.total_price).toLocaleString('id-ID')}
-              td
-                a.btn.btn-sm.btn-primary(
-                  href=`/subadmin/ticket-orders/${o.user_id}/${o.sport_id}`
-                ) Detail
-    else
-      p.text-muted Belum ada order tiket.
+      //- Tickets Table
+      if orders && orders.length > 0
+        .tickets-table-card
+          .table-responsive
+            table.table.tickets-table
+              thead
+                tr
+                  th No.
+                  th Cabang Olahraga
+                  th Nama Pengguna
+                  th.text-center Jumlah Tiket
+                  th.text-center Total Harga
+                  th.text-center Aksi
+              tbody
+                each order, index in orders
+                  tr
+                    td
+                      .order-number
+                        i.bi.bi-hash
+                        span= index + 1
+                    
+                    td
+                      .fw-bold.text-dark= order.sport_name
+                      small.text-muted= order.event_name || 'Event'
+                    
+                    td
+                      .fw-bold.text-dark= order.user_name
+                      small.text-muted.d-block= order.user_email || '-'
+                    
+                    td.text-center.stat-cell= order.total_qty || 1
+                    
+                    td.text-center.price-cell
+                      | Rp #{Number(order.total_price).toLocaleString('id-ID')}
+                    
+                    td.text-center
+                      .action-buttons
+                        a.btn-action-compact.btn-view(
+                          href=`/subadmin/ticket-orders/${order.user_id}/${order.sport_id}`
+                        )
+                          i.bi.bi-eye
+                          span Detail
+      else
+        //- Empty State
+        .empty-state
+          .empty-state-icon
+            i.bi.bi-ticket-perforated
+          h4 Belum Ada Order Tiket
+          p
+            | Saat ini belum ada pemesanan tiket untuk event olahraga yang Anda kelola.
+            br
+            | Data akan muncul ketika ada pengguna yang melakukan pemesanan tiket.
+          .mt-3
+            button.export-btn(onclick="exportToExcel()")
+              i.bi.bi-file-earmark-excel.me-2
+              | Export Data
 
   script.
-    // Filter table by search
     document.addEventListener('DOMContentLoaded', function() {
-      const searchInput = document.querySelector('.search-input');
-      if (searchInput) {
-        searchInput.addEventListener('input', function() {
-          filterTable(this.value);
-        });
-      }
-      
       // Add row animations
       const rows = document.querySelectorAll('.tickets-table tbody tr');
       rows.forEach((row, index) => {
         row.style.animationDelay = `${index * 0.05}s`;
-        row.style.animation = 'fadeInUp 0.3s ease-out forwards';
+        row.style.animation = 'slideInUp 0.3s ease-out forwards';
         row.style.opacity = '0';
       });
       
@@ -737,7 +725,7 @@ block content
         // Ctrl/Cmd + F for search focus
         if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
           e.preventDefault();
-          const searchInput = document.querySelector('.search-input');
+          const searchInput = document.querySelector('input[name="search"]');
           if (searchInput) {
             searchInput.focus();
             searchInput.select();
@@ -751,216 +739,123 @@ block content
             window.location.href = resetBtn.href;
           }
         }
+        
+        // Ctrl/Cmd + E for export
+        if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+          e.preventDefault();
+          exportToExcel();
+        }
+      });
+      
+      // Add hover effects to table rows
+      const tableRows = document.querySelectorAll('.tickets-table tbody tr');
+      tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateX(4px)';
+        });
+        
+        row.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateX(0)';
+        });
       });
     });
     
-    function filterTable(query) {
-      const q = query.toLowerCase().trim();
-      const rows = document.querySelectorAll('.tickets-table tbody tr');
-      
-      rows.forEach(row => {
-        const orderId = row.dataset.orderid || '';
-        const sport = row.dataset.sport || '';
-        const user = row.dataset.user || '';
-        const holder = row.dataset.holder || '';
-        
-        const shouldShow = q === '' || 
-          orderId.toLowerCase().includes(q) ||
-          sport.toLowerCase().includes(q) ||
-          user.toLowerCase().includes(q) ||
-          holder.toLowerCase().includes(q);
-        
-        if (shouldShow) {
-          row.style.display = '';
-          row.style.animation = 'fadeInUp 0.3s ease-out';
-        } else {
-          row.style.display = 'none';
-        }
-      });
-    }
-    
-    // View ticket detail
-    async function viewTicketDetail(orderId) {
-      const modal = new bootstrap.Modal(document.getElementById('ticketDetailModal'));
-      const loadingElement = document.getElementById('ticketDetailLoading');
-      const contentElement = document.getElementById('ticketDetailContent');
-      
-      // Show loading, hide content
-      loadingElement.style.display = 'block';
-      contentElement.style.display = 'none';
-      
-      try {
-        // In a real application, you would fetch this data from your API
-        // For now, we'll simulate with mock data
-        const mockData = {
-          order_id: orderId,
-          event_name: 'Final Turnamen Sepak Bola 2024',
-          venue: 'Gelora Bung Karno, Jakarta',
-          event_date: '2024-12-25T19:00:00',
-          user_name: 'John Doe',
-          user_email: 'john@example.com',
-          user_phone: '081234567890',
-          holder_name: 'Jane Doe',
-          holder_email: 'jane@example.com',
-          price: 150000,
-          quantity: 1,
-          total_price: 150000,
-          purchase_date: new Date().toISOString(),
-          status: 'confirmed',
-          payment_method: 'Transfer Bank',
-          ticket_number: `TICKET-${orderId}-001`
-        };
-        
-        // Format the modal content
-        contentElement.innerHTML = `
-          <div class="row g-3">
-            <div class="col-md-6">
-              <div class="detail-section mb-3">
-                <h6><i class="bi bi-info-circle me-2"></i>Informasi Event</h6>
-                <div class="mb-2">
-                  <strong>Event:</strong> ${mockData.event_name}
-                </div>
-                <div class="mb-2">
-                  <strong>Lokasi:</strong> ${mockData.venue}
-                </div>
-                <div class="mb-2">
-                  <strong>Tanggal:</strong> ${new Date(mockData.event_date).toLocaleString('id-ID')}
-                </div>
-              </div>
-              
-              <div class="detail-section mb-3">
-                <h6><i class="bi bi-person me-2"></i>Informasi Pembeli</h6>
-                <div class="mb-2">
-                  <strong>Nama:</strong> ${mockData.user_name}
-                </div>
-                <div class="mb-2">
-                  <strong>Email:</strong> ${mockData.user_email}
-                </div>
-                <div class="mb-2">
-                  <strong>Telepon:</strong> ${mockData.user_phone}
-                </div>
-              </div>
-            </div>
-            
-            <div class="col-md-6">
-              <div class="detail-section mb-3">
-                <h6><i class="bi bi-ticket me-2"></i>Informasi Tiket</h6>
-                <div class="mb-2">
-                  <strong>No. Tiket:</strong> 
-                  <code style="background: var(--gray-100); padding: 0.25rem 0.5rem; border-radius: 6px;">
-                    ${mockData.ticket_number}
-                  </code>
-                </div>
-                <div class="mb-2">
-                  <strong>Pemegang Tiket:</strong> ${mockData.holder_name}
-                </div>
-                <div class="mb-2">
-                  <strong>Email Pemegang:</strong> ${mockData.holder_email}
-                </div>
-                <div class="mb-2">
-                  <strong>Status:</strong> 
-                  <span class="badge bg-success">${mockData.status}</span>
-                </div>
-              </div>
-              
-              <div class="detail-section mb-3">
-                <h6><i class="bi bi-currency-exchange me-2"></i>Informasi Pembayaran</h6>
-                <div class="mb-2">
-                  <strong>Metode Pembayaran:</strong> ${mockData.payment_method}
-                </div>
-                <div class="mb-2">
-                  <strong>Harga Satuan:</strong> Rp ${mockData.price.toLocaleString('id-ID')}
-                </div>
-                <div class="mb-2">
-                  <strong>Jumlah:</strong> ${mockData.quantity} tiket
-                </div>
-                <div class="mb-2">
-                  <strong>Total:</strong> 
-                  <strong style="color: var(--primary-color);">
-                    Rp ${mockData.total_price.toLocaleString('id-ID')}
-                  </strong>
-                </div>
-                <div class="mb-2">
-                  <strong>Tanggal Pembelian:</strong> ${new Date(mockData.purchase_date).toLocaleString('id-ID')}
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="text-center mt-4">
-            <button class="btn btn-primary" onclick="printTicket('${mockData.ticket_number}')" style="background: var(--gradient-primary); border: none;">
-              <i class="bi bi-printer me-2"></i>
-              Cetak Tiket
-            </button>
-            <button class="btn btn-success ms-2" onclick="sendTicketEmail('${mockData.user_email}')" style="background: var(--gradient-success); border: none;">
-              <i class="bi bi-envelope me-2"></i>
-              Kirim Email
-            </button>
-          </div>
-        `;
-        
-        // Show content, hide loading
-        loadingElement.style.display = 'none';
-        contentElement.style.display = 'block';
-        
-        // Show modal
-        modal.show();
-        
-      } catch (error) {
-        console.error('Error loading ticket details:', error);
-        loadingElement.innerHTML = `
-          <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2rem;"></i>
-          <p class="text-danger mt-2">Gagal memuat detail tiket</p>
-        `;
-      }
-    }
-    
     // Export to Excel
     function exportToExcel() {
-      // In a real application, you would make an API call to generate Excel
-      // For now, we'll show a confirmation message
-      alert('Fitur export Excel akan mengunduh semua data order tiket dalam format spreadsheet.');
+      // Get all orders data
+      const ordersData = !{JSON.stringify(orders || [])};
       
-      // Simulate Excel download
-      const data = [
-        ['Order ID', 'Cabang Olahraga', 'Pengguna', 'Pemegang Tiket', 'Jumlah', 'Harga', 'Total', 'Tanggal'],
-        ...orders.map(o => [
-          o.order_id,
-          o.sport_name,
-          o.user_name,
-          o.holder_name || 'Sama dengan pengguna',
-          1,
-          o.price,
-          o.total_price,
-          new Date(o.created_at).toLocaleDateString('id-ID')
-        ])
+      if (ordersData.length === 0) {
+        alert('Tidak ada data untuk diekspor.');
+        return;
+      }
+      
+      // Prepare data for CSV
+      const headers = [
+        'No',
+        'Cabang Olahraga',
+        'Nama Pengguna',
+        'Email Pengguna',
+        'Jumlah Tiket',
+        'Total Harga',
+        'Tanggal Pesanan'
       ];
       
-      // Convert to CSV (for demo purposes)
-      const csvContent = data.map(row => row.join(',')).join('\n');
+      const csvData = ordersData.map((order, index) => [
+        index + 1,
+        order.sport_name || '',
+        order.user_name || '',
+        order.user_email || '',
+        order.total_qty || 1,
+        order.total_price || 0,
+        order.created_at ? new Date(order.created_at).toLocaleDateString('id-ID') : ''
+      ]);
+      
+      // Create CSV content
+      const csvContent = [
+        headers,
+        ...csvData
+      ].map(row => row.join(',')).join('\n');
+      
+      // Create and trigger download
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
+      const timestamp = new Date().toISOString().split('T')[0];
       link.href = URL.createObjectURL(blob);
-      link.download = `ticket-orders-${new Date().toISOString().split('T')[0]}.csv`;
+      link.download = `order-tiket-${timestamp}.csv`;
       link.click();
+      
+      // Show notification
+      showNotification(`Berhasil mengekspor ${ordersData.length} data order tiket`);
     }
     
-    // Print ticket
-    function printTicket(ticketNumber) {
-      alert(`Mencetak tiket: ${ticketNumber}\n\nFitur print akan membuka preview cetakan tiket.`);
-      // In a real application, you would open a print dialog with ticket template
-      window.open(`/admin/tickets/${ticketNumber}/print`, '_blank');
-    }
-    
-    // Send ticket email
-    function sendTicketEmail(email) {
-      if (confirm(`Kirim tiket ke email ${email}?`)) {
-        // Show loading
-        alert('Mengirim email tiket...');
-        
-        // In a real application, you would make an API call
+    // Show notification
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--gradient-success);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
+        z-index: 9999;
+        animation: slideInRight 0.3s ease-out;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      `;
+      
+      notification.innerHTML = `
+        <i class="bi bi-check-circle" style="font-size: 1.5rem;"></i>
+        <div>
+          <strong style="display: block; margin-bottom: 0.25rem;">Berhasil!</strong>
+          <span style="font-size: 0.9rem;">${message}</span>
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease-out';
         setTimeout(() => {
-          alert(`Tiket berhasil dikirim ke ${email}`);
-        }, 1500);
-      }
+          notification.remove();
+        }, 300);
+      }, 3000);
+      
+      // Add animation styles
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes slideInRight {
+          from { opacity: 0; transform: translateX(100%); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideOutRight {
+          from { opacity: 1; transform: translateX(0); }
+          to { opacity: 0; transform: translateX(100%); }
+        }
+      `;
+      document.head.appendChild(style);
     }

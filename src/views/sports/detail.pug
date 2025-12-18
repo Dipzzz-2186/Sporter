@@ -465,11 +465,12 @@ block content
               i.bi.bi-calendar-x
             .empty-title Belum Ada Jadwal
             .empty-text Di halaman ini nanti akan tampil daftar event & jadwal khusus untuk cabang olahraga #{sport.name}.
-          if currentUser && currentUser.role == 'subadmin'
-            a.btn.btn-hero-primary(href="/subadmin/matches/create")
-              i.bi.bi-plus-circle
-              | Tambah Pertandingan
-          if !currentUser
+            if currentUser && currentUser.role == 'subadmin'
+              a.btn.btn-hero-primary(href="/subadmin/matches/create")
+                i.bi.bi-plus-circle
+                | Tambah Pertandingan
+            else
+              i 
 
   .modal.fade#ticketModal(tabindex="-1")
     .modal-dialog.modal-lg

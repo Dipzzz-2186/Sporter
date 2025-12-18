@@ -581,7 +581,8 @@ block content
               i.bi.bi-save-fill
               span Simpan Perubahan
             
-            a.btn.btn-back(href="/subadmin/matches")
+            - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin/matches' : '/subadmin/matches'
+            a.btn.btn-back(href=backUrl)
               i.bi.bi-arrow-left
               span Kembali ke Daftar
 

@@ -106,6 +106,112 @@ block content
       font-size: 1.2rem;
     }
     
+    /* ========== FILTER SECTION STYLES ========== */
+    .filter-card {
+      background: white;
+      border-radius: 18px;
+      border: 2px solid #e8edf2;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.6s ease-out 0.2s backwards;
+      overflow: hidden;
+    }
+    
+    .filter-card .card-header {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-bottom: 2px solid #e8edf2;
+      padding: 1.25rem 1.5rem;
+    }
+    
+    .filter-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #0B1F3F;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin: 0;
+    }
+    
+    .filter-title i {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 1.3rem;
+    }
+    
+    .filter-card .card-body {
+      padding: 1.5rem;
+    }
+    
+    .filter-form label {
+      color: #0B1F3F;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .filter-form label i {
+      color: #0095FF;
+      font-size: 0.9rem;
+    }
+    
+    .filter-form .form-select,
+    .filter-form .form-control {
+      border-radius: 10px;
+      border: 2px solid #e8edf2;
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background-color: white;
+    }
+    
+    .filter-form .form-select:focus,
+    .filter-form .form-control:focus {
+      border-color: #0095FF;
+      box-shadow: 0 0 0 0.2rem rgba(0, 149, 255, 0.15);
+      outline: none;
+    }
+    
+    .filter-form .form-select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%230B1F3F' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 16px 12px;
+    }
+    
+    .btn-filter {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border: none;
+      color: white;
+      border-radius: 10px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+    }
+    
+    .btn-filter:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 149, 255, 0.35);
+      background: linear-gradient(135deg, #34C7FF 0%, #0095FF 100%);
+      color: white;
+    }
+    
+    .btn-filter:active {
+      transform: translateY(0);
+    }
+    
     /* Table Card */
     .matches-table-card {
       background: white;
@@ -367,6 +473,14 @@ block content
         font-size: 2rem;
       }
       
+      .filter-card {
+        border-radius: 16px;
+      }
+      
+      .filter-card .card-body {
+        padding: 1.25rem;
+      }
+      
       .matches-table {
         font-size: 0.85rem;
       }
@@ -395,6 +509,33 @@ block content
         width: 100%;
         justify-content: center;
         margin-top: 1rem;
+      }
+      
+      .filter-card {
+        margin-bottom: 1.5rem;
+      }
+      
+      .filter-card .card-header {
+        padding: 1rem 1.25rem;
+      }
+      
+      .filter-title {
+        font-size: 1rem;
+      }
+      
+      .filter-card .card-body {
+        padding: 1rem;
+      }
+      
+      .filter-form .form-select,
+      .filter-form .form-control {
+        padding: 0.65rem 0.9rem;
+        font-size: 0.9rem;
+      }
+      
+      .btn-filter {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.9rem;
       }
       
       .matches-table {
@@ -435,27 +576,40 @@ block content
         font-size: 1.6rem;
       }
     }
+    
+    @media (max-width: 480px) {
+      .filter-form .row {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .filter-form .col-md-4,
+      .filter-form .col-md-3,
+      .filter-form .col-md-2 {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
 
   .matches-page
     .container
-      //- Header Section
+      //- Header Section - DIPERBAIKI
       .matches-header
-        .row.align-items-center.g-3
-          .col-lg-8
-            h1
-              i.bi.bi-trophy-fill.me-2
-              | #{isReadOnly ? 'Daftar Pertandingan' : 'Kelola Pertandingan'}
-
-            if !isReadOnly
-              a.btn-add-match(href="/subadmin/matches/create")
-                i.bi.bi-plus-circle
-                span Tambah Pertandingan
-                
-            - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin' : '/subadmin'
-
-            a.btn.btn-secondary(href=backUrl)
-              i.bi.bi-arrow-left.me-1
-              | Kembali
+        .d-flex.justify-content-between.align-items-start.mb-3
+          h1.mb-0
+            i.bi.bi-trophy-fill.me-2
+            | #{isReadOnly ? 'Daftar Pertandingan' : 'Kelola Pertandingan'}
+          
+          - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin' : '/subadmin'
+          a.btn.btn-secondary(href=backUrl)
+            i.bi.bi-arrow-left.me-1
+            | Kembali
+        
+        if !isReadOnly
+          .mt-3
+            a.btn-add-match(href="/subadmin/matches/create")
+              i.bi.bi-plus-circle
+              span Tambah Pertandingan
 
       //- Flash Messages
       if flash && flash.error && flash.error.length
@@ -469,38 +623,52 @@ block content
           .alert.alert-success(role="alert")
             i.bi.bi-check-circle-fill
             span= msg
-      form.mb-3(method="get")
-        .row.g-2.align-items-end
-          .col-md-4
-            label.form-label.fw-bold Cabang Olahraga
-            select.form-select(name="sport_id")
-              option(value="") Semua Cabang
-              each s in sports
-                option(
-                  value=s.id
-                  selected=(query && query.sport_id == s.id)
-                )= s.name
-
-          .col-md-3
-            label.form-label.fw-bold Urutan
-            select.form-select(name="order")
-              option(
-                value="newest"
-                selected=(!query || query.order !== 'oldest')
-              ) Terbaru
-              option(
-                value="oldest"
-                selected=(query && query.order === 'oldest')
-              ) Terlama
-
-          .col-md-2
-            button.btn.btn-primary.w-100(type="submit")
-              i.bi.bi-funnel-fill.me-1
-              | Filter
+      
+      //- Filter Section - DIPERBAIKI
+      .filter-card
+        .card-header
+          h5.filter-title
+            i.bi.bi-funnel-fill
+            | Filter Pertandingan
+        
+        .card-body
+          form.filter-form(method="get")
+            .row.g-3.align-items-end
+              .col-md-4
+                .mb-2
+                  label.form-label
+                    i.bi.bi-dribbble.me-1
+                    | Cabang Olahraga
+                  select.form-select(name="sport_id")
+                    option(value="") Semua Cabang
+                    each s in sports
+                      option(
+                        value=s.id
+                        selected=(query && query.sport_id == s.id)
+                      )= s.name
               
+              .col-md-3
+                .mb-2
+                  label.form-label
+                    i.bi.bi-sort-down.me-1
+                    | Urutan
+                  select.form-select(name="order")
+                    option(
+                      value="newest"
+                      selected=(!query || query.order !== 'oldest')
+                    ) Terbaru
+                    option(
+                      value="oldest"
+                      selected=(query && query.order === 'oldest')
+                    ) Terlama
+            
+              .col-md-2
+                button.btn-filter(type="submit")
+                  i.bi.bi-funnel-fill.me-1
+                  | Terapkan
+
       //- Matches Table
       if matches && matches.length
-
         .card.matches-table-card.border-0
           .card-body
             .table-responsive
@@ -610,6 +778,7 @@ block content
                         else
                           .status-badge
                             = m.status || 'N/A'
+                      
                       if !isReadOnly
                         td
                           .action-buttons
@@ -652,15 +821,15 @@ block content
           a.btn-add-match(href="/subadmin/matches/create")
             i.bi.bi-plus-circle
             span Tambah Pertandingan Pertama
+  
+  //- Modals
   if !isReadOnly
     #padelScoreModal.modal.fade(tabindex='-1')
       .modal-dialog
         .modal-content
           .modal-header
-          
             h5.modal-title Input Skor Padel
             button.btn-close(type='button', data-bs-dismiss='modal')
-
 
           .modal-body
             small.text-muted
@@ -729,9 +898,8 @@ block content
 
           .modal-footer
             button.btn.btn-secondary(data-bs-dismiss='modal') Tutup
+
   if !isReadOnly
-    
-    //- Custom JavaScript
     script.
       (function() {
         // Auto dismiss alerts after 5 seconds
@@ -789,7 +957,7 @@ block content
         }
       })();
 
-    script. 
+    script.
       function openScoreModal(btn) {
         document.getElementById('matchId').value = btn.dataset.matchId;
         document.getElementById('homeLabel').innerText = btn.dataset.home;

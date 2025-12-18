@@ -419,7 +419,8 @@ block content
   .team-members-hero
     .container
       .team-header-content
-        a.btn.btn-sm.btn-outline-secondary.mb-3.team-back-btn(href="/subadmin/teams")
+        //- - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin/teams' : '/subadmin/teams'
+        a.btn.btn-sm.btn-outline-secondary.mb-3.team-back-btn(href="javascript:void(0);" onclick="history.back()")
           i.bi.bi-arrow-left
           | Kembali ke Daftar Tim
         

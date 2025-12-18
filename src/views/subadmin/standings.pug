@@ -35,6 +35,19 @@ block content
       border-radius: 50%;
     }
     
+    /* ===== HEADER CONTENT ===== */
+    .header-content-wrapper {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .header-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+    
     .standings-header h3 {
       color: white;
       font-family: 'Bebas Neue', cursive;
@@ -43,6 +56,7 @@ block content
       margin: 0;
       position: relative;
       z-index: 2;
+      flex: 1;
     }
     
     .standings-header h3 i {
@@ -53,23 +67,24 @@ block content
       margin-right: 0.5rem;
     }
     
-    /* ===== Back Button (from code 2) ===== */
+    /* ===== Back Button (FIXED POSITION - pojok kanan atas) ===== */
     .btn-back-modern {
       display: inline-flex;
       align-items: center;
-      gap: .45rem;
-      margin-top: 1rem;
-      margin-right: 1rem;
-
+      gap: 0.45rem;
       background: rgba(255,255,255,.15);
       color: #fff;
       border: 1px solid rgba(255,255,255,.35);
       border-radius: 12px;
-      padding: .45rem .9rem;
-
-      font-size: .85rem;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      transition: .25s;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 10;
     }
 
     .btn-back-modern:hover {
@@ -78,31 +93,38 @@ block content
       color: #fff;
     }
 
-    /* ===== Mode Switch (from code 2) ===== */
-    .mode-switch {
+    /* ===== Mode Switch ===== */
+    .mode-switch-wrapper {
       margin-top: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .mode-switch {
       display: inline-flex;
       background: rgba(255,255,255,.15);
       border-radius: 14px;
-      padding: .25rem;
-      gap: .25rem;
+      padding: 0.25rem;
+      gap: 0.25rem;
     }
 
     .mode-switch a {
-      padding: .4rem .85rem;
+      padding: 0.4rem 0.85rem;
       border-radius: 10px;
-      font-size: .8rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: #fff;
       display: inline-flex;
       align-items: center;
-      gap: .4rem;
+      gap: 0.4rem;
       text-decoration: none;
-      transition: .25s;
+      transition: 0.25s;
     }
 
     .mode-switch a.inactive {
-      opacity: .6;
+      opacity: 0.6;
     }
 
     .mode-switch a.active {
@@ -409,6 +431,40 @@ block content
       border: 2px solid #e9ecef;
     }
     
+    /* Guide Button */
+    .btn-guide {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      transition: all 0.25s ease;
+    }
+
+    .btn-guide i {
+      font-size: 0.95rem;
+    }
+
+    .btn-guide:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.6);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-guide:active {
+      transform: translateY(0);
+    }
+
+    .btn-guide:focus {
+      box-shadow: 0 0 0 0.15rem rgba(255, 255, 255, 0.25);
+    }
+    
     /* Responsive */
     @media (max-width: 991px) {
       .standings-header {
@@ -417,6 +473,11 @@ block content
       
       .standings-header h3 {
         font-size: 2rem;
+      }
+      
+      .btn-back-modern {
+        top: 1rem;
+        right: 1rem;
       }
       
       .standings-group {
@@ -444,6 +505,20 @@ block content
       
       .standings-header h3 {
         font-size: 1.5rem;
+      }
+      
+      .btn-back-modern {
+        position: static;
+        margin-top: 1rem;
+        display: inline-flex;
+        top: auto;
+        right: auto;
+      }
+      
+      .header-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
       }
       
       .standings-group {
@@ -480,76 +555,42 @@ block content
     .standings-group:nth-child(3) { animation-delay: 0.3s; }
     .standings-group:nth-child(4) { animation-delay: 0.4s; }
 
-    /* Guide Button */
-    .btn-guide {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
-
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 10px;
-
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.35rem 0.75rem;
-
-      transition: all 0.25s ease;
-    }
-
-    .btn-guide i {
-      font-size: 0.95rem;
-    }
-
-    .btn-guide:hover {
-      background: rgba(255, 255, 255, 0.25);
-      border-color: rgba(255, 255, 255, 0.6);
-      color: #fff;
-      transform: translateY(-1px);
-    }
-
-    .btn-guide:active {
-      transform: translateY(0);
-    }
-
-    .btn-guide:focus {
-      box-shadow: 0 0 0 0.15rem rgba(255, 255, 255, 0.25);
-    }
-
   .standings-page
     .container
       .standings-header
         - const currentSport = sports.find(s => String(s.id) === String(query?.sport_id));
 
-        h3
-          i.bi.bi-trophy-fill
-          | Klasemen #{currentSport ? currentSport.name : 'Cabang'}
-          
-
+        //- BACK BUTTON DI POJOK KANAN ATAS
         - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin' : '/subadmin'
-        - const mode = (query && query.mode) ? String(query.mode) : 'team';
-        - const sportParam = (query && query.sport_id) ? `sport_id=${query.sport_id}` : '';
-
         a.btn-back-modern(href=backUrl)
           i.bi.bi-arrow-left.me-1
           | Kembali
 
-        .mode-switch
-          a(
-            class=(mode === 'team' ? 'active' : 'inactive')
-            href=`/subadmin/standings?${sportParam}&mode=team`
-          )
-            i.bi.bi-people-fill
-            | Tim
-          
-          a(
-            class=(mode === 'individual' ? 'active' : 'inactive')
-            href=`/subadmin/standings?${sportParam}&mode=individual`
-          )
-            i.bi.bi-person-fill
-            | Individual
+        .header-content-wrapper
+          .header-title-row
+            h3
+              i.bi.bi-trophy-fill
+              | Klasemen #{currentSport ? currentSport.name : 'Cabang'}
+
+          //- Mode Switch
+          .mode-switch-wrapper
+            - const mode = (query && query.mode) ? String(query.mode) : 'team';
+            - const sportParam = (query && query.sport_id) ? `sport_id=${query.sport_id}` : '';
+            
+            .mode-switch
+              a(
+                class=(mode === 'team' ? 'active' : 'inactive')
+                href=`/subadmin/standings?${sportParam}&mode=team`
+              )
+                i.bi.bi-people-fill
+                | Tim
+              
+              a(
+                class=(mode === 'individual' ? 'active' : 'inactive')
+                href=`/subadmin/standings?${sportParam}&mode=individual`
+              )
+                i.bi.bi-person-fill
+                | Individual
 
       // === FILTER CABANG (HANYA JIKA LEBIH DARI 1) ===
       if sports && sports.length > 1

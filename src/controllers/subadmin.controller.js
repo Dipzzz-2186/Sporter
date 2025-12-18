@@ -1513,6 +1513,7 @@ exports.listTeams = async (req, res) => {
   try {
     const allowed = Array.isArray(req.allowedSports) ? req.allowedSports.map(Number) : [];
     const hasIsIndividual = await columnExists('teams', 'is_individual');
+    const sports = await loadSportsList(req.session.user);
 
     if (req.session.user.role === 'admin') {
       const [teams] = await db.query(
@@ -1539,7 +1540,7 @@ exports.listTeams = async (req, res) => {
       allowed
     );
 
-    return res.render('subadmin/teams', { title: 'Kelola Tim', teams });
+    return res.render('subadmin/teams', { title: 'Kelola Tim', teams, sportsList: sports });
   } catch (err) {
     console.error('listTeams error', err);
     req.flash('error', 'Gagal memuat daftar tim.');
