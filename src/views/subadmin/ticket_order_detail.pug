@@ -1,0 +1,36 @@
+extends ../layout/main
+
+block content
+  .container.mt-4
+    h3.mb-3 Detail Order Tiket
+
+    if rows.length
+      - let currentMatch = null
+      - let subtotal = 0
+
+      each r in rows
+        if !currentMatch || currentMatch !== r.match_id
+          if currentMatch
+            p.fw-bold Subtotal: Rp #{subtotal.toLocaleString('id-ID')}
+            hr
+
+          - currentMatch = r.match_id
+          - subtotal = 0
+
+          h5.mt-4
+            | #{r.match_title}
+            small.text-muted.ms-2
+              = new Date(r.start_time).toLocaleString('id-ID')
+
+        - subtotal += Number(r.price)
+
+        .border.rounded.p-2.mb-2
+          p.mb-1 Holder: #{r.holder_name || '-'}
+          p.mb-0 Harga: Rp #{Number(r.price).toLocaleString('id-ID')}
+
+      p.fw-bold Subtotal: Rp #{subtotal.toLocaleString('id-ID')}
+
+    else
+      p.text-muted Tidak ada tiket.
+
+    a.btn.btn-secondary.mt-3(href="/subadmin/ticket-orders") Kembali

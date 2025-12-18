@@ -1606,25 +1606,14 @@ exports.deleteTeamMember = async (req, res) => {
 
 
 // ===============================
-// SUBADMIN – LIST TICKET ORDERS
+// SUBADMIN – LIST TICKET ORDERS (PER USER)
 // ===============================
 exports.renderTicketOrders = async (req, res) => {
   try {
     const user = req.session.user;
     const allowedSports = Array.isArray(req.allowedSports) ? req.allowedSports : [];
-
-    if (user.role === 'subadmin' && !allowedSports.length) {
-      return res.render('subadmin/ticket_orders', {
-        title: 'Order Tiket',
-        orders: [],
-        sports: [],
-        selectedSport: null
-      });
-    }
-
     const { sport_id } = req.query;
 
-    // filter sport
     let whereSport = '';
     let params = [];
 
@@ -1634,6 +1623,13 @@ exports.renderTicketOrders = async (req, res) => {
         params.push(sport_id);
       }
     } else {
+      if (!allowedSports.length) {
+        return res.render('subadmin/ticket_orders', {
+          orders: [],
+          sports: [],
+          selectedSport: null
+        });
+      }
       const placeholders = allowedSports.map(() => '?').join(',');
       whereSport = `AND s.id IN (${placeholders})`;
       params.push(...allowedSports);
@@ -1644,24 +1640,20 @@ exports.renderTicketOrders = async (req, res) => {
       }
     }
 
-    // ambil sports buat dropdown
     const [sports] = await db.query(
       `SELECT id, name FROM sports ORDER BY name`
     );
 
-    // QUERY UTAMA (INI YANG PENTING)
+    // 🔥 QUERY PER USER + SPORT
     const [orders] = await db.query(
       `
       SELECT
-        o.id AS order_id,
+        u.id AS user_id,
         u.name AS user_name,
+        s.id AS sport_id,
         s.name AS sport_name,
-        t.ticket_code,
-        t.holder_name,
-        tt.price,
-        1 AS qty,
-        tt.price AS total_price,
-        o.created_at
+        COUNT(t.id) AS total_qty,
+        SUM(tt.price) AS total_price
       FROM orders o
       JOIN users u ON u.id = o.user_id
       JOIN order_items oi ON oi.order_id = o.id
@@ -1672,21 +1664,55 @@ exports.renderTicketOrders = async (req, res) => {
       JOIN sports s ON s.id = COALESCE(m.sport_id, e.sport_id)
       WHERE 1=1
       ${whereSport}
-      ORDER BY o.created_at DESC
+      GROUP BY u.id, s.id
+      ORDER BY MAX(o.created_at) DESC
       `,
       params
     );
 
     res.render('subadmin/ticket_orders', {
-      title: 'Order Tiket',
       orders,
       sports,
       selectedSport: sport_id || ''
     });
-
   } catch (err) {
     console.error('renderTicketOrders error', err);
     req.flash('error', 'Gagal memuat order tiket');
     res.redirect('/subadmin');
+  }
+};
+// ===============================
+// SUBADMIN – DETAIL ORDER TIKET PER USER + SPORT
+// ===============================
+exports.renderTicketOrderDetail = async (req, res) => {
+  try {
+    const userId = Number(req.params.userId);
+    const sportId = Number(req.params.sportId);
+
+    const [rows] = await db.query(
+      `
+      SELECT
+        m.id AS match_id,
+        m.title AS match_title,
+        m.start_time,
+        t.holder_name,
+        tt.price
+      FROM orders o
+      JOIN order_items oi ON oi.order_id = o.id
+      JOIN tickets t ON t.order_item_id = oi.id
+      JOIN ticket_types tt ON tt.id = oi.ticket_type_id
+      JOIN matches m ON m.id = tt.match_id
+      WHERE o.user_id = ?
+        AND m.sport_id = ?
+      ORDER BY m.start_time ASC
+      `,
+      [userId, sportId]
+    );
+
+    res.render('subadmin/ticket_order_detail', { rows });
+  } catch (err) {
+    console.error('renderTicketOrderDetail error', err);
+    req.flash('error', 'Gagal memuat detail order');
+    res.redirect('/subadmin/ticket-orders');
   }
 };

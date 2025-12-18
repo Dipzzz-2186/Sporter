@@ -690,112 +690,29 @@ block content
 
     // TICKETS TABLE
     if orders.length
-      .tickets-table-container
-        table.table.tickets-table.mb-0
-          thead
+      table.table.table-bordered
+        thead
+          tr
+            th No
+            th Cabang
+            th Nama Akun
+            th Total Qty
+            th Total Harga
+            th Aksi
+        tbody
+          each o, i in orders
             tr
-              th Order ID
-              th Cabang Olahraga
-              th Pengguna
-              th Pemegang Tiket
-              th Jumlah
-              th Harga Satuan
-              th Total
-              th Tanggal
-              th Aksi
-          tbody
-            each o in orders
-              tr(
-                data-orderid=o.order_id
-                data-sport=o.sport_name
-                data-user=o.user_name
-                data-holder=o.holder_name
-                data-date=o.created_at
-              )
-                td
-                  code.order-id ##{o.order_id}
-                
-                td
-                  .sport-info
-                    .sport-icon
-                      i.bi.bi-trophy
-                    .sport-details
-                      h6= o.sport_name
-                      p Event #{o.event_name || 'Umum'}
-                
-                td
-                  .user-info
-                    .user-avatar= (o.user_name || 'U').charAt(0).toUpperCase()
-                    .user-details
-                      h6= o.user_name || 'Pengguna'
-                      p
-                        i.bi.bi-envelope.me-1
-                        = o.user_email || 'Email tidak tersedia'
-                
-                td
-                  .holder-info
-                    i.bi.bi-person-badge
-                    span.holder-badge= o.holder_name || 'Sama dengan pengguna'
-                
-                td.quantity-cell
-                  span.quantity-badge 1x
-                
-                td.price-cell
-                  | Rp #{Number(o.price).toLocaleString('id-ID')}
-                
-                td.total-cell
-                  | Rp #{Number(o.total_price).toLocaleString('id-ID')}
-                
-                td
-                  .date-cell
-                    i.bi.bi-calendar3
-                    = new Date(o.created_at).toLocaleDateString('id-ID')
-                    br
-                    small.text-muted= new Date(o.created_at).toLocaleTimeString('id-ID')
-                
-                td
-                  button.action-btn(
-                    onclick=`viewTicketDetail('${o.order_id}')`
-                    style="background: var(--gradient-primary);"
-                  )
-                    i.bi.bi-eye
-                    | Detail
+              td #{i + 1}
+              td #{o.sport_name}
+              td #{o.user_name}
+              td #{o.total_qty}
+              td Rp #{Number(o.total_price).toLocaleString('id-ID')}
+              td
+                a.btn.btn-sm.btn-primary(
+                  href=`/subadmin/ticket-orders/${o.user_id}/${o.sport_id}`
+                ) Detail
     else
-      .empty-tickets
-        .empty-tickets-icon
-          i.bi.bi-ticket-perforated
-        h3.empty-tickets-title Belum Ada Order Tiket
-        p.empty-tickets-description
-          | Pesanan tiket dari pelanggan akan muncul di sini. 
-          | Pastikan event dan tiket sudah tersedia untuk dijual.
-        .mt-4
-          a.btn.btn-lg.btn-primary(href="/admin/events" style="background: var(--gradient-primary); border: none;")
-            i.bi.bi-calendar-event.me-2
-            | Kelola Event
-
-  // DETAIL MODAL
-  #ticketDetailModal.modal.fade(tabindex="-1" aria-labelledby="ticketDetailModalLabel" aria-hidden="true")
-    .modal-dialog.modal-lg.modal-dialog-centered
-      .modal-content(style="border-radius: 24px; border: 2px solid var(--gray-200);")
-        .modal-header(style="background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%); border-bottom: 2px solid var(--gray-200);")
-          h5.modal-title
-            i.bi.bi-ticket-perforated.me-2
-            | Detail Tiket Order
-          button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
-        .modal-body
-          #ticketDetailLoading(style="text-align: center; padding: 2rem;")
-            .loading-spinner
-            p.text-muted.mt-2 Memuat detail tiket...
-          #ticketDetailContent(style="display: none;")
-            // Content will be loaded by JavaScript
-        .modal-footer
-          button.btn.btn-outline-secondary(
-            type="button" 
-            data-bs-dismiss="modal"
-            style="border-radius: 12px; padding: 0.75rem 1.5rem;"
-          )
-            i.bi.bi-x-lg.me-2
-            | Tutup
+      p.text-muted Belum ada order tiket.
 
   script.
     // Filter table by search

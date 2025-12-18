@@ -101,30 +101,34 @@ exports.listStandings = async (req, res) => {
       if (isPadel) await syncPadelStandings(sportId, mode); // optional: cuma perlu buat padel team
 
       ;[rows] = await db.query(`
-        SELECT
-          s.id,
-          s.sport_id,
-          sp.name AS sport_name,
-          t.id AS team_id,
-          t.name AS team_name,
-          s.played,
-          s.win,
-          s.draw,
-          s.loss,
-          s.game_win,
-          s.game_loss,
-          s.pts
-        FROM standings s
-        JOIN teams t ON t.id = s.team_id
-        JOIN sports sp ON sp.id = s.sport_id
-        WHERE s.sport_id = ?
-          AND COALESCE(t.is_individual, 0) = ?
-        ORDER BY s.pts DESC
+      SELECT
+        s.id,
+        s.sport_id,
+        sp.name AS sport_name,
+        t.id AS team_id,
+        t.name AS team_name,
+
+        -- JUMLAH MATCH DARI JADWAL
+        (
+          SELECT COUNT(*)
+          FROM matches m
+          WHERE m.sport_id = s.sport_id
+            AND (m.home_team_id = t.id OR m.away_team_id = t.id)
+        ) AS total_match,
+
+        s.win,
+        s.loss,
+        s.game_win,
+        s.game_loss,
+        s.pts
+      FROM standings s
+      JOIN teams t ON t.id = s.team_id
+      JOIN sports sp ON sp.id = s.sport_id
+      WHERE s.sport_id = ?
+        AND COALESCE(t.is_individual, 0) = 0
+      ORDER BY s.pts DESC
       `, [sportId, 0]); // team = 0
     }
-
-
-
 
     return res.render('subadmin/standings', {
       standings: rows,
