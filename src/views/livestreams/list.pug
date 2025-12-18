@@ -855,32 +855,6 @@ block content
                     .bg-dark.d-flex.align-items-center.justify-content-center(style="height:100%;")
                       i.bi.bi-broadcast.fa-4x.text-primary
 
-                  
-                  .livestream-badge
-                    if item.is_live
-                      span.live-badge
-                        i.bi.bi-broadcast
-                        | LIVE
-                    else
-                      span.upcoming-badge
-                        i.bi.bi-clock
-                        | UPCOMING
-                  
-                  .viewer-count
-                    i.bi.bi-eye
-                    span #{Math.floor(Math.random() * 5000) + 100}
-                  
-                  .livestream-schedule
-                    .schedule-time
-                      if item.is_live
-                        i.bi.bi-play-circle.me-1
-                        | Sedang Tayang
-                      else
-                        i.bi.bi-clock.me-1
-                        | #{new Date(Date.now() + Math.random() * 86400000).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}
-                    .schedule-date
-                      | #{new Date().toLocaleDateString('id-ID', {weekday: 'long', day: 'numeric', month: 'long'})}
-                
                 .card-body.d-flex.flex-column
                   span.livestream-sport-badge
                     i(class=item.icon_class)
@@ -909,8 +883,8 @@ block content
                       | Tonton Sekarang
                   else
                     a.btn.btn-outline-primary(href=`/livestreams/${item.id}`)
-                      i.bi.bi-bell.me-2
-                      | Ingatkan Saya
+                      i.bi.bi-play-circle.me-2
+                      | Tonton Sekarang
 
   // LIVE STATS SECTION
   .livestream-stats-section

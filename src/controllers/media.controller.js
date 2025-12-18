@@ -74,7 +74,7 @@ function getSportIconClass(sportName) {
 // =====================
 exports.listVideos = async (req, res) => {
     const [rows] = await db.query(`
-    SELECT v.id, v.title, v.type, v.thumbnail_url, 
+    SELECT v.id, v.title, v.type, v.url, v.thumbnail_url,
            s.name AS sport_name, e.title AS event_title
     FROM videos v
     LEFT JOIN sports s ON s.id = v.sport_id
@@ -83,12 +83,21 @@ exports.listVideos = async (req, res) => {
     ORDER BY v.created_at DESC
   `);
 
+    const videos = rows.map(v => {
+        const embed_url = parseYouTubeEmbed(v.url);
+        return {
+            ...v,
+            embed_url
+        };
+    });
+
     res.render("videos/list", {
         title: "Video Pertandingan - SPORTER",
-        videos: rows,
-        getSportIcon: getSportIconClass   // <--- KIRIM KE PUG
+        videos,
+        getSportIcon: getSportIconClass
     });
 };
+
 
 // =====================
 // LIST LIVESTREAMS

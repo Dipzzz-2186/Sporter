@@ -246,55 +246,7 @@ block content
     
     .sporter-video-card:hover .video-thumbnail img {
       transform: scale(1.05);
-    }
-    
-    .video-play-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    
-    .sporter-video-card:hover .video-play-overlay {
-      opacity: 1;
-    }
-    
-    .play-button {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.5rem;
-      transform: scale(0.8);
-      transition: transform 0.3s ease;
-    }
-    
-    .sporter-video-card:hover .play-button {
-      transform: scale(1);
-    }
-    
-    .video-duration {
-      position: absolute;
-      bottom: 15px;
-      right: 15px;
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
+    }    
     
     .sporter-video-card .card-body {
       padding: 1.75rem;
@@ -584,7 +536,9 @@ block content
         padding: 2rem 1rem;
       }
     }
-    
+    .video-thumbnail iframe {
+      border-radius: 18px 18px 0 0;
+    }
     /* Animation delays */
     .sporter-video-card:nth-child(1) { animation-delay: 0.1s; }
     .sporter-video-card:nth-child(2) { animation-delay: 0.2s; }
@@ -676,12 +630,19 @@ block content
             .col-md-6.col-lg-4
               .sporter-video-card
                 .video-thumbnail
-                  if v.thumbnail_url
-                    img(src=v.thumbnail_url alt=v.title)
+                  if v.embed_url
+                    .ratio.ratio-16x9
+                      iframe(
+                        src=v.embed_url
+                        frameborder="0"
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                      )
                   else
-                    .video-placeholder.bg-dark.d-flex.align-items-center.justify-content-center
-                      i.bi.bi-play-circle-fill.fa-4x.text-warning
-                  
+                    .bg-dark.d-flex.align-items-center.justify-content-center(style="height:100%;")
+                      i.bi.bi-play-circle-fill.text-primary(style="font-size:3rem")
+
+
                   .video-play-overlay
                     .play-button
                       i.bi.bi-play-fill
