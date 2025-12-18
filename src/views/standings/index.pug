@@ -2,29 +2,68 @@ extends ../layout/main
 
 block content
   style.
-    /* Standings Page Styles */
+    :root {
+      --primary-color: #0095FF;
+      --primary-dark: #0066CC;
+      --primary-light: #34C7FF;
+      --secondary-dark: #0B1F3F;
+      --secondary-light: #152844;
+      --accent-color: #FF6B35;
+      --success-color: #00CC88;
+      --warning-color: #FFAA00;
+      --danger-color: #FF4757;
+      --gray-50: #F8FAFC;
+      --gray-100: #F1F5F9;
+      --gray-200: #E2E8F0;
+      --gray-300: #CBD5E1;
+      --gray-400: #94A3B8;
+      --gray-500: #64748B;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1E293B;
+      --gray-900: #0F172A;
+      --shadow-sm: 0 2px 8px rgba(0, 149, 255, 0.08);
+      --shadow-md: 0 8px 25px rgba(0, 149, 255, 0.12);
+      --shadow-lg: 0 15px 35px rgba(0, 149, 255, 0.15);
+      --shadow-xl: 0 25px 50px rgba(0, 149, 255, 0.2);
+      --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      --gradient-secondary: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary-light) 100%);
+      --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, #FF8E53 100%);
+      --gradient-success: linear-gradient(135deg, var(--success-color) 0%, #00E699 100%);
+      --gradient-warning: linear-gradient(135deg, var(--warning-color) 0%, #FFC850 100%);
+    }
+
+    /* Standings Page */
     .standings-page {
-      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
       min-height: 100vh;
       padding: 3rem 0;
+      animation: fadeIn 0.8s ease-out;
     }
-    
-    .standings-header {
-      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ===== PAGE HEADER (MIRIP SUBADMIN) ===== */
+    .page-header {
+      background: var(--gradient-secondary);
       border-radius: 20px;
       padding: 2.5rem;
       margin-bottom: 2rem;
       position: relative;
       overflow: hidden;
       animation: fadeInDown 0.6s ease-out;
+      box-shadow: var(--shadow-xl);
     }
-    
+
     @keyframes fadeInDown {
       from { opacity: 0; transform: translateY(-30px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
-    .standings-header::before {
+
+    .page-header::before {
       content: '';
       position: absolute;
       top: -50%;
@@ -33,111 +72,231 @@ block content
       height: 400px;
       background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
       border-radius: 50%;
-      animation: float 8s ease-in-out infinite;
     }
-    
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(30px, -30px) scale(1.05); }
+
+    .page-header-content {
+      position: relative;
+      z-index: 2;
     }
-    
-    .standings-header h3 {
+
+    .header-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-title {
       color: white;
       font-family: 'Bebas Neue', cursive;
       font-size: 2.5rem;
       letter-spacing: 1px;
-      margin: 0;
+      margin: 0 0 0.5rem 0;
       position: relative;
       z-index: 2;
     }
-    
-    .standings-header h3 i {
+
+    .page-title i {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-right: 0.5rem;
     }
-    
+
+    .page-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    /* ===== TOMBOL KEMBALI (MIRIP SUBADMIN) ===== */
+    .btn-back {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      color: white;
+    }
+
+    .btn-back i {
+      font-size: 0.8rem;
+    }
+
+    /* ===== FILTER SECTION (MIRIP SUBADMIN) ===== */
     .filter-section {
       background: white;
-      border-radius: 15px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-      margin-bottom: 2rem;
-      animation: fadeInUp 0.6s ease-out 0.2s backwards;
-      transition: all 0.3s ease;
+      border-radius: 22px;
+      border: 2px solid var(--gray-200);
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+      margin-bottom: 2.5rem;
+      animation: slideInUp 0.6s ease-out 0.2s backwards;
     }
-    
-    .filter-section:hover {
-      box-shadow: 0 6px 20px rgba(0, 149, 255, 0.1);
-    }
-    
-    @keyframes fadeInUp {
+
+    @keyframes slideInUp {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
+
+    .filter-section .card-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 2px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    }
+
+    .filter-title {
+      margin: 0;
+      font-weight: 800;
+      color: var(--secondary-dark);
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .filter-title i {
+      color: var(--primary-color);
+      font-size: 1.2rem;
+    }
+
+    .filter-section .card-body {
+      padding: 2rem;
+    }
+
     .filter-section label {
-      color: #0B1F3F;
       font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 0.5rem;
+      color: var(--gray-700);
+      margin-bottom: 0.75rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      font-size: 0.95rem;
     }
-    
+
     .filter-section label i {
-      color: #0095FF;
+      color: var(--primary-color);
+      font-size: 0.9rem;
     }
-    
-    .filter-section select {
-      border-radius: 10px;
-      border: 2px solid #f0f0f0;
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
+
+    .filter-section .form-select {
+      padding: 0.875rem 1rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      font-size: 0.95rem;
       transition: all 0.3s ease;
       background: white;
+      box-shadow: var(--shadow-sm);
+      min-width: 180px;
       cursor: pointer;
     }
-    
-    .filter-section select:hover {
-      border-color: rgba(0, 149, 255, 0.3);
-    }
-    
-    .filter-section select:focus {
-      border-color: #0095FF;
-      box-shadow: 0 0 0 0.2rem rgba(0, 149, 255, 0.15);
+
+    .filter-section .form-select:focus {
       outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.1);
     }
-    
+
+    .filter-section .form-select:hover {
+      border-color: var(--primary-color);
+    }
+
+    /* Mode Toggle Buttons (seperti di subadmin) */
+    .mode-toggle {
+      display: inline-flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .mode-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 2px solid transparent;
+    }
+
+    .mode-btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    .mode-btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      color: white;
+    }
+
+    .mode-btn-outline {
+      background: white;
+      color: var(--gray-700);
+      border: 2px solid var(--gray-300);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .mode-btn-outline:hover {
+      background: var(--gray-50);
+      border-color: var(--primary-color);
+      transform: translateY(-3px);
+      color: var(--primary-color);
+    }
+
+    /* ===== STANDINGS GROUP (MIRIP SUBADMIN) ===== */
     .standings-group {
       background: white;
-      border-radius: 20px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      animation: fadeInUp 0.6s ease-out backwards;
-      border: 2px solid #f0f0f0;
+      border-radius: 22px;
+      border: 2px solid var(--gray-200);
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+      margin-bottom: 2.5rem;
+      animation: slideInUp 0.6s ease-out 0.3s backwards;
       transition: all 0.4s ease;
     }
-    
+
     .standings-group:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 30px rgba(0, 149, 255, 0.12);
-      border-color: #0095FF;
+      border-color: var(--primary-color);
     }
-    
+
     .group-title {
       display: flex;
       align-items: center;
       gap: 1rem;
       margin-bottom: 1.5rem;
       padding-bottom: 1rem;
-      border-bottom: 2px solid #f0f0f0;
+      border-bottom: 2px solid var(--gray-200);
     }
-    
+
     .group-title-icon {
       width: 50px;
       height: 50px;
@@ -149,11 +308,11 @@ block content
       border: 2px solid #d6edff;
       transition: all 0.3s ease;
     }
-    
+
     .standings-group:hover .group-title-icon {
       transform: rotate(10deg) scale(1.05);
     }
-    
+
     .group-title-icon i {
       font-size: 1.5rem;
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
@@ -161,134 +320,113 @@ block content
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    
+
     .group-title h5 {
-      color: #0B1F3F;
+      color: var(--secondary-dark);
       font-weight: 700;
       font-size: 1.4rem;
       margin: 0;
     }
-    
+
+    /* ===== STANDINGS TABLE (MIRIP SUBADMIN) ===== */
     .standings-table {
-      border-radius: 15px;
-      overflow: hidden;
-      border: 2px solid #f8f9fa;
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
     }
-    
-    .standings-table table {
-      margin-bottom: 0;
-    }
-    
+
     .standings-table thead {
-      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      background: var(--gradient-secondary);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    
-    .standings-table thead th {
-      background: transparent !important; /* ikut parent */
-      color: white !important;
-      font-weight: 600;
+
+    .standings-table th {
+      padding: 1.25rem 1.5rem;
+      text-align: left;
       font-size: 0.85rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 1rem 0.75rem;
-      border: none;
+      letter-spacing: 0.05em;
+      color: white;
+      border-bottom: none;
       white-space: nowrap;
     }
-    
+
+    .standings-table th:first-child {
+      border-radius: 20px 0 0 0;
+    }
+
+    .standings-table th:last-child {
+      border-radius: 0 20px 0 0;
+    }
+
     .standings-table tbody tr {
       transition: all 0.3s ease;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 1px solid var(--gray-200);
     }
-    
-    .standings-table tbody tr:hover {
-      background: linear-gradient(90deg, rgba(0, 149, 255, 0.05) 0%, rgba(52, 199, 255, 0.05) 100%);
-      transform: scale(1.01);
-    }
-    
+
     .standings-table tbody tr:last-child {
       border-bottom: none;
     }
-    
-    .standings-table tbody td {
-      padding: 1rem 0.75rem;
-      vertical-align: middle;
-      font-size: 0.95rem;
+
+    .standings-table tbody tr:hover {
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.03) 0%, rgba(52, 199, 255, 0.03) 100%);
+      transform: translateX(4px);
     }
-    
+
+    .standings-table td {
+      padding: 1.25rem 1.5rem;
+      color: var(--gray-800);
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--gray-200);
+      vertical-align: middle;
+    }
+
+    .standings-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Team/Athlete Info */
     .team-name {
       font-weight: 700;
-      color: #0B1F3F;
+      color: var(--secondary-dark);
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
-    
+
     .team-name i {
-      color: #0095FF;
+      color: var(--primary-color);
       font-size: 1rem;
     }
-    
+
+    .team-name a {
+      color: var(--secondary-dark);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .team-name a:hover {
+      color: var(--primary-color);
+    }
+
     .stat-cell {
       font-weight: 600;
-      color: #495057;
+      color: var(--gray-700);
     }
-    
+
     .points-cell {
       font-weight: 700;
       font-size: 1.1rem;
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      background: var(--gradient-primary);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    
-    .empty-state {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      border: 2px dashed #d0d0d0;
-      border-radius: 20px;
-      padding: 4rem 2rem;
-      text-align: center;
-      animation: fadeInUp 0.6s ease-out;
-    }
-    
-    .empty-state-icon {
-      width: 100px;
-      height: 100px;
-      background: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.5rem;
-      animation: floatEmpty 3s ease-in-out infinite;
-    }
-    
-    @keyframes floatEmpty {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    
-    .empty-state-icon i {
-      font-size: 3rem;
-      color: #adb5bd;
-    }
-    
-    .empty-state h4 {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
-      color: #0B1F3F;
-      letter-spacing: 1px;
-      margin-bottom: 0.75rem;
-    }
-    
-    .empty-state p {
-      color: #5a6c7d;
-      font-size: 1.05rem;
-      margin: 0;
-      line-height: 1.6;
-    }
-    
-    /* Position badges */
+
+    /* ===== POSITION BADGES (MIRIP SUBADMIN) ===== */
     .position-badge {
       width: 32px;
       height: 32px;
@@ -301,36 +439,95 @@ block content
       margin-right: 0.5rem;
       transition: all 0.3s ease;
     }
-    
+
     .standings-table tbody tr:hover .position-badge {
       transform: scale(1.1);
     }
-    
+
     .position-1 {
       background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
       color: white;
       box-shadow: 0 3px 10px rgba(255, 215, 0, 0.4);
     }
-    
+
     .position-2 {
       background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
       color: white;
       box-shadow: 0 3px 10px rgba(192, 192, 192, 0.4);
     }
-    
+
     .position-3 {
       background: linear-gradient(135deg, #CD7F32 0%, #B87333 100%);
       color: white;
       box-shadow: 0 3px 10px rgba(205, 127, 50, 0.4);
     }
-    
+
     .position-other {
-      background: #f8f9fa;
-      color: #5a6c7d;
-      border: 2px solid #e8edf2;
+      background: var(--gray-50);
+      color: var(--gray-600);
+      border: 2px solid var(--gray-200);
+    }
+
+    /* ===== EMPTY STATE (MIRIP SUBADMIN) ===== */
+    .empty-state {
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+      border: 2px solid var(--gray-200);
+      border-radius: 22px;
+      padding: 4rem 2rem;
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .empty-state-icon {
+      width: 100px;
+      height: 100px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      border: 2px solid var(--gray-200);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .empty-state-icon i {
+      font-size: 3rem;
+      color: var(--gray-400);
+    }
+
+    .empty-state h4 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      color: var(--secondary-dark);
+      letter-spacing: 1px;
+      margin-bottom: 0.75rem;
+    }
+
+    .empty-state p {
+      color: var(--gray-600);
+      font-size: 1.05rem;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* ===== STATS HIGHLIGHT ===== */
+    .stat-positive {
+      color: var(--success-color);
+      font-weight: 600;
     }
     
-    /* Loading overlay */
+    .stat-negative {
+      color: var(--danger-color);
+      font-weight: 600;
+    }
+
+    /* ===== LOADING OVERLAY ===== */
     .loading-overlay {
       position: fixed;
       top: 0;
@@ -356,7 +553,7 @@ block content
       width: 60px;
       height: 60px;
       border: 4px solid rgba(255, 255, 255, 0.2);
-      border-top-color: #0095FF;
+      border-top-color: var(--primary-color);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
@@ -364,28 +561,25 @@ block content
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-    
-    /* Stats highlight */
-    .stat-positive {
-      color: #059669;
-    }
-    
-    .stat-negative {
-      color: #dc2626;
-    }
-    
-    /* Responsive */
-    @media (max-width: 991px) {
-      .standings-page {
-        padding: 2rem 0;
-      }
-      
-      .standings-header {
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 992px) {
+      .page-header {
         padding: 2rem;
       }
       
-      .standings-header h3 {
+      .page-title {
         font-size: 2rem;
+      }
+
+      .filter-section .card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+
+      .filter-section .card-body {
+        padding: 1.5rem;
       }
       
       .standings-group {
@@ -393,50 +587,59 @@ block content
       }
       
       .standings-table {
-        font-size: 0.85rem;
+        display: block;
+        overflow-x: auto;
       }
       
-      .standings-table thead th,
-      .standings-table tbody td {
-        padding: 0.75rem 0.5rem;
+      .standings-table th,
+      .standings-table td {
+        padding: 1rem;
       }
     }
-    
-    @media (max-width: 767px) {
+
+    @media (max-width: 768px) {
       .standings-page {
-        padding: 1.5rem 0;
+        padding: 2rem 0;
       }
-      
-      .standings-header {
+
+      .page-header {
         padding: 1.5rem;
-        border-radius: 15px;
       }
-      
-      .standings-header h3 {
-        font-size: 1.75rem;
+
+      .page-title {
+        font-size: 1.5rem;
       }
-      
-      .filter-section {
-        padding: 1rem;
+
+      .page-subtitle {
+        font-size: 1rem;
       }
-      
-      .standings-group {
-        padding: 1rem;
-        border-radius: 15px;
-      }
-      
-      .group-title {
+
+      .header-title-row {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.75rem;
+        gap: 1rem;
+      }
+      
+      .btn-back {
+        align-self: flex-start;
+      }
+
+      .mode-toggle {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .mode-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .standings-group {
+        padding: 1rem;
       }
       
       .group-title h5 {
         font-size: 1.2rem;
-      }
-      
-      .standings-table {
-        overflow-x: auto;
       }
       
       .standings-table table {
@@ -451,7 +654,24 @@ block content
         font-size: 1.5rem;
       }
     }
-    
+
+    @media (max-width: 576px) {
+      .page-header {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .page-title {
+        font-size: 1.4rem;
+      }
+
+      .group-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+    }
+
     /* Animation delays */
     .standings-group:nth-child(1) { animation-delay: 0.1s; }
     .standings-group:nth-child(2) { animation-delay: 0.2s; }
@@ -460,49 +680,67 @@ block content
 
   .standings-page
     .container
+      //- ===== PAGE HEADER (MIRIP SUBADMIN) =====
+      .page-header
+        .page-header-content
+          .header-title-row
+            h1.page-title
+              i.bi.bi-trophy-fill
+              | Klasemen
+            
+            //- TOMBOL KEMBALI DI POJOK KANAN ATAS (MIRIP SUBADMIN)
+            - const sport = sports && query && query.sport_id ? sports.find(s => Number(s.id) === Number(query.sport_id)) : null;
+            a.btn-back(href=(sport ? ('/sports/' + encodeURIComponent(sport.name)) : '/sports/'))
+              i.bi.bi-arrow-left
+              | Kembali
 
-      // ===== HEADER =====
-      .standings-header
-        h3
-          i.bi.bi-trophy-fill
-          | Klasemen
+          .page-subtitle
+            | Pantau peringkat dan perkembangan tim/atlet secara real-time. Data diperbarui otomatis setelah setiap pertandingan.
 
-      // ===== FILTER =====
-      .filter-section
-        label.mb-2
-          i.bi.bi-funnel-fill
-          | Pilih Cabang Olahraga
+      //- ===== FILTER SECTION (MIRIP SUBADMIN) =====
+      if sports && sports.length > 1
+        .filter-section
+          .card-header
+            h3.filter-title
+              i.bi.bi-funnel-fill
+              | Filter Cabang Olahraga
+          
+          .card-body
+            .mb-3
+              label.form-label(for="sportFilter")
+                i.bi.bi-trophy
+                | Pilih Cabang Olahraga
+              
+              select.form-select#sportFilter(
+                name="sport_id"
+                onchange="handleSportChange(this.value)"
+              )
+                option(value="") Semua Cabang
+                each s in sports
+                  option(
+                    value=s.id
+                    selected=(query && Number(query.sport_id) === s.id)
+                  )= s.name
+            
+            .mode-toggle
+              - const currentMode = (mode || 'team');
+              - const sportId = (query && query.sport_id) ? query.sport_id : '';
+              
+              a.mode-btn(
+                class=(currentMode === 'team' ? 'mode-btn-primary' : 'mode-btn-outline')
+                href='/standings?' + (sportId ? `sport_id=${sportId}&` : '') + 'mode=team'
+              )
+                i.bi.bi-people-fill
+                | Klasemen Tim
+              
+              a.mode-btn(
+                class=(currentMode === 'individual' ? 'mode-btn-primary' : 'mode-btn-outline')
+                href='/standings?' + (sportId ? `sport_id=${sportId}&` : '') + 'mode=individual'
+              )
+                i.bi.bi-person-badge
+                | Klasemen Individual
 
-        select#sportFilter.form-select(name="sport_id")
-          option(value="") Semua Cabang
-          each s in sports
-            option(
-              value=s.id
-              selected=(query && Number(query.sport_id) === s.id)
-            )= s.name
-
-        // ===== MODE TOGGLE (DI LUAR SELECT!) =====
-        - const currentMode = ((query && query.mode) ? String(query.mode) : (mode || 'team'));
-        - const sportId = (query && query.sport_id) ? String(query.sport_id) : '';
-        - const isIndividualMode = (currentMode === 'individual');
-
-        .d-flex.flex-wrap.gap-2.mt-3
-          a.btn.btn-sm(
-            href='/standings?sport_id=' + sportId + '&mode=team'
-            class=(currentMode === 'team' ? 'btn-primary' : 'btn-outline-primary')
-          )
-            i.bi.bi-people-fill.me-1
-            | Klasemen Tim
-
-          a.btn.btn-sm(
-            href='/standings?sport_id=' + sportId + '&mode=individual'
-            class=(currentMode === 'individual' ? 'btn-primary' : 'btn-outline-primary')
-          )
-            i.bi.bi-person-badge.me-1
-            | Klasemen Individual
-
-
-      // ===== TABLE =====
+      //- ===== STANDINGS CONTENT =====
       if standings && standings.length
         .standings-group
           .group-title
@@ -512,16 +750,30 @@ block content
 
           .standings-table
             .table-responsive
-              table.table.table-hover
+              table.table
                 thead
                   tr
-                    th No.
-                    if isIndividualMode
+                    th(style="width: 60px;") No.
+                    
+                    - const isIndividualMode = (mode === 'individual' || currentMode === 'individual');
+                    - const isPadelIndividual = (isPadel && isIndividualMode);
+                    
+                    if isPadelIndividual
                       th Nama Athlete
                       th Pasangan
                       th.text-center MP
                       th.text-center W-L
                       th.text-center Titles
+                      th.text-center Poin
+                    else if isIndividualMode
+                      th Nama Athlete
+                      th.text-center PJ
+                      th.text-center M
+                      th.text-center S
+                      th.text-center K
+                      th.text-center GM
+                      th.text-center GK
+                      th.text-center SG
                       th.text-center Poin
                     else
                       th Nama Tim
@@ -537,64 +789,108 @@ block content
                 tbody
                   each row, index in standings
                     tr
+                      //- POSITION NUMBER
                       td
-                        - const posClass = (index === 0) ? 'position-1' : (index === 1) ? 'position-2' : (index === 2) ? 'position-3' : 'position-other';
+                        - const posClass = index === 0 ? 'position-1' : index === 1 ? 'position-2' : index === 2 ? 'position-3' : 'position-other';
                         span.position-badge(class=posClass)= index + 1
 
-                      if isIndividualMode
+                      if isPadelIndividual
+                        //- PADEL INDIVIDUAL MODE
                         td
                           .team-name
                             i.bi.bi-person-badge
-                            a.text-decoration-none.fw-bold(href='/athletes/' + row.slug)= row.athlete_name
-
+                            if row.slug
+                              a(href='/athletes/' + row.slug)= row.athlete_name
+                            else
+                              = row.athlete_name
+                        
                         td= row.paired_with_name || '-'
-                        td.text-center= row.match_played
-                        td.text-center #{row.match_won} - #{row.match_lost}
-                        td.text-center= row.titles
-                        td.text-center.points-cell= row.points
+                        td.text-center.stat-cell= row.match_played
+                        td.text-center.stat-cell #{row.match_won} - #{row.match_lost}
+                        td.text-center.stat-cell= row.titles || 0
+                        td.text-center.points-cell= row.points || 0
+
+                      else if isIndividualMode
+                        //- REGULAR INDIVIDUAL MODE
+                        td
+                          .team-name
+                            i.bi.bi-person-fill-check
+                            if row.slug
+                              a(href='/athletes/' + row.slug)= row.athlete_name
+                            else
+                              = row.team_name || row.athlete_name
+                        
+                        td.text-center.stat-cell= row.played || 0
+                        td.text-center.stat-cell= row.win || 0
+                        td.text-center.stat-cell= row.draw || 0
+                        td.text-center.stat-cell= row.loss || 0
+                        td.text-center.stat-cell= row.game_win || 0
+                        td.text-center.stat-cell= row.game_loss || 0
+                        td.text-center.stat-cell
+                          if (row.game_win - row.game_loss) >= 0
+                            span.stat-positive +#{row.game_win - row.game_loss}
+                          else
+                            span.stat-negative #{row.game_win - row.game_loss}
+                        td.text-center.points-cell= row.pts || 0
+
                       else
+                        //- TEAM MODE
                         td
                           .team-name
                             i.bi.bi-people-fill
-                            a.text-decoration-none.fw-bold(href='/teams/' + row.team_id)= row.team_name
+                            if row.team_id
+                              a(href='/teams/' + row.team_id)= row.team_name
+                            else
+                              = row.team_name
+                        
+                        td.text-center.stat-cell= row.played || 0
+                        td.text-center.stat-cell= row.win || 0
+                        td.text-center.stat-cell= row.draw || 0
+                        td.text-center.stat-cell= row.loss || 0
+                        td.text-center.stat-cell= row.game_win || 0
+                        td.text-center.stat-cell= row.game_loss || 0
+                        td.text-center.stat-cell
+                          if (row.game_win - row.game_loss) >= 0
+                            span.stat-positive +#{row.game_win - row.game_loss}
+                          else
+                            span.stat-negative #{row.game_win - row.game_loss}
+                        td.text-center.points-cell= row.pts || 0
 
-                        td.text-center= row.played
-                        td.text-center= row.win
-                        td.text-center= row.draw
-                        td.text-center= row.loss
-                        td.text-center= row.game_win
-                        td.text-center= row.game_loss
-                        td.text-center.points-cell= row.pts
       else
+        //- ===== EMPTY STATE (MIRIP SUBADMIN) =====
         .empty-state
           .empty-state-icon
             i.bi.bi-clipboard2-x
           h4 Belum Ada Klasemen
-          p Belum ada data klasemen untuk cabang ini.
+          p
+            | Belum ada data klasemen untuk cabang #{query && query.sport_id ? 'ini' : 'tersedia'}.
+            br
+            | Data akan muncul setelah pertandingan selesai.
 
-
-  // Loading overlay
+  //- Loading overlay
   #loadingOverlay.loading-overlay
     .loading-spinner
 
   //- Custom JavaScript
   script.
     (function() {
+      'use strict';
+      
       var sportFilter = document.getElementById('sportFilter');
       var loadingOverlay = document.getElementById('loadingOverlay');
       
-      if (!sportFilter) return;
-
-      sportFilter.addEventListener('change', function() {
-        var sportId = this.value;
+      function handleSportChange(sportId) {
         var currentUrl = new URL(window.location.href);
+        var currentMode = '!{mode || "team"}';
 
-        if (sportId) currentUrl.searchParams.set('sport_id', sportId);
-        else currentUrl.searchParams.delete('sport_id');
-        // keep mode (team/athlete) when switching sports
-        var mode = currentUrl.searchParams.get('mode') || 'team';
-        currentUrl.searchParams.set('mode', mode);
-
+        if (sportId) {
+          currentUrl.searchParams.set('sport_id', sportId);
+        } else {
+          currentUrl.searchParams.delete('sport_id');
+        }
+        
+        // Keep current mode
+        currentUrl.searchParams.set('mode', currentMode);
         
         // Show loading overlay
         if (loadingOverlay) {
@@ -612,7 +908,13 @@ block content
         setTimeout(function() {
           window.location.href = currentUrl.toString();
         }, 300);
-      });
+      }
+      
+      if (sportFilter) {
+        sportFilter.addEventListener('change', function() {
+          handleSportChange(this.value);
+        });
+      }
       
       // Intersection Observer for animations
       if ('IntersectionObserver' in window) {
@@ -634,7 +936,7 @@ block content
         });
       }
       
-      // Add hover effects
+      // Add hover effects to table rows
       var rows = document.querySelectorAll('.standings-table tbody tr');
       rows.forEach(function(row) {
         row.addEventListener('mouseenter', function() {
@@ -644,8 +946,97 @@ block content
       
       // Smooth scroll to top when filter changes
       window.addEventListener('load', function() {
-        if (window.location.search.includes('sport_id')) {
+        if (window.location.search.includes('sport_id') || window.location.search.includes('mode')) {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+        
+        // Add animation delays for rows
+        var tbodyRows = document.querySelectorAll('.standings-table tbody tr');
+        tbodyRows.forEach(function(row, index) {
+          row.style.animationDelay = (index * 0.05) + 's';
+          row.style.animation = 'slideInUp 0.3s ease-out forwards';
+          row.style.opacity = '0';
+        });
       });
+      
+      // Add ripple effect to mode buttons
+      var modeButtons = document.querySelectorAll('.mode-btn');
+      modeButtons.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          if (this.getAttribute('href') === '#') {
+            e.preventDefault();
+          }
+          
+          // Add ripple effect
+          var ripple = document.createElement('span');
+          var rect = this.getBoundingClientRect();
+          var size = Math.max(rect.width, rect.height);
+          var x = e.clientX - rect.left - size / 2;
+          var y = e.clientY - rect.top - size / 2;
+          
+          ripple.style.cssText = `
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            width: ${size}px;
+            height: ${size}px;
+            top: ${y}px;
+            left: ${x}px;
+          `;
+          
+          this.style.position = 'relative';
+          this.style.overflow = 'hidden';
+          this.appendChild(ripple);
+          
+          setTimeout(function() {
+            ripple.remove();
+            btn.style.position = '';
+            btn.style.overflow = '';
+          }, 600);
+        });
+      });
+      
+      // Add ripple animation
+      var style = document.createElement('style');
+      style.textContent = `
+        @keyframes ripple {
+          to {
+            transform: scale(4);
+            opacity: 0;
+          }
+        }
+        
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // Keyboard shortcuts
+      document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + F for filter focus
+        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+          e.preventDefault();
+          if (sportFilter) {
+            sportFilter.focus();
+          }
+        }
+        
+        // 1 for team mode, 2 for individual mode
+        if (e.key === '1') {
+          e.preventDefault();
+          var teamBtn = document.querySelector('.mode-btn[href*="mode=team"]');
+          if (teamBtn) teamBtn.click();
+        }
+        
+        if (e.key === '2') {
+          e.preventDefault();
+          var individualBtn = document.querySelector('.mode-btn[href*="mode=individual"]');
+          if (individualBtn) individualBtn.click();
+        }
+      });
+
     })();
