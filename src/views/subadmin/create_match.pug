@@ -457,7 +457,7 @@ block content
                     | Jika pertandingan ini bagian dari event tertentu, masukkan ID event-nya
 
           #afterSportSection(style="display:none;")
-            // ===== MODE MATCH (INDIVIDUAL / TEAM)
+            //- MODE MATCH (INDIVIDUAL / TEAM)
             - const currentMode = (match_mode || 'team')
 
             .mb-3
@@ -540,12 +540,11 @@ block content
                     i.bi.bi-plus-lg
                     | Tambah Peserta
 
-                #participantsList
+                  button.btn.btn-outline-success(type="button" id="btnAddAthlete")
+                    i.bi.bi-person-plus
+                    | Tambah Pemain Baru
 
-                // ✅ INI tombol tambah pemain beneran (insert athletes)
-                button.btn.btn-outline-success(type="button" id="btnAddAthlete")
-                  i.bi.bi-person-plus
-                  | Tambah Pemain
+                #participantsList
 
                 small.form-text
                   i.bi.bi-info-circle
@@ -720,12 +719,12 @@ block content
             button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Batal
             button.btn.btn-primary(type="button" id="btnSaveTeam") Simpan
 
-    //- ✅ Modal Add Athlete (Tambah Pemain)
+    //- Modal Add Athlete
     .modal.fade#addAthleteModal(tabindex="-1" aria-hidden="true")
       .modal-dialog
         .modal-content
           .modal-header
-            h5.modal-title Tambah Pemain
+            h5.modal-title Tambah Pemain Baru
             button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
           .modal-body
             .mb-3
@@ -737,20 +736,15 @@ block content
                     option(value=s.id)= s.name
 
             .mb-3
-              label.form-label Nama Pemain
-              input.form-control#ath_name(type="text" placeholder="Contoh: Budi")
-
-            //- ⚠️ kolom age belum ada di tabel athletes kamu, jadi jangan dulu dipakai
-            // .mb-3
-            //   label.form-label Umur
-            //   input.form-control#ath_age(type="number" min="1")
+              label.form-label(for="ath_name") Nama Pemain
+              input.form-control#ath_name(type="text" placeholder="Contoh: Budi" required)
 
             .mb-3
-              label.form-label Nomor (opsional)
+              label.form-label(for="ath_number") Nomor (opsional)
               input.form-control#ath_number(type="text" placeholder="10")
 
             .mb-3
-              label.form-label Posisi (opsional)
+              label.form-label(for="ath_position") Posisi (opsional)
               input.form-control#ath_position(type="text" placeholder="Striker")
 
             .alert.alert-danger.d-none#athErr
@@ -759,10 +753,77 @@ block content
           .modal-footer
             button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Batal
             button.btn.btn-success(type="button" id="btnSaveAthlete") Simpan
-  //- Custom JavaScript
+
+  //- Athletes Data (JSON)
+  script(type="application/json" id="athletesData") !{JSON.stringify(athletes || [])}
+
+  //- Main JavaScript
   script.
-    window.addEventListener('load', function() {
-      // Auto dismiss alerts
+    (function() {
+      'use strict';
+      
+      console.log('=== MATCH FORM SCRIPT LOADED ===');
+
+      // ========================================
+      // GLOBAL VARIABLES & ELEMENT REFERENCES
+      // ========================================
+      var form = document.querySelector('form');
+      var sportSelect = document.getElementById('sport_id');
+      var afterSportSection = document.getElementById('afterSportSection');
+      
+      var modeTeam = document.getElementById('modeTeam');
+      var modeInd = document.getElementById('modeIndividual');
+      
+      var teamVs = document.getElementById('teamVsContainer');
+      var individualBox = document.getElementById('individualContainer');
+      
+      var homeSelect = document.getElementById('home_team_id');
+      var awaySelect = document.getElementById('away_team_id');
+      
+      var participantsList = document.getElementById('participantsList');
+      var btnAddParticipant = document.getElementById('btnAddParticipant');
+      
+      var titleInput = document.getElementById('title');
+      var titleTouched = false;
+      
+      var sellYes = document.getElementById('sellTicketYes');
+      var sellNo = document.getElementById('sellTicketNo');
+      var ticketBox = document.getElementById('ticketOptions');
+
+      // ========================================
+      // INITIALIZE ATHLETES DATA
+      // ========================================
+      (function initAthletes() {
+        var el = document.getElementById('athletesData');
+        try {
+          window.__ATHLETES__ = el ? JSON.parse(el.textContent || '[]') : [];
+          console.log('✅ Athletes loaded:', window.__ATHLETES__.length);
+        } catch (e) {
+          console.error('❌ Failed to parse athletesData:', e);
+          window.__ATHLETES__ = [];
+        }
+      })();
+
+      // ========================================
+      // UTILITY FUNCTIONS
+      // ========================================
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function getText(select) {
+        if (!select || !select.value) return '';
+        return select.options[select.selectedIndex].textContent.trim();
+      }
+
+      // ========================================
+      // ALERT AUTO DISMISS
+      // ========================================
       var alerts = document.querySelectorAll('.alert');
       alerts.forEach(function(alert) {
         setTimeout(function() {
@@ -774,11 +835,25 @@ block content
           }, 500);
         }, 5000);
       });
-      
-      // Form validation
-      var form = document.querySelector('form');
+
+      // ========================================
+      // FORM SUBMIT LOADING
+      // ========================================
       if (form) {
         form.addEventListener('submit', function(e) {
+          // Validate individual mode
+          if (modeInd && modeInd.checked) {
+            var selected = Array.from(document.querySelectorAll('[name="participant_ids[]"]'))
+              .map(function(s) { return s.value; })
+              .filter(Boolean);
+
+            if (selected.length < 2) {
+              e.preventDefault();
+              alert('Mode Individual butuh minimal 2 peserta.');
+              return;
+            }
+          }
+
           var btn = form.querySelector('.btn-submit');
           if (btn) {
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
@@ -787,151 +862,9 @@ block content
         });
       }
 
-      var athSport = document.getElementById('ath_sport_id');
-      var btnAddAthlete = document.getElementById('btnAddAthlete');
-      var addAthleteModalEl = document.getElementById('addAthleteModal');
-      var addAthleteModal = null;
-
-      if (typeof bootstrap !== 'undefined' && addAthleteModalEl) {
-        addAthleteModal = new bootstrap.Modal(addAthleteModalEl);
-      }
-
-      function syncAthleteSport() {
-        if (!athSport || !sportSelect) return;
-        athSport.value = sportSelect.value || '';
-      }
-
-      if (sportSelect) sportSelect.addEventListener('change', syncAthleteSport);
-
-      if (btnAddAthlete) {
-        btnAddAthlete.addEventListener('click', function () {
-          syncAthleteSport();
-          if (!sportSelect.value) {
-            alert('Pilih Cabang Olahraga dulu sebelum tambah pemain.');
-            return;
-          }
-          addAthleteModal.show();
-        });
-      }
-
-
-      var saveAthBtn = document.getElementById('btnSaveAthlete');
-      var athErrBox = document.getElementById('athErr');
-      var athOkBox  = document.getElementById('athOk');
-
-      function showAthError(msg){
-        if (!athErrBox) return;
-        athErrBox.textContent = msg;
-        athErrBox.classList.remove('d-none');
-        if (athOkBox) athOkBox.classList.add('d-none');
-      }
-      function showAthOk(msg){
-        if (!athOkBox) return;
-        athOkBox.textContent = msg;
-        athOkBox.classList.remove('d-none');
-        if (athErrBox) athErrBox.classList.add('d-none');
-      }
-
-      if (saveAthBtn) {
-        saveAthBtn.addEventListener('click', async function(){
-          var sport_id = document.getElementById('ath_sport_id')?.value || '';
-          var name = document.getElementById('ath_name')?.value || '';
-          var number = document.getElementById('ath_number')?.value || '';
-          var position = document.getElementById('ath_position')?.value || '';
-
-          name = name.trim();
-          if (!sport_id) return showAthError('Pilih cabang olahraga dulu.');
-          if (!name) return showAthError('Nama pemain wajib diisi.');
-
-          saveAthBtn.disabled = true;
-          saveAthBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
-
-          try {
-            const resp = await fetch('/subadmin/athletes/ajax-create', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ sport_id, name, number, position })
-            });
-
-            const data = await resp.json().catch(() => ({}));
-            if (!resp.ok || !data.ok) return showAthError(data.message || 'Gagal menambahkan pemain.');
-
-            // tambahkan option ke dropdown team (karena match kamu pakai teams)
-            var opt = document.createElement('option');
-            opt.value = data.team.id;
-            opt.textContent = data.team.name;
-            opt.setAttribute('data-sport', String(data.team.sport_id));
-            opt.setAttribute('data-is-individual', '1');
-
-            if (homeSelect) homeSelect.appendChild(opt.cloneNode(true));
-            if (awaySelect) awaySelect.appendChild(opt.cloneNode(true));
-
-            // refresh filter supaya langsung muncul di mode individual
-            refreshParticipantSelects(true);
-            filterTeamsByMode();
-
-            showAthOk('Pemain berhasil ditambahkan.');
-            setTimeout(function(){
-              if (addAthleteModal) addAthleteModal.hide();
-            }, 600);
-
-            // reset form modal
-            document.getElementById('ath_name').value = '';
-            document.getElementById('ath_number').value = '';
-            document.getElementById('ath_position').value = '';
-          } catch(e){
-            console.error(e);
-            showAthError('Server error. Coba lagi.');
-          } finally {
-            saveAthBtn.disabled = false;
-            saveAthBtn.innerHTML = 'Simpan';
-          }
-        });
-      }
-
-
-      // ===== Add Athlete Modal Logic =====
-      var addAthleteModalEl = document.getElementById('addAthleteModal');
-      var addAthleteModal = null;
-
-      if (typeof bootstrap !== 'undefined' && addAthleteModalEl) {
-        try {
-          addAthleteModal = new bootstrap.Modal(addAthleteModalEl);
-          console.log('AddAthlete modal initialized');
-        } catch (e) {
-          console.error('Error init addAthleteModal:', e);
-        }
-      } else {
-        console.error('Bootstrap / #addAthleteModal not found');
-      }
-
-      var btnAddAthlete = document.getElementById('btnAddAthlete');
-      var athSport = document.getElementById('ath_sport_id');
-      var athName = document.getElementById('ath_name');
-
-      if (btnAddAthlete) {
-        btnAddAthlete.addEventListener('click', function(e) {
-          e.preventDefault();
-          console.log('btnAddAthlete clicked');
-
-          // auto isi sport sesuai dropdown utama
-          if (sportSelect && athSport) {
-            athSport.value = sportSelect.value || '';
-          }
-
-          if (addAthleteModal) addAthleteModal.show();
-
-          // fokus ke nama biar enak
-          setTimeout(function(){
-            if (athName) athName.focus();
-          }, 200);
-        });
-      } else {
-        console.error('btnAddAthlete not found');
-      }
-
-      
-      // Set minimum datetime to now
+      // ========================================
+      // DATETIME INPUT SETUP
+      // ========================================
       var startTimeInput = document.getElementById('start_time');
       var endTimeInput = document.getElementById('end_time');
       
@@ -941,7 +874,6 @@ block content
         startTimeInput.min = now.toISOString().slice(0, 16);
       }
       
-      // Auto set end time based on start time
       if (startTimeInput && endTimeInput) {
         startTimeInput.addEventListener('change', function() {
           if (this.value && !endTimeInput.value) {
@@ -953,29 +885,29 @@ block content
           endTimeInput.min = this.value;
         });
       }
-      
-      // Validate teams (home and away should be different)
-      var homeTeamSelect = document.getElementById('home_team_id');
-      var awayTeamSelect = document.getElementById('away_team_id');
-      
-      if (homeTeamSelect && awayTeamSelect) {
+
+      // ========================================
+      // TEAM VALIDATION
+      // ========================================
+      if (homeSelect && awaySelect) {
         function validateTeams() {
-          var homeValue = homeTeamSelect.value;
-          var awayValue = awayTeamSelect.value;
+          var homeValue = homeSelect.value;
+          var awayValue = awaySelect.value;
           
           if (homeValue && awayValue && homeValue === awayValue) {
-            awayTeamSelect.setCustomValidity('Tim tamu harus berbeda dengan tim rumah');
+            awaySelect.setCustomValidity('Tim tamu harus berbeda dengan tim rumah');
           } else {
-            awayTeamSelect.setCustomValidity('');
+            awaySelect.setCustomValidity('');
           }
         }
         
-        homeTeamSelect.addEventListener('change', validateTeams);
-        awayTeamSelect.addEventListener('change', validateTeams);
+        homeSelect.addEventListener('change', validateTeams);
+        awaySelect.addEventListener('change', validateTeams);
       }
-      
-      // Character counter for title
-      var titleInput = document.getElementById('title');
+
+      // ========================================
+      // TITLE CHARACTER COUNTER
+      // ========================================
       if (titleInput) {
         var maxLength = 200;
         var counter = document.createElement('small');
@@ -995,117 +927,302 @@ block content
         }
         
         titleInput.maxLength = maxLength;
-        titleInput.addEventListener('input', updateCounter);
+        titleInput.addEventListener('input', function() {
+          titleTouched = true;
+          updateCounter();
+        });
         updateCounter();
       }
-      
-      // ===== Add Team Modal Logic =====
-      // Wait for DOM to be fully loaded
-      var addTeamModalEl = document.getElementById('addTeamModal');
-      var addTeamModal = null;
-      
-      console.log('addTeamModalEl:', addTeamModalEl);
-      console.log('Bootstrap available:', typeof bootstrap !== 'undefined');
-      
-      // Check if Bootstrap is loaded and element exists
-      if (typeof bootstrap !== 'undefined') {
-        if (addTeamModalEl) {
-          try {
-            addTeamModal = new bootstrap.Modal(addTeamModalEl);
-            console.log('Bootstrap Modal initialized successfully');
-          } catch (err) {
-            console.error('Error initializing modal:', err);
-          }
+
+      // ========================================
+      // SHOW/HIDE AFTER SPORT SECTION
+      // ========================================
+      function toggleAfterSport() {
+        if (sportSelect && sportSelect.value) {
+          afterSportSection.style.display = 'block';
         } else {
-          console.error('Modal element #addTeamModal not found in DOM');
+          afterSportSection.style.display = 'none';
         }
-      } else {
-        console.error('Bootstrap not loaded');
       }
 
-      var btnAddHome = document.getElementById('btnAddTeamHome');
-      var btnAddAway = document.getElementById('btnAddTeamAway');
-
-      console.log('btnAddHome:', btnAddHome);
-      console.log('btnAddAway:', btnAddAway);
-
-      var sportSelect = document.getElementById('sport_id');
-      var teamSport = document.getElementById('team_sport_id');
-
-      var homeSelect = document.getElementById('home_team_id');
-      var awaySelect = document.getElementById('away_team_id');
-      var modeTeam = document.getElementById('modeTeam');
-      var modeInd  = document.getElementById('modeIndividual');
-
-      // ✅ listener ganti mode (TEAM / INDIVIDUAL)
-      if (modeTeam) {
-        modeTeam.addEventListener('change', function () {
+      if (sportSelect) {
+        sportSelect.addEventListener('change', function() {
+          toggleAfterSport();
+          filterTeamsBySport();
           filterTeamsByMode();
         });
       }
-      if (modeInd) {
-        modeInd.addEventListener('change', function () {
-          filterTeamsByMode();
-        });
-      }
+      toggleAfterSport();
 
+      // ========================================
+      // FILTER TEAMS BY SPORT & MODE
+      // ========================================
+      function filterTeamsBySport() {
+        if (!sportSelect || !sportSelect.value) return;
 
-      var saveBtn = document.getElementById('btnSaveTeam');
-      var errBox = document.getElementById('teamErr');
-      var okBox = document.getElementById('teamOk');
+        var sportId = String(sportSelect.value);
 
-      var activeTarget = 'home';
+        [homeSelect, awaySelect].forEach(function(sel) {
+          if (!sel) return;
 
-      function filterTeamsByMode() {
-        if (!sportSelect || !homeSelect || !awaySelect) return;
-
-        const sportId = String(sportSelect.value || '');
-        const needIsIndividual = modeInd.checked ? '1' : '0';
-
-        [homeSelect, awaySelect].forEach(sel => {
-          Array.from(sel.options).forEach(opt => {
+          Array.from(sel.options).forEach(function(opt) {
             if (!opt.value) return;
 
-            const optSport = String(opt.getAttribute('data-sport') || '');
-            const optInd   = opt.getAttribute('data-is-individual');
-
-            const matchSport = optSport === sportId;
-            const matchMode  = optInd ? optInd === needIsIndividual : true;
-
-            const ok = matchSport && matchMode;
+            var optSport = String(opt.getAttribute('data-sport') || '');
+            var ok = optSport === sportId;
 
             opt.hidden = !ok;
             opt.disabled = !ok;
           });
 
-          // reset value kalau sudah tidak valid
           if (sel.value) {
-            const selected = sel.options[sel.selectedIndex];
+            var selected = sel.options[sel.selectedIndex];
+            if (String(selected.getAttribute('data-sport')) !== sportId) {
+              sel.value = '';
+            }
+          }
+        });
+      }
+
+      function filterTeamsByMode() {
+        if (!sportSelect || !homeSelect || !awaySelect) return;
+
+        var sportId = String(sportSelect.value || '');
+        var needIsIndividual = modeInd && modeInd.checked ? '1' : '0';
+
+        [homeSelect, awaySelect].forEach(function(sel) {
+          Array.from(sel.options).forEach(function(opt) {
+            if (!opt.value) return;
+
+            var optSport = String(opt.getAttribute('data-sport') || '');
+            var optInd = opt.getAttribute('data-is-individual');
+
+            var matchSport = optSport === sportId;
+            var matchMode = optInd ? optInd === needIsIndividual : true;
+
+            var ok = matchSport && matchMode;
+
+            opt.hidden = !ok;
+            opt.disabled = !ok;
+          });
+
+          if (sel.value) {
+            var selected = sel.options[sel.selectedIndex];
             if (selected.hidden || selected.disabled) {
               sel.value = '';
             }
           }
         });
       }
+
+      // ========================================
+      // MODE SWITCHING (TEAM / INDIVIDUAL)
+      // ========================================
+      function toggleModeUI() {
+        if (!modeTeam || !modeInd) return;
+
+        var participantSelects = document.querySelectorAll('[name="participant_ids[]"]');
+
+        if (modeInd.checked) {
+          teamVs.style.display = 'none';
+          individualBox.style.display = 'block';
+          participantSelects.forEach(function(s) { s.required = true; });
+          ensureMinParticipants();
+        } else {
+          teamVs.style.display = 'block';
+          individualBox.style.display = 'none';
+          participantSelects.forEach(function(s) { s.required = false; });
+        }
+
+        filterTeamsByMode();
+      }
+
+      if (modeTeam) modeTeam.addEventListener('change', function() {
+        toggleModeUI();
+        generateTitle();
+      });
+      
+      if (modeInd) modeInd.addEventListener('change', function() {
+        toggleModeUI();
+        generateTitle();
+      });
+
+      toggleModeUI();
+
+      // ========================================
+      // PARTICIPANT MANAGEMENT
+      // ========================================
+      function buildParticipantOptionsHtml() {
+        var sportId = String(sportSelect ? sportSelect.value : '');
+        if (!sportId) return '';
+
+        var athletes = Array.isArray(window.__ATHLETES__) ? window.__ATHLETES__ : [];
+
+        return athletes
+          .filter(function(a) { return String(a.sport_id) === sportId; })
+          .filter(function(a) { return String(a.member_type || '').toLowerCase() === 'individual'; })
+          .map(function(a) { return '<option value="' + a.id + '">' + escapeHtml(a.name) + '</option>'; })
+          .join('');
+      }
+
+      function refreshParticipantSelects(keepSelected) {
+        if (keepSelected === undefined) keepSelected = true;
+        if (!participantsList) return;
+
+        console.log('🔄 Refreshing participant selects...');
+        console.log('   Athletes in cache:', window.__ATHLETES__.length);
+        
+        var optionsHtml = buildParticipantOptionsHtml();
+        console.log('   Generated options HTML length:', optionsHtml.length);
+        
+        var selects = participantsList.querySelectorAll('select[name="participant_ids[]"]');
+        console.log('   Found selects:', selects.length);
+
+        selects.forEach(function(sel, idx) {
+          var prev = sel.value;
+          sel.innerHTML = '<option value="" selected disabled>-- Pilih peserta --</option>' + optionsHtml;
+
+          console.log('   Select ' + idx + ': options count = ' + sel.options.length);
+
+          if (keepSelected && prev && Array.from(sel.options).some(function(o) { return o.value === prev; })) {
+            sel.value = prev;
+          } else {
+            sel.value = '';
+          }
+        });
+      }
+
+      function createParticipantRow() {
+        var row = document.createElement('div');
+        row.className = 'd-flex gap-2 align-items-center mb-2 participant-row';
+
+        row.innerHTML =
+          '<select class="form-select" name="participant_ids[]" required>' +
+          '<option value="" selected disabled>-- Pilih peserta --</option>' +
+          buildParticipantOptionsHtml() +
+          '</select>' +
+          '<button type="button" class="btn btn-outline-danger btnRemoveParticipant">' +
+          '<i class="bi bi-x-lg"></i>' +
+          '</button>';
+
+        row.querySelector('.btnRemoveParticipant').addEventListener('click', function() {
+          row.remove();
+        });
+
+        return row;
+      }
+
+      function ensureMinParticipants() {
+        if (!participantsList) return;
+        var rows = participantsList.querySelectorAll('.participant-row');
+        while (rows.length < 2) {
+          participantsList.appendChild(createParticipantRow());
+          rows = participantsList.querySelectorAll('.participant-row');
+        }
+      }
+
+      if (btnAddParticipant) {
+        btnAddParticipant.addEventListener('click', function() {
+          participantsList.appendChild(createParticipantRow());
+        });
+      }
+
+      // Listen for participant select changes
+      document.addEventListener('change', function(e) {
+        if (e.target.name === 'participant_ids[]') {
+          generateTitle();
+        }
+      });
+
+      // ========================================
+      // AUTO TITLE GENERATION
+      // ========================================
+      function generateTitle() {
+        if (titleTouched) return;
+
+        var sportName = getText(sportSelect);
+        if (!sportName) return;
+
+        if (modeTeam && modeTeam.checked) {
+          var home = getText(homeSelect);
+          var away = getText(awaySelect);
+          if (home && away) {
+            titleInput.value = sportName + ' Tim ' + home + ' vs Tim ' + away;
+          }
+        }
+
+        if (modeInd && modeInd.checked) {
+          var players = Array.from(document.querySelectorAll('[name="participant_ids[]"]'))
+            .map(function(s) { return getText(s); })
+            .filter(Boolean);
+
+          if (players.length >= 2) {
+            titleInput.value = sportName + ' Individu ' + players[0] + ' vs ' + players[1];
+          }
+        }
+      }
+
+      if (sportSelect) sportSelect.addEventListener('change', generateTitle);
+      if (homeSelect) homeSelect.addEventListener('change', generateTitle);
+      if (awaySelect) awaySelect.addEventListener('change', generateTitle);
+
+      // ========================================
+      // TICKET SELLING TOGGLE
+      // ========================================
+      function toggleTicketBox() {
+        if (sellYes && sellYes.checked) {
+          ticketBox.style.display = 'block';
+        } else {
+          ticketBox.style.display = 'none';
+        }
+      }
+
+      if (sellYes) sellYes.addEventListener('change', toggleTicketBox);
+      if (sellNo) sellNo.addEventListener('change', toggleTicketBox);
+      toggleTicketBox();
+
+      // ========================================
+      // ADD TEAM MODAL
+      // ========================================
+      var addTeamModalEl = document.getElementById('addTeamModal');
+      var addTeamModal = null;
+      
+      if (typeof bootstrap !== 'undefined' && addTeamModalEl) {
+        try {
+          addTeamModal = new bootstrap.Modal(addTeamModalEl);
+          console.log('✅ Add Team Modal initialized');
+        } catch (err) {
+          console.error('❌ Error initializing team modal:', err);
+        }
+      }
+
+      var btnAddHome = document.getElementById('btnAddTeamHome');
+      var btnAddAway = document.getElementById('btnAddTeamAway');
+      var teamSport = document.getElementById('team_sport_id');
+      var saveTeamBtn = document.getElementById('btnSaveTeam');
+      var teamErrBox = document.getElementById('teamErr');
+      var teamOkBox = document.getElementById('teamOk');
+      var activeTarget = 'home';
+
       function showTeamError(msg) {
-        if (!errBox) return;
-        errBox.textContent = msg;
-        errBox.classList.remove('d-none');
-        if (okBox) okBox.classList.add('d-none');
+        if (!teamErrBox) return;
+        teamErrBox.textContent = msg;
+        teamErrBox.classList.remove('d-none');
+        if (teamOkBox) teamOkBox.classList.add('d-none');
       }
 
       function showTeamOk(msg) {
-        if (!okBox) return;
-        okBox.textContent = msg;
-        okBox.classList.remove('d-none');
-        if (errBox) errBox.classList.add('d-none');
+        if (!teamOkBox) return;
+        teamOkBox.textContent = msg;
+        teamOkBox.classList.remove('d-none');
+        if (teamErrBox) teamErrBox.classList.add('d-none');
       }
 
       function openAddTeam(target) {
-        console.log('openAddTeam called with target:', target);
+        console.log('🔵 Opening Add Team Modal for:', target);
         activeTarget = target;
-        if (errBox) errBox.classList.add('d-none');
-        if (okBox) okBox.classList.add('d-none');
+        if (teamErrBox) teamErrBox.classList.add('d-none');
+        if (teamOkBox) teamOkBox.classList.add('d-none');
 
         if (sportSelect && teamSport) {
           teamSport.value = sportSelect.value || '';
@@ -1113,36 +1230,25 @@ block content
         
         if (addTeamModal) {
           addTeamModal.show();
-          console.log('Modal should be showing now');
-        } else {
-          console.error('Modal not initialized');
         }
       }
 
       if (btnAddHome) {
         btnAddHome.addEventListener('click', function(e) {
           e.preventDefault();
-          console.log('Home button clicked');
           openAddTeam('home');
         });
-        console.log('Home button listener attached');
-      } else {
-        console.error('btnAddHome not found');
       }
       
       if (btnAddAway) {
         btnAddAway.addEventListener('click', function(e) {
           e.preventDefault();
-          console.log('Away button clicked');
           openAddTeam('away');
         });
-        console.log('Away button listener attached');
-      } else {
-        console.error('btnAddAway not found');
       }
 
-      if (saveBtn) {
-        saveBtn.addEventListener('click', async function() {
+      if (saveTeamBtn) {
+        saveTeamBtn.addEventListener('click', async function() {
           var sport_id = teamSport ? teamSport.value : '';
           var name = document.getElementById('team_name') ? document.getElementById('team_name').value : '';
           var short_name = document.getElementById('team_short') ? document.getElementById('team_short').value : '';
@@ -1152,33 +1258,26 @@ block content
           if (!sport_id) return showTeamError('Pilih cabang olahraga dulu.');
           if (!name) return showTeamError('Nama tim wajib diisi.');
 
-          saveBtn.disabled = true;
-          saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
+          saveTeamBtn.disabled = true;
+          saveTeamBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
 
           try {
-            const resp = await fetch('/subadmin/teams/ajax-create', {
+            var resp = await fetch('/subadmin/teams/ajax-create', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ sport_id, name, short_name, city })
+              body: JSON.stringify({ sport_id: sport_id, name: name, short_name: short_name, city: city })
             });
 
-            const data = await resp.json().catch(() => ({}));
+            var data = await resp.json().catch(function() { return {}; });
             if (!resp.ok || !data.ok) {
               return showTeamError(data.message || 'Gagal menambahkan tim.');
             }
 
             var opt = document.createElement('option');
-            opt.value = data.team.id;
+            opt.value = String(data.team.id);
             opt.textContent = data.team.name;
             opt.setAttribute('data-sport', String(data.team.sport_id));
-
-            // ✅ tambahin ini
-            if (typeof data.team.is_individual !== 'undefined') {
-              opt.setAttribute('data-is-individual', String(data.team.is_individual ? 1 : 0));
-            }
-
-            // ✅ biar langsung ke-refresh filternya
-            filterTeamsBySport();
+            opt.setAttribute('data-is-individual', data.team.is_individual || '0');
 
             var targetSelect = activeTarget === 'away' ? awaySelect : homeSelect;
             if (targetSelect) {
@@ -1204,260 +1303,222 @@ block content
             console.error(e);
             showTeamError('Server error. Coba lagi.');
           } finally {
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = 'Simpan';
+            saveTeamBtn.disabled = false;
+            saveTeamBtn.innerHTML = 'Simpan';
           }
         });
       }
 
-      function filterTeamsBySport() { 
-        if (!sportSelect || !sportSelect.value) return;
+      // ========================================
+      // ADD ATHLETE MODAL
+      // ========================================
+      var addAthleteModalEl = document.getElementById('addAthleteModal');
+      var addAthleteModal = null;
 
-        var sportId = String(sportSelect.value);
+      console.log('🔍 Checking athlete modal...');
+      console.log('   addAthleteModalEl:', addAthleteModalEl);
+      console.log('   Bootstrap available:', typeof bootstrap !== 'undefined');
 
-        [homeSelect, awaySelect].forEach(function(sel) {
-          if (!sel) return;
-
-          Array.from(sel.options).forEach(function(opt) {
-            if (!opt.value) return;
-
-            var optSport = String(opt.getAttribute('data-sport') || '');
-            var ok = optSport === sportId;
-
-            opt.hidden = !ok;
-            opt.disabled = !ok;
-          });
-
-          // reset kalau value lama beda cabang
-          if (sel.value) {
-            var selected = sel.options[sel.selectedIndex];
-            if (String(selected.getAttribute('data-sport')) !== sportId) {
-              sel.value = '';
-            }
+      if (addAthleteModalEl) {
+        if (typeof bootstrap !== 'undefined') {
+          try {
+            addAthleteModal = new bootstrap.Modal(addAthleteModalEl);
+            console.log('✅ Add Athlete Modal initialized');
+          } catch (e) {
+            console.error('❌ Error initializing athlete modal:', e);
           }
-        });
-        filterTeamsByMode();
-        refreshParticipantSelects(true);
+        } else {
+          console.error('❌ Bootstrap not loaded! Modal cannot be initialized.');
+          // Fallback: gunakan jQuery jika ada
+          if (typeof $ !== 'undefined') {
+            console.log('⚠️ Trying jQuery fallback for modal...');
+            addAthleteModal = {
+              show: function() {
+                $('#addAthleteModal').modal('show');
+              },
+              hide: function() {
+                $('#addAthleteModal').modal('hide');
+              }
+            };
+            console.log('✅ jQuery fallback initialized');
+          }
+        }
+      } else {
+        console.error('❌ #addAthleteModal element not found in DOM!');
       }
 
-      filterTeamsBySport();
-      if (sportSelect) {
-        sportSelect.addEventListener('change', function () {
-          toggleAfterSport();
-          filterTeamsBySport();   // ✅ satu-satunya filter sport
-          filterTeamsByMode();    // ✅ sync dengan mode
-        });
-      }
-      var teamVs = document.getElementById('teamVsContainer');
-      var individualBox = document.getElementById('individualContainer');
-      var participantsList = document.getElementById('participantsList');
-      var btnAddParticipant = document.getElementById('btnAddParticipant');
-      function buildParticipantOptionsHtml() {
-        const sportId = sportSelect.value;
-        if (!sportId) return '';
+      var btnAddAthlete = document.getElementById('btnAddAthlete');
+      var athSport = document.getElementById('ath_sport_id');
+      var athName = document.getElementById('ath_name');
+      var saveAthBtn = document.getElementById('btnSaveAthlete');
+      var athErrBox = document.getElementById('athErr');
+      var athOkBox = document.getElementById('athOk');
 
-        return Array.from(homeSelect.options)
-          .filter(o => o.value)
-          .filter(o => !o.disabled && !o.hidden)
-          .filter(o => o.getAttribute('data-sport') === sportId)
-          .filter(o => o.getAttribute('data-is-individual') === '1')
-          .map(o => `<option value="${o.value}">${o.textContent}</option>`)
-          .join('');
+      function syncAthleteSport() {
+        if (!athSport || !sportSelect) return;
+        athSport.value = sportSelect.value || '';
       }
 
-      function refreshParticipantSelects(keepSelected = true) {
-        if (!participantsList) return;
+      if (sportSelect) sportSelect.addEventListener('change', syncAthleteSport);
 
-        var optionsHtml = buildParticipantOptionsHtml();
-        var selects = participantsList.querySelectorAll('select[name="participant_ids[]"]');
+      if (btnAddAthlete) {
+        btnAddAthlete.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('🟢 btnAddAthlete clicked');
 
-        selects.forEach(function(sel) {
-          var prev = sel.value;
-          sel.innerHTML =
-            `<option value="" selected disabled>-- Pilih peserta --</option>` +
-            optionsHtml;
+          syncAthleteSport();
+          
+          if (!sportSelect || !sportSelect.value) {
+            alert('Pilih Cabang Olahraga dulu sebelum tambah pemain.');
+            return;
+          }
 
-          if (keepSelected && prev && Array.from(sel.options).some(o => o.value === prev)) {
-            sel.value = prev;
+          if (addAthleteModal) {
+            console.log('✅ Showing athlete modal');
+            addAthleteModal.show();
           } else {
-            sel.value = '';
-          }
-        });
-      }
-
-
-      function createParticipantRow() {
-        var row = document.createElement('div');
-        row.className = 'd-flex gap-2 align-items-center mb-2 participant-row';
-
-        row.innerHTML = `
-          <select class="form-select" name="participant_ids[]" required>
-            <option value="" selected disabled>-- Pilih peserta --</option>
-            ${buildParticipantOptionsHtml()}
-          </select>
-
-          <button type="button" class="btn btn-outline-danger btnRemoveParticipant">
-            <i class="bi bi-x-lg"></i>
-          </button>
-        `;
-
-        row.querySelector('.btnRemoveParticipant').addEventListener('click', function () {
-          row.remove();
-        });
-
-        return row;
-      }
-
-
-      function ensureMinParticipants() {
-        if (!participantsList) return;
-        var rows = participantsList.querySelectorAll('.participant-row');
-        while (rows.length < 2) {
-          participantsList.appendChild(createParticipantRow());
-          rows = participantsList.querySelectorAll('.participant-row');
-        }
-      }
-
-      function toggleModeUI() {
-        if (!modeTeam || !modeInd) return;
-
-        const participantSelects =
-          document.querySelectorAll('[name="participant_ids[]"]');
-
-        if (modeInd.checked) {
-          teamVs.style.display = 'none';
-          individualBox.style.display = 'block';
-          participantSelects.forEach(s => s.required = true);
-          ensureMinParticipants();
-        } else {
-          teamVs.style.display = 'block';
-          individualBox.style.display = 'none';
-          participantSelects.forEach(s => s.required = false);
-        }
-
-        // MODE hanya memfilter is_individual
-        filterTeamsByMode();
-      }
-
-      // listener mode (ini yang kamu tanya “listener dimana”)
-      if (modeTeam) modeTeam.addEventListener('change', toggleModeUI);
-      if (modeInd) modeInd.addEventListener('change', toggleModeUI);
-
-      if (btnAddParticipant) {
-        btnAddParticipant.addEventListener('click', function () {
-          participantsList.appendChild(createParticipantRow());
-        });
-      }
-
-      // validasi submit: mode individual minimal 2 peserta
-      if (form) {
-        form.addEventListener('submit', function (e) {
-          if (modeInd && modeInd.checked) {
-            var selected = Array.from(document.querySelectorAll('[name="participant_ids[]"]'))
-              .map(s => s.value)
-              .filter(Boolean);
-
-            if (selected.length < 2) {
-              e.preventDefault();
-              alert('Mode Individual butuh minimal 2 peserta.');
-              return;
+            console.error('❌ Modal not initialized. Trying manual show...');
+            
+            // Fallback manual
+            if (addAthleteModalEl) {
+              addAthleteModalEl.classList.add('show');
+              addAthleteModalEl.style.display = 'block';
+              document.body.classList.add('modal-open');
+              
+              // Add backdrop
+              var backdrop = document.createElement('div');
+              backdrop.className = 'modal-backdrop fade show';
+              backdrop.id = 'tempBackdrop';
+              document.body.appendChild(backdrop);
+              
+              console.log('⚠️ Modal shown manually (fallback)');
+            } else {
+              alert('Modal tidak tersedia. Coba refresh halaman.');
             }
           }
+
+          setTimeout(function() {
+            if (athName) athName.focus();
+          }, 200);
+        });
+      } else {
+        console.error('❌ btnAddAthlete not found in DOM!');
+      }
+
+      // Close button handler untuk fallback manual
+      if (addAthleteModalEl) {
+        var closeBtn = addAthleteModalEl.querySelector('.btn-close');
+        var cancelBtn = addAthleteModalEl.querySelector('.btn-secondary');
+        
+        function closeModalManual() {
+          if (addAthleteModal && addAthleteModal.hide) {
+            addAthleteModal.hide();
+          } else {
+            addAthleteModalEl.classList.remove('show');
+            addAthleteModalEl.style.display = 'none';
+            document.body.classList.remove('modal-open');
+            var backdrop = document.getElementById('tempBackdrop');
+            if (backdrop) backdrop.remove();
+          }
+        }
+        
+        if (closeBtn) closeBtn.addEventListener('click', closeModalManual);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModalManual);
+      }
+
+      function showAthError(msg) {
+        if (!athErrBox) return;
+        athErrBox.textContent = msg;
+        athErrBox.classList.remove('d-none');
+        if (athOkBox) athOkBox.classList.add('d-none');
+      }
+
+      function showAthOk(msg) {
+        if (!athOkBox) return;
+        athOkBox.textContent = msg;
+        athOkBox.classList.remove('d-none');
+        if (athErrBox) athErrBox.classList.add('d-none');
+      }
+
+      if (saveAthBtn) {
+        saveAthBtn.addEventListener('click', async function() {
+          var sport_id = document.getElementById('ath_sport_id') ? document.getElementById('ath_sport_id').value : '';
+          var name = document.getElementById('ath_name') ? document.getElementById('ath_name').value : '';
+          var number = document.getElementById('ath_number') ? document.getElementById('ath_number').value : '';
+          var position = document.getElementById('ath_position') ? document.getElementById('ath_position').value : '';
+
+          name = name.trim();
+          if (!sport_id) return showAthError('Pilih cabang olahraga dulu.');
+          if (!name) return showAthError('Nama pemain wajib diisi.');
+
+          saveAthBtn.disabled = true;
+          saveAthBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
+
+          try {
+            var resp = await fetch('/subadmin/athletes/ajax-create', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                sport_id: sport_id, 
+                name: name, 
+                number: number, 
+                position: position 
+              })
+            });
+
+            var data = await resp.json().catch(function() { return {}; });
+            if (!resp.ok || !data.ok) {
+              return showAthError(data.message || 'Gagal menambahkan pemain.');
+            }
+
+            console.log('✅ Athlete created:', data.athlete);
+
+            // Update cache
+            window.__ATHLETES__ = Array.isArray(window.__ATHLETES__) ? window.__ATHLETES__ : [];
+            
+            if (data.athlete) {
+              var newAthlete = {
+                id: data.athlete.id,
+                sport_id: data.athlete.sport_id,
+                name: data.athlete.name,
+                member_type: data.athlete.member_type || 'individual'
+              };
+              
+              var exists = window.__ATHLETES__.some(function(a) { return a.id === newAthlete.id; });
+              if (!exists) {
+                window.__ATHLETES__.push(newAthlete);
+                console.log('✅ Athlete added to cache:', newAthlete);
+                console.log('📊 Total athletes in cache:', window.__ATHLETES__.length);
+              }
+            }
+
+            // Refresh participant dropdowns with delay
+            setTimeout(function() {
+              refreshParticipantSelects(false);
+              console.log('✅ Participant selects refreshed');
+            }, 100);
+
+            showAthOk('Pemain berhasil ditambahkan dan langsung tersedia di dropdown!');
+            
+            setTimeout(function() {
+              if (addAthleteModal) addAthleteModal.hide();
+            }, 1000);
+
+            // Clear form
+            document.getElementById('ath_name').value = '';
+            document.getElementById('ath_number').value = '';
+            document.getElementById('ath_position').value = '';
+
+          } catch (e) {
+            console.error('❌ Error saving athlete:', e);
+            showAthError('Server error. Coba lagi.');
+          } finally {
+            saveAthBtn.disabled = false;
+            saveAthBtn.innerHTML = 'Simpan';
+          }
         });
       }
 
-      // panggil pertama kali biar sesuai default
-      toggleModeUI();
-      // ===== Ticket Selling Toggle =====
-      const sellYes = document.getElementById('sellTicketYes');
-      const sellNo  = document.getElementById('sellTicketNo');
-      const ticketBox = document.getElementById('ticketOptions');
+      console.log('=== MATCH FORM SCRIPT READY ===');
 
-      function toggleTicketBox() {
-        if (sellYes.checked) {
-          ticketBox.style.display = 'block';
-        } else {
-          ticketBox.style.display = 'none';
-        }
-      }
-
-      sellYes.addEventListener('change', toggleTicketBox);
-      sellNo.addEventListener('change', toggleTicketBox);
-
-      // init
-      toggleTicketBox();
-      // ===== ELEMENT REFERENCES =====
-      var afterSportSection = document.getElementById('afterSportSection');
-
-      var modeTeam = document.getElementById('modeTeam');
-      var modeInd  = document.getElementById('modeIndividual');
-
-      var homeSelect = document.getElementById('home_team_id');
-      var awaySelect = document.getElementById('away_team_id');
-      var titleInput = document.getElementById('title');
-      // ===== SHOW AFTER SPORT SELECTED =====
-      function toggleAfterSport() {
-        if (sportSelect && sportSelect.value) {
-          afterSportSection.style.display = 'block';
-        } else {
-          afterSportSection.style.display = 'none';
-        }
-      }
-
-      sportSelect.addEventListener('change', toggleAfterSport);
-      toggleAfterSport(); // init
-      // ===== AUTO TITLE =====
-      var titleTouched = false;
-
-      titleInput.addEventListener('input', function () {
-        titleTouched = true;
-      });
-
-      function getText(select) {
-        if (!select || !select.value) return '';
-        return select.options[select.selectedIndex].textContent.trim();
-      }
-
-      function generateTitle() {
-        if (titleTouched) return;
-
-        var sportName = getText(sportSelect);
-        if (!sportName) return;
-
-        // TEAM MODE
-        if (modeTeam.checked) {
-          var home = getText(homeSelect);
-          var away = getText(awaySelect);
-          if (home && away) {
-            titleInput.value = `${sportName} Tim ${home} vs Tim ${away}`;
-          }
-        }
-
-        // INDIVIDUAL MODE
-        if (modeInd.checked) {
-          var players = Array.from(
-            document.querySelectorAll('[name="participant_ids[]"]')
-          )
-            .map(s => getText(s))
-            .filter(Boolean);
-
-          if (players.length >= 2) {
-            titleInput.value = `${sportName} Individu ${players[0]} vs ${players[1]}`;
-          }
-        }
-      }
-      [
-        sportSelect,
-        homeSelect,
-        awaySelect,
-        modeTeam,
-        modeInd
-      ].forEach(el => el && el.addEventListener('change', generateTitle));
-
-      document.addEventListener('change', function (e) {
-        if (e.target.name === 'participant_ids[]') {
-          generateTitle();
-        }
-      });
-
-    });
+    })();

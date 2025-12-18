@@ -469,37 +469,38 @@ block content
 
       // ===== FILTER =====
       .filter-section
-      label.mb-2
-        i.bi.bi-funnel-fill
-        | Pilih Cabang Olahraga
+        label.mb-2
+          i.bi.bi-funnel-fill
+          | Pilih Cabang Olahraga
 
-      select#sportFilter.form-select(name="sport_id")
-        option(value="") Semua Cabang
-        each s in sports
-          option(
-            value=s.id
-            selected=(query && Number(query.sport_id) === s.id)
-          )= s.name
+        select#sportFilter.form-select(name="sport_id")
+          option(value="") Semua Cabang
+          each s in sports
+            option(
+              value=s.id
+              selected=(query && Number(query.sport_id) === s.id)
+            )= s.name
 
-      // ===== MODE TOGGLE (DI LUAR SELECT!) =====
-      - const currentMode = (mode || 'team');
-      - const sportId = (query && query.sport_id) ? query.sport_id : '';
-      - const padelIndividual = (isPadel && currentMode === 'individual');
+        // ===== MODE TOGGLE (DI LUAR SELECT!) =====
+        - const currentMode = ((query && query.mode) ? String(query.mode) : (mode || 'team'));
+        - const sportId = (query && query.sport_id) ? String(query.sport_id) : '';
+        - const isIndividualMode = (currentMode === 'individual');
 
-      .d-flex.flex-wrap.gap-2.mt-3
-        a.btn.btn-sm(
-          href='/subadmin/standings?sport_id=' + sportId + '&mode=team'
-          class=(currentMode === 'team' ? 'btn-primary' : 'btn-outline-primary')
-        )
-          i.bi.bi-people-fill.me-1
-          | Klasemen Tim
+        .d-flex.flex-wrap.gap-2.mt-3
+          a.btn.btn-sm(
+            href='/standings?sport_id=' + sportId + '&mode=team'
+            class=(currentMode === 'team' ? 'btn-primary' : 'btn-outline-primary')
+          )
+            i.bi.bi-people-fill.me-1
+            | Klasemen Tim
 
-        a.btn.btn-sm(
-          href='/subadmin/standings?sport_id=' + sportId + '&mode=individual'
-          class=(currentMode === 'individual' ? 'btn-primary' : 'btn-outline-primary')
-        )
-          i.bi.bi-person-badge.me-1
-          | Klasemen Individual
+          a.btn.btn-sm(
+            href='/standings?sport_id=' + sportId + '&mode=individual'
+            class=(currentMode === 'individual' ? 'btn-primary' : 'btn-outline-primary')
+          )
+            i.bi.bi-person-badge.me-1
+            | Klasemen Individual
+
 
       // ===== TABLE =====
       if standings && standings.length
@@ -512,15 +513,16 @@ block content
           .standings-table
             .table-responsive
               table.table.table-hover
-                thead 
+                thead
                   tr
                     th No.
-                    if padelIndividual
+                    if isIndividualMode
                       th Nama Athlete
                       th Pasangan
                       th.text-center MP
                       th.text-center W-L
                       th.text-center Titles
+                      th.text-center Poin
                     else
                       th Nama Tim
                       th.text-center PJ
@@ -535,12 +537,11 @@ block content
                 tbody
                   each row, index in standings
                     tr
-                      // NO
                       td
                         - const posClass = (index === 0) ? 'position-1' : (index === 1) ? 'position-2' : (index === 2) ? 'position-3' : 'position-other';
                         span.position-badge(class=posClass)= index + 1
 
-                      if padelIndividual
+                      if isIndividualMode
                         td
                           .team-name
                             i.bi.bi-person-badge
@@ -564,7 +565,6 @@ block content
                         td.text-center= row.game_win
                         td.text-center= row.game_loss
                         td.text-center.points-cell= row.pts
-
       else
         .empty-state
           .empty-state-icon

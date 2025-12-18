@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const controller = require('../controllers/publicAthlete.controller');
+// ✅ Sesuaikan dengan nama file yang benar
+const publicAthleteController = require('../controllers/publicAthlete.controller');
 
-// Public athlete profile page
-router.get('/:slug', controller.show);
+router.get('/:slug', publicAthleteController.show);
 
 module.exports = router;
