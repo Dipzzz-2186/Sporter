@@ -456,223 +456,224 @@ block content
                     i.bi.bi-info-circle
                     | Jika pertandingan ini bagian dari event tertentu, masukkan ID event-nya
 
-          // ===== MODE MATCH (INDIVIDUAL / TEAM)
-          - const currentMode = (match_mode || 'team')
-
-          .mb-3
-            label.form-label
-              i.bi.bi-sliders
-              | Mode Pertandingan
-              span.required-indicator *
-
-            .d-flex.gap-3.flex-wrap
-              .form-check
-                input.form-check-input(type="radio", name="match_mode", id="modeTeam", value="team", checked=(currentMode==='team'))
-                label.form-check-label(for="modeTeam") Team (2 orang / tim)
-              .form-check
-                input.form-check-input(type="radio", name="match_mode", id="modeIndividual", value="individual", checked=(currentMode==='individual'))
-                label.form-check-label(for="modeIndividual") Individual (1 vs 1)
-
-            small.form-text
-              i.bi.bi-info-circle
-              | Pilih mode sebelum memilih Home/Away.
-
-            //- Team VS Team
-            #teamVsContainer
-              .row.g-3
-                .col-md-6
-                  .mb-3
-                    label.form-label(for="home_team_id")
-                      i.bi.bi-house-fill
-                      | Tim Rumah
-                      span.badge Opsional
-
-                    .d-flex.gap-2
-                      select.form-select#home_team_id(name="home_team_id")
-                        option(value="" selected) -- Pilih tim rumah --
-                        if teams && teams.length
-                          each t in teams
-                            - const ind = (hasIsIndividual ? (Number(t.is_individual) === 1) : false)
-                            option(
-                              value=t.id
-                              data-sport=t.sport_id
-                              data-is-individual=(ind ? '1' : '0')
-                            )= t.name
-
-                      button.btn.btn-outline-primary(type="button" id="btnAddTeamHome")
-                        i.bi.bi-plus-lg
-
-                    small.form-text
-                      i.bi.bi-info-circle
-                      | Tim yang bermain di kandang
-
-                .col-md-6
-                  .mb-3
-                    label.form-label(for="away_team_id")
-                      i.bi.bi-car-front-fill
-                      | Tim Tamu
-                      span.badge Opsional
-
-                    .d-flex.gap-2
-                      select.form-select#away_team_id(name="away_team_id")
-                        option(value="" selected) -- Pilih tim tamu --
-                        if teams && teams.length
-                          each t in teams
-                            - const ind = (hasIsIndividual ? (Number(t.is_individual) === 1) : false)
-                            option(
-                              value=t.id
-                              data-sport=t.sport_id
-                              data-is-individual=(ind ? '1' : '0')
-                            )= t.name
-
-                      button.btn.btn-outline-primary(type="button" id="btnAddTeamAway")
-                        i.bi.bi-plus-lg
-
-                    small.form-text
-                      i.bi.bi-info-circle
-                      | Tim yang bermain di tandang
-
-            //- INDIVIDUAL (MULTI PESERTA)
-            #individualContainer(style="display:none;")
-              .mb-2.d-flex.gap-2.flex-wrap
-                button.btn.btn-outline-primary(type="button" id="btnAddParticipant")
-                  i.bi.bi-plus-lg
-                  | Tambah Peserta
-
-              #participantsList
-
-              // ✅ INI tombol tambah pemain beneran (insert athletes)
-              button.btn.btn-outline-success(type="button" id="btnAddAthlete")
-                i.bi.bi-person-plus
-                | Tambah Pemain
-
-              small.form-text
-                i.bi.bi-info-circle
-                | Minimal 2 peserta. Bisa sebanyak yang kamu mau.
-
-          //- Section 3: Match Details
-          .form-section
-            .section-title
-              i.bi.bi-card-heading
-              | Detail Pertandingan
-            .section-description
-              | Berikan judul dan waktu untuk pertandingan ini.
-            
-            .mb-3
-              label.form-label(for="title")
-                i.bi.bi-text-left
-                | Judul Pertandingan
-                span.required-indicator *
-              input.form-control#title(
-                type="text"
-                name="title"
-                required
-                placeholder="Contoh: Final Basket Putra - SMKN 8 vs SMAN 1"
-              )
-              small.form-text
-                i.bi.bi-info-circle
-                | Buat judul yang jelas dan informatif
-            
-            .row.g-3
-              .col-md-6
-                .mb-3
-                  label.form-label(for="start_time")
-                    i.bi.bi-clock
-                    | Waktu Mulai
-                    span.required-indicator *
-                  input.form-control#start_time(
-                    type="datetime-local"
-                    name="start_time"
-                    required
-                  )
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Kapan pertandingan dimulai
-              
-              .col-md-6
-                .mb-3
-                  label.form-label(for="end_time")
-                    i.bi.bi-clock-history
-                    | Waktu Berakhir
-                    span.badge Opsional
-                  input.form-control#end_time(
-                    type="datetime-local"
-                    name="end_time"
-                  )
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Estimasi waktu selesai (boleh kosong)
-
-          //- Section 4: Ticketing
-          .form-section
-            .section-title
-              i.bi.bi-ticket-perforated
-              | Penjualan Tiket
-            .section-description
-              | Atur apakah pertandingan ini menjual tiket atau tidak.
+          #afterSportSection(style="display:none;")
+            // ===== MODE MATCH (INDIVIDUAL / TEAM)
+            - const currentMode = (match_mode || 'team')
 
             .mb-3
               label.form-label
-                | Apakah ingin menjual tiket?
-              .form-check
-                input.form-check-input(
-                  type="radio"
-                  name="sell_ticket"
-                  id="sellTicketNo"
-                  value="0"
-                  checked
-                )
-                label.form-check-label(for="sellTicketNo") Tidak
-              .form-check
-                input.form-check-input(
-                  type="radio"
-                  name="sell_ticket"
-                  id="sellTicketYes"
-                  value="1"
-                )
-                label.form-check-label(for="sellTicketYes") Ya
+                i.bi.bi-sliders
+                | Mode Pertandingan
+                span.required-indicator *
 
-            //- Ticket Options (hidden by default)
-            #ticketOptions(style="display:none;")
+              .d-flex.gap-3.flex-wrap
+                .form-check
+                  input.form-check-input(type="radio", name="match_mode", id="modeTeam", value="team", checked=(currentMode==='team'))
+                  label.form-check-label(for="modeTeam") Team (2 orang / tim)
+                .form-check
+                  input.form-check-input(type="radio", name="match_mode", id="modeIndividual", value="individual", checked=(currentMode==='individual'))
+                  label.form-check-label(for="modeIndividual") Individual (1 vs 1)
+
+              small.form-text
+                i.bi.bi-info-circle
+                | Pilih mode sebelum memilih Home/Away.
+
+              //- Team VS Team
+              #teamVsContainer
+                .row.g-3
+                  .col-md-6
+                    .mb-3
+                      label.form-label(for="home_team_id")
+                        i.bi.bi-house-fill
+                        | Tim Rumah
+                        span.badge Opsional
+
+                      .d-flex.gap-2
+                        select.form-select#home_team_id(name="home_team_id")
+                          option(value="" selected) -- Pilih tim rumah --
+                          if teams && teams.length
+                            each t in teams
+                              - const ind = (hasIsIndividual ? (Number(t.is_individual) === 1) : false)
+                              option(
+                                value=t.id
+                                data-sport=t.sport_id
+                                data-is-individual=(ind ? '1' : '0')
+                              )= t.name
+
+                        button.btn.btn-outline-primary(type="button" id="btnAddTeamHome")
+                          i.bi.bi-plus-lg
+
+                      small.form-text
+                        i.bi.bi-info-circle
+                        | Tim yang bermain di kandang
+
+                  .col-md-6
+                    .mb-3
+                      label.form-label(for="away_team_id")
+                        i.bi.bi-car-front-fill
+                        | Tim Tamu
+                        span.badge Opsional
+
+                      .d-flex.gap-2
+                        select.form-select#away_team_id(name="away_team_id")
+                          option(value="" selected) -- Pilih tim tamu --
+                          if teams && teams.length
+                            each t in teams
+                              - const ind = (hasIsIndividual ? (Number(t.is_individual) === 1) : false)
+                              option(
+                                value=t.id
+                                data-sport=t.sport_id
+                                data-is-individual=(ind ? '1' : '0')
+                              )= t.name
+
+                        button.btn.btn-outline-primary(type="button" id="btnAddTeamAway")
+                          i.bi.bi-plus-lg
+
+                      small.form-text
+                        i.bi.bi-info-circle
+                        | Tim yang bermain di tandang
+
+              //- INDIVIDUAL (MULTI PESERTA)
+              #individualContainer(style="display:none;")
+                .mb-2.d-flex.gap-2.flex-wrap
+                  button.btn.btn-outline-primary(type="button" id="btnAddParticipant")
+                    i.bi.bi-plus-lg
+                    | Tambah Peserta
+
+                #participantsList
+
+                // ✅ INI tombol tambah pemain beneran (insert athletes)
+                button.btn.btn-outline-success(type="button" id="btnAddAthlete")
+                  i.bi.bi-person-plus
+                  | Tambah Pemain
+
+                small.form-text
+                  i.bi.bi-info-circle
+                  | Minimal 2 peserta. Bisa sebanyak yang kamu mau.
+
+            //- Section 3: Match Details
+            .form-section
+              .section-title
+                i.bi.bi-card-heading
+                | Detail Pertandingan
+              .section-description
+                | Berikan judul dan waktu untuk pertandingan ini.
+              
+              .mb-3
+                label.form-label(for="title")
+                  i.bi.bi-text-left
+                  | Judul Pertandingan
+                  span.required-indicator *
+                input.form-control#title(
+                  type="text"
+                  name="title"
+                  required
+                  placeholder="Contoh: Final Basket Putra - SMKN 8 vs SMAN 1"
+                )
+                small.form-text
+                  i.bi.bi-info-circle
+                  | Buat judul yang jelas dan informatif
+              
               .row.g-3
-                .col-md-4
+                .col-md-6
                   .mb-3
-                    label.form-label Tipe Tiket
-                    input.form-control(
-                      type="text"
-                      name="ticket_name"
-                      placeholder="Contoh: Regular / VIP"
+                    label.form-label(for="start_time")
+                      i.bi.bi-clock
+                      | Waktu Mulai
+                      span.required-indicator *
+                    input.form-control#start_time(
+                      type="datetime-local"
+                      name="start_time"
+                      required
                     )
+                    small.form-text
+                      i.bi.bi-info-circle
+                      | Kapan pertandingan dimulai
+                
+                .col-md-6
+                  .mb-3
+                    label.form-label(for="end_time")
+                      i.bi.bi-clock-history
+                      | Waktu Berakhir
+                      span.badge Opsional
+                    input.form-control#end_time(
+                      type="datetime-local"
+                      name="end_time"
+                    )
+                    small.form-text
+                      i.bi.bi-info-circle
+                      | Estimasi waktu selesai (boleh kosong)
 
-                .col-md-4
-                  .mb-3
-                    label.form-label Harga per Tiket
-                    input.form-control(
-                      type="number"
-                      name="ticket_price"
-                      min="0"
-                      step="1000"
-                      placeholder="50000"
-                    )
-
-                .col-md-4
-                  .mb-3
-                    label.form-label Kuota Tiket
-                    input.form-control(
-                      type="number"
-                      name="ticket_quota"
-                      min="1"
-                      placeholder="100"
-                    )
+            //- Section 4: Ticketing
+            .form-section
+              .section-title
+                i.bi.bi-ticket-perforated
+                | Penjualan Tiket
+              .section-description
+                | Atur apakah pertandingan ini menjual tiket atau tidak.
 
               .mb-3
-                label.form-label Maksimal pembelian per user
-                input.form-control(
-                  type="number"
-                  name="ticket_max_per_user"
-                  min="1"
-                  placeholder="2"
-                )
+                label.form-label
+                  | Apakah ingin menjual tiket?
+                .form-check
+                  input.form-check-input(
+                    type="radio"
+                    name="sell_ticket"
+                    id="sellTicketNo"
+                    value="0"
+                    checked
+                  )
+                  label.form-check-label(for="sellTicketNo") Tidak
+                .form-check
+                  input.form-check-input(
+                    type="radio"
+                    name="sell_ticket"
+                    id="sellTicketYes"
+                    value="1"
+                  )
+                  label.form-check-label(for="sellTicketYes") Ya
+
+              //- Ticket Options (hidden by default)
+              #ticketOptions(style="display:none;")
+                .row.g-3
+                  .col-md-4
+                    .mb-3
+                      label.form-label Tipe Tiket
+                      input.form-control(
+                        type="text"
+                        name="ticket_name"
+                        placeholder="Contoh: Regular / VIP"
+                      )
+
+                  .col-md-4
+                    .mb-3
+                      label.form-label Harga per Tiket
+                      input.form-control(
+                        type="number"
+                        name="ticket_price"
+                        min="0"
+                        step="1000"
+                        placeholder="50000"
+                      )
+
+                  .col-md-4
+                    .mb-3
+                      label.form-label Kuota Tiket
+                      input.form-control(
+                        type="number"
+                        name="ticket_quota"
+                        min="1"
+                        placeholder="100"
+                      )
+
+                .mb-3
+                  label.form-label Maksimal pembelian per user
+                  input.form-control(
+                    type="number"
+                    name="ticket_max_per_user"
+                    min="1"
+                    placeholder="2"
+                  )
 
           //- Action Buttons
           .form-actions
@@ -796,16 +797,16 @@ block content
       }
 
       function syncAthleteSport() {
-        if (!athSport || !sportSelectMain) return;
-        athSport.value = sportSelectMain.value || '';
+        if (!athSport || !sportSelect) return;
+        athSport.value = sportSelect.value || '';
       }
 
-      if (sportSelectMain) sportSelectMain.addEventListener('change', syncAthleteSport);
+      if (sportSelect) sportSelect.addEventListener('change', syncAthleteSport);
 
       if (btnAddAthlete) {
         btnAddAthlete.addEventListener('click', function () {
           syncAthleteSport();
-          if (!sportSelectMain.value) {
+          if (!sportSelect.value) {
             alert('Pilih Cabang Olahraga dulu sebelum tambah pemain.');
             return;
           }
@@ -813,51 +814,6 @@ block content
         });
       }
 
-        const sportSel = document.getElementById('sport_id');
-        const modeSel  = document.getElementById('match_mode'); // kalau ada
-        const homeSel  = document.getElementById('home_team_id');
-        const awaySel  = document.getElementById('away_team_id');
-        const partSel  = document.getElementById('participant_ids');
-
-        function filterSelectOptions(selectEl, sportId, wantIndividual) {
-          if (!selectEl) return;
-
-          const options = Array.from(selectEl.options);
-          options.forEach((opt, idx) => {
-            if (idx === 0 && !selectEl.multiple) return; // placeholder
-
-            const optSport = Number(opt.dataset.sportId || 0);
-            const optInd   = Number(opt.dataset.individual || 0);
-
-            const okSport = !sportId || optSport === sportId;
-            const okMode  = (wantIndividual == null) ? true : (optInd === (wantIndividual ? 1 : 0));
-
-            opt.hidden = !(okSport && okMode);
-            opt.disabled = !(okSport && okMode);
-
-            // kalau opsi yang kepilih tiba2 jadi invalid -> unselect
-            if ((opt.hidden || opt.disabled) && opt.selected) opt.selected = false;
-          });
-        }
-
-        function applyFilters() {
-          const sportId = Number(sportSel?.value || 0);
-          const mode = (modeSel?.value || '').toLowerCase();
-          const isIndividual = mode === 'individual';
-
-          // TEAM selects
-          filterSelectOptions(homeSel, sportId, false);
-          filterSelectOptions(awaySel, sportId, false);
-
-          // INDIVIDUAL multiselect
-          filterSelectOptions(partSel, sportId, true);
-        }
-
-        sportSel?.addEventListener('change', applyFilters);
-        modeSel?.addEventListener('change', applyFilters);
-
-        // init on load
-        applyFilters();
 
       var saveAthBtn = document.getElementById('btnSaveAthlete');
       var athErrBox = document.getElementById('athErr');
@@ -911,7 +867,6 @@ block content
             if (awaySelect) awaySelect.appendChild(opt.cloneNode(true));
 
             // refresh filter supaya langsung muncul di mode individual
-            filterTeamsBySport();
             refreshParticipantSelects(true);
             filterTeamsByMode();
 
@@ -960,8 +915,8 @@ block content
           console.log('btnAddAthlete clicked');
 
           // auto isi sport sesuai dropdown utama
-          if (sportSelectMain && athSport) {
-            athSport.value = sportSelectMain.value || '';
+          if (sportSelect && athSport) {
+            athSport.value = sportSelect.value || '';
           }
 
           if (addAthleteModal) addAthleteModal.show();
@@ -1074,7 +1029,7 @@ block content
       console.log('btnAddHome:', btnAddHome);
       console.log('btnAddAway:', btnAddAway);
 
-      var sportSelectMain = document.getElementById('sport_id');
+      var sportSelect = document.getElementById('sport_id');
       var teamSport = document.getElementById('team_sport_id');
 
       var homeSelect = document.getElementById('home_team_id');
@@ -1085,13 +1040,11 @@ block content
       // ✅ listener ganti mode (TEAM / INDIVIDUAL)
       if (modeTeam) {
         modeTeam.addEventListener('change', function () {
-          filterTeamsBySport(); // nanti sport filter -> mode filter juga (kalau kamu panggil mode di akhir)
           filterTeamsByMode();
         });
       }
       if (modeInd) {
         modeInd.addEventListener('change', function () {
-          filterTeamsBySport();
           filterTeamsByMode();
         });
       }
@@ -1104,34 +1057,31 @@ block content
       var activeTarget = 'home';
 
       function filterTeamsByMode() {
-        if (!homeSelect || !awaySelect || !modeTeam || !modeInd) return;
+        if (!sportSelect || !homeSelect || !awaySelect) return;
 
-        var mode = modeInd.checked ? 'individual' : 'team';
-        var needIsIndividual = (mode === 'individual') ? '1' : '0';
+        const sportId = String(sportSelect.value || '');
+        const needIsIndividual = modeInd.checked ? '1' : '0';
 
-        [homeSelect, awaySelect].forEach(function(sel) {
-          Array.from(sel.options).forEach(function(opt) {
-            if (!opt.value) return; // placeholder
+        [homeSelect, awaySelect].forEach(sel => {
+          Array.from(sel.options).forEach(opt => {
+            if (!opt.value) return;
 
-            var flag = opt.getAttribute('data-is-individual');
+            const optSport = String(opt.getAttribute('data-sport') || '');
+            const optInd   = opt.getAttribute('data-is-individual');
 
-            // kalau belum ada kolom is_individual, jangan filter biar gak kosong
-            if (!flag) {
-              opt.hidden = false;
-              opt.disabled = false;
-              return;
-            }
+            const matchSport = optSport === sportId;
+            const matchMode  = optInd ? optInd === needIsIndividual : true;
 
-            var ok = (flag === needIsIndividual);
+            const ok = matchSport && matchMode;
+
             opt.hidden = !ok;
             opt.disabled = !ok;
           });
 
-          // kalau value yg kepilih gak sesuai mode → reset
+          // reset value kalau sudah tidak valid
           if (sel.value) {
-            var selected = sel.options[sel.selectedIndex];
-            var selectedFlag = selected ? selected.getAttribute('data-is-individual') : null;
-            if (selectedFlag && selectedFlag !== needIsIndividual) {
+            const selected = sel.options[sel.selectedIndex];
+            if (selected.hidden || selected.disabled) {
               sel.value = '';
             }
           }
@@ -1157,8 +1107,8 @@ block content
         if (errBox) errBox.classList.add('d-none');
         if (okBox) okBox.classList.add('d-none');
 
-        if (sportSelectMain && teamSport) {
-          teamSport.value = sportSelectMain.value || '';
+        if (sportSelect && teamSport) {
+          teamSport.value = sportSelect.value || '';
         }
         
         if (addTeamModal) {
@@ -1261,31 +1211,27 @@ block content
       }
 
       function filterTeamsBySport() { 
-        var sportId = sportSelectMain ? sportSelectMain.value : ''; 
+        if (!sportSelect || !sportSelect.value) return;
 
-        // kalau belum pilih sport → tampilkan semua tim
-        var showAll = !sportId;
+        var sportId = String(sportSelect.value);
 
         [homeSelect, awaySelect].forEach(function(sel) {
           if (!sel) return;
 
           Array.from(sel.options).forEach(function(opt) {
-            // option pertama placeholder jangan diapa-apain
             if (!opt.value) return;
 
-            var optSport = opt.getAttribute('data-sport') || '';
-            var isMatch = String(optSport) === String(sportId);
+            var optSport = String(opt.getAttribute('data-sport') || '');
+            var ok = optSport === sportId;
 
-            // hide/show option
-            opt.hidden = !(showAll || isMatch);
-            opt.disabled = !(showAll || isMatch);
+            opt.hidden = !ok;
+            opt.disabled = !ok;
           });
 
-          // kalau value sekarang gak sesuai sport → reset
+          // reset kalau value lama beda cabang
           if (sel.value) {
             var selected = sel.options[sel.selectedIndex];
-            var selectedSport = selected ? (selected.getAttribute('data-sport') || '') : '';
-            if (!showAll && String(selectedSport) !== String(sportId)) {
+            if (String(selected.getAttribute('data-sport')) !== sportId) {
               sel.value = '';
             }
           }
@@ -1293,15 +1239,13 @@ block content
         filterTeamsByMode();
         refreshParticipantSelects(true);
       }
-      filterTeamsBySport();
-      if (sportSelectMain) {
-        sportSelectMain.addEventListener('change', function () {
-          // reset pilihan tim kalau beda cabang
-          filterTeamsBySport();
-          filterTeamsByMode();
 
-          // auto set sport di modal tambah tim
-          if (teamSport) teamSport.value = sportSelectMain.value || '';
+      filterTeamsBySport();
+      if (sportSelect) {
+        sportSelect.addEventListener('change', function () {
+          toggleAfterSport();
+          filterTeamsBySport();   // ✅ satu-satunya filter sport
+          filterTeamsByMode();    // ✅ sync dengan mode
         });
       }
       var teamVs = document.getElementById('teamVsContainer');
@@ -1309,16 +1253,17 @@ block content
       var participantsList = document.getElementById('participantsList');
       var btnAddParticipant = document.getElementById('btnAddParticipant');
       function buildParticipantOptionsHtml() {
-  
-      var base = document.getElementById('home_team_id');
-      if (!base) return '';
+        const sportId = sportSelect.value;
+        if (!sportId) return '';
 
-      return Array.from(base.options)
-        .filter(o => o.value)                 // buang placeholder
-        .filter(o => !o.disabled && !o.hidden) // hanya yang valid sesuai filter sport/mode
-        .map(o => `<option value="${o.value}">${o.textContent}</option>`)
-        .join('');
-    }
+        return Array.from(homeSelect.options)
+          .filter(o => o.value)
+          .filter(o => !o.disabled && !o.hidden)
+          .filter(o => o.getAttribute('data-sport') === sportId)
+          .filter(o => o.getAttribute('data-is-individual') === '1')
+          .map(o => `<option value="${o.value}">${o.textContent}</option>`)
+          .join('');
+      }
 
       function refreshParticipantSelects(keepSelected = true) {
         if (!participantsList) return;
@@ -1376,17 +1321,21 @@ block content
       function toggleModeUI() {
         if (!modeTeam || !modeInd) return;
 
+        const participantSelects =
+          document.querySelectorAll('[name="participant_ids[]"]');
+
         if (modeInd.checked) {
-          if (teamVs) teamVs.style.display = 'none';
-          if (individualBox) individualBox.style.display = 'block';
+          teamVs.style.display = 'none';
+          individualBox.style.display = 'block';
+          participantSelects.forEach(s => s.required = true);
           ensureMinParticipants();
         } else {
-          if (teamVs) teamVs.style.display = 'block';
-          if (individualBox) individualBox.style.display = 'none';
+          teamVs.style.display = 'block';
+          individualBox.style.display = 'none';
+          participantSelects.forEach(s => s.required = false);
         }
 
-        // tetap jalanin filter sport+mode kalau kamu masih butuh
-        filterTeamsBySport();
+        // MODE hanya memfilter is_individual
         filterTeamsByMode();
       }
 
@@ -1437,4 +1386,78 @@ block content
 
       // init
       toggleTicketBox();
+      // ===== ELEMENT REFERENCES =====
+      var afterSportSection = document.getElementById('afterSportSection');
+
+      var modeTeam = document.getElementById('modeTeam');
+      var modeInd  = document.getElementById('modeIndividual');
+
+      var homeSelect = document.getElementById('home_team_id');
+      var awaySelect = document.getElementById('away_team_id');
+      var titleInput = document.getElementById('title');
+      // ===== SHOW AFTER SPORT SELECTED =====
+      function toggleAfterSport() {
+        if (sportSelect && sportSelect.value) {
+          afterSportSection.style.display = 'block';
+        } else {
+          afterSportSection.style.display = 'none';
+        }
+      }
+
+      sportSelect.addEventListener('change', toggleAfterSport);
+      toggleAfterSport(); // init
+      // ===== AUTO TITLE =====
+      var titleTouched = false;
+
+      titleInput.addEventListener('input', function () {
+        titleTouched = true;
+      });
+
+      function getText(select) {
+        if (!select || !select.value) return '';
+        return select.options[select.selectedIndex].textContent.trim();
+      }
+
+      function generateTitle() {
+        if (titleTouched) return;
+
+        var sportName = getText(sportSelect);
+        if (!sportName) return;
+
+        // TEAM MODE
+        if (modeTeam.checked) {
+          var home = getText(homeSelect);
+          var away = getText(awaySelect);
+          if (home && away) {
+            titleInput.value = `${sportName} Tim ${home} vs Tim ${away}`;
+          }
+        }
+
+        // INDIVIDUAL MODE
+        if (modeInd.checked) {
+          var players = Array.from(
+            document.querySelectorAll('[name="participant_ids[]"]')
+          )
+            .map(s => getText(s))
+            .filter(Boolean);
+
+          if (players.length >= 2) {
+            titleInput.value = `${sportName} Individu ${players[0]} vs ${players[1]}`;
+          }
+        }
+      }
+      [
+        sportSelect,
+        homeSelect,
+        awaySelect,
+        modeTeam,
+        modeInd
+      ].forEach(el => el && el.addEventListener('change', generateTitle));
+
+      document.addEventListener('change', function (e) {
+        if (e.target.name === 'participant_ids[]') {
+          generateTitle();
+        }
+      });
+
     });
