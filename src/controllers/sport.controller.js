@@ -43,14 +43,16 @@ exports.renderSportDetail = async (req, res) => {
       const userId = req.session.user.id;
 
       const [rows] = await db.query(`
-    SELECT 
-      oi.ticket_type_id,
-      SUM(oi.quantity) AS total_bought
-    FROM orders o
-    JOIN order_items oi ON oi.order_id = o.id
-    WHERE o.user_id = ?
-    GROUP BY oi.ticket_type_id
-  `, [userId]);
+      SELECT 
+        oi.ticket_type_id,
+        COUNT(t.id) AS total_bought
+      FROM tickets t
+      JOIN order_items oi ON oi.id = t.order_item_id
+      JOIN orders o ON o.id = oi.order_id
+      WHERE o.user_id = ?
+        AND t.holder_name IS NOT NULL
+      GROUP BY oi.ticket_type_id
+    `, [userId]);
 
       rows.forEach(r => {
         userTicketMap[r.ticket_type_id] = r.total_bought;

@@ -36,30 +36,46 @@ exports.saveTicketHolders = async (req, res) => {
         return res.redirect('/login');
     }
 
-    const orderId = Number(req.params.id);
-    const names = req.body.names || [];
+    const conn = await db.getConnection();
+    try {
+        await conn.beginTransaction();
 
-    for (const t of names) {
-        if (!t.name || !t.ticket_id) continue;
+        const orderId = Number(req.params.id);
+        const names = req.body.names || [];
 
-        await db.query(
-            'UPDATE tickets SET holder_name = ? WHERE id = ?',
-            [t.name.trim(), t.ticket_id]
+        // simpan nama
+        for (const t of names) {
+            if (!t.name || !t.ticket_id) continue;
+            await conn.query(
+                'UPDATE tickets SET holder_name = ? WHERE id = ?',
+                [t.name.trim(), t.ticket_id]
+            );
+        }
+
+        // ambil ticket_type + qty
+        const [[row]] = await conn.query(`
+      SELECT oi.ticket_type_id, SUM(oi.quantity) qty
+      FROM order_items oi
+      WHERE oi.order_id = ?
+      GROUP BY oi.ticket_type_id
+    `, [orderId]);
+
+        // 🔥 SEKARANG BARU UPDATE SOLD
+        await conn.query(
+            'UPDATE ticket_types SET sold = sold + ? WHERE id = ?',
+            [row.qty, row.ticket_type_id]
         );
+
+        await conn.commit();
+
+        req.flash('success', 'Tiket berhasil dikonfirmasi.');
+        return res.redirect('/sports');
+
+    } catch (err) {
+        await conn.rollback();
+        req.flash('error', err.message);
+        return res.redirect('back');
+    } finally {
+        conn.release();
     }
-
-    // ambil sport slug dari order
-    const [[row]] = await db.query(`
-    SELECT s.slug
-    FROM orders o
-    JOIN order_items oi ON oi.order_id = o.id
-    JOIN ticket_types tt ON tt.id = oi.ticket_type_id
-    JOIN matches m ON m.id = tt.match_id
-    JOIN sports s ON s.id = m.sport_id
-    WHERE o.id = ?
-    LIMIT 1
-  `, [orderId]);
-
-    req.flash('success', 'Nama pemegang tiket disimpan.');
-    return res.redirect('/sports/' + row.slug);
 };

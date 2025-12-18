@@ -1658,7 +1658,9 @@ exports.renderTicketOrders = async (req, res) => {
       JOIN users u ON u.id = o.user_id
       JOIN order_items oi ON oi.order_id = o.id
       JOIN ticket_types tt ON tt.id = oi.ticket_type_id
-      JOIN tickets t ON t.order_item_id = oi.id
+      JOIN tickets t
+        ON t.order_item_id = oi.id
+      AND t.holder_name IS NOT NULL
       LEFT JOIN matches m ON m.id = tt.match_id
       LEFT JOIN events e ON e.id = tt.event_id
       JOIN sports s ON s.id = COALESCE(m.sport_id, e.sport_id)
@@ -1699,7 +1701,9 @@ exports.renderTicketOrderDetail = async (req, res) => {
         tt.price
       FROM orders o
       JOIN order_items oi ON oi.order_id = o.id
-      JOIN tickets t ON t.order_item_id = oi.id
+      JOIN tickets t
+        ON t.order_item_id = oi.id
+      AND t.holder_name IS NOT NULL
       JOIN ticket_types tt ON tt.id = oi.ticket_type_id
       JOIN matches m ON m.id = tt.match_id
       WHERE o.user_id = ?
