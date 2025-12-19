@@ -2,90 +2,97 @@ extends ../layout/main
 
 block content
   style.
-    /* Livestream Hero Section */
-    .livestream-hero {
-      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
-      position: relative;
-      overflow: hidden;
-      padding: 5rem 0;
-      animation: fadeIn 0.8s ease-out;
-      margin-bottom: 3rem;
-    }
-    
+    /* Global Animations */
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
     
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes pulseLive {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(255, 0, 0, 0); }
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    
+    /* Hero Section - Layout diperbaiki */
+    .livestream-hero {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      position: relative;
+      overflow: hidden;
+      padding: 4.5rem 0 3rem;
+      margin-bottom: 2.5rem;
+    }
+    
     .livestream-hero::before {
       content: '';
       position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 800px;
-      height: 800px;
+      top: -40%;
+      right: -15%;
+      width: 700px;
+      height: 700px;
       background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
       border-radius: 50%;
-      animation: float 8s ease-in-out infinite;
+      animation: float 6s ease-in-out infinite;
     }
     
     .livestream-hero::after {
       content: '';
       position: absolute;
-      bottom: -40%;
-      left: -10%;
-      width: 600px;
-      height: 600px;
+      bottom: -30%;
+      left: -5%;
+      width: 500px;
+      height: 500px;
       background: radial-gradient(circle, rgba(52, 199, 255, 0.1) 0%, transparent 70%);
       border-radius: 50%;
-      animation: float 10s ease-in-out infinite reverse;
+      animation: float 8s ease-in-out infinite reverse;
     }
     
     @keyframes float {
       0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(50px, -50px) scale(1.1); }
+      50% { transform: translate(30px, -30px) scale(1.05); }
     }
     
     .livestream-hero-content {
       position: relative;
       z-index: 2;
-      animation: slideInLeft 0.8s ease-out;
-    }
-    
-    @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-50px); }
-      to { opacity: 1; transform: translateX(0); }
     }
     
     .livestream-hero-badge {
-      background: rgba(0, 149, 255, 0.15) !important;
-      color: #0095FF !important;
+      background: rgba(0, 149, 255, 0.15);
+      color: #0095FF;
       border: 2px solid rgba(0, 149, 255, 0.3);
-      padding: 0.6rem 1.2rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
       font-size: 0.95rem;
+      font-weight: 600;
       backdrop-filter: blur(10px);
-      animation: pulseLive 2s infinite;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-    }
-    
-    @keyframes pulseLive {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 149, 255, 0.4); }
-      50% { box-shadow: 0 0 0 10px rgba(0, 149, 255, 0); }
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      animation: pulseLive 2s infinite;
     }
     
     .livestream-hero h1 {
       color: white;
-      font-size: 3.5rem;
+      font-size: 3.2rem;
       line-height: 1.2;
       margin-bottom: 1rem;
-      animation: fadeInUp 0.8s ease-out 0.2s backwards;
-    }
-    
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+      font-weight: 800;
     }
     
     .livestream-hero .text-primary {
@@ -96,98 +103,200 @@ block content
     }
     
     .livestream-hero .lead {
-      color: rgba(255, 255, 255, 0.85) !important;
-      font-size: 1.15rem;
-      line-height: 1.8;
-      animation: fadeInUp 0.8s ease-out 0.4s backwards;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      max-width: 600px;
     }
     
-    /* Live Indicator */
-    .live-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(0, 149, 255, 0.1);
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
-      animation: pulseLive 2s infinite;
-      margin-bottom: 1.5rem;
-    }
-    
-    .live-dot {
-      width: 10px;
-      height: 10px;
-      background: #0095FF;
-      border-radius: 50%;
-      animation: blink 1s infinite;
-    }
-    
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-    
-    /* Featured Live Stream */
-    .featured-livestream {
-      background: linear-gradient(135deg, rgba(0, 149, 255, 0.05) 0%, rgba(52, 199, 255, 0.05) 100%);
-      border-radius: 25px;
-      padding: 2rem;
-      margin: 2rem 0;
-      border: 2px solid rgba(0, 149, 255, 0.1);
-      animation: fadeInUp 0.6s ease-out;
-    }
-    
-    .featured-header {
-      margin-bottom: 1.5rem;
-    }
-    
-    .featured-header h3 {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
-      color: #0B1F3F;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
-    }
-    
-    .featured-header p {
-      color: #5a6c7d;
-      font-size: 1rem;
-      margin: 0;
-    }
-    
-    /* Livestream Cards */
-    .livestreams-section {
-      padding: 3rem 0 5rem;
+    /* Featured Stream - Layout lebih baik */
+    .featured-stream-section {
+      padding: 2rem 0 3rem;
       background: white;
+      position: relative;
     }
     
-    .section-header {
-      margin-bottom: 3rem;
+    .section-header-main {
+      margin-bottom: 2.5rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1.5rem;
+      align-items: flex-end;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f0f0f0;
     }
     
-    .section-header h2 {
+    .section-title-main h3 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
+      font-size: 2.4rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+      margin: 0 0 0.25rem 0;
+      line-height: 1;
     }
     
-    .section-header p {
+    .section-subtitle {
       color: #5a6c7d;
       font-size: 1.05rem;
       margin: 0;
     }
     
-    /* Live Stream Filter */
+    .featured-live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(220, 53, 69, 0.1);
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      color: #dc3545;
+      font-weight: 700;
+      font-size: 0.95rem;
+      animation: pulseLive 2s infinite;
+    }
+    
+    .live-dot {
+      width: 12px;
+      height: 12px;
+      background: #dc3545;
+      border-radius: 50%;
+      animation: blink 1s infinite;
+    }
+    
+    .featured-stream-card {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      border-radius: 25px;
+      overflow: hidden;
+      border: 2px solid #e8edf2;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    
+    .featured-stream-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
+      border-color: #0095FF;
+    }
+    
+    .featured-stream-media {
+      position: relative;
+      height: 380px;
+      overflow: hidden;
+      border-radius: 23px 23px 0 0;
+    }
+    
+    .featured-stream-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .featured-stream-card:hover .featured-stream-media img {
+      transform: scale(1.05);
+    }
+    
+    .featured-stream-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 2rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+      color: white;
+    }
+    
+    .featured-stream-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: white;
+    }
+    
+    .featured-stream-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .featured-stream-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .featured-stream-content {
+      padding: 2rem;
+    }
+    
+    .featured-stream-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stream-detail-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 2px solid #f0f0f0;
+      transition: all 0.3s ease;
+    }
+    
+    .stream-detail-card:hover {
+      border-color: #0095FF;
+      transform: translateY(-3px);
+    }
+    
+    .stream-detail-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    
+    .stream-detail-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.2) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .stream-detail-icon i {
+      font-size: 1.5rem;
+      color: #0095FF;
+    }
+    
+    .stream-detail-title {
+      font-weight: 600;
+      color: #0B1F3F;
+      margin: 0;
+      font-size: 1.1rem;
+    }
+    
+    .stream-detail-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0B1F3F;
+      margin-bottom: 0.25rem;
+    }
+    
+    .stream-detail-label {
+      color: #5a6c7d;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    
+    /* Filter Section - Layout lebih compact */
     .stream-filter-section {
       background: white;
       padding: 2rem 0;
+      margin-bottom: 2rem;
       border-bottom: 1px solid #f0f0f0;
     }
     
@@ -195,7 +304,18 @@ block content
       background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
       border-radius: 20px;
       padding: 2rem;
-      animation: fadeInUp 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stream-filter-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
     }
     
     .filter-header {
@@ -204,9 +324,9 @@ block content
     
     .filter-header h4 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 1.8rem;
+      font-size: 2rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       margin-bottom: 0.5rem;
     }
     
@@ -216,52 +336,126 @@ block content
       margin: 0;
     }
     
-    .filter-buttons {
-      display: flex;
-      flex-wrap: wrap;
+    .filter-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 0.75rem;
     }
     
     .btn-stream-filter {
       background: white;
       border: 2px solid #d0d0d0;
-      border-radius: 50px;
-      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
       font-weight: 600;
       color: #5a6c7d;
-      transition: all 0.3s ease;
-      display: inline-flex;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: center;
+      gap: 0.75rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-stream-filter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+    
+    .btn-stream-filter span,
+    .btn-stream-filter i {
+      position: relative;
+      z-index: 2;
     }
     
     .btn-stream-filter:hover,
     .btn-stream-filter.active {
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      border-color: #0095FF;
+      border-color: transparent;
       color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.25);
     }
     
-    /* Livestream Cards */
-    .sporter-livestream-card {
+    .btn-stream-filter.active::before,
+    .btn-stream-filter:hover::before {
+      opacity: 1;
+    }
+    
+    /* Stream Cards Section - Layout baru */
+    .streams-section {
+      padding: 2rem 0 4rem;
+      background: white;
+    }
+    
+    .streams-grid-header {
+      margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .streams-header-left {
+      flex: 1;
+    }
+    
+    .streams-header-left h3 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.4rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      margin: 0 0 0.5rem 0;
+    }
+    
+    .streams-header-left p {
+      color: #5a6c7d;
+      font-size: 1rem;
+      margin: 0;
+    }
+    
+    .streams-header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .live-counter {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(220, 53, 69, 0.1);
+      padding: 0.75rem 1.25rem;
+      border-radius: 50px;
+      color: #dc3545;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    
+    /* Stream Cards Grid */
+    .sporter-stream-card {
       border-radius: 20px;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       border: 2px solid #e8edf2;
       overflow: hidden;
       position: relative;
-      animation: fadeInUp 0.6s ease-out backwards;
       background: white;
       height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     
-    .sporter-livestream-card.live-now {
-      border-color: #0095FF;
-      box-shadow: 0 0 0 1px rgba(0, 149, 255, 0.2);
-    }
-    
-    .sporter-livestream-card.live-now::before {
+    .sporter-stream-card::before {
       content: '';
       position: absolute;
       top: 0;
@@ -269,180 +463,160 @@ block content
       right: 0;
       height: 5px;
       background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
       z-index: 2;
     }
     
-    .sporter-livestream-card.upcoming::before {
-      content: '';
+    .sporter-stream-card.live-now::before {
+      background: linear-gradient(90deg, #dc3545 0%, #ff6b6b 100%);
+      transform: scaleX(1);
+    }
+    
+    .sporter-stream-card.upcoming::before {
+      background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
+    }
+    
+    .sporter-stream-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .sporter-stream-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(0, 149, 255, 0.15);
+      border-color: transparent;
+    }
+    
+    .stream-card-media {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+    }
+    
+    .stream-card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .sporter-stream-card:hover .stream-card-media img {
+      transform: scale(1.08);
+    }
+    
+    .stream-card-overlay {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
-      z-index: 2;
-    }
-    
-    .sporter-livestream-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
-      border-color: #0095FF;
-    }
-    
-    .livestream-thumbnail {
-      position: relative;
-      overflow: hidden;
-      height: 200px;
-      border-radius: 18px 18px 0 0;
-    }
-    
-    .livestream-thumbnail img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-    
-    .sporter-livestream-card:hover .livestream-thumbnail img {
-      transform: scale(1.05);
-    }
-    
-    .livestream-badge {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      z-index: 2;
-    }
-    
-    .live-badge {
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
+      padding: 1.25rem;
       display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    
+    .stream-status-badge {
+      background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%);
+      color: white;
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       animation: pulseLive 2s infinite;
     }
     
-    .upcoming-badge {
+    .stream-status-badge.upcoming {
       background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      animation: none;
     }
     
-    .viewer-count {
-      position: absolute;
-      top: 15px;
-      right: 15px;
+    .viewer-count-badge {
       background: rgba(0, 0, 0, 0.8);
       color: white;
-      padding: 0.4rem 0.9rem;
-      border-radius: 20px;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
       font-size: 0.85rem;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      backdrop-filter: blur(10px);
-    }
-    
-    .viewer-count i {
-      font-size: 0.9rem;
-    }
-    
-    .livestream-schedule {
-      position: absolute;
-      bottom: 15px;
-      left: 15px;
-      right: 15px;
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 0.8rem;
-      border-radius: 15px;
-      font-size: 0.85rem;
-      backdrop-filter: blur(10px);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .schedule-time {
-      font-weight: 600;
-      font-size: 1rem;
-    }
-    
-    .schedule-date {
-      font-size: 0.8rem;
-      opacity: 0.9;
-    }
-    
-    .sporter-livestream-card .card-body {
-      padding: 1.75rem;
-    }
-    
-    .livestream-sport-badge {
-      background: rgba(0, 149, 255, 0.1) !important;
-      color: #0080e0 !important;
-      padding: 0.4rem 0.9rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      border: 1px solid rgba(0, 149, 255, 0.2);
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
+      backdrop-filter: blur(10px);
+    }
+    
+    .stream-card-content {
+      padding: 1.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .stream-card-header {
       margin-bottom: 1rem;
     }
     
-    .livestream-sport-badge i {
-      font-size: 0.9rem;
-    }
-    
-    .sporter-livestream-card h5 {
-      color: #0B1F3F;
+    .stream-sport-badge {
+      background: rgba(0, 149, 255, 0.1);
+      color: #0080e0;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
       font-weight: 700;
-      font-size: 1.2rem;
-      line-height: 1.4;
-      margin-bottom: 0.75rem;
-      min-height: 56px;
-    }
-    
-    .livestream-event-info {
-      color: #5a6c7d;
-      font-size: 0.9rem;
-      margin-bottom: 1.25rem;
-      display: flex;
+      border: 1.5px solid rgba(0, 149, 255, 0.2);
+      display: inline-flex;
       align-items: center;
       gap: 0.5rem;
     }
     
-    .livestream-event-info i {
+    .stream-card-title {
+      color: #0B1F3F;
+      font-weight: 700;
+      font-size: 1.25rem;
+      line-height: 1.4;
+      margin: 0.75rem 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .stream-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    
+    .stream-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #5a6c7d;
+      font-size: 0.9rem;
+    }
+    
+    .stream-meta-item i {
       color: #0095FF;
       font-size: 1rem;
     }
     
-    .livestream-stats {
-      display: flex;
-      justify-content: space-between;
-      border-top: 1px solid #f0f0f0;
+    .stream-card-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-top: auto;
       padding-top: 1rem;
-      margin-top: 1rem;
+      border-top: 1px solid #f0f0f0;
     }
     
-    .livestream-stat-item {
+    .stream-stat-item {
       text-align: center;
     }
     
-    .livestream-stat-value {
+    .stream-stat-value {
       display: block;
       font-size: 1.1rem;
       font-weight: 700;
@@ -451,141 +625,131 @@ block content
       margin-bottom: 0.25rem;
     }
     
-    .livestream-stat-label {
+    .stream-stat-label {
       display: block;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       color: #5a6c7d;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     
-    .sporter-livestream-card .btn {
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.75rem 1.5rem;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 1rem;
-      width: 100%;
-      justify-content: center;
+    .stream-card-actions {
+      margin-top: 1.5rem;
     }
     
-    .sporter-livestream-card .btn-primary {
+    .btn-watch-stream {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       border: none;
-      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
-    }
-    
-    .sporter-livestream-card .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 149, 255, 0.4);
-    }
-    
-    .sporter-livestream-card .btn-outline-primary {
-      background: transparent;
-      border: 2px solid #0095FF;
-      color: #0080e0;
-    }
-    
-    .sporter-livestream-card .btn-outline-primary:hover {
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       color: white;
-      transform: translateY(-2px);
-    }
-    
-    /* Empty State */
-    .livestream-empty-state {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      border: 2px dashed #d0d0d0;
-      border-radius: 20px;
-      padding: 4rem 2rem;
-      text-align: center;
-      animation: fadeInUp 0.6s ease-out;
-    }
-    
-    .livestream-empty-state-icon {
-      width: 100px;
-      height: 100px;
-      background: white;
-      border-radius: 50%;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem;
-      animation: float 3s ease-in-out infinite;
+      gap: 0.75rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
     }
     
-    .livestream-empty-state-icon i {
-      font-size: 3rem;
-      color: #adb5bd;
+    .btn-watch-stream::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0080e0 0%, #0095FF 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
     }
     
-    .livestream-empty-state h3 {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
-      color: #0B1F3F;
-      letter-spacing: 1px;
-      margin-bottom: 0.75rem;
+    .btn-watch-stream:hover::before {
+      opacity: 1;
     }
     
-    .livestream-empty-state p {
-      color: #5a6c7d;
-      font-size: 1.05rem;
-      margin: 0;
+    .btn-watch-stream:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 149, 255, 0.3);
     }
     
-    /* Live Stats Section */
-    .livestream-stats-section {
+    /* Stats Section - Layout lebih baik */
+    .stream-stats-section {
       background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-      padding: 3rem 0;
-      border-radius: 30px;
+      padding: 4rem 0;
+      border-radius: 25px;
       margin-top: 3rem;
-      animation: fadeInUp 0.6s ease-out;
     }
     
-    .livestream-stats-header {
+    .stats-header {
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 3rem;
     }
     
-    .livestream-stats-header h3 {
+    .stats-header h3 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.2rem;
+      font-size: 2.4rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       margin-bottom: 0.5rem;
     }
     
-    .livestream-stats-header p {
+    .stats-header p {
       color: #5a6c7d;
       font-size: 1.05rem;
-      margin: 0;
+      max-width: 600px;
+      margin: 0 auto;
     }
     
-    .live-stats-card {
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .stats-card {
       background: white;
       border-radius: 20px;
-      padding: 2rem;
+      padding: 2rem 1.5rem;
       text-align: center;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 2px solid #e8edf2;
-      height: 100%;
+      position: relative;
+      overflow: hidden;
     }
     
-    .live-stats-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0, 149, 255, 0.1);
+    .stats-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .stats-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .stats-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
       border-color: #0095FF;
     }
     
-    .live-stats-icon-wrapper {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(0, 149, 255, 0.2) 100%);
-      border-radius: 15px;
+    .stats-icon-wrapper {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.2) 100%);
+      border-radius: 20px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -593,63 +757,151 @@ block content
       transition: all 0.3s ease;
     }
     
-    .live-stats-card:hover .live-stats-icon-wrapper {
+    .stats-card:hover .stats-icon-wrapper {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      transform: rotate(5deg) scale(1.1);
+      transform: scale(1.1);
     }
     
-    .live-stats-icon-wrapper i {
-      font-size: 2rem;
+    .stats-icon-wrapper i {
+      font-size: 2.2rem;
       color: #0095FF;
       transition: color 0.3s ease;
     }
     
-    .live-stats-card:hover .live-stats-icon-wrapper i {
+    .stats-card:hover .stats-icon-wrapper i {
       color: white;
     }
     
-    .live-stats-value {
+    .stats-value {
       font-size: 2.5rem;
-      font-weight: 700;
+      font-weight: 800;
       color: #0B1F3F;
       line-height: 1;
       margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
     }
     
-    .live-stats-label {
+    .stats-label {
       color: #5a6c7d;
       font-size: 1rem;
+      font-weight: 600;
       margin: 0;
     }
     
+    /* Empty State */
+    .stream-empty-state {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 2px dashed #d0d0d0;
+      border-radius: 20px;
+      padding: 4rem 2rem;
+      text-align: center;
+      max-width: 800px;
+      margin: 2rem auto;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stream-empty-state::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(0, 149, 255, 0.05) 50%, transparent 70%);
+      animation: shimmer 3s infinite linear;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .stream-empty-state-icon {
+      width: 120px;
+      height: 120px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.75rem;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    
+    .stream-empty-state-icon i {
+      font-size: 3.5rem;
+      color: #adb5bd;
+      animation: float 3s infinite;
+    }
+    
+    .stream-empty-state h3 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.2rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .stream-empty-state p {
+      color: #5a6c7d;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin: 0;
+      position: relative;
+      z-index: 2;
+    }
+    
     /* Responsive */
+    @media (max-width: 1199px) {
+      .livestream-hero h1 {
+        font-size: 2.8rem;
+      }
+      
+      .section-title-main h3 {
+        font-size: 2rem;
+      }
+      
+      .featured-stream-media {
+        height: 350px;
+      }
+    }
+    
     @media (max-width: 991px) {
       .livestream-hero {
-        padding: 3rem 0;
+        padding: 3.5rem 0 2.5rem;
       }
       
       .livestream-hero h1 {
-        font-size: 2.5rem;
+        font-size: 2.4rem;
       }
       
       .livestream-hero .lead {
         font-size: 1rem;
       }
       
-      .section-header h2 {
+      .featured-stream-media {
+        height: 300px;
+      }
+      
+      .featured-stream-details {
+        grid-template-columns: 1fr;
+      }
+      
+      .filter-buttons-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .streams-header-left h3 {
         font-size: 2rem;
       }
       
-      .filter-buttons {
-        justify-content: center;
-      }
-      
-      .sporter-livestream-card h5 {
-        min-height: auto;
-      }
-      
-      .livestream-stats-header h3 {
-        font-size: 1.8rem;
+      .stats-header h3 {
+        font-size: 2rem;
       }
     }
     
@@ -658,16 +910,21 @@ block content
         font-size: 2rem;
       }
       
-      .section-header {
+      .section-header-main {
         flex-direction: column;
         align-items: flex-start;
+        gap: 1rem;
       }
       
-      .section-header h2 {
-        font-size: 1.75rem;
+      .featured-stream-media {
+        height: 250px;
       }
       
-      .featured-livestream {
+      .featured-stream-title {
+        font-size: 1.3rem;
+      }
+      
+      .featured-stream-content {
         padding: 1.5rem;
       }
       
@@ -675,40 +932,66 @@ block content
         padding: 1.5rem;
       }
       
-      .btn-stream-filter {
-        width: 100%;
-        justify-content: center;
+      .filter-buttons-grid {
+        grid-template-columns: 1fr;
       }
       
-      .sporter-livestream-card .card-body {
+      .streams-grid-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .streams-header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .stream-card-content {
         padding: 1.5rem;
       }
       
-      .livestream-schedule {
-        flex-direction: column;
-        gap: 0.5rem;
-        text-align: center;
+      .stream-card-stats {
+        grid-template-columns: repeat(3, 1fr);
       }
       
-      .livestream-stats-section {
-        padding: 2rem 1rem;
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 575px) {
+      .featured-stream-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      
+      .stream-card-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
       }
     }
     
     /* Animation delays */
-    .sporter-livestream-card:nth-child(1) { animation-delay: 0.1s; }
-    .sporter-livestream-card:nth-child(2) { animation-delay: 0.2s; }
-    .sporter-livestream-card:nth-child(3) { animation-delay: 0.3s; }
-    .sporter-livestream-card:nth-child(4) { animation-delay: 0.4s; }
-    .sporter-livestream-card:nth-child(5) { animation-delay: 0.5s; }
-    .sporter-livestream-card:nth-child(6) { animation-delay: 0.6s; }
+    .sporter-stream-card:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.1s forwards; opacity: 0; }
+    .sporter-stream-card:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.2s forwards; opacity: 0; }
+    .sporter-stream-card:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.3s forwards; opacity: 0; }
+    .sporter-stream-card:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.4s forwards; opacity: 0; }
+    .sporter-stream-card:nth-child(5) { animation: fadeInUp 0.6s ease-out 0.5s forwards; opacity: 0; }
+    .sporter-stream-card:nth-child(6) { animation: fadeInUp 0.6s ease-out 0.6s forwards; opacity: 0; }
     
-    .live-stats-card:nth-child(1) { animation-delay: 0.2s; }
-    .live-stats-card:nth-child(2) { animation-delay: 0.4s; }
-    .live-stats-card:nth-child(3) { animation-delay: 0.6s; }
-    .live-stats-card:nth-child(4) { animation-delay: 0.8s; }
+    .stats-card:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.2s forwards; opacity: 0; }
+    .stats-card:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.3s forwards; opacity: 0; }
+    .stats-card:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.4s forwards; opacity: 0; }
+    .stats-card:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.5s forwards; opacity: 0; }
 
-  // HERO SECTION FOR LIVESTREAM
+  // HERO SECTION
   .livestream-hero
     .container
       .row.align-items-center.gy-4
@@ -724,110 +1007,160 @@ block content
           p.lead.mb-4
             | Tonton pertandingan olahraga favorit Anda secara langsung dalam kualitas HD. 
             | Dapatkan akses ke komentar langsung, statistik real-time, dan pengalaman menonton yang interaktif.
+          
+          .row.g-3.mt-4
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-broadcast.text-danger.fs-4
+                div
+                  .h5.mb-0.fw-bold.text-white #{livestreams.filter(l => l.is_live).length || 0}
+                  small.text-white-50.fs-8 Sedang Tayang
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-eye.text-warning.fs-4
+                div
+                  .h5.mb-0.fw-bold.text-white #{livestreams.length * 1250}
+                  small.text-white-50.fs-8 Penonton
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-chat-left-text.text-info.fs-4
+                div
+                  .h5.mb-0.fw-bold.text-white #{livestreams.length * 150}
+                  small.text-white-50.fs-8 Komentar
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-trophy.text-success.fs-4
+                div
+                  .h5.mb-0.fw-bold.text-white #{new Set(livestreams.map(l => l.sport_name)).size}
+                  small.text-white-50.fs-8 Cabang
         
-        .col-lg-4.text-center
-          .sporter-hero-illustration.mx-auto(style="padding: 2.5rem 2rem; background: rgba(0, 149, 255, 0.08); border: 2px solid rgba(0, 149, 255, 0.2); border-radius: 30px; backdrop-filter: blur(10px);")
-            i.bi.bi-broadcast(style="font-size: 6rem; color: rgba(255, 255, 255, 0.3);")
-            p.mb-0.fs-6.text-white-50
-              | HD Stream • Multi-camera • Live Chat
+        .col-lg-4.text-center.d-none.d-lg-block
+          .position-relative(style="padding: 2.5rem 2rem;")
+            .position-absolute.top-0.start-0.w-100.h-100.rounded-4(style="background: linear-gradient(135deg, rgba(0, 149, 255, 0.08) 0%, rgba(52, 199, 255, 0.15) 100%); border: 2px solid rgba(0, 149, 255, 0.2); backdrop-filter: blur(10px);")
+            .position-relative.z-1
+              i.bi.bi-camera-video-fill(style="font-size: 5rem; color: rgba(255, 255, 255, 0.2); margin-bottom: 1rem;")
+              p.mb-0.fs-6.text-white-50.fw-medium
+                | HD Streaming 
+                br
+                | Multi Camera 
+                br
+                | Live Chat
 
-  // FEATURED LIVESTREAM
+  // FEATURED STREAM
   - const featuredStream = livestreams.find(stream => stream.is_live) || livestreams[0]
-  if featuredStream
-    .featured-livestream
-      .container
-        .featured-header
-          h3 Siaran Langsung Utama
-          p Tonton pertandingan yang sedang berlangsung sekarang
+  .featured-stream-section
+    .container
+      .section-header-main
+        .section-title-main
+          h3 Siaran Utama
+          p.section-subtitle Tonton pertandingan yang sedang berlangsung
         
-        .row.align-items-center.gy-4
-          .col-lg-8
-            .position-relative.rounded-3.overflow-hidden
+        if featuredStream && featuredStream.is_live
+          .featured-live-indicator
+            .live-dot
+            span LIVE NOW
+      
+      if featuredStream
+        a.text-decoration-none(href=`/livestreams/${featuredStream.id}`)
+          .featured-stream-card.mb-4
+            .featured-stream-media
               if featuredStream.thumbnail_url
-                img.img-fluid.rounded-3(src=featuredStream.thumbnail_url alt=featuredStream.title style="height: 400px; object-fit: cover;")
+                img(src=featuredStream.thumbnail_url alt=featuredStream.title loading="lazy")
               else
-                .bg-dark.d-flex.align-items-center.justify-content-center.rounded-3(style="height: 400px;")
+                .bg-dark.d-flex.align-items-center.justify-content-center.h-100
                   i.bi.bi-broadcast.fa-4x.text-primary
               
-              .position-absolute.bottom-0.start-0.end-0.p-3.text-white(style="background: linear-gradient(transparent, rgba(0,0,0,0.8));")
-                .d-flex.justify-content-between.align-items-center
-                  div
-                    h4.mb-1= featuredStream.title
-                    p.mb-0
-                      i.bi.bi-calendar-event.me-2
-                      = featuredStream.event_title || 'Pertandingan Langsung'
-                  
-                  if featuredStream.is_live
-                    .live-indicator
-                      .live-dot
-                      span LIVE NOW
-          
-          .col-lg-4
-            .p-4
-              h5.mb-3 Informasi Stream
+              .featured-stream-overlay
+                h3.featured-stream-title= featuredStream.title
+                .featured-stream-meta
+                  span.featured-stream-info
+                    i.bi.bi-calendar-event
+                    = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })
+                  span.featured-stream-info
+                    i.bi.bi-clock
+                    = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})
+                  span.featured-stream-info
+                    i.bi.bi-people-fill
+                    | #{Math.floor(Math.random() * 10000) + 1000} Penonton
+            
+            .featured-stream-content
+              .featured-stream-details
+                .stream-detail-card
+                  .stream-detail-header
+                    .stream-detail-icon
+                      i.bi.bi-trophy-fill
+                    .stream-detail-title= featuredStream.sport_name || 'Olahraga'
+                  .stream-detail-value #{Math.floor(Math.random() * 10000) + 1000}
+                  .stream-detail-label Total Penonton
+                
+                .stream-detail-card
+                  .stream-detail-header
+                    .stream-detail-icon
+                      i.bi.bi-chat-left-text-fill
+                    .stream-detail-title Live Chat
+                  .stream-detail-value #{Math.floor(Math.random() * 500) + 100}
+                  .stream-detail-label Pesan Aktif
+                
+                .stream-detail-card
+                  .stream-detail-header
+                    .stream-detail-icon
+                      i.bi.bi-heart-fill
+                    .stream-detail-title Interaksi
+                  .stream-detail-value #{Math.floor(Math.random() * 1000) + 100}
+                  .stream-detail-label Likes & Shares
               
-              .mb-4
-                span.badge.bg-primary-subtle.text-primary-emphasis.mb-2
-                  i.bi.bi-emoji-angry-fill.me-2
-                  = featuredStream.sport_name || 'Olahraga'
-                
-                p.mb-2
-                  i.bi.bi-clock.me-2
-                  span Mulai: #{new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}
-                
-                p.mb-2
-                  i.bi.bi-eye.me-2
-                  span #{Math.floor(Math.random() * 10000) + 1000} Penonton
-                
-                p.mb-0
-                  i.bi.bi-chat-left-text.me-2
-                  span Live Chat Aktif
-              
-              a.btn.btn-primary.btn-lg.w-100(href=`/livestreams/${featuredStream.id}`)
-                i.bi.bi-play-circle.me-2
+              button.btn.btn-primary.btn-lg.w-100(type="button")
+                i.bi.bi-play-circle-fill.me-2
                 | Tonton Sekarang
 
-  // STREAM FILTER
+  // FILTER SECTION
   .stream-filter-section
     .container
-      .filter-container
+      .stream-filter-container
         .filter-header
           h4 Filter Siaran
           p Temukan siaran berdasarkan cabang olahraga dan status
         
-        .filter-buttons
-          button.btn-stream-filter.active(type="button" data-status="all")
+        .filter-buttons-grid
+          button.btn-stream-filter.active(type="button" data-filter="all")
             i.bi.bi-grid-fill
-            | Semua Siaran
-          button.btn-stream-filter(type="button" data-status="live")
+            span Semua Siaran
+          button.btn-stream-filter(type="button" data-filter="live")
             i.bi.bi-broadcast
-            | Sedang Tayang
-          button.btn-stream-filter(type="button" data-status="upcoming")
+            span Sedang Tayang
+          button.btn-stream-filter(type="button" data-filter="upcoming")
             i.bi.bi-clock
-            | Akan Datang
+            span Akan Datang
           button.btn-stream-filter(type="button" data-sport="football")
             i.bi.bi-emoji-angry-fill
-            | Sepak Bola
+            span Sepak Bola
           button.btn-stream-filter(type="button" data-sport="basketball")
             i.bi.bi-basket2-fill
-            | Basket
+            span Basket
+          button.btn-stream-filter(type="button" data-sport="badminton")
+            i.bi.bi-brightness-alt-high-fill
+            span Bulu Tangkis
 
-  // LIVESTREAMS SECTION
-  .livestreams-section
+  // STREAMS GRID
+  .streams-section
     .container
-      .section-header
-        div
-          h2 Daftar Siaran
+      .streams-grid-header
+        .streams-header-left
+          h3 Daftar Siaran
           p Pilih siaran yang ingin Anda tonton
         
-        if livestreams.length > 0
-          .d-flex.align-items-center.gap-2
-            span.text-muted.small #{livestreams.filter(l => l.is_live).length || 0} Sedang Tayang
+        .streams-header-right
+          .live-counter#live-count
             i.bi.bi-broadcast.text-danger
+            span #{livestreams.filter(l => l.is_live).length || 0} Sedang Tayang
+          
+          .d-flex.align-items-center.gap-2
+            span.text-muted.small Total: #{livestreams.length} Siaran
+            i.bi.bi-camera-video.text-primary
 
       if livestreams.length === 0
-        .livestream-empty-state
-          .livestream-empty-state-icon
+        .stream-empty-state
+          .stream-empty-state-icon
             i.bi.bi-broadcast-slash-fill
           h3 Belum Ada Siaran
           p
@@ -839,523 +1172,318 @@ block content
         .row.g-4
           each item in livestreams
             .col-md-6.col-lg-4
-              .sporter-livestream-card(class=item.is_live ? 'live-now' : 'upcoming')
-                .livestream-thumbnail
-                  if item.embedUrl
-                    .ratio.ratio-16x9
-                      iframe(
-                        src=item.embedUrl
-                        frameborder="0"
-                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen
-                      )
-                  else if item.thumbnail_url
-                    img(src=item.thumbnail_url alt=item.title style="width:100%; height:100%; object-fit:cover;")
+              .sporter-stream-card(class=item.is_live ? 'live-now' : 'upcoming')
+                .stream-card-media
+                  if item.thumbnail_url
+                    img(src=item.thumbnail_url alt=item.title loading="lazy")
                   else
-                    .bg-dark.d-flex.align-items-center.justify-content-center(style="height:100%;")
+                    .bg-dark.d-flex.align-items-center.justify-content-center.h-100
                       i.bi.bi-broadcast.fa-4x.text-primary
+                  
+                  .stream-card-overlay
+                    span.stream-status-badge(class=item.is_live ? 'live' : 'upcoming')
+                      i.bi.bi-broadcast.me-1
+                      = item.is_live ? 'LIVE' : 'UPCOMING'
+                    span.viewer-count-badge
+                      i.bi.bi-eye.me-1
+                      | #{Math.floor(Math.random() * 1000) + 100}
+                
+                .stream-card-content
+                  .stream-card-header
+                    span.stream-sport-badge
+                      i.bi.bi-trophy-fill
+                      = item.sport_name || 'Olahraga'
+                    h4.stream-card-title= item.title
+                  
+                  .stream-card-meta
+                    .stream-meta-item
+                      i.bi.bi-calendar-event
+                      span= new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+                    .stream-meta-item
+                      i.bi.bi-clock
+                      span= new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})
+                    .stream-meta-item
+                      i.bi.bi-geo-alt
+                      span= item.venue_name || 'Online'
+                  
+                  .stream-card-stats
+                    .stream-stat-item
+                      span.stream-stat-value #{Math.floor(Math.random() * 1000) + 100}
+                      span.stream-stat-label Viewers
+                    .stream-stat-item
+                      span.stream-stat-value #{Math.floor(Math.random() * 500) + 50}
+                      span.stream-stat-label Chat
+                    .stream-stat-item
+                      span.stream-stat-value #{Math.floor(Math.random() * 100) + 10}
+                      span.stream-stat-label Likes
+                  
+                  .stream-card-actions
+                    a.btn-watch-stream(href=`/livestreams/${item.id}`)
+                      i.bi.bi-play-circle-fill
+                      span= item.is_live ? 'Tonton Sekarang' : 'Jadwalkan'
 
-                .card-body.d-flex.flex-column
-                  span.livestream-sport-badge
-                    i(class=item.icon_class)
-                    = item.sport_name || 'Olahraga'
-                  
-                  h5= item.title
-                  
-                  .livestream-event-info
-                    i.bi.bi-calendar-event
-                    span= item.event_title || 'Pertandingan Olahraga'
-                  
-                  .livestream-stats
-                    .livestream-stat-item
-                      span.livestream-stat-value #{Math.floor(Math.random() * 1000) + 100}
-                      span.livestream-stat-label Viewers
-                    .livestream-stat-item
-                      span.livestream-stat-value #{Math.floor(Math.random() * 500) + 50}
-                      span.livestream-stat-label Chat
-                    .livestream-stat-item
-                      span.livestream-stat-value #{Math.floor(Math.random() * 100) + 10}
-                      span.livestream-stat-label Like
-                  
-                  if item.is_live
-                    a.btn.btn-primary(href=`/livestreams/${item.id}`)
-                      i.bi.bi-play-circle.me-2
-                      | Tonton Sekarang
-                  else
-                    a.btn.btn-outline-primary(href=`/livestreams/${item.id}`)
-                      i.bi.bi-play-circle.me-2
-                      | Tonton Sekarang
-
-  // LIVE STATS SECTION
-  .livestream-stats-section
+  // STATS SECTION
+  .stream-stats-section
     .container
-      .livestream-stats-header
+      .stats-header
         h3 Statistik Streaming
         p Performa dan statistik siaran langsung kami
       
-      .row.g-4
-        .col-md-3.col-sm-6
-          .live-stats-card
-            .live-stats-icon-wrapper
-              i.bi.bi-broadcast-pin-fill
-            .live-stats-value #{livestreams.filter(l => l.is_live).length || 0}
-            .live-stats-label Sedang Tayang
+      .stats-grid
+        .stats-card
+          .stats-icon-wrapper
+            i.bi.bi-broadcast-pin-fill
+          .stats-value #{livestreams.filter(l => l.is_live).length || 0}
+          .stats-label Sedang Tayang
         
-        .col-md-3.col-sm-6
-          .live-stats-card
-            .live-stats-icon-wrapper
-              i.bi.bi-clock-history
-            .live-stats-value #{livestreams.length}
-            .live-stats-label Total Siaran
+        .stats-card
+          .stats-icon-wrapper
+            i.bi.bi-clock-history
+          .stats-value #{livestreams.length}
+          .stats-label Total Siaran
         
-        .col-md-3.col-sm-6
-          .live-stats-card
-            .live-stats-icon-wrapper
-              i.bi.bi-people-fill
-            .live-stats-value #{livestreams.length * 1250}
-            .live-stats-label Total Penonton
+        .stats-card
+          .stats-icon-wrapper
+            i.bi.bi-people-fill
+          .stats-value #{livestreams.length * 1250}
+          .stats-label Total Penonton
         
-        .col-md-3.col-sm-6
-          .live-stats-card
-            .live-stats-icon-wrapper
-              i.bi.bi-cast
-            .live-stats-value #{Math.floor(livestreams.length / 2) + 1}
-            .live-stats-label Cabang Olahraga
+        .stats-card
+          .stats-icon-wrapper
+            i.bi.bi-cast
+          .stats-value #{Math.max(1, new Set(livestreams.map(l => l.sport_name)).size)}
+          .stats-label Cabang Olahraga
 
   //- Custom JavaScript
   script.
-    // Helper function untuk icon olahraga
-    function getSportIcon(sportName) {
-      const icons = {
-        'Sepak Bola': 'bi-emoji-angry-fill',
-        'Basket': 'bi-basket2-fill',
-        'Bulu Tangkis': 'bi-brightness-alt-high-fill',
-        'Tenis': 'bi-circle-half',
-        'Bola Voli': 'bi-circle-fill'
-      };
-      return icons[sportName] || 'bi-trophy-fill';
-    }
-    
-    // Apply icons to existing badges
-    document.querySelectorAll('.livestream-sport-badge i').forEach(function(icon) {
-      const sportName = icon.parentElement.textContent.trim();
-      const iconClass = getSportIcon(sportName);
-      icon.className = 'bi ' + iconClass;
-    });
-
     (function() {
-      // Smooth scroll
-      document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-        anchor.addEventListener('click', function(e) {
-          var href = this.getAttribute('href');
-          if (href !== '#' && href !== '#!') {
-            e.preventDefault();
-            var target = document.querySelector(href);
-            if (target) {
-              target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-              });
+      // Helper function untuk icon olahraga
+      function getSportIcon(sportName) {
+        const icons = {
+          'Sepak Bola': 'bi-emoji-angry-fill',
+          'Basket': 'bi-basket2-fill',
+          'Bulu Tangkis': 'bi-brightness-alt-high-fill',
+          'Tenis': 'bi-circle-half',
+          'Bola Voli': 'bi-circle-fill',
+          'Renang': 'bi-water',
+          'Atletik': 'bi-person-running',
+          'Sepeda': 'bi-bicycle',
+          'Panahan': 'bi-bullseye',
+          'Futsal': 'bi-dribbble'
+        };
+        return icons[sportName] || 'bi-trophy-fill';
+      }
+      
+      // Apply icons to existing badges
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.stream-sport-badge i').forEach(function(icon) {
+          const badge = icon.closest('.stream-sport-badge');
+          if (badge) {
+            const sportName = badge.textContent.trim();
+            const iconClass = getSportIcon(sportName);
+            if (iconClass) {
+              icon.className = 'bi ' + iconClass;
             }
           }
         });
-      });
-      
-      // Stream filtering
-      const filterButtons = document.querySelectorAll('.btn-stream-filter');
-      const livestreamCards = document.querySelectorAll('.sporter-livestream-card');
-      
-      filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          // Remove active class from all buttons
-          filterButtons.forEach(btn => btn.classList.remove('active'));
-          // Lanjutan script...
-          // Add active class to clicked button
-          this.classList.add('active');
+        
+        // Intersection Observer for animations
+        if ('IntersectionObserver' in window) {
+          const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+              }
+            });
+          }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+          });
           
-          const filterType = this.getAttribute('data-filter');
+          // Observe all cards
+          document.querySelectorAll('.sporter-stream-card, .stats-card, .stream-detail-card').forEach(function(card) {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+          });
+        }
+        
+        // Stream filtering system
+        const filterButtons = document.querySelectorAll('.btn-stream-filter');
+        const streamCards = document.querySelectorAll('.sporter-stream-card');
+        const liveCountElement = document.getElementById('live-count');
+        
+        function updateStreamCount() {
+          const visibleCards = document.querySelectorAll('.sporter-stream-card:not([style*="display: none"])');
+          const liveCards = Array.from(visibleCards).filter(card => card.classList.contains('live-now'));
           
-          // Filter livestream cards
-          livestreamCards.forEach(card => {
-            const sportBadge = card.querySelector('.livestream-sport-badge');
+          if (liveCountElement) {
+            const countSpan = liveCountElement.querySelector('span');
+            if (countSpan) {
+              countSpan.textContent = `${liveCards.length} Sedang Tayang`;
+            }
+          }
+          
+          // Update stats cards
+          animateCounter('.stats-card:nth-child(1) .stats-value', liveCards.length);
+          animateCounter('.stats-card:nth-child(2) .stats-value', visibleCards.length);
+          animateCounter('.stats-card:nth-child(3) .stats-value', visibleCards.length * 1250);
+          
+          const sports = new Set();
+          visibleCards.forEach(card => {
+            const sportBadge = card.querySelector('.stream-sport-badge');
+            if (sportBadge) {
+              sports.add(sportBadge.textContent.trim());
+            }
+          });
+          animateCounter('.stats-card:nth-child(4) .stats-value', Math.max(1, sports.size));
+        }
+        
+        function animateCounter(selector, targetValue) {
+          const element = document.querySelector(selector);
+          if (!element) return;
+          
+          const currentValue = parseInt(element.textContent) || 0;
+          const duration = 800;
+          const steps = 40;
+          const increment = (targetValue - currentValue) / steps;
+          let currentStep = 0;
+          
+          const timer = setInterval(() => {
+            currentStep++;
+            const newValue = Math.floor(currentValue + (increment * currentStep));
+            element.textContent = newValue;
+            
+            if (currentStep >= steps) {
+              clearInterval(timer);
+              element.textContent = targetValue;
+            }
+          }, duration / steps);
+        }
+        
+        function applyFilter() {
+          const activeButton = document.querySelector('.btn-stream-filter.active');
+          const filter = activeButton ? activeButton.getAttribute('data-filter') : 'all';
+          const sport = activeButton ? activeButton.getAttribute('data-sport') : null;
+          
+          streamCards.forEach(function(card) {
             const isLive = card.classList.contains('live-now');
-            const sportName = sportBadge ? sportBadge.textContent.trim().toLowerCase() : '';
+            const sportBadge = card.querySelector('.stream-sport-badge');
+            const sportName = sportBadge ? sportBadge.textContent.toLowerCase() : '';
             
-            let shouldShow = false;
+            let visibleByStatus = true;
+            let visibleBySport = true;
             
-            switch(filterType) {
-              case 'all':
-                shouldShow = true;
-                break;
-                
-              case 'live':
-                shouldShow = isLive;
-                break;
-                
-              case 'upcoming':
-                shouldShow = !isLive;
-                break;
-                
-              case 'football':
-                shouldShow = sportName.includes('sepak') || sportName.includes('bola') || 
-                            sportName.includes('football') || sportName.includes('soccer');
-                break;
-                
-              case 'basketball':
-                shouldShow = sportName.includes('basket') || sportName.includes('bola basket');
-                break;
-                
-              case 'badminton':
-                shouldShow = sportName.includes('bulu') || sportName.includes('badminton');
-                break;
-                
-              case 'tennis':
-                shouldShow = sportName.includes('tenis');
-                break;
-                
-              case 'volleyball':
-                shouldShow = sportName.includes('voli') || sportName.includes('volleyball');
-                break;
-                
-              default:
-                shouldShow = true;
+            // Filter by status
+            if (filter === 'live') {
+              visibleByStatus = isLive;
+            } else if (filter === 'upcoming') {
+              visibleByStatus = !isLive;
             }
             
-            if (shouldShow) {
+            // Filter by sport
+            if (sport === 'football') {
+              visibleBySport = sportName.includes('sepak') || sportName.includes('bola') || 
+                              sportName.includes('football') || sportName.includes('soccer');
+            } else if (sport === 'basketball') {
+              visibleBySport = sportName.includes('basket');
+            } else if (sport === 'badminton') {
+              visibleBySport = sportName.includes('bulu') || sportName.includes('badminton');
+            }
+            
+            if (visibleByStatus && visibleBySport) {
               card.style.display = 'block';
-              // Add animation
-              card.style.opacity = '0';
-              card.style.transform = 'translateY(20px)';
-              
               setTimeout(() => {
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
-                card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
               }, 50);
             } else {
               card.style.opacity = '0';
               card.style.transform = 'translateY(20px)';
-              card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-              
               setTimeout(() => {
                 card.style.display = 'none';
               }, 300);
             }
           });
           
-          // Update live count display
-          updateLiveCount();
-        });
-      });
-      
-      // Function to update live stream count
-      function updateLiveCount() {
-        const visibleCards = document.querySelectorAll('.sporter-livestream-card[style*="display: block"]');
-        const liveCards = Array.from(visibleCards).filter(card => 
-          card.classList.contains('live-now')
-        );
-        
-        const liveCountElement = document.querySelector('#live-count');
-        if (liveCountElement) {
-          liveCountElement.textContent = `${liveCards.length} Sedang Tayang`;
+          setTimeout(updateStreamCount, 350);
         }
         
-        // Update stats cards
-        updateStatsCards(visibleCards.length, liveCards.length);
-      }
-      
-      // Function to update stats cards
-      function updateStatsCards(totalStreams, liveStreams) {
-        // Update total streams
-        const totalStreamsElement = document.querySelector('.live-stats-card:nth-child(2) .live-stats-value');
-        if (totalStreamsElement) {
-          animateCounter(totalStreamsElement, totalStreams);
-        }
-        
-        // Update live streams
-        const liveStreamsElement = document.querySelector('.live-stats-card:nth-child(1) .live-stats-value');
-        if (liveStreamsElement) {
-          animateCounter(liveStreamsElement, liveStreams);
-        }
-        
-        // Update total viewers (estimated)
-        const totalViewers = totalStreams * 1250;
-        const viewersElement = document.querySelector('.live-stats-card:nth-child(3) .live-stats-value');
-        if (viewersElement) {
-          animateCounter(viewersElement, totalViewers);
-        }
-        
-        // Update unique sports count
-        const visibleCards = document.querySelectorAll('.sporter-livestream-card[style*="display: block"]');
-        const sports = new Set();
-        visibleCards.forEach(card => {
-          const sportBadge = card.querySelector('.livestream-sport-badge');
-          if (sportBadge) {
-            sports.add(sportBadge.textContent.trim());
-          }
+        // Event listeners untuk filter
+        filterButtons.forEach(function(button) {
+          button.addEventListener('click', function() {
+            filterButtons.forEach(function(btn) {
+              btn.classList.remove('active');
+            });
+            this.classList.add('active');
+            applyFilter();
+          });
         });
         
-        const sportsElement = document.querySelector('.live-stats-card:nth-child(4) .live-stats-value');
-        if (sportsElement) {
-          animateCounter(sportsElement, sports.size || 1);
-        }
-      }
-      
-      // Function to animate counter
-      function animateCounter(element, targetValue) {
-        const currentValue = parseInt(element.textContent) || 0;
-        const duration = 1000; // 1 second
-        const steps = 60;
-        const increment = (targetValue - currentValue) / steps;
-        let currentStep = 0;
-        
-        const timer = setInterval(() => {
-          currentStep++;
-          const newValue = Math.floor(currentValue + (increment * currentStep));
-          element.textContent = newValue;
-          
-          if (currentStep >= steps) {
-            clearInterval(timer);
-            element.textContent = targetValue;
-          }
-        }, duration / steps);
-      }
-      
-      // Intersection Observer for animations
-      if ('IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              entry.target.style.opacity = '1';
-              entry.target.style.transform = 'translateY(0)';
+        // Add smooth hover effects
+        document.querySelectorAll('.btn-watch-stream').forEach(button => {
+          button.addEventListener('mouseenter', function() {
+            const icon = this.querySelector('i');
+            if (icon) {
+              icon.style.transform = 'scale(1.2)';
+              icon.style.transition = 'transform 0.3s ease';
             }
           });
-        }, {
-          threshold: 0.1,
-          rootMargin: '0px 0px -50px 0px'
-        });
-        
-        // Observe all cards
-        document.querySelectorAll('.sporter-livestream-card, .live-stats-card').forEach(function(card) {
-          card.style.opacity = '0';
-          card.style.transform = 'translateY(30px)';
-          card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-          observer.observe(card);
-        });
-      }
-      
-      // Add hover sound effect (optional)
-      var cards = document.querySelectorAll('.sporter-livestream-card');
-      cards.forEach(function(card) {
-        card.addEventListener('mouseenter', function() {
-          this.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-        });
-      });
-      
-      // Parallax effect for hero background
-      window.addEventListener('scroll', function() {
-        var scrolled = window.scrollY;
-        var hero = document.querySelector('.livestream-hero');
-        if (hero && scrolled < 800) {
-          hero.style.transform = 'translateY(' + (scrolled * 0.5) + 'px)';
-        }
-      });
-      
-      // Real-time simulation for live streams
-      function simulateLiveData() {
-        // Update viewer counts for live streams
-        const liveCards = document.querySelectorAll('.sporter-livestream-card.live-now');
-        liveCards.forEach(card => {
-          const viewerCount = card.querySelector('.viewer-count span');
-          if (viewerCount) {
-            const current = parseInt(viewerCount.textContent) || 100;
-            const change = Math.floor(Math.random() * 50) - 25; // -25 to +25
-            const newCount = Math.max(100, current + change);
-            viewerCount.textContent = newCount;
-            
-            // Update viewer stats
-            const statsItem = card.querySelector('.livestream-stat-item:nth-child(1) .livestream-stat-value');
-            if (statsItem) {
-              statsItem.textContent = newCount;
+          
+          button.addEventListener('mouseleave', function() {
+            const icon = this.querySelector('i');
+            if (icon) {
+              icon.style.transform = 'scale(1)';
             }
-          }
+          });
         });
         
-        // Update live chat numbers
-        const chatElements = document.querySelectorAll('.livestream-stat-item:nth-child(2) .livestream-stat-value');
-        chatElements.forEach(element => {
-          const current = parseInt(element.textContent) || 50;
-          const change = Math.floor(Math.random() * 10) - 5; // -5 to +5
-          const newCount = Math.max(0, current + change);
-          element.textContent = newCount;
-        });
-        
-        // Update like counts
-        const likeElements = document.querySelectorAll('.livestream-stat-item:nth-child(3) .livestream-stat-value');
-        likeElements.forEach(element => {
-          const current = parseInt(element.textContent) || 10;
-          const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
-          const newCount = Math.max(0, current + change);
-          element.textContent = newCount;
-        });
-      }
-      
-      // Start simulation if there are live streams
-      const hasLiveStreams = document.querySelectorAll('.sporter-livestream-card.live-now').length > 0;
-      if (hasLiveStreams) {
-        setInterval(simulateLiveData, 5000); // Update every 5 seconds
-        
-        // Add real-time notification
-        const liveIndicator = document.querySelector('.live-indicator');
-        if (liveIndicator) {
-          setInterval(() => {
-            liveIndicator.classList.toggle('pulse');
-          }, 2000);
-        }
-      }
-      
-      // Initialize tooltips
-      if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-          return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-      }
-      
-      // Add keyboard navigation for filters
-      document.addEventListener('keydown', function(e) {
-        const activeButton = document.querySelector('.btn-stream-filter.active');
-        const buttons = document.querySelectorAll('.btn-stream-filter');
-        const currentIndex = Array.from(buttons).indexOf(activeButton);
-        
-        if (e.key === 'ArrowLeft' && currentIndex > 0) {
-          e.preventDefault();
-          buttons[currentIndex - 1].click();
-        } else if (e.key === 'ArrowRight' && currentIndex < buttons.length - 1) {
-          e.preventDefault();
-          buttons[currentIndex + 1].click();
-        } else if (e.key === 'Home') {
-          e.preventDefault();
-          buttons[0].click();
-        } else if (e.key === 'End') {
-          e.preventDefault();
-          buttons[buttons.length - 1].click();
-        }
-      });
-      
-      // Add click outside to close filter menu (if needed)
-      document.addEventListener('click', function(e) {
-        if (!e.target.closest('.stream-filter-container')) {
-          // Optional: Add behavior when clicking outside filter area
-        }
-      });
-      
-      // Initialize live count on page load
-      updateLiveCount();
-      
-      // Add animation class for featured stream
-      const featuredStream = document.querySelector('.featured-livestream');
-      if (featuredStream) {
-        featuredStream.addEventListener('mouseenter', function() {
-          this.style.transform = 'scale(1.01)';
-          this.style.transition = 'transform 0.3s ease';
-        });
-        
-        featuredStream.addEventListener('mouseleave', function() {
-          this.style.transform = 'scale(1)';
-        });
-      }
-      
-      // Add loading animation for stream thumbnails
-      document.querySelectorAll('.livestream-thumbnail img').forEach(img => {
-        img.addEventListener('load', function() {
-          this.parentElement.classList.add('loaded');
-        });
-        
-        // Fallback if image fails to load
-        img.addEventListener('error', function() {
-          this.style.display = 'none';
-          const parent = this.parentElement;
-          const fallback = document.createElement('div');
-          fallback.className = 'livestream-fallback';
-          fallback.innerHTML = '<i class="bi bi-broadcast"></i>';
-          parent.appendChild(fallback);
-        });
-      });
-      
-      // Add share functionality
-      document.querySelectorAll('.sporter-livestream-card .btn-primary').forEach(button => {
-        button.addEventListener('click', function(e) {
-          if (!this.href) {
-            e.preventDefault();
-            const card = this.closest('.sporter-livestream-card');
-            const title = card.querySelector('h5').textContent;
-            const sport = card.querySelector('.livestream-sport-badge').textContent;
+        // Simulate real-time updates for live streams
+        function simulateLiveUpdates() {
+          const liveCards = document.querySelectorAll('.sporter-stream-card.live-now');
+          liveCards.forEach(card => {
+            const viewerElement = card.querySelector('.viewer-count-badge');
+            if (viewerElement) {
+              const current = parseInt(viewerElement.textContent) || 100;
+              const change = Math.floor(Math.random() * 20) - 10;
+              const newCount = Math.max(50, current + change);
+              viewerElement.innerHTML = `<i class="bi bi-eye me-1"></i>${newCount}`;
+            }
             
-            // Simulate share dialog
-            alert(`Bagikan siaran "${title}" - ${sport}\n\nURL akan tersedia saat siaran dimulai.`);
+            // Update stats
+            const statElements = card.querySelectorAll('.stream-stat-value');
+            if (statElements.length >= 3) {
+              // Viewers
+              const viewers = parseInt(statElements[0].textContent) || 100;
+              statElements[0].textContent = Math.max(50, viewers + Math.floor(Math.random() * 10) - 5);
+              
+              // Chat
+              const chat = parseInt(statElements[1].textContent) || 50;
+              statElements[1].textContent = Math.max(10, chat + Math.floor(Math.random() * 5) - 2);
+              
+              // Likes
+              const likes = parseInt(statElements[2].textContent) || 10;
+              statElements[2].textContent = Math.max(5, likes + Math.floor(Math.random() * 3) - 1);
+            }
+          });
+          
+          // Update featured stream stats
+          const featuredStats = document.querySelectorAll('.stream-detail-value');
+          if (featuredStats.length >= 3) {
+            featuredStats[0].textContent = parseInt(featuredStats[0].textContent) + Math.floor(Math.random() * 50) - 25;
+            featuredStats[1].textContent = parseInt(featuredStats[1].textContent) + Math.floor(Math.random() * 20) - 10;
+            featuredStats[2].textContent = parseInt(featuredStats[2].textContent) + Math.floor(Math.random() * 10) - 5;
           }
-        });
+        }
+        
+        // Start simulation if there are live streams
+        if (document.querySelectorAll('.sporter-stream-card.live-now').length > 0) {
+          setInterval(simulateLiveUpdates, 5000);
+        }
+        
+        // Initialize dengan filter aktif
+        applyFilter();
       });
     })();
-    
-    // Add CSS for additional animations
-    const style = document.createElement('style');
-    style.textContent = `
-      .livestream-thumbnail img {
-        transition: opacity 0.5s ease;
-      }
-      
-      .livestream-thumbnail img:not(.loaded) {
-        opacity: 0;
-      }
-      
-      .livestream-thumbnail.loaded img {
-        opacity: 1;
-      }
-      
-      .livestream-fallback {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      }
-      
-      .livestream-fallback i {
-        font-size: 3rem;
-        color: white;
-      }
-      
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateX(-20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-      
-      .stream-filter-container {
-        animation: slideIn 0.5s ease-out;
-      }
-      
-      .btn-stream-filter:focus {
-        outline: 2px solid #0095FF;
-        outline-offset: 2px;
-      }
-      
-      @media (prefers-reduced-motion: reduce) {
-        .sporter-livestream-card,
-        .live-stats-card,
-        .btn-stream-filter {
-          transition: none !important;
-          animation: none !important;
-        }
-      }
-    `;
-    
-    document.head.appendChild(style);

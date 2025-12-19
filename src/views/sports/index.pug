@@ -2,363 +2,193 @@ extends ../layout/main
 
 block content
   style.
-    /* Sports Page Styles - Improved Layout */
+    /* Sports Page Styles */
     .sports-hero {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      border-radius: 28px;
-      padding: 4rem 3rem;
-      margin-bottom: 4rem;
-      box-shadow: 0 20px 60px rgba(0, 149, 255, 0.3);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 10px 40px rgba(0, 149, 255, 0.25);
       position: relative;
       overflow: hidden;
-      animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-      min-height: 400px;
-      display: flex;
-      align-items: center;
+      animation: fadeInUp 0.6s ease-out;
     }
     
     .sports-hero::before {
       content: '';
       position: absolute;
-      top: -40%;
-      right: -15%;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
       border-radius: 50%;
-      animation: float 8s ease-in-out infinite;
-      filter: blur(40px);
+      animation: float 6s ease-in-out infinite;
     }
     
     .sports-hero::after {
       content: '';
       position: absolute;
-      bottom: -40%;
-      left: -10%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      bottom: -30%;
+      left: -5%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
       border-radius: 50%;
-      animation: float 10s ease-in-out infinite reverse;
-      filter: blur(30px);
+      animation: float 8s ease-in-out infinite reverse;
     }
     
     @keyframes float {
       0%, 100% {
-        transform: translate(0, 0) rotate(0deg) scale(1);
+        transform: translate(0, 0) rotate(0deg);
       }
-      33% {
-        transform: translate(40px, -40px) rotate(15deg) scale(1.1);
-      }
-      66% {
-        transform: translate(-20px, 30px) rotate(-10deg) scale(0.95);
+      50% {
+        transform: translate(30px, -30px) rotate(10deg);
       }
     }
     
     @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(40px) scale(0.98);
+        transform: translateY(30px);
       }
       to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
       }
     }
     
     .hero-content {
       position: relative;
-      z-index: 3;
-      max-width: 700px;
+      z-index: 2;
     }
     
-    .hero-icon-wrapper {
-      width: 100px;
-      height: 100px;
-      background: rgba(255, 255, 255, 0.25);
-      border-radius: 24px;
+    .hero-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 2rem;
-      backdrop-filter: blur(20px);
-      border: 3px solid rgba(255, 255, 255, 0.4);
-      animation: bounce 3s ease-in-out infinite;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .hero-icon-wrapper::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
-      transform: translateX(-100%);
-      transition: transform 0.8s ease;
-    }
-    
-    .hero-icon-wrapper:hover::before {
-      transform: translateX(100%);
+      font-size: 2.5rem;
+      color: white;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      animation: bounce 2s infinite;
     }
     
     @keyframes bounce {
       0%, 100% {
-        transform: translateY(0) rotate(0deg);
-      }
-      25% {
-        transform: translateY(-15px) rotate(5deg);
+        transform: translateY(0);
       }
       50% {
-        transform: translateY(5px) rotate(-5deg);
+        transform: translateY(-10px);
       }
-      75% {
-        transform: translateY(-8px) rotate(3deg);
-      }
-    }
-    
-    .hero-icon {
-      font-size: 3.2rem;
-      color: white;
-      position: relative;
-      z-index: 1;
     }
     
     .hero-title {
       font-family: 'Bebas Neue', cursive;
-      font-size: 3.5rem;
+      font-size: 3rem;
       color: white;
-      margin-bottom: 1.5rem;
-      letter-spacing: 2.5px;
-      text-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
-      line-height: 1.1;
-      position: relative;
-    }
-    
-    .hero-title::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 0;
-      width: 80px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.5);
-      border-radius: 4px;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
     
     .hero-subtitle {
       color: rgba(255, 255, 255, 0.95);
-      font-size: 1.2rem;
-      margin-bottom: 2.5rem;
-      line-height: 1.7;
-      max-width: 600px;
-      font-weight: 400;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
     }
     
     .hero-badges {
       display: flex;
-      gap: 1rem;
+      gap: 0.75rem;
       flex-wrap: wrap;
     }
     
     .hero-badge {
       background: rgba(255, 255, 255, 0.25);
       color: white;
-      padding: 0.8rem 1.5rem;
-      border-radius: 25px;
+      padding: 0.6rem 1.2rem;
+      border-radius: 20px;
       font-weight: 600;
-      font-size: 1rem;
-      backdrop-filter: blur(20px);
-      border: 2px solid rgba(255, 255, 255, 0.35);
+      font-size: 0.9rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       display: inline-flex;
       align-items: center;
-      gap: 0.7rem;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .hero-badge::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
-      transform: translateX(-100%);
-      transition: transform 0.6s ease;
-    }
-    
-    .hero-badge:hover::before {
-      transform: translateX(100%);
+      gap: 0.5rem;
+      transition: all 0.3s ease;
     }
     
     .hero-badge:hover {
       background: rgba(255, 255, 255, 0.35);
-      transform: translateY(-5px) scale(1.05);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
     
     .hero-badge i {
-      font-size: 1.2rem;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .hero-badge span {
-      position: relative;
-      z-index: 1;
+      font-size: 1.1rem;
     }
     
     .hero-illustration {
-      position: absolute;
-      right: 40px;
-      bottom: 0;
-      animation: float 6s ease-in-out infinite;
-      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
-      opacity: 0.4;
-      z-index: 2;
+      animation: float 3s ease-in-out infinite;
     }
     
     /* Stats Section */
     .stats-section {
       background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
-      border-radius: 24px;
-      padding: 3rem;
-      margin-bottom: 4rem;
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 3rem;
       color: white;
-      animation: fadeInUp 0.8s ease-out 0.2s backwards;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 15px 40px rgba(11, 31, 63, 0.3);
-    }
-    
-    .stats-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      animation: fadeInUp 0.6s ease-out 0.2s backwards;
     }
     
     .stat-item {
       text-align: center;
-      padding: 1.5rem;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .stat-item::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, transparent 100%);
-      border-radius: 20px;
-      transform: scale(0.95);
-      opacity: 0;
-      transition: all 0.4s ease;
-    }
-    
-    .stat-item:hover::before {
-      opacity: 1;
-      transform: scale(1);
+      padding: 1rem;
     }
     
     .stat-number {
       font-family: 'Bebas Neue', cursive;
-      font-size: 3rem;
+      font-size: 2.5rem;
       color: #0095FF;
-      margin-bottom: 0.75rem;
-      letter-spacing: 1.5px;
-      line-height: 1;
-      text-shadow: 0 4px 10px rgba(0, 149, 255, 0.3);
-      transition: all 0.3s ease;
-    }
-    
-    .stat-item:hover .stat-number {
-      transform: scale(1.1);
-      color: #34C7FF;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
     }
     
     .stat-label {
-      color: rgba(255, 255, 255, 0.85);
-      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
       font-weight: 500;
-      transition: all 0.3s ease;
     }
     
-    .stat-item:hover .stat-label {
-      color: white;
-      transform: translateY(5px);
-    }
-    
-    /* Sports Grid Layout */
-    .sports-grid-header {
-      margin-bottom: 2.5rem;
-      animation: fadeInUp 0.6s ease-out;
-    }
-    
-    .sports-grid-title {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
-      color: #0B1F3F;
-      letter-spacing: 2px;
-      margin-bottom: 0.5rem;
-      position: relative;
-      display: inline-block;
-    }
-    
-    .sports-grid-title::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 0;
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
-      border-radius: 3px;
-    }
-    
-    .sports-grid-subtitle {
-      color: #5a6c7d;
-      font-size: 1.1rem;
-      margin-bottom: 0;
-    }
-    
-    /* Sports Card - Improved */
+    /* Sports Card */
     .sport-card {
       background: white;
       border: 2px solid #e8edf2;
-      border-radius: 24px;
-      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-radius: 20px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       overflow: hidden;
       height: 100%;
       position: relative;
       cursor: pointer;
-      animation: fadeInScale 0.6s ease-out backwards;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      animation: fadeInScale 0.5s ease-out backwards;
     }
     
     @keyframes fadeInScale {
       from {
         opacity: 0;
-        transform: scale(0.95) translateY(20px);
+        transform: scale(0.9);
       }
       to {
         opacity: 1;
-        transform: scale(1) translateY(0);
+        transform: scale(1);
       }
     }
     
@@ -368,93 +198,45 @@ block content
       top: 0;
       left: 0;
       right: 0;
-      height: 6px;
+      height: 5px;
       background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
       transform: scaleX(0);
-      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transform-origin: left;
-      z-index: 2;
+      transition: transform 0.4s ease;
     }
     
     .sport-card:hover::before {
       transform: scaleX(1);
     }
     
-    .sport-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(0, 149, 255, 0.05) 0%, transparent 100%);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-    
-    .sport-card:hover::after {
-      opacity: 1;
-    }
-    
     .sport-card:hover {
-      transform: translateY(-15px) scale(1.03);
+      transform: translateY(-12px);
       border-color: #0095FF;
-      box-shadow: 0 25px 50px rgba(0, 149, 255, 0.2);
-    }
-    
-    .sport-card-body {
-      padding: 2.5rem;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      z-index: 1;
+      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.2);
     }
     
     .sport-icon-wrapper {
-      width: 90px;
-      height: 90px;
+      width: 70px;
+      height: 70px;
       background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
-      border-radius: 22px;
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 2rem;
-      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      margin-bottom: 1.5rem;
+      transition: all 0.4s ease;
       border: 2px solid #d6edff;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .sport-icon-wrapper::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 100%);
-      transform: translateX(-100%);
-      transition: transform 0.8s ease;
-    }
-    
-    .sport-card:hover .sport-icon-wrapper::before {
-      transform: translateX(100%);
     }
     
     .sport-card:hover .sport-icon-wrapper {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      transform: rotate(15deg) scale(1.15);
+      transform: rotate(10deg) scale(1.1);
       border-color: #0095FF;
-      box-shadow: 0 15px 30px rgba(0, 149, 255, 0.3);
     }
     
     .sport-icon {
-      font-size: 2.5rem;
+      font-size: 2rem;
       color: #0095FF;
-      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-      position: relative;
-      z-index: 1;
+      transition: all 0.4s ease;
     }
     
     .sport-card:hover .sport-icon {
@@ -464,13 +246,11 @@ block content
     
     .sport-name {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
+      font-size: 1.8rem;
       color: #0B1F3F;
-      margin-bottom: 1rem;
-      letter-spacing: 1.5px;
-      transition: color 0.4s ease;
-      line-height: 1.2;
-      min-height: 2.4rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
     }
     
     .sport-card:hover .sport-name {
@@ -479,338 +259,113 @@ block content
     
     .sport-description {
       color: #5a6c7d;
-      font-size: 1rem;
-      line-height: 1.7;
-      margin-bottom: 2rem;
-      flex-grow: 1;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      min-height: 60px;
     }
     
     .sport-action {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
+      gap: 0.5rem;
       color: #0095FF;
       font-weight: 600;
-      font-size: 1rem;
-      padding: 0.8rem 1.5rem;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      font-size: 0.95rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      background: #f0f8ff;
       border: 2px solid #d6edff;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .sport-action::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
-      transform: translateX(-100%);
-      transition: transform 0.6s ease;
-    }
-    
-    .sport-card:hover .sport-action::before {
-      transform: translateX(100%);
+      transition: all 0.3s ease;
     }
     
     .sport-card:hover .sport-action {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       color: white;
       border-color: #0095FF;
-      transform: translateX(10px);
-      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.3);
+      transform: translateX(5px);
     }
     
     .sport-action i {
-      font-size: 1.3rem;
-      transition: transform 0.4s ease;
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
     }
     
     .sport-card:hover .sport-action i {
-      transform: translateX(8px);
+      transform: translateX(5px);
     }
     
-    /* Empty State - Improved */
+    /* Empty State */
     .empty-state {
       background: white;
-      border: 3px dashed #e0e0e0;
-      border-radius: 28px;
-      padding: 5rem 3rem;
+      border: 2px dashed #d0d0d0;
+      border-radius: 24px;
+      padding: 4rem 2rem;
       text-align: center;
-      animation: fadeInUp 0.8s ease-out;
-      position: relative;
-      overflow: hidden;
-      margin: 2rem 0;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
-    }
-    
-    .empty-state::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent 30%, rgba(0, 149, 255, 0.05) 50%, transparent 70%);
-      animation: shimmer 4s infinite;
-    }
-    
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      animation: fadeInUp 0.6s ease-out;
     }
     
     .empty-icon {
-      width: 150px;
-      height: 150px;
+      width: 120px;
+      height: 120px;
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 2.5rem;
-      animation: float 4s ease-in-out infinite;
-      position: relative;
-      z-index: 1;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+      margin: 0 auto 2rem;
+      animation: float 3s ease-in-out infinite;
     }
     
     .empty-icon i {
-      font-size: 4.5rem;
-      background: linear-gradient(135deg, #adb5bd 0%, #868e96 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: 4rem;
+      color: #adb5bd;
     }
     
     .empty-title {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
+      font-size: 2rem;
       color: #0B1F3F;
-      margin-bottom: 1.5rem;
-      letter-spacing: 1.5px;
-      position: relative;
-      z-index: 1;
+      margin-bottom: 1rem;
+      letter-spacing: 1px;
     }
     
     .empty-text {
       color: #5a6c7d;
-      font-size: 1.15rem;
-      margin-bottom: 3rem;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.7;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .empty-actions {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      position: relative;
-      z-index: 1;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
     }
     
     .empty-action {
       display: inline-flex;
       align-items: center;
-      gap: 0.8rem;
-      padding: 0.9rem 2rem;
-      border-radius: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      border: 2px solid transparent;
-    }
-    
-    .empty-action-primary {
+      gap: 0.5rem;
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       color: white;
-      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.3);
-    }
-    
-    .empty-action-secondary {
-      background: white;
-      color: #0095FF;
-      border-color: #d6edff;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
     }
     
     .empty-action:hover {
-      transform: translateY(-5px) scale(1.05);
-    }
-    
-    .empty-action-primary:hover {
-      box-shadow: 0 12px 35px rgba(0, 149, 255, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
       color: white;
     }
     
-    .empty-action-secondary:hover {
-      border-color: #0095FF;
-      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
-    }
-    
-    /* Layout Enhancements */
-    .sports-layout {
-      display: flex;
-      flex-direction: column;
-      gap: 3rem;
-    }
-    
-    .sports-main-content {
-      flex: 1;
-    }
-    
-    /* Responsive Design */
-    @media (max-width: 1200px) {
-      .hero-title {
-        font-size: 3rem;
-      }
-      
-      .sport-name {
-        font-size: 1.8rem;
-      }
-    }
-    
+    /* Responsive */
     @media (max-width: 991px) {
-      .sports-hero {
-        padding: 3rem 2rem;
-        min-height: 350px;
-      }
-      
       .hero-title {
         font-size: 2.5rem;
       }
       
-      .hero-icon-wrapper {
-        width: 85px;
-        height: 85px;
-        margin-bottom: 1.5rem;
-      }
-      
       .hero-icon {
-        font-size: 2.8rem;
-      }
-      
-      .hero-subtitle {
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-      }
-      
-      .hero-badge {
-        padding: 0.7rem 1.3rem;
-        font-size: 0.95rem;
-      }
-      
-      .sports-grid-title {
-        font-size: 2.2rem;
-      }
-      
-      .stats-section {
-        padding: 2.5rem;
-      }
-      
-      .stat-number {
-        font-size: 2.5rem;
-      }
-      
-      .sport-card-body {
-        padding: 2rem;
-      }
-      
-      .sport-icon-wrapper {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 1.5rem;
-      }
-      
-      .sport-icon {
-        font-size: 2.2rem;
-      }
-    }
-    
-    @media (max-width: 767px) {
-      .sports-hero {
-        padding: 2.5rem 1.5rem;
-        border-radius: 24px;
-        margin-bottom: 3rem;
-      }
-      
-      .hero-title {
-        font-size: 2.2rem;
-      }
-      
-      .hero-subtitle {
-        font-size: 1rem;
-        margin-bottom: 1.5rem;
-      }
-      
-      .hero-icon-wrapper {
-        width: 75px;
-        height: 75px;
-      }
-      
-      .hero-icon {
-        font-size: 2.5rem;
-      }
-      
-      .hero-badges {
-        justify-content: center;
-        gap: 0.75rem;
-      }
-      
-      .hero-badge {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
-      }
-      
-      .hero-illustration {
-        display: none;
-      }
-      
-      .stats-section {
-        padding: 2rem;
-        border-radius: 20px;
-        margin-bottom: 3rem;
-      }
-      
-      .stat-item {
-        padding: 1rem;
-      }
-      
-      .stat-number {
-        font-size: 2.2rem;
-      }
-      
-      .sports-grid-title {
-        font-size: 1.9rem;
-      }
-      
-      .sports-grid-subtitle {
-        font-size: 1rem;
-      }
-      
-      .sport-card-body {
-        padding: 1.8rem;
-      }
-      
-      .sport-icon-wrapper {
-        width: 75px;
-        height: 75px;
-      }
-      
-      .sport-icon {
+        width: 70px;
+        height: 70px;
         font-size: 2rem;
       }
       
@@ -818,112 +373,100 @@ block content
         font-size: 1.6rem;
       }
       
-      .sport-description {
-        font-size: 0.95rem;
-        min-height: auto;
-      }
-      
-      .empty-state {
-        padding: 4rem 2rem;
-        border-radius: 24px;
-      }
-      
-      .empty-icon {
-        width: 130px;
-        height: 130px;
-      }
-      
-      .empty-icon i {
-        font-size: 4rem;
-      }
-      
-      .empty-title {
-        font-size: 2rem;
-      }
-      
-      .empty-text {
-        font-size: 1rem;
-      }
-      
-      .empty-actions {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .empty-action {
-        width: 100%;
-        max-width: 300px;
-        justify-content: center;
+      .stats-section {
+        padding: 1.5rem;
       }
     }
     
-    @media (max-width: 575px) {
-      .hero-title {
-        font-size: 1.9rem;
+    @media (max-width: 767px) {
+      .sports-hero {
+        padding: 2rem 1.5rem;
       }
       
-      .hero-badge {
-        width: 100%;
+      .hero-title {
+        font-size: 2rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+      
+      .hero-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
+      
+      .hero-badges {
         justify-content: center;
+      }
+      
+      .sport-icon-wrapper {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .sport-icon {
+        font-size: 1.6rem;
+      }
+      
+      .sport-name {
+        font-size: 1.4rem;
+      }
+      
+      .sport-description {
+        min-height: auto;
+      }
+      
+      .empty-icon {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .empty-icon i {
+        font-size: 3rem;
+      }
+      
+      .empty-title {
+        font-size: 1.6rem;
       }
       
       .stat-number {
         font-size: 2rem;
       }
-      
-      .sport-name {
-        font-size: 1.5rem;
-        min-height: 2rem;
-      }
-      
-      .sport-action {
-        padding: 0.7rem 1.2rem;
-      }
     }
-    
-    /* Animation delays for stagger effect */
-    .sport-card:nth-child(1) { animation-delay: 0.1s; }
-    .sport-card:nth-child(2) { animation-delay: 0.2s; }
-    .sport-card:nth-child(3) { animation-delay: 0.3s; }
-    .sport-card:nth-child(4) { animation-delay: 0.4s; }
-    .sport-card:nth-child(5) { animation-delay: 0.5s; }
-    .sport-card:nth-child(6) { animation-delay: 0.6s; }
-    .sport-card:nth-child(7) { animation-delay: 0.7s; }
-    .sport-card:nth-child(8) { animation-delay: 0.8s; }
 
   .container
-    //- Sports Hero Section
+    //- Hero Section
     .sports-hero
       .hero-content
         .row.align-items-center
           .col-lg-8
-            .hero-icon-wrapper
-              i.hero-icon.bi.bi-trophy-fill
+            .hero-icon
+              i.bi.bi-trophy-fill
             h1.hero-title Cabang Olahraga
             p.hero-subtitle
-              | Temukan berbagai cabang olahraga yang tersedia di platform SPORTER. Setiap cabang menawarkan pengalaman unik dengan event, jadwal pertandingan, skor live, dan konten eksklusif untuk penggemar olahraga Indonesia.
+              | Jelajahi berbagai cabang olahraga yang tersedia di SPORTER. Pilih olahraga favoritmu untuk melihat event, jadwal pertandingan, skor terkini, dan berita terbaru.
             .hero-badges
               .hero-badge
                 i.bi.bi-lightning-charge-fill
                 span Multi Sports Platform
               .hero-badge
                 i.bi.bi-geo-alt-fill
-                span Coverage Nasional
+                span Indonesia
               .hero-badge
                 i.bi.bi-people-fill
                 span 10,000+ Atlet
-              .hero-badge
-                i.bi.bi-calendar-event
-                span Jadwal Real-time
           
           .col-lg-4.text-center.d-none.d-lg-block
             .hero-illustration
-              i.bi.bi-dribbble(style="font-size: 10rem; color: rgba(255, 255, 255, 0.15);")
+              i.bi.bi-dribbble(style="font-size: 8rem; color: rgba(255, 255, 255, 0.2);")
 
     //- Stats Section
     if sports && sports.length
       .stats-section
-        .row.g-0
+        .row.g-4
           .col-6.col-md-3
             .stat-item
               .stat-number= sports.length
@@ -935,183 +478,99 @@ block content
           .col-6.col-md-3
             .stat-item
               .stat-number 10K+
-              .stat-label Pengguna Aktif
+              .stat-label Pengguna
           .col-6.col-md-3
             .stat-item
-              .stat-number 200+
+              .stat-number 100+
               .stat-label Tim Terdaftar
 
     //- Sports Grid
-    .sports-layout
-      .sports-main-content
-        .sports-grid-header
-          h2.sports-grid-title Pilih Cabang Olahraga
-          p.sports-grid-subtitle Klik pada cabang olahraga untuk melihat informasi lengkap dan event terkini.
-        
-        if sports && sports.length
-          .row.g-4.gy-5
-            each s, index in sports
-              .col-md-6.col-lg-4.col-xl-3
-                a.text-decoration-none(href=`/sports/${s.slug || s.id}`)
-                  .sport-card(style=`animation-delay: ${index * 0.1}s;`)
-                    .sport-card-body
-                      .sport-icon-wrapper
-                        i.sport-icon(class=s.icon || 'bi bi-dribbble')
-                      h3.sport-name= s.name
-                      if s.description
-                        p.sport-description= s.description.length > 120 ? s.description.substring(0, 120) + '...' : s.description
-                      else
-                        p.sport-description Cabang olahraga resmi di SPORTER dengan jadwal teratur, kompetisi berkala, dan berita terkini.
-                      .sport-action
-                        span Jelajahi Sekarang
-                        i.bi.bi-arrow-right-short
-        else
-          //- Empty State
-          .empty-state
-            .empty-icon
-              i.bi.bi-inbox
-            h2.empty-title Belum Ada Cabang Olahraga
-            p.empty-text
-              | Platform SPORTER sedang dalam proses pengembangan database cabang olahraga. 
-              | Kami akan segera menghadirkan berbagai cabang olahraga untuk Anda jelajahi.
-            .empty-actions
-              a.empty-action.empty-action-primary(href="/contact")
-                i.bi.bi-envelope-fill.me-2
-                span Hubungi Admin
-              a.empty-action.empty-action-secondary(href="/")
-                i.bi.bi-house-fill.me-2
-                span Kembali ke Beranda
+    if sports && sports.length
+      .row.g-4
+        each s, index in sports
+          .col-md-6.col-lg-4.col-xl-3(style=`animation-delay: ${index * 0.1}s;`)
+            a.text-decoration-none(href=`/sports/${s.slug}`)
+              .sport-card
+                .card-body.p-4.d-flex.flex-column
+                  .sport-icon-wrapper
+                    i.sport-icon(class=s.icon || 'bi-dribbble')
+                  h3.sport-name= s.name
+                  if s.description
+                    p.sport-description= s.description
+                  else
+                    p.sport-description Cabang olahraga resmi di SPORTER. Ikuti event, kompetisi, dan berita terkini.
+                  .mt-auto
+                    .sport-action
+                      span Lihat Detail
+                      i.bi.bi-arrow-right
+    else
+      //- Empty State
+      .empty-state
+        .empty-icon
+          i.bi.bi-inbox
+        h2.empty-title Belum Ada Cabang Olahraga
+        p.empty-text
+          | Saat ini belum ada cabang olahraga yang tersedia.
+          br
+          | Silakan hubungi admin untuk menambahkan cabang olahraga baru.
+        a.empty-action(href="/contact")
+          i.bi.bi-envelope-fill
+          span Hubungi Admin
 
   //- Custom JavaScript
   script.
     (function() {
-      // Stagger animation for cards
-      var sportCards = document.querySelectorAll('.sport-card');
-      sportCards.forEach(function(card, index) {
+      // Add stagger animation delay
+      var cards = document.querySelectorAll('.sport-card');
+      cards.forEach(function(card, index) {
         card.style.animationDelay = (index * 0.1) + 's';
       });
       
-      // Enhanced parallax effect
+      // Parallax effect for hero
       window.addEventListener('scroll', function() {
         var hero = document.querySelector('.sports-hero');
-        var illustration = document.querySelector('.hero-illustration');
-        
         if (hero) {
-          var scrolled = window.pageYOffset || document.documentElement.scrollTop;
-          if (scrolled < 800) {
-            var heroParallax = scrolled * 0.25;
-            hero.style.transform = 'translateY(' + heroParallax + 'px)';
-            
-            if (illustration) {
-              var illustrationParallax = scrolled * 0.1;
-              illustration.style.transform = 'translateY(' + illustrationParallax + 'px) rotate(' + (scrolled * 0.05) + 'deg)';
-            }
+          var scrolled = window.scrollY;
+          if (scrolled < 600) {
+            hero.style.transform = 'translateY(' + (scrolled * 0.3) + 'px)';
+            hero.style.opacity = 1 - (scrolled * 0.002);
           }
         }
       });
       
-      // Click analytics with animation
-      sportCards.forEach(function(card) {
-        card.addEventListener('click', function(e) {
+      // Add click analytics (optional)
+      cards.forEach(function(card) {
+        card.addEventListener('click', function() {
           var sportName = this.querySelector('.sport-name');
           if (sportName) {
-            // Add click animation
-            this.style.transform = 'translateY(-15px) scale(1.03)';
-            setTimeout(() => {
-              this.style.transform = '';
-            }, 300);
-            
-            // Analytics (optional)
-            console.log('Sport selected:', sportName.textContent);
+            console.log('Sport clicked:', sportName.textContent);
           }
         });
       });
       
       // Intersection Observer for scroll animations
       if ('IntersectionObserver' in window) {
-        var observerOptions = {
-          threshold: 0.1,
-          rootMargin: '0px 0px -50px 0px'
-        };
-        
-        var cardObserver = new IntersectionObserver(function(entries) {
+        var observer = new IntersectionObserver(function(entries) {
           entries.forEach(function(entry) {
             if (entry.isIntersecting) {
               entry.target.style.opacity = '1';
-              entry.target.style.transform = 'translateY(0) scale(1)';
-              
-              // Add glow effect
-              entry.target.style.boxShadow = '0 25px 50px rgba(0, 149, 255, 0.15)';
-              setTimeout(() => {
-                if (entry.target.style.boxShadow.includes('0 25px 50px')) {
-                  entry.target.style.boxShadow = '';
-                }
-              }, 1000);
+              entry.target.style.transform = 'translateY(0)';
             }
           });
-        }, observerOptions);
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        });
         
         // Observe cards
-        sportCards.forEach(function(card) {
-          cardObserver.observe(card);
+        cards.forEach(function(card) {
+          observer.observe(card);
         });
         
         // Observe stats section
         var statsSection = document.querySelector('.stats-section');
         if (statsSection) {
-          var statsObserver = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-              if (entry.isIntersecting) {
-                // Animate stat numbers
-                var statNumbers = entry.target.querySelectorAll('.stat-number');
-                statNumbers.forEach(function(stat, index) {
-                  setTimeout(function() {
-                    var originalText = stat.textContent;
-                    if (!originalText.includes('+') && !isNaN(parseInt(originalText))) {
-                      var finalValue = parseInt(originalText);
-                      var startValue = 0;
-                      var duration = 1500;
-                      var startTime = null;
-                      
-                      function animateNumber(currentTime) {
-                        if (!startTime) startTime = currentTime;
-                        var progress = currentTime - startTime;
-                        var percentage = Math.min(progress / duration, 1);
-                        
-                        // Easing function
-                        var easeOutCubic = 1 - Math.pow(1 - percentage, 3);
-                        var currentValue = Math.floor(easeOutCubic * finalValue);
-                        
-                        stat.textContent = currentValue;
-                        
-                        if (percentage < 1) {
-                          requestAnimationFrame(animateNumber);
-                        } else {
-                          stat.textContent = originalText;
-                        }
-                      }
-                      
-                      requestAnimationFrame(animateNumber);
-                    }
-                  }, index * 300);
-                });
-              }
-            });
-          }, { threshold: 0.5 });
-          
-          statsObserver.observe(statsSection);
+          observer.observe(statsSection);
         }
       }
-      
-      // Hover sound effect simulation (optional)
-      sportCards.forEach(function(card) {
-        card.addEventListener('mouseenter', function() {
-          this.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
-          this.style.zIndex = '10';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-          this.style.zIndex = '1';
-        });
-      });
     })();
