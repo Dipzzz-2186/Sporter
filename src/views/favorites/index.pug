@@ -1,0 +1,50 @@
+extends ../layout/main
+
+block content
+  style.
+    .fav-page { background: linear-gradient(135deg,#f5f8fa 0%,#e9eef3 100%); min-height:100vh; padding:2.5rem 0; }
+    .wrap { background:#fff; border:2px solid #e8edf2; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,.06); padding:2rem; }
+    .titlex { font-family:'Bebas Neue',cursive; font-size:2.3rem; letter-spacing:1px; color:#0B1F3F; margin:0 0 .25rem; }
+    .sub { color:#5a6c7d; margin-bottom:1.5rem; }
+    .item { border:2px solid #e8edf2; border-radius:16px; padding:1rem 1.25rem; background:#fff; transition:.2s; }
+    .item:hover { transform: translateY(-2px); box-shadow:0 10px 25px rgba(0,0,0,.06); }
+    .meta { color:#5a6c7d; font-size:.95rem; display:flex; gap:1rem; flex-wrap:wrap; }
+    .btnx { background: linear-gradient(135deg,#0095FF 0%,#34C7FF 100%); color:#fff; border:none; border-radius:12px; padding:.6rem 1rem; font-weight:700; text-decoration:none; display:inline-flex; gap:.5rem; align-items:center; }
+    .btnx:hover { opacity:.95; color:#fff; }
+
+  .fav-page
+    .container
+      .wrap
+        h1.titlex Disimpan (Favorites)
+        p.sub Ini event yang kamu simpan.
+
+        if !items || items.length === 0
+          .text-center.py-5
+            i.bi.bi-bookmark-x(style="font-size:3rem;color:#9aa6b2;")
+            h5.mt-3 Belum ada event yang disimpan
+            p.text-muted Simpan event dari halaman detail event dulu.
+            a.btnx(href="/events")
+              i.bi.bi-calendar3
+              | Lihat Event
+        else
+          .d-grid.gap-3
+            each ev in items
+              .item
+                .d-flex.justify-content-between.align-items-start.gap-3.flex-wrap
+                  div
+                    h5.fw-bold.mb-1= ev.title
+                    .meta
+                      if ev.start_date_formatted
+                        span
+                          i.bi.bi-calendar3.me-2
+                          | #{ev.start_date_formatted}#{ev.end_date_formatted ? ' - ' + ev.end_date_formatted : ''}
+                      if ev.status
+                        span
+                          i.bi.bi-info-circle.me-2
+                          | #{ev.status}
+                    if ev.favorited_at_formatted
+                      small.text-muted Disimpan: #{ev.favorited_at_formatted}
+
+                  a.btnx(href=`/events/${ev.slug}`)
+                    i.bi.bi-arrow-right-circle
+                    | Buka

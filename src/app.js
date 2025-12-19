@@ -13,6 +13,8 @@ const standingsRoutes = require("./routes/standings.routes");
 const sellerRoutes = require("./routes/seller.routes");
 const athleteRoutes = require('./routes/athlete.routes');
 const teamRoutes = require('./routes/team.routes');
+const favoritesRoutes = require('./routes/favorites.routes');
+const profileRoutes = require('./routes/profile.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -62,6 +64,7 @@ const authRoutes = require("./routes/auth.routes");
 const mediaRoutes = require("./routes/media.routes");
 const purchaseRoutes = require('./routes/purchase.routes');
 
+
 app.get("/", homeController.renderHome);
 app.use("/sports", sportRoutes);
 app.use("/news", newsRoutes);
@@ -72,6 +75,8 @@ app.use("/", require("./routes/store.routes"));
 app.use('/orders', require('./routes/orders.routes'));
 app.use('/athletes', athleteRoutes);
 app.use('/teams', teamRoutes);
+app.use(favoritesRoutes);
+app.use(profileRoutes);
 
 
 // mount admin/subadmin AFTER middleware

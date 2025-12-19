@@ -305,7 +305,7 @@ exports.submitPadelMatchScore = async (req, res) => {
     away_score,
     homeWin ? 3 : 0,
     match.sport_id,
-    match.home_team_id
+    match.home_team_id  
   ]);
 
   // Update AWAY
@@ -334,7 +334,7 @@ exports.submitPadelMatchScore = async (req, res) => {
 
 exports.submitIndividualScore = async (req, res) => {
   const matchId = Number(req.params.id);
-  const { home_score, away_score } = req.body;  
+  const { home_score, away_score } = req.body;
 
   if (!matchId || home_score == null || away_score == null) {
     return res.status(400).json({ message: 'Data tidak lengkap' });

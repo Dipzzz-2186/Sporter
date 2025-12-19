@@ -1,0 +1,40 @@
+extends ../layout/main
+
+block content
+  .container.py-4
+    h2.fw-bold.mb-3 Disimpan
+    p.text-muted.mb-4 Event yang kamu simpan bakal muncul di sini.
+
+    if !events || events.length === 0
+      .alert.alert-light.border
+        i.bi.bi-bookmark.me-2
+        | Belum ada event yang kamu simpan.
+      a.btn.btn-primary(href="/events")
+        i.bi.bi-calendar-event.me-2
+        | Cari Event
+    else
+      .row.g-3
+        each e in events
+          .col-md-6
+            .card.border-0.shadow-sm.h-100
+              .card-body
+                .d-flex.justify-content-between.align-items-start.gap-2
+                  div
+                    h5.fw-bold.mb-1= e.title
+                    if e.sport_name
+                      .small.text-muted
+                        i.bi.bi-trophy.me-1
+                        = e.sport_name
+                  if e.status
+                    span.badge.bg-light.text-dark.border= e.status
+
+                hr
+
+                if e.venue_name
+                  .small.text-muted.mb-2
+                    i.bi.bi-geo-alt.me-1
+                    = e.venue_name
+
+                a.btn.btn-sm.btn-outline-primary(href=`/events/${e.slug || e.id}`)
+                  i.bi.bi-box-arrow-up-right.me-1
+                  | Buka Detail
