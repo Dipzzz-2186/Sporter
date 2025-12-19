@@ -772,7 +772,7 @@ block content
           h3
             i.bi.bi-list-task
             | Daftar Tim
-          
+
           .card-actions
             .search-box
               i.bi.bi-search.search-icon
@@ -802,9 +802,9 @@ block content
                 tbody#teamsTable
                   each t in teams
                     tr(
-                      data-name=t.name.toLowerCase()
-                      data-sport=t.sport_id || t.sport_name || ''
-                      data-city=t.city.toLowerCase()
+                      data-name=(t.name ? t.name.toLowerCase() : '')
+                      data-sport=(t.sport_id || t.sport_name || '')
+                      data-city=(t.city ? t.city.toLowerCase() : '')
                     )
                       td
                         .team-info

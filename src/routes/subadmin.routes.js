@@ -63,6 +63,12 @@ router.post('/matches/:id/edit', requireLogin, requireAdminOrSubadmin, subadminC
 router.post('/matches/:id/delete', requireLogin, requireAdminOrSubadmin, subadminCtrl.deleteMatch);
 // Match scores
 router.post('/matches/:id/scores', requireLogin, requireAdminOrSubadmin, subadminCtrl.addMatchScore);
+router.post(
+  '/matches/:id/submit-individual-score',
+  requireLogin,
+  requireAdminOrSubadmin,
+  standingsCtrl.submitIndividualScore
+);
 
 // Videos & Livestreams
 router.get('/videos/create', requireLogin, requireAdminOrSubadmin, subadminCtrl.renderCreateVideo);
@@ -107,6 +113,7 @@ router.get('/teams', subadminCtrl.listTeams);
 router.get('/teams/:id/members', subadminCtrl.renderTeamMembers);
 router.post('/teams/:id/members', subadminCtrl.addTeamMember);
 router.post('/teams/:teamId/members/:athleteId/delete', subadminCtrl.deleteTeamMember);
-
+router.get('/teams/create', subadminCtrl.renderCreateTeam);
+router.post('/teams/create', subadminCtrl.createTeam);
 
 module.exports = router;

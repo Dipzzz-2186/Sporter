@@ -1,0 +1,105 @@
+extends ../layout/main
+
+block content
+  .container.py-4
+    h3.mb-4 Buat Tim Baru
+
+    form(method="POST" action="/subadmin/teams/create" id="createTeamForm")
+
+      // ===== CABANG (SELALU TAMPIL) =====
+      .mb-3
+        label.form-label Cabang Olahraga
+        select.form-select(name="sport_id" id="sportSelect" required)
+          option(value="") Pilih cabang
+          each s in sports
+            option(value=s.id)= s.name
+
+      // ===== FIELD LAIN (SEMBUNYI DULU) =====
+      #teamFormFields(style="display:none")
+        .mb-3
+          label.form-label Nama Tim
+          input.form-control(type="text" name="name" required)
+
+        hr
+
+        h5.mb-3 Anggota Tim
+        small.text-muted.mb-2.d-block
+          | Jumlah anggota harus sesuai cabang olahraga
+
+        #membersContainer
+
+        button.btn.btn-outline-primary.mb-3(type="button" id="btnAddMember")
+          | + Tambah Anggota
+
+        hr
+
+        button.btn.btn-primary(type="submit")
+          | Simpan Tim
+
+  script.
+    const membersContainer = document.getElementById('membersContainer');
+    const btnAdd = document.getElementById('btnAddMember');
+    const sportSelect = document.getElementById('sportSelect');
+    const teamFormFields = document.getElementById('teamFormFields');
+    const form = document.getElementById('createTeamForm');
+
+    function getMemberRule() {
+      if (!sportSelect.value) return null;
+
+      const twoPlayerSports = ['padel', 'tenis'];
+      const selectedText =
+        sportSelect.options[sportSelect.selectedIndex].text.toLowerCase();
+
+      if (twoPlayerSports.some(s => selectedText.includes(s))) {
+        return { min: 2, max: 2 };
+      }
+
+      return { min: 1, max: 99 };
+    }
+
+    sportSelect.addEventListener('change', () => {
+      membersContainer.innerHTML = '';
+
+      if (!sportSelect.value) {
+        teamFormFields.style.display = 'none';
+        return;
+      }
+
+      teamFormFields.style.display = 'block';
+    });
+
+    btnAdd.addEventListener('click', () => {
+      const rule = getMemberRule();
+      if (!rule) return;
+
+      const count = membersContainer.children.length;
+      if (count >= rule.max) {
+        alert(`Jumlah anggota maksimal ${rule.max}`);
+        return;
+      }
+
+      const div = document.createElement('div');
+      div.className = 'mb-2 d-flex gap-2';
+      div.innerHTML = `
+        <input type="text" name="members[]" class="form-control" placeholder="Nama anggota" required>
+        <button type="button" class="btn btn-outline-danger">X</button>
+      `;
+      div.querySelector('button').onclick = () => div.remove();
+      membersContainer.appendChild(div);
+    });
+
+    form.addEventListener('submit', (e) => {
+      const rule = getMemberRule();
+      const count = membersContainer.children.length;
+
+      if (!rule) {
+        e.preventDefault();
+        alert('Pilih cabang olahraga terlebih dahulu');
+        return;
+      }
+
+      if (count < rule.min || count > rule.max) {
+        e.preventDefault();
+        alert(`Jumlah anggota harus tepat ${rule.min} orang`);
+      }
+    });

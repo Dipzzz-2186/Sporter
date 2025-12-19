@@ -2,31 +2,50 @@
 const db = require('../config/db');
 
 async function syncPadelStandings(sportId, mode) {
-  const modeWhere =
-    mode === 'individual'
-      ? 'AND t.is_individual = 1'
-      : 'AND (t.is_individual = 0 OR t.is_individual IS NULL)';
-
-  await db.query(`
-    INSERT INTO standings (
-      sport_id, team_id, played, win, draw, loss, game_win, game_loss, pts
-    )
+  if (mode === 'individual') {
+    await db.query(`
+      INSERT IGNORE INTO standings
+        (sport_id, team_id, played, win, draw, loss, game_win, game_loss, pts)
+      SELECT DISTINCT
+        m.sport_id,
+        mp.team_id,
+        0,0,0,0,0,0,0
+      FROM matches m
+      JOIN match_participants mp ON mp.match_id = m.id
+      JOIN teams t ON t.id = mp.team_id
+      WHERE m.sport_id = ?
+        AND t.is_individual = 1
+        AND t.sport_id = m.sport_id
+        AND mp.team_id IS NOT NULL
+    `, [sportId]);
+  } else {
+    await db.query(`
+    INSERT IGNORE INTO standings
+      (sport_id, team_id, played, win, draw, loss, game_win, game_loss, pts)
     SELECT DISTINCT
       m.sport_id,
       t.id,
       0,0,0,0,0,0,0
     FROM matches m
-    JOIN teams t ON t.id IN (m.home_team_id, m.away_team_id)
+    JOIN teams t
+      ON (t.id = m.home_team_id OR t.id = m.away_team_id)
     WHERE m.sport_id = ?
-      ${modeWhere}
-      AND NOT EXISTS (
-        SELECT 1 FROM standings s
-        WHERE s.sport_id = m.sport_id AND s.team_id = t.id
-      )
+      AND t.sport_id = m.sport_id
+      AND COALESCE(t.is_individual,0) = 0
   `, [sportId]);
+  }
 }
 
+async function hasPadelIndividualMatch(sportId) {
+  const [[row]] = await db.query(`
+    SELECT COUNT(*) AS total
+    FROM match_participants mp
+    JOIN matches m ON m.id = mp.match_id
+    WHERE m.sport_id = ?
+  `, [sportId]);
 
+  return row.total > 0;
+}
 exports.listStandings = async (req, res) => {
   try {
     const allowed = req.allowedSports || [];
@@ -75,60 +94,93 @@ exports.listStandings = async (req, res) => {
     let rows = [];
 
     if (isPadel && mode === 'individual') {
-      // ✅ Padel Individual: ambil dari ATHLETES
+      await syncPadelStandings(sportId, 'individual');
+
+      [rows] = await db.query(`
+    SELECT
+      s.id,
+      t.name AS team_name,
+      sp.name AS sport_name,
+      (
+      SELECT COUNT(*)
+      FROM match_participants mp
+      JOIN matches m ON m.id = mp.match_id
+      WHERE mp.team_id = s.team_id
+        AND m.sport_id = s.sport_id
+        AND m.match_mode = 'individual'
+    ) AS total_match,
+      s.played AS played_scored,
+      s.win,
+      s.loss,
+      s.game_win,
+      s.game_loss,
+      s.pts
+    FROM standings s
+    JOIN teams t 
+      ON t.id = s.team_id
+     AND t.is_individual = 1
+    JOIN sports sp 
+      ON sp.id = s.sport_id
+    WHERE s.sport_id = ?
+    ORDER BY s.pts DESC, s.win DESC
+  `, [sportId]);
+    }else if (isPadel) {
+
+      // ✅ PADEL TEAM
       ;[rows] = await db.query(`
-        SELECT
-          a.id,
-          a.slug,
-          sp.name AS sport_name,
-          a.name AS athlete_name,
-          a.points,
-          a.match_played,
-          a.match_won,
-          a.match_lost,
-          a.titles,
-          pw.name AS paired_with_name,
-          pw.slug AS paired_with_slug
-        FROM athletes a
-        JOIN sports sp ON sp.id = a.sport_id
-        LEFT JOIN athletes pw ON pw.id = a.paired_with_athlete_id
-        WHERE a.sport_id = ?
-        ORDER BY a.points DESC, a.match_won DESC, a.titles DESC, a.name ASC
-      `, [sportId]);
+    SELECT
+      s.id,
+      s.sport_id,
+      sp.name AS sport_name,
+      t.id AS team_id,
+      t.name AS team_name,
+
+      (
+        SELECT COUNT(*)
+        FROM matches m
+        WHERE m.sport_id = s.sport_id
+          AND (m.home_team_id = t.id OR m.away_team_id = t.id)
+      ) AS total_match,
+
+      s.win,
+      s.loss,
+      s.game_win,
+      s.game_loss,
+      s.pts
+    FROM standings s
+    JOIN teams t 
+      ON t.id = s.team_id
+    AND t.sport_id = s.sport_id   -- 🔥 WAJIB
+    JOIN sports sp 
+      ON sp.id = s.sport_id
+    WHERE s.sport_id = ?
+      AND COALESCE(t.is_individual, 0) = 0
+    ORDER BY s.pts DESC
+  `, [sportId]);
 
     } else {
-      // ✅ TEAM (termasuk padel team & cabang lain)
-      if (isPadel) await syncPadelStandings(sportId, mode); // optional: cuma perlu buat padel team
-
-      ;[rows] = await db.query(`
-      SELECT
-        s.id,
-        s.sport_id,
-        sp.name AS sport_name,
-        t.id AS team_id,
-        t.name AS team_name,
-
-        -- JUMLAH MATCH DARI JADWAL
-        (
-          SELECT COUNT(*)
-          FROM matches m
-          WHERE m.sport_id = s.sport_id
-            AND (m.home_team_id = t.id OR m.away_team_id = t.id)
-        ) AS total_match,
-
-        s.win,
-        s.loss,
-        s.game_win,
-        s.game_loss,
-        s.pts
-      FROM standings s
-      JOIN teams t ON t.id = s.team_id
-      JOIN sports sp ON sp.id = s.sport_id
-      WHERE s.sport_id = ?
-        AND COALESCE(t.is_individual, 0) = 0
-      ORDER BY s.pts DESC
-      `, [sportId, 0]); // team = 0
+      // 🔥 NON PADEL (klasemen klasik)
+      [rows] = await db.query(`
+    SELECT
+      s.id,
+      t.name AS team_name,
+      sp.name AS sport_name,
+      s.played,
+      s.win,
+      s.draw,
+      s.loss,
+      s.goals_for,
+      s.goals_against,
+      (s.goals_for - s.goals_against) AS goal_diff,
+      s.pts
+    FROM standings s
+    JOIN teams t ON t.id = s.team_id
+    JOIN sports sp ON sp.id = s.sport_id
+    WHERE s.sport_id = ?
+    ORDER BY s.pts DESC, goal_diff DESC, s.win DESC
+  `, [sportId]);
     }
+
 
     return res.render('subadmin/standings', {
       standings: rows,
@@ -277,5 +329,106 @@ exports.submitPadelMatchScore = async (req, res) => {
     match.away_team_id
   ]);
   
+  res.json({ success: true });
+};
+
+exports.submitIndividualScore = async (req, res) => {
+  const matchId = Number(req.params.id);
+  const { home_score, away_score } = req.body;
+
+  if (!matchId || home_score == null || away_score == null) {
+    return res.status(400).json({ message: 'Data tidak lengkap' });
+  }
+
+  if (home_score === away_score) {
+    return res.status(400).json({ message: 'Skor tidak boleh seri' });
+  }
+
+  const [participants] = await db.query(`
+    SELECT mp.athlete_id
+    FROM match_participants mp
+    WHERE mp.match_id = ?
+    ORDER BY mp.position ASC
+  `, [matchId]);
+
+  if (participants.length !== 2) {
+    return res.status(400).json({ message: 'Match individual harus 2 peserta' });
+  }
+
+  const [p1, p2] = participants;
+  const p1Win = home_score > away_score;
+
+  // simpan log (boleh overwrite)
+  await db.query(`
+  INSERT INTO match_participant_scores
+    (match_id, athlete_id, game_win, game_loss, is_winner)
+  VALUES
+    (?, ?, ?, ?, ?),
+    (?, ?, ?, ?, ?)
+  ON DUPLICATE KEY UPDATE
+    game_win  = game_win  + VALUES(game_win),
+    game_loss = game_loss + VALUES(game_loss),
+    is_winner = is_winner OR VALUES(is_winner)
+`, [
+    matchId, p1.athlete_id, home_score, away_score, p1Win ? 1 : 0,
+    matchId, p2.athlete_id, away_score, home_score, p1Win ? 0 : 1
+  ]);
+  // ambil team_id per atlet dari match_participants
+  const [[t1]] = await db.query(`
+  SELECT team_id
+  FROM match_participants
+  WHERE match_id = ? AND athlete_id = ?
+  LIMIT 1
+`, [matchId, p1.athlete_id]);
+
+  const [[t2]] = await db.query(`
+  SELECT team_id
+  FROM match_participants
+  WHERE match_id = ? AND athlete_id = ?
+  LIMIT 1
+`, [matchId, p2.athlete_id]);
+
+  // UPDATE P1
+  await db.query(`
+  UPDATE standings
+  SET
+    played = played + 1,
+    win = win + ?,
+    loss = loss + ?,
+    game_win = game_win + ?,
+    game_loss = game_loss + ?,
+    pts = pts + ?
+  WHERE sport_id = ? AND team_id = ?
+`, [
+    p1Win ? 1 : 0,
+    p1Win ? 0 : 1,
+    home_score,
+    away_score,
+    p1Win ? 3 : 0,
+  /* sport_id */ (await db.query(`SELECT sport_id FROM matches WHERE id=?`, [matchId]))[0][0].sport_id,
+    t1.team_id
+  ]);
+
+  // UPDATE P2
+  await db.query(`
+  UPDATE standings
+  SET
+    played = played + 1,
+    win = win + ?,
+    loss = loss + ?,
+    game_win = game_win + ?,
+    game_loss = game_loss + ?,
+    pts = pts + ?
+  WHERE sport_id = ? AND team_id = ?
+`, [
+    p1Win ? 0 : 1,
+    p1Win ? 1 : 0,
+    away_score,
+    home_score,
+    p1Win ? 0 : 3,
+    (await db.query(`SELECT sport_id FROM matches WHERE id=?`, [matchId]))[0][0].sport_id,
+    t2.team_id
+  ]);
+
   res.json({ success: true });
 };

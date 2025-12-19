@@ -635,6 +635,7 @@ exports.createMatch = async (req, res) => {
         req.flash("error", "Mode INDIVIDUAL butuh minimal 2 peserta.");
         return res.redirect("/subadmin/matches/create");
       }
+      is_individual = match_mode === 'individual' ? 1 : 0
 
       const placeholders = unique.map(() => "?").join(",");
 
@@ -741,26 +742,39 @@ exports.createMatch = async (req, res) => {
         .map(Number)
         .filter(Boolean);
 
-      const unique = [...new Set(ids)];
+      if (ids.length < 2) {
+        throw new Error('Match individual minimal 2 athlete');
+      }
 
-      // posisi urut sesuai pilihan user
-      const values = unique.map((teamId, idx) => [matchId, teamId, idx + 1]);
-      const placeholders = values.map(() => "(?,?,?)").join(",");
-
-      await db.query(
-        `INSERT IGNORE INTO match_participants (match_id, athlete_id, position) VALUES ${placeholders}`,
-        values.flat()
+      // 🔑 ambil team individual tiap athlete
+      const placeholders = ids.map(() => '?').join(',');
+      const [rows] = await db.query(
+        `SELECT id, individual_team_id
+     FROM athletes
+     WHERE id IN (${placeholders})`,
+        ids
       );
 
-
-      // standings untuk semua peserta biar aman
-      for (const teamId of unique) {
-        await db.query(
-          `INSERT IGNORE INTO standings (sport_id, team_id, played, win, draw, loss, goals_for, goals_against, pts)
-          VALUES (?, ?, 0,0,0,0,0,0,0)`,
-          [sportId, teamId]
-        );
+      const teamMap = {};
+      for (const r of rows) {
+        if (!r.individual_team_id) {
+          throw new Error(`Athlete ${r.id} belum punya team individual`);
+        }
+        teamMap[r.id] = r.individual_team_id;
       }
+
+      const values = ids.map((athleteId, idx) => [
+        matchId,
+        athleteId,
+        teamMap[athleteId], // 🔥 INI KUNCI
+        idx + 1
+      ]);
+
+      await db.query(
+        `INSERT INTO match_participants (match_id, athlete_id, team_id, position)
+     VALUES ?`,
+        [values]
+      );
     } else {
       // TEAM mode: minimal home/away masuk standings
       await db.query(
@@ -1449,7 +1463,22 @@ exports.ajaxCreateAthlete = async (req, res) => {
            VALUES (?, ?, ?, ?, ?, NOW(), NOW())`,
       [sportId, name, slug, number || null, position || null]
     );
+    const athleteId = r.insertId;
 
+    // 🔥 BUAT TEAM INDIVIDUAL
+    const [t] = await db.query(
+      `INSERT INTO teams (sport_id, name, is_individual, created_at, updated_at)
+   VALUES (?, ?, 1, NOW(), NOW())`,
+      [sportId, name]
+    );
+    await db.query(
+      `UPDATE athletes
+   SET individual_team_id = ?
+   WHERE id = ?`,
+      [t.insertId, athleteId]
+    );
+
+    const teamId = t.insertId;
     const insertedId = r.insertId;
 
     return res.json({
@@ -1458,6 +1487,7 @@ exports.ajaxCreateAthlete = async (req, res) => {
       athlete: {
         id: insertedId,
         sport_id: sportId,
+        teamId: teamId, // ✅ KIRIM TEAM ID JUGA
         name,
         slug,  // ✅ KIRIM SLUG KE FRONTEND
         number: number || null,
@@ -1593,29 +1623,31 @@ exports.addTeamMember = async (req, res) => {
     const name = String(req.body.name || '').trim();
     const position = String(req.body.position || '').trim();
     const number = String(req.body.number || '').trim();
-    const birth_date = req.body.birth_date ? String(req.body.birth_date) : null;
+    const birth_date = req.body.birth_date || null;
 
     if (!teamId || !name) {
       req.flash('error', 'Nama anggota wajib diisi.');
       return res.redirect(`/subadmin/teams/${teamId}/members`);
     }
 
-    // ambil team + sport_id
-    const [[team]] = await db.query(`SELECT id, sport_id FROM teams WHERE id=? LIMIT 1`, [teamId]);
+    const [[team]] = await db.query(
+      'SELECT id, sport_id FROM teams WHERE id = ? LIMIT 1',
+      [teamId]
+    );
     if (!team) {
       req.flash('error', 'Tim tidak ditemukan.');
       return res.redirect('/subadmin/teams');
     }
 
-    // 1) buat athlete
-    await db.query(
+    // 1️⃣ insert athlete
+    const [ins] = await db.query(
       `INSERT INTO athletes (sport_id, name, member_type, created_at, updated_at)
-      VALUES (?, ?, 'team', NOW(), NOW())`,
+       VALUES (?, ?, 'team', NOW(), NOW())`,
       [team.sport_id, name]
     );
     const athleteId = ins.insertId;
 
-    // 2) link ke team_members
+    // 2️⃣ link ke team_members
     await db.query(
       `INSERT INTO team_members (team_id, athlete_id, position, number, birth_date)
        VALUES (?, ?, ?, ?, ?)`,
@@ -1630,7 +1662,6 @@ exports.addTeamMember = async (req, res) => {
     return res.redirect(`/subadmin/teams/${req.params.id}/members`);
   }
 };
-
 
 // POST /subadmin/teams/:teamId/members/:memberId/delete
 exports.deleteTeamMember = async (req, res) => {
@@ -1764,5 +1795,74 @@ exports.renderTicketOrderDetail = async (req, res) => {
     console.error('renderTicketOrderDetail error', err);
     req.flash('error', 'Gagal memuat detail order');
     res.redirect('/subadmin/ticket-orders');
+  }
+};
+exports.renderCreateTeam = async (req, res) => {
+  try {
+    const sports = await loadSportsList(req.session.user);
+    return res.render('subadmin/create_team', {
+      title: 'Buat Tim',
+      sports
+    });
+  } catch (err) {
+    console.error('renderCreateTeam error', err);
+    req.flash('error', 'Gagal memuat form tim.');
+    return res.redirect('/subadmin/teams');
+  }
+};
+
+exports.createTeam = async (req, res) => {
+  const conn = await db.getConnection();
+  try {
+    const { sport_id, name, short_name, city, members = [] } = req.body;
+    const sportId = Number(sport_id);
+    const teamName = String(name || '').trim();
+
+    if (!sportId || !teamName) {
+      req.flash('error', 'Cabang olahraga dan nama tim wajib diisi.');
+      return res.redirect('/subadmin/teams/create');
+    }
+
+    await conn.beginTransaction();
+
+    // 1️⃣ insert team
+    const [teamRes] = await conn.query(
+      `INSERT INTO teams (sport_id, name, short_name, city, created_at, updated_at)
+       VALUES (?, ?, ?, ?, NOW(), NOW())`,
+      [sportId, teamName, short_name || null, city || null]
+    );
+
+    const teamId = teamRes.insertId;
+
+    // 2️⃣ insert anggota (jika ada)
+    const memberNames = Array.isArray(members)
+      ? members.map(m => String(m).trim()).filter(Boolean)
+      : [];
+
+    for (const memberName of memberNames) {
+      const [ath] = await conn.query(
+        `INSERT INTO athletes (sport_id, name, member_type, created_at, updated_at)
+         VALUES (?, ?, 'team', NOW(), NOW())`,
+        [sportId, memberName]
+      );
+
+      await conn.query(
+        `INSERT INTO team_members (team_id, athlete_id)
+         VALUES (?, ?)`,
+        [teamId, ath.insertId]
+      );
+    }
+
+    await conn.commit();
+
+    req.flash('success', 'Tim dan anggota berhasil dibuat.');
+    return res.redirect(`/subadmin/teams/${teamId}/members`);
+  } catch (err) {
+    await conn.rollback();
+    console.error('createTeam error', err);
+    req.flash('error', 'Gagal membuat tim.');
+    return res.redirect('/subadmin/teams/create');
+  } finally {
+    conn.release();
   }
 };

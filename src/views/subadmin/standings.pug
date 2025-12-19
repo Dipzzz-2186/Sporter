@@ -622,7 +622,7 @@ block content
                 thead
                   tr
                     th No.
-                    th= (mode === 'individual' ? 'Nama Athlete' : 'Nama Tim')
+                    th= (mode === 'individual' ? 'Nama Atlet' : 'Nama Tim')
 
                     if isPadel
                       th.text-center Jumlah Match
@@ -640,7 +640,6 @@ block content
                       th.text-center Poin
                       if !isPadel && !isReadOnly
                         th.text-center Aksi
-
                 tbody
                   each row, index in standings
                     tr
@@ -707,7 +706,10 @@ block content
           .empty-state-icon
             i.bi.bi-clipboard2-x
           h4 Belum Ada Klasemen
-          p Belum ada pertandingan padel yang selesai.
+          if mode === 'individual'
+            p Belum ada skor pertandingan padel individual.
+          else
+            p Belum ada pertandingan padel yang selesai.
 
   if !isReadOnly
     #scoreModal.modal.fade(tabindex='-1')

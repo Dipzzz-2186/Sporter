@@ -592,22 +592,11 @@ block content
                     - const isIndividualMode = (mode === 'individual');
                     - const isPadelIndividual = (isPadel && isIndividualMode);
                     
-                    if isPadelIndividual
-                      th Nama Athlete
-                      th Pasangan
-                      th.text-center MP
-                      th.text-center W-L
-                      th.text-center Titles
-                      th.text-center Poin
-                    else if isIndividualMode
-                      th Nama Athlete
-                      th.text-center PJ
-                      th.text-center M
-                      th.text-center S
-                      th.text-center K
-                      th.text-center GM
-                      th.text-center GK
-                      th.text-center SG
+                    if isPadel
+                      th Nama
+                      th.text-center Jumlah Match
+                      th.text-center M-K
+                      th.text-center Selisih Game
                       th.text-center Poin
                     else
                       th Nama Tim
@@ -633,68 +622,44 @@ block content
                         else
                           span.position-badge.position-other= index + 1
 
-                      if isPadelIndividual
-                        //- PADEL INDIVIDUAL MODE
+                      if isPadel
                         td
                           .team-name
-                            i.bi.bi-person-badge
-                            if row.slug
-                              a(href='/athletes/' + row.slug)= row.athlete_name
+                            if mode === 'individual'
+                              i.bi.bi-person-fill-check
                             else
-                              = row.athlete_name
-                        
-                        td.stat-cell= row.paired_with_name || '-'
-                        td.text-center.stat-cell= row.match_played
-                        td.text-center.stat-cell #{row.match_won} - #{row.match_lost}
-                        td.text-center.stat-cell= row.titles || 0
-                        td.text-center.points-cell= row.points || 0
+                              i.bi.bi-people-fill
+                            = row.team_name
 
-                      else if isIndividualMode
-                        //- REGULAR INDIVIDUAL MODE
-                        td
-                          .team-name
-                            i.bi.bi-person-fill-check
-                            if row.slug
-                              a(href='/athletes/' + row.slug)= row.athlete_name
-                            else
-                              = row.team_name || row.athlete_name
-                        
-                        td.text-center.stat-cell= row.played || 0
-                        td.text-center.stat-cell= row.win || 0
-                        td.text-center.stat-cell= row.draw || 0
-                        td.text-center.stat-cell= row.loss || 0
-                        td.text-center.stat-cell= row.game_win || 0
-                        td.text-center.stat-cell= row.game_loss || 0
-                        td.text-center.stat-cell
+                        td.text-center= row.total_match
+                        td.text-center #{row.win} - #{row.loss}
+                        td.text-center
+                          | #{row.game_win} - #{row.game_loss}
                           if (row.game_win - row.game_loss) >= 0
-                            span.stat-positive +#{row.game_win - row.game_loss}
+                            span.text-success.ms-1 (+#{row.game_win - row.game_loss})
                           else
-                            span.stat-negative #{row.game_win - row.game_loss}
-                        td.text-center.points-cell= row.pts || 0
+                            span.text-danger.ms-1 (#{row.game_win - row.game_loss})
 
+                        td.text-center.points-cell= row.pts
+                        
                       else
-                        //- TEAM MODE
                         td
                           .team-name
                             i.bi.bi-people-fill
-                            if row.team_id
-                              a(href='/teams/' + row.team_id)= row.team_name
-                            else
-                              = row.team_name
-                        
-                        td.text-center.stat-cell= row.played || 0
-                        td.text-center.stat-cell= row.win || 0
-                        td.text-center.stat-cell= row.draw || 0
-                        td.text-center.stat-cell= row.loss || 0
-                        td.text-center.stat-cell= row.game_win || 0
-                        td.text-center.stat-cell= row.game_loss || 0
-                        td.text-center.stat-cell
+                            = row.team_name
+
+                        td.text-center= row.played
+                        td.text-center= row.win
+                        td.text-center= row.draw
+                        td.text-center= row.loss
+                        td.text-center= row.game_win
+                        td.text-center= row.game_loss
+                        td.text-center
                           if (row.game_win - row.game_loss) >= 0
                             span.stat-positive +#{row.game_win - row.game_loss}
                           else
                             span.stat-negative #{row.game_win - row.game_loss}
-                        td.text-center.points-cell= row.pts || 0
-
+                        td.text-center.points-cell= row.pts
       else
         .empty-state
           .empty-state-icon

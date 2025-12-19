@@ -786,12 +786,15 @@ block content
                               button.btn.btn-sm.btn-primary(
                                 type="button"
                                 data-match-id=m.id
-                                data-home=m.home_team_name
-                                data-away=m.away_team_name
+                                data-mode=(m.match_mode || 'team')
+                                data-participants=(m.participants_names || '')
+                                data-home=(m.home_team_name || '')
+                                data-away=(m.away_team_name || '')
                                 onclick="openScoreModal(this)"
                               )
                                 i.bi.bi-pencil-square
                                 | Input Skor
+
                             a.btn.btn-action.btn-action-edit(
                               href=`/subadmin/matches/${m.id}/edit`
                               title="Edit Pertandingan"
@@ -959,17 +962,37 @@ block content
 
     script.
       function openScoreModal(btn) {
+        const mode = btn.dataset.mode;
+
         document.getElementById('matchId').value = btn.dataset.matchId;
-        document.getElementById('homeLabel').innerText = btn.dataset.home;
-        document.getElementById('awayLabel').innerText = btn.dataset.away;
+
+        if (mode === 'individual') {
+          const names = btn.dataset.participants.split(' vs ');
+
+          document.getElementById('homeLabel').innerText = names[0] || 'Peserta 1';
+          document.getElementById('awayLabel').innerText = names[1] || 'Peserta 2';
+
+          document.getElementById('padelScoreModal').dataset.mode = 'individual';
+        } else {
+          document.getElementById('homeLabel').innerText = btn.dataset.home;
+          document.getElementById('awayLabel').innerText = btn.dataset.away;
+
+          document.getElementById('padelScoreModal').dataset.mode = 'team';
+        }
+
         document.getElementById('homeScore').value = 0;
         document.getElementById('awayScore').value = 0;
 
-        new bootstrap.Modal(document.getElementById('padelScoreModal')).show();
+        new bootstrap.Modal(
+          document.getElementById('padelScoreModal')
+        ).show();
       }
-
+      
       function submitPadelScore() {
+        const modal = document.getElementById('padelScoreModal');
+        const mode = modal.dataset.mode;
         const matchId = document.getElementById('matchId').value;
+
         const home = Number(document.getElementById('homeScore').value);
         const away = Number(document.getElementById('awayScore').value);
 
@@ -978,11 +1001,16 @@ block content
           return;
         }
 
-        fetch(`/subadmin/matches/${matchId}/submit-score`, {
+        const url =
+          mode === 'individual'
+            ? `/subadmin/matches/${matchId}/submit-individual-score`
+            : `/subadmin/matches/${matchId}/submit-score`;
+
+        fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ home_score: home, away_score: away })
         })
-        .then(res => res.json())
-        .then(() => location.reload());
+          .then(res => res.json())
+          .then(() => location.reload());
       }
