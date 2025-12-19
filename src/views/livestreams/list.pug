@@ -1140,6 +1140,24 @@ block content
           button.btn-stream-filter(type="button" data-sport="badminton")
             i.bi.bi-brightness-alt-high-fill
             span Bulu Tangkis
+          button.btn-stream-filter(type="button" data-sport="golf")
+            i.bi.bi-flag-fill
+            span Golf
+          button.btn-stream-filter(type="button" data-sport="running")
+            i.bi.bi-person-running
+            span Lari
+          button.btn-stream-filter(type="button" data-sport="padel")
+            i.bi.bi-brightness-high-fill
+            span Padel
+          button.btn-stream-filter(type="button" data-sport="tennis")
+            i.bi.bi-circle-half
+            span Tenis
+          button.btn-stream-filter(type="button" data-sport="swimming")
+            i.bi.bi-water
+            span Renang
+          button.btn-stream-filter(type="button" data-sport="triathlon")
+            i.bi.bi-bicycle
+            span Triathlon
 
   // STREAMS GRID
   .streams-section
@@ -1391,6 +1409,19 @@ block content
               visibleBySport = sportName.includes('basket');
             } else if (sport === 'badminton') {
               visibleBySport = sportName.includes('bulu') || sportName.includes('badminton');
+            } else if (sport === 'golf') {
+              visibleBySport = sportName.includes('golf');
+            } else if (sport === 'running') {
+              visibleBySport = sportName.includes('lari') || sportName.includes('running') || 
+                              sportName.includes('marathon') || sportName.includes('sprint');
+            } else if (sport === 'padel') {
+              visibleBySport = sportName.includes('padel');
+            } else if (sport === 'tennis') {
+              visibleBySport = sportName.includes('tenis');
+            } else if (sport === 'swimming') {
+              visibleBySport = sportName.includes('renang') || sportName.includes('swimming');
+            } else if (sport === 'triathlon') {
+              visibleBySport = sportName.includes('triathlon') || sportName.includes('triatlon');
             }
             
             if (visibleByStatus && visibleBySport) {
