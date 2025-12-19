@@ -118,21 +118,6 @@ block content
       font-size: 1rem;
     }
     
-    /* No Sports Text */
-    .no-sports-text {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 0.9rem;
-      font-style: italic;
-      margin-top: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .no-sports-text i {
-      font-size: 1rem;
-    }
-    
     /* Hero Description */
     .hero-description {
       color: rgba(255, 255, 255, 0.9);
@@ -143,33 +128,10 @@ block content
       animation: fadeInUp 1.2s ease-out;
     }
     
-    @keyframes fadeInRight {
-      from {
-        opacity: 0;
-        transform: translateX(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-    
-    .admin-area-btn:hover {
-      background: #f8fafc;
-      color: #1e3a8a;
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-      text-decoration: none;
-    }
-    
-    .admin-area-btn i {
-      font-size: 1.2rem;
-    }
-    
-    /* Quick Actions */
+    /* Quick Actions - Improved Layout */
     .quick-actions {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 1rem;
       margin-top: 2rem;
       position: relative;
@@ -180,16 +142,18 @@ block content
       background: white;
       border: none;
       border-radius: 16px;
-      padding: 1.25rem 1.5rem;
+      padding: 1.25rem 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 0.75rem;
       text-decoration: none;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
       position: relative;
       overflow: hidden;
+      min-height: 120px;
     }
     
     .action-btn::before {
@@ -210,21 +174,27 @@ block content
     }
     
     .action-btn:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
       text-decoration: none;
     }
     
     .action-btn i {
       font-size: 2rem;
       color: currentColor;
+      transition: transform 0.3s ease;
+    }
+    
+    .action-btn:hover i {
+      transform: scale(1.1);
     }
     
     .action-btn span {
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: #1C1C1E;
       text-align: center;
+      line-height: 1.3;
     }
     
     /* Action Button Colors */
@@ -233,47 +203,60 @@ block content
     .action-btn-info { color: #3B82F6; }
     .action-btn-danger { color: #EF4444; }
     
-    /* Animation delays for quick actions */
-    .action-btn:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.2s backwards; }
-    .action-btn:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.3s backwards; }
-    .action-btn:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.4s backwards; }
-    .action-btn:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.5s backwards; }
-    
-    /* Stats Cards */
+    /* Stats Cards - Improved Layout */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
     }
     
     .stat-card {
       background: white;
       border-radius: 18px;
       padding: 1.5rem;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid #f0f0f0;
       position: relative;
       overflow: hidden;
       animation: fadeInUp 0.6s ease-out backwards;
+      display: flex;
+      flex-direction: column;
     }
     
     .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
       border-color: #3B82F6;
     }
     
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, currentColor 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .stat-card:hover::after {
+      opacity: 0.3;
+    }
+    
     .stat-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+      font-size: 1.8rem;
       color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     
     .stat-icon-sports { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); }
@@ -284,8 +267,8 @@ block content
     .stat-icon-tickets { background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); }
     
     .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: 2.25rem;
+      font-weight: 800;
       color: #1C1C1E;
       line-height: 1;
       margin-bottom: 0.25rem;
@@ -295,27 +278,37 @@ block content
       color: #6c757d;
       font-size: 0.9rem;
       margin: 0;
+      font-weight: 500;
     }
     
-    /* Animation delays for stats */
-    .stat-card:nth-child(1) { animation-delay: 0.1s; }
-    .stat-card:nth-child(2) { animation-delay: 0.2s; }
-    .stat-card:nth-child(3) { animation-delay: 0.3s; }
-    .stat-card:nth-child(4) { animation-delay: 0.4s; }
-    .stat-card:nth-child(5) { animation-delay: 0.5s; }
-    .stat-card:nth-child(6) { animation-delay: 0.6s; }
+    /* Dashboard Layout */
+    .dashboard-main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
     
     /* Content Sections */
     .dashboard-section {
-      margin-bottom: 2rem;
+      background: white;
+      border-radius: 20px;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #f0f0f0;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    .dashboard-section:hover {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
     
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.75rem;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1rem;
       border-bottom: 2px solid #f0f0f0;
     }
     
@@ -325,7 +318,7 @@ block content
       color: #1C1C1E;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
       margin: 0;
     }
     
@@ -344,6 +337,7 @@ block content
     
     .dashboard-table .table {
       margin-bottom: 0;
+      font-size: 0.95rem;
     }
     
     .dashboard-table thead th {
@@ -351,30 +345,34 @@ block content
       border-bottom: 2px solid #e2e8f0;
       font-weight: 600;
       color: #4b5563;
-      padding: 1rem 1.25rem;
+      padding: 1.25rem 1.5rem;
       font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      white-space: nowrap;
     }
     
     .dashboard-table tbody td {
-      padding: 1rem 1.25rem;
+      padding: 1.25rem 1.5rem;
       vertical-align: middle;
       border-bottom: 1px solid #f1f5f9;
+      transition: background-color 0.2s ease;
     }
     
     .dashboard-table tbody tr {
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
     }
     
     .dashboard-table tbody tr:hover {
       background-color: #f8fafc;
+      transform: translateX(5px);
     }
     
     .match-title {
       font-weight: 600;
       color: #1C1C1E;
       margin-bottom: 0.25rem;
+      font-size: 1.05rem;
     }
     
     .match-subtitle {
@@ -384,21 +382,25 @@ block content
     
     .date-badge {
       background: #f8fafc;
-      padding: 0.4rem 0.8rem;
-      border-radius: 10px;
+      padding: 0.5rem 0.9rem;
+      border-radius: 12px;
       font-size: 0.85rem;
       color: #4b5563;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       border: 1px solid #e2e8f0;
+      font-weight: 500;
     }
     
     .ticket-badge {
-      padding: 0.35rem 0.75rem;
+      padding: 0.4rem 0.85rem;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     
     .ticket-sold-out {
@@ -420,53 +422,57 @@ block content
     .quick-buy-form {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
     
     .quantity-input {
-      width: 70px;
-      padding: 0.35rem 0.5rem;
+      width: 80px;
+      padding: 0.5rem;
       border: 1px solid #e2e8f0;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 0.9rem;
       text-align: center;
+      font-weight: 500;
     }
     
     .buy-btn {
       background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
       color: white;
       border: none;
-      padding: 0.4rem 0.9rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
       transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     
     .buy-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
     }
     
     /* Sidebar Cards */
     .sidebar-card {
       background: white;
-      border-radius: 18px;
+      border-radius: 20px;
       border: 1px solid #f0f0f0;
       overflow: hidden;
       margin-bottom: 1.5rem;
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .sidebar-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     }
     
     .sidebar-card-header {
       background: #f8fafc;
-      padding: 1rem 1.25rem;
+      padding: 1.25rem 1.5rem;
       border-bottom: 1px solid #e2e8f0;
       display: flex;
       justify-content: space-between;
@@ -479,7 +485,8 @@ block content
       color: #1C1C1E;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      font-size: 1.1rem;
     }
     
     .sidebar-list {
@@ -489,13 +496,14 @@ block content
     }
     
     .sidebar-list-item {
-      padding: 1rem 1.25rem;
+      padding: 1.25rem 1.5rem;
       border-bottom: 1px solid #f1f5f9;
       transition: all 0.3s ease;
     }
     
     .sidebar-list-item:hover {
       background: #f8fafc;
+      transform: translateX(5px);
     }
     
     .sidebar-list-item:last-child {
@@ -508,6 +516,7 @@ block content
       font-weight: 500;
       display: block;
       transition: color 0.3s ease;
+      font-size: 1rem;
     }
     
     .sidebar-list-item a:hover {
@@ -517,13 +526,14 @@ block content
     .livestream-item {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
     
     .livestream-title {
       font-weight: 600;
       color: #1C1C1E;
       margin: 0;
+      font-size: 1rem;
     }
     
     .livestream-meta {
@@ -531,49 +541,91 @@ block content
       color: #6c757d;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
     
     .livestream-sport {
       background: rgba(59, 130, 246, 0.1);
       color: #3B82F6;
-      padding: 0.2rem 0.5rem;
+      padding: 0.25rem 0.75rem;
       border-radius: 12px;
       font-size: 0.8rem;
+      font-weight: 500;
     }
     
     .livestream-btn {
-      margin-top: 0.5rem;
+      margin-top: 0.75rem;
+      align-self: flex-start;
     }
     
     /* Empty States */
     .empty-state {
-      padding: 2rem;
+      padding: 2.5rem;
       text-align: center;
       color: #6c757d;
     }
     
     .empty-state-icon {
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
       background: #f8fafc;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1rem;
+      margin: 0 auto 1.5rem;
       color: #94a3b8;
-      font-size: 1.5rem;
+      font-size: 1.8rem;
     }
     
-    /* Responsive */
+    /* Status Indicators */
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+    }
+    
+    .status-active {
+      background: rgba(34, 197, 94, 0.1);
+      color: #16a34a;
+    }
+    
+    .status-pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: #d97706;
+    }
+    
+    .status-inactive {
+      background: rgba(107, 114, 128, 0.1);
+      color: #6b7280;
+    }
+    
+    /* Grid Layout Improvements */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    
+    @media (max-width: 992px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Responsive Design */
     @media (max-width: 768px) {
       .dashboard-hero {
         padding: 2rem 0 1.5rem;
       }
       
       .user-greeting {
-        font-size: 1.75rem;
+        font-size: 2rem;
       }
       
       .quick-actions {
@@ -582,31 +634,35 @@ block content
       }
       
       .action-btn {
-        padding: 1rem;
+        padding: 1rem 0.75rem;
+        min-height: 100px;
       }
       
       .action-btn i {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
       }
       
       .action-btn span {
         font-size: 0.85rem;
       }
       
-      .admin-area-btn {
-        width: 100%;
-        justify-content: center;
-        margin-top: 1rem;
-      }
-      
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
       }
       
       .section-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.75rem;
+        gap: 1rem;
+      }
+      
+      .dashboard-section {
+        padding: 1.5rem;
+      }
+      
+      .content-grid {
+        gap: 1.5rem;
       }
       
       .dashboard-table {
@@ -616,6 +672,7 @@ block content
       .quick-buy-form {
         flex-direction: column;
         align-items: stretch;
+        gap: 0.5rem;
       }
       
       .quantity-input,
@@ -624,13 +681,25 @@ block content
       }
     }
     
-    @media (max-width: 480px) {
+    @media (max-width: 576px) {
       .quick-actions {
         grid-template-columns: 1fr;
       }
       
       .stats-grid {
         grid-template-columns: 1fr;
+      }
+      
+      .action-btn {
+        min-height: 90px;
+      }
+      
+      .user-greeting {
+        font-size: 1.75rem;
+      }
+      
+      .dashboard-section {
+        padding: 1.25rem;
       }
     }
 
@@ -681,9 +750,11 @@ block content
         a.action-btn.action-btn-info(href="/subadmin/standings")
           i.bi.bi-bar-chart-line-fill
           span Lihat Klasemen
+        
         a.action-btn.action-btn-info(href="/subadmin/ticket-orders")
           i.bi.bi-receipt
           span Order Tiket
+
   .container
     // Stats Overview Section
     .stats-grid
@@ -718,20 +789,15 @@ block content
         .stat-label Livestreams
       
       .stat-card
-        a(href="/subadmin/standings" style="text-decoration:none; color:inherit; display:block;")
-          .stat-icon.stat-icon-matches
-            i.bi.bi-trophy
-          .stat-value= (typeof stats !== 'undefined' && stats.standingsCount) ? stats.standingsCount : '-'
-          .stat-label Klasemen
-          // small link button
-          .mt-2
-            a.btn.btn-sm.btn-outline-primary(href="/subadmin/standings")
-              i.bi.bi-list-ul.me-1
-              | Buka Klasemen
+        .stat-icon.stat-icon-tickets
+          i.bi.bi-ticket-perforated
+        .stat-value= stats.ticketOrders || 0
+        .stat-label Order Tiket
 
-    .row.g-4
-      // Main Content - Upcoming Matches
-      .col-lg-8
+    .content-grid
+      // Main Content Area
+      .main-content
+        // Upcoming Matches
         .dashboard-section
           .section-header
             h2.section-title
@@ -744,22 +810,23 @@ block content
                 | Kelola
               a.btn.btn-sm.btn-primary(href="/subadmin/matches/create")
                 i.bi.bi-plus-lg.me-1
-                | Buat
+                | Buat Baru
             
           .dashboard-table
             .table-responsive
               table.table.table-hover.mb-0
                 thead
                   tr
-                    th Match / Event
-                    th Cabang
-                    th Tanggal
-                    th Tiket
-                    th Aksi
+                    th(style="width: 30%") Match / Event
+                    th(style="width: 15%") Cabang
+                    th(style="width: 20%") Tanggal & Waktu
+                    th(style="width: 15%") Status Tiket
+                    th(style="width: 20%") Aksi
                 tbody
                   if upcomingMatches && upcomingMatches.length
                     each match in upcomingMatches
                       - const startTime = new Date(match.start_time || match.start_date || null)
+                      - const isToday = new Date().toDateString() === startTime.toDateString()
                       tr
                         td
                           .match-title= match.title || (match.home_team_name ? (match.home_team_name + " vs " + (match.away_team_name||'-')) : 'Match')
@@ -769,21 +836,26 @@ block content
                         td
                           .date-badge
                             i.bi.bi-calendar3
-                            = startTime.toLocaleDateString('id-ID')
+                            = isToday ? 'Hari ini' : startTime.toLocaleDateString('id-ID')
                           .text-muted.small.mt-1
                             i.bi.bi-clock
                             = ' ' + startTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
                         td
                           if match.ticket_available === 0
-                            span.ticket-badge.ticket-sold-out Sold out
+                            span.ticket-badge.ticket-sold-out
+                              i.bi.bi-x-circle.me-1
+                              | Sold out
                           else if !match.can_buy
-                            span.ticket-badge.ticket-disabled Disabled
+                            span.ticket-badge.ticket-disabled
+                              i.bi.bi-slash-circle.me-1
+                              | Disabled
                           else
-                            span.ticket-badge.ticket-available= match.ticket_available + " tersedia"
+                            span.ticket-badge.ticket-available
+                              i.bi.bi-check-circle.me-1
+                              = match.ticket_available + " tersedia"
                         td
                           if match.can_buy
-                            form.quick-buy-form(method="post" action="/purchase/buy")
-                              input(type="hidden" name="ticket_type_id" value=match.default_ticket_type_id)
+                            .quick-buy-form
                               input.quantity-input.form-control.form-control-sm(
                                 type="number" 
                                 name="quantity" 
@@ -791,23 +863,24 @@ block content
                                 max=match.ticket_available 
                                 value="1"
                               )
-                              button.buy-btn.btn-sm(type="submit")
+                              button.buy-btn.btn-sm(type="button" onclick=`buyTickets('${match.id}', this.previousElementSibling.value)`)
                                 i.bi.bi-cart3.me-1
                                 | Beli
                           else
-                            button.btn.btn-sm.btn-outline-secondary(disabled)
-                              i.bi.bi-slash-circle.me-1
-                              | Tidak Tersedia
+                            a.btn.btn-sm.btn-outline-secondary(href=`/subadmin/matches/${match.id}/edit`)
+                              i.bi.bi-pencil.me-1
+                              | Edit
                   else
                     tr
                       td(colspan="5")
                         .empty-state
                           .empty-state-icon
                             i.bi.bi-calendar-x
-                          p.mb-0 Tidak ada jadwal mendatang untuk cabang yang Anda kelola.
+                          h5.mb-2 Tidak ada jadwal
+                          p.mb-0.text-muted Belum ada jadwal pertandingan mendatang untuk cabang yang Anda kelola.
 
       // Sidebar Content
-      .col-lg-4
+      .sidebar-content
         // Recent News Card
         .sidebar-card
           .sidebar-card-header
@@ -825,7 +898,11 @@ block content
               each newsItem in recentNews
                 li.sidebar-list-item
                   a(href=`/news/${newsItem.slug}`)
-                    = newsItem.title
+                    .d-flex.justify-content-between.align-items-center
+                      .news-title= newsItem.title
+                      span.status-indicator.status-active
+                        i.bi.bi-circle-fill
+                        | Aktif
                     small.text-muted.d-block.mt-1
                       i.bi.bi-clock.me-1
                       = (new Date(newsItem.created_at || newsItem.published_at)).toLocaleDateString('id-ID')
@@ -853,7 +930,9 @@ block content
               each video in recentVideos
                 li.sidebar-list-item
                   a(href=`/videos/${video.id}`)
-                    = video.title
+                    .d-flex.justify-content-between.align-items-center
+                      .video-title= video.title
+                      span.livestream-sport= video.duration || '--:--'
                     small.text-muted.d-block.mt-1
                       i.bi.bi-film.me-1
                       = video.sport_name || '-'
@@ -862,13 +941,14 @@ block content
                 .empty-state.py-3
                   .empty-state-icon.mb-2
                     i.bi.bi-play-btn
+                  p.mb-0.text-muted Belum ada video
 
         // Livestream Card
         .sidebar-card
           .sidebar-card-header
             h6.mb-0
               i.bi.bi-broadcast.me-2
-              | Livestream
+              | Livestream Aktif
             .d-flex.align-items-center.gap-2
               a.btn.btn-sm.btn-outline-primary(href="/subadmin/livestreams")
                 i.bi.bi-list-ul
@@ -878,19 +958,32 @@ block content
           ul.sidebar-list
             if upcomingLivestreams && upcomingLivestreams.length
               each livestream in upcomingLivestreams
+                - const isLive = new Date(livestream.start_time || livestream.created_at) <= new Date()
                 li.sidebar-list-item
                   .livestream-item
                     .livestream-title= livestream.title
                     .livestream-meta
                       span.livestream-sport= livestream.sport_name || '-'
-                      i.bi.bi-clock.me-1
-                      = (new Date(livestream.start_time || livestream.created_at)).toLocaleDateString('id-ID')
-                    a.btn.btn-sm.btn-outline-primary.livestream-btn(href=`/livestreams/${livestream.id}`)
+                      span.status-indicator(class=isLive ? 'status-active' : 'status-pending')
+                        i.bi.bi-circle-fill
+                        = isLive ? 'Live' : 'Coming Soon'
+                    a.btn.btn-sm.btn-outline-primary.livestream-btn(
+                      href=`/livestreams/${livestream.id}`,
+                      class=isLive ? 'btn-danger' : 'btn-primary'
+                    )
                       i.bi.bi-eye.me-1
-                      | Tonton
+                      = isLive ? 'Tonton Live' : 'Jadwal'
             else
               li.sidebar-list-item
                 .empty-state.py-3
                   .empty-state-icon.mb-2
                     i.bi.bi-broadcast
                   p.mb-0.text-muted Belum ada livestream
+
+  script.
+    function buyTickets(matchId, quantity) {
+      // Implementasi pembelian tiket
+      console.log(`Membeli ${quantity} tiket untuk match ${matchId}`);
+      // Redirect atau tampilkan modal pembelian
+      window.location.href = `/purchase/tickets?match=${matchId}&quantity=${quantity}`;
+    }

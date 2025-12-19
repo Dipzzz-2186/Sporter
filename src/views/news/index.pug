@@ -2,27 +2,10 @@ extends ../layout/main
 
 block content
   style.
-    /* News Hero Section */
-    .news-hero-section {
-      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-      padding: 3rem 0;
-      animation: fadeIn 0.6s ease-out;
-    }
-    
+    /* Global Styles */
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
-    }
-    
-    /* Main News Card */
-    .news-main-card {
-      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
-      border-radius: 24px;
-      overflow: hidden;
-      position: relative;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      animation: slideInLeft 0.6s ease-out;
     }
     
     @keyframes slideInLeft {
@@ -30,13 +13,77 @@ block content
       to { opacity: 1; transform: translateX(0); }
     }
     
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    /* News Hero Section - Layout diperbaiki */
+    .news-hero-section {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      padding: 3.5rem 0 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .news-hero-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    /* Main News Card - Layout lebih baik */
+    .news-main-card {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
     .news-main-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 50px rgba(0, 149, 255, 0.25);
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 0 25px 60px rgba(0, 149, 255, 0.3);
+    }
+    
+    .news-main-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+      z-index: 2;
+    }
+    
+    .news-main-card:hover::before {
+      transform: scaleX(1);
     }
     
     .news-main-image-wrapper {
-      height: 400px;
+      height: 350px;
       overflow: hidden;
       position: relative;
     }
@@ -47,7 +94,7 @@ block content
       bottom: 0;
       left: 0;
       right: 0;
-      height: 50%;
+      height: 60%;
       background: linear-gradient(to top, rgba(11, 31, 63, 0.95), transparent);
     }
     
@@ -55,75 +102,136 @@ block content
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.4s ease;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .news-main-card:hover .news-main-image {
-      transform: scale(1.05);
+      transform: scale(1.08);
     }
     
     .news-main-content {
       padding: 2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       position: relative;
       z-index: 2;
     }
     
-    .news-main-title {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2.2rem;
-      color: white;
-      line-height: 1.3;
-      letter-spacing: 1px;
-      transition: color 0.3s ease;
+    .news-main-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
     }
     
-    .news-main-card:hover .news-main-title {
-      color: #0095FF;
+    .news-main-sport-badge {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      color: white !important;
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+    }
+    
+    .news-main-date {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .news-main-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.4rem;
+      color: white;
+      line-height: 1.2;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.25rem;
+      flex: 1;
     }
     
     .news-main-excerpt {
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 1rem;
-      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     
-    .text-light-50 {
-      color: rgba(255, 255, 255, 0.6);
+    .news-main-readmore {
+      color: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      align-self: flex-start;
+      position: relative;
     }
     
-    /* Side Top Card */
+    .news-main-readmore::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: white;
+      transition: width 0.3s ease;
+    }
+    
+    .news-main-card:hover .news-main-readmore::after {
+      width: 100%;
+    }
+    
+    /* Right Side Layout */
+    .news-side-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      height: 100%;
+    }
+    
+    /* Side Top Card - Layout lebih compact */
     .news-side-top-card {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       border-radius: 20px;
       overflow: hidden;
       position: relative;
-      height: 250px;
-      transition: all 0.4s ease;
-      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.3);
-      animation: slideInRight 0.6s ease-out;
-    }
-    
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(30px); }
-      to { opacity: 1; transform: translateX(0); }
+      height: 280px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(0, 149, 255, 0.25);
     }
     
     .news-side-top-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 35px rgba(0, 149, 255, 0.4);
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(0, 149, 255, 0.35);
     }
     
     .news-side-top-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.4s ease;
-      opacity: 0.3;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.25;
     }
     
     .news-side-top-card:hover .news-side-top-image {
-      transform: scale(1.05);
-      opacity: 0.4;
+      transform: scale(1.08);
+      opacity: 0.3;
     }
     
     .news-side-top-overlay {
@@ -131,57 +239,77 @@ block content
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 1.5rem;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+      padding: 2rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
     
-    .news-side-top-overlay h5 {
+    .news-side-top-badge {
+      background: rgba(255, 255, 255, 0.9);
+      color: #0095FF !important;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      align-self: flex-start;
+      border: none;
+    }
+    
+    .news-side-top-title {
       color: white;
       font-weight: 700;
-      font-size: 1.2rem;
-      line-height: 1.4;
+      font-size: 1.4rem;
+      line-height: 1.3;
+      margin: 0;
     }
     
-    .news-side-top-overlay p {
-      color: rgba(255, 255, 255, 0.9);
+    .news-side-top-excerpt {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     
-    /* Side Mini Cards */
+    /* Side Mini Cards Grid */
+    .news-side-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      flex: 1;
+    }
+    
     .news-side-mini-card {
       background: linear-gradient(135deg, #152844 0%, #1e3658 100%);
       border-radius: 16px;
       overflow: hidden;
       position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
       height: 180px;
-      transition: all 0.4s ease;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      animation: fadeInScale 0.6s ease-out backwards;
     }
-    
-    @keyframes fadeInScale {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    
-    .news-side-mini-card:nth-child(1) { animation-delay: 0.2s; }
-    .news-side-mini-card:nth-child(2) { animation-delay: 0.3s; }
     
     .news-side-mini-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.3);
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 10px 25px rgba(0, 149, 255, 0.25);
     }
     
     .news-side-mini-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.4s ease;
-      opacity: 0.5;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.4;
     }
     
     .news-side-mini-card:hover .news-side-mini-image {
-      transform: scale(1.05);
-      opacity: 0.6;
+      transform: scale(1.08);
+      opacity: 0.5;
     }
     
     .news-side-mini-overlay {
@@ -189,55 +317,98 @@ block content
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 1rem;
+      padding: 1.25rem;
       background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
     
-    .news-side-mini-overlay p {
+    .news-side-mini-badge {
+      background: rgba(0, 149, 255, 0.2);
+      color: white !important;
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      align-self: flex-start;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    
+    .news-side-mini-title {
       color: white;
       font-weight: 600;
+      font-size: 0.95rem;
       line-height: 1.3;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    /* Other News Section - Layout lebih baik */
+    .news-other-section {
+      padding: 3.5rem 0 5rem;
+      background: white;
+      position: relative;
+    }
+    
+    .section-header {
+      margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #e8edf2;
+    }
+    
+    .section-title-main {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    
+    .section-title-main h2 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.8rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      margin: 0;
+      line-height: 1;
+    }
+    
+    .section-subtitle {
+      color: #5a6c7d;
+      font-size: 1.05rem;
       margin: 0;
     }
     
-    /* Other News Section */
-    .news-other-section {
-      padding: 3rem 0;
-      background: white;
-    }
-    
-    .section-title {
-      animation: fadeInUp 0.6s ease-out;
-    }
-    
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .section-title h3 {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2.2rem;
-      color: #0B1F3F;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
-    }
-    
-    .section-title .text-danger {
+    .section-badge {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: white !important;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
     }
     
-    /* News Card Grid */
+    /* News Card Grid - Layout baru */
     .sporter-news-card {
       border-radius: 20px;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       border: 2px solid #e8edf2;
       overflow: hidden;
-      animation: fadeInUp 0.6s ease-out backwards;
       position: relative;
+      background: white;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     
     .sporter-news-card::before {
@@ -250,6 +421,7 @@ block content
       background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
       transform: scaleX(0);
       transition: transform 0.4s ease;
+      z-index: 2;
     }
     
     .sporter-news-card:hover::before {
@@ -257,105 +429,245 @@ block content
     }
     
     .sporter-news-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
-      border-color: #0095FF;
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(0, 149, 255, 0.15);
+      border-color: transparent;
+    }
+    
+    .news-card-image-wrapper {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .news-card-image-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.2), transparent);
     }
     
     .sporter-news-card img {
-      height: 200px;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      transition: transform 0.4s ease;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .sporter-news-card:hover img {
-      transform: scale(1.05);
+      transform: scale(1.1);
     }
     
     .sporter-news-card .card-body {
-      padding: 1.5rem;
+      padding: 1.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .news-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .news-card-sport {
+      background: rgba(0, 149, 255, 0.1);
+      color: #0080e0 !important;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      border: 1.5px solid rgba(0, 149, 255, 0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .news-card-date {
+      color: #5a6c7d;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
     
     .sporter-news-card h6 {
       color: #0B1F3F;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       line-height: 1.4;
-      min-height: 50px;
-    }
-    
-    .sporter-news-card .badge {
-      padding: 0.4rem 0.8rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.8rem;
+      margin-bottom: 1rem;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     
     .sporter-news-card p {
       color: #5a6c7d;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       line-height: 1.6;
-      min-height: 50px;
+      margin-bottom: 1.5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     
-    .sporter-news-card .text-danger {
-      transition: all 0.3s ease;
+    .news-card-readmore {
+      color: #0095FF;
+      font-weight: 600;
+      font-size: 0.9rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
-      color: #0095FF !important;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      align-self: flex-start;
+      position: relative;
+      margin-top: auto;
     }
     
-    .sporter-news-card:hover .text-danger {
-      transform: translateX(5px);
+    .news-card-readmore::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #0095FF;
+      transition: width 0.3s ease;
     }
     
-    /* Empty State */
+    .sporter-news-card:hover .news-card-readmore {
+      gap: 0.75rem;
+    }
+    
+    .sporter-news-card:hover .news-card-readmore::after {
+      width: 100%;
+    }
+    
+    /* Empty State - Layout lebih baik */
     .empty-state {
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
       border: 2px dashed #d0d0d0;
       border-radius: 20px;
       padding: 4rem 2rem;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .empty-state::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(0, 149, 255, 0.05) 50%, transparent 70%);
+      animation: shimmer 3s infinite linear;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
     
     .empty-state-icon {
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
       background: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem;
-      animation: float 3s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      margin: 0 auto 1.75rem;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
     
     .empty-state-icon i {
-      font-size: 3rem;
+      font-size: 3.5rem;
       color: #adb5bd;
     }
     
     .empty-state h3 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
+      font-size: 2.2rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       margin-bottom: 0.75rem;
+      position: relative;
+      z-index: 2;
     }
     
     .empty-state p {
       color: #5a6c7d;
       font-size: 1.05rem;
+      line-height: 1.6;
+      position: relative;
+      z-index: 2;
+      margin: 0;
+    }
+    
+    /* Animasi untuk cards */
+    .news-main-card {
+      animation: slideInLeft 0.6s ease-out forwards;
+      opacity: 0;
+    }
+    
+    .news-side-top-card {
+      animation: fadeInScale 0.6s ease-out 0.2s forwards;
+      opacity: 0;
+    }
+    
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .news-side-mini-card:nth-child(1) {
+      animation: fadeInScale 0.6s ease-out 0.3s forwards;
+      opacity: 0;
+    }
+    
+    .news-side-mini-card:nth-child(2) {
+      animation: fadeInScale 0.6s ease-out 0.4s forwards;
+      opacity: 0;
+    }
+    
+    .sporter-news-card {
+      animation: fadeInUp 0.6s ease-out forwards;
+      opacity: 0;
     }
     
     /* Responsive */
+    @media (max-width: 1199px) {
+      .news-main-title {
+        font-size: 2rem;
+      }
+      
+      .news-side-top-title {
+        font-size: 1.2rem;
+      }
+    }
+    
     @media (max-width: 991px) {
+      .news-hero-section {
+        padding: 2.5rem 0;
+      }
+      
       .news-main-image-wrapper {
         height: 300px;
       }
@@ -365,15 +677,27 @@ block content
       }
       
       .news-main-content {
-        padding: 1.5rem;
+        padding: 1.75rem;
       }
       
       .news-side-top-card {
-        margin-top: 1rem;
+        height: 250px;
       }
       
-      .section-title h3 {
-        font-size: 1.8rem;
+      .news-side-mini-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .news-side-mini-card {
+        height: 160px;
+      }
+      
+      .section-title-main h2 {
+        font-size: 2.2rem;
+      }
+      
+      .news-card-image-wrapper {
+        height: 180px;
       }
     }
     
@@ -387,52 +711,84 @@ block content
       }
       
       .news-main-title {
-        font-size: 1.5rem;
-      }
-      
-      .news-main-content {
-        padding: 1.25rem;
+        font-size: 1.6rem;
       }
       
       .news-main-excerpt {
-        font-size: 0.9rem;
+        font-size: 1rem;
+      }
+      
+      .news-main-content {
+        padding: 1.5rem;
       }
       
       .news-side-top-card {
-        height: 200px;
+        height: 220px;
+      }
+      
+      .news-side-top-overlay {
+        padding: 1.5rem;
       }
       
       .news-side-mini-card {
-        height: 150px;
+        height: 140px;
       }
       
-      .sporter-news-card img {
-        height: 180px;
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .section-title-main h2 {
+        font-size: 1.9rem;
+      }
+      
+      .news-card-image-wrapper {
+        height: 160px;
+      }
+      
+      .sporter-news-card .card-body {
+        padding: 1.5rem;
       }
       
       .sporter-news-card h6 {
-        min-height: auto;
-      }
-      
-      .sporter-news-card p {
-        min-height: auto;
-      }
-      
-      .section-title h3 {
-        font-size: 1.6rem;
+        font-size: 1.1rem;
       }
     }
     
-    /* Animation delays */
+    @media (max-width: 575px) {
+      .news-main-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      
+      .news-card-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      
+      .news-side-mini-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Animation delays untuk cards */
     .sporter-news-card:nth-child(1) { animation-delay: 0.1s; }
     .sporter-news-card:nth-child(2) { animation-delay: 0.2s; }
     .sporter-news-card:nth-child(3) { animation-delay: 0.3s; }
     .sporter-news-card:nth-child(4) { animation-delay: 0.4s; }
+    .sporter-news-card:nth-child(5) { animation-delay: 0.5s; }
+    .sporter-news-card:nth-child(6) { animation-delay: 0.6s; }
+    .sporter-news-card:nth-child(7) { animation-delay: 0.7s; }
+    .sporter-news-card:nth-child(8) { animation-delay: 0.8s; }
 
   // ===== HERO NEWS LAYOUT =====
   .news-hero-section
     .container
-      .row.g-3.g-lg-4
+      .row.g-4.g-lg-5
         // ===== LEFT: MAIN ARTICLE =====
         .col-lg-7
           if mainArticle
@@ -443,101 +799,113 @@ block content
                     img.news-main-image(
                       src=mainArticle.thumbnail_url,
                       alt=mainArticle.title
+                      loading="lazy"
                     )
                 .news-main-content
-                  .d-flex.align-items-center.gap-2.mb-3
+                  .news-main-meta
                     if mainArticle.sport_name
-                      span.badge.text-white.text-uppercase(style="background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);")
+                      span.badge.news-main-sport-badge
                         i.bi.bi-trophy-fill.me-1
                         = mainArticle.sport_name
                     if mainArticle.published_at_formatted
-                      span.text-light-50.small
-                        i.bi.bi-calendar-event.me-1
+                      span.news-main-date
+                        i.bi.bi-calendar3.me-1
                         = mainArticle.published_at_formatted
                   h2.news-main-title= mainArticle.title
                   if mainArticle.excerpt
                     p.news-main-excerpt= mainArticle.excerpt
                   else if mainArticle.content
-                    p.news-main-excerpt= mainArticle.content.substring(0, 150) + '...'
+                    p.news-main-excerpt= mainArticle.content.substring(0, 200) + '...'
+                  span.news-main-readmore
+                    | Baca Selengkapnya
+                    i.bi.bi-arrow-right
           else
             .empty-state
               .empty-state-icon
                 i.bi.bi-newspaper
-              h3 Belum Ada Berita
+              h3 Belum Ada Berita Utama
               p Berita olahraga terbaru akan segera hadir di sini.
 
         // ===== RIGHT: SIDE NEWS =====
         .col-lg-5
-          if sideTopArticle
-            a.text-decoration-none(href=`/news/${sideTopArticle.slug}`)
-              .news-side-top-card.mb-3
-                if sideTopArticle.thumbnail_url
-                  img.news-side-top-image(
-                    src=sideTopArticle.thumbnail_url,
-                    alt=sideTopArticle.title
-                  )
-                .news-side-top-overlay
-                  if sideTopArticle.sport_name
-                    span.badge.bg-light.text-primary.mb-2(style="color: #0095FF !important;")
-                      = sideTopArticle.sport_name
-                  h5= sideTopArticle.title
-                  if sideTopArticle.excerpt
-                    p.small.mb-0= sideTopArticle.excerpt.substring(0, 90) + '...'
+          .news-side-section
+            if sideTopArticle
+              a.text-decoration-none(href=`/news/${sideTopArticle.slug}`)
+                .news-side-top-card
+                  if sideTopArticle.thumbnail_url
+                    img.news-side-top-image(
+                      src=sideTopArticle.thumbnail_url,
+                      alt=sideTopArticle.title
+                      loading="lazy"
+                    )
+                  .news-side-top-overlay
+                    if sideTopArticle.sport_name
+                      span.badge.news-side-top-badge
+                        = sideTopArticle.sport_name
+                    h5.news-side-top-title= sideTopArticle.title
+                    if sideTopArticle.excerpt
+                      p.news-side-top-excerpt= sideTopArticle.excerpt.substring(0, 100) + '...'
 
-          if sideMiniArticles && sideMiniArticles.length
-            .row.g-2.g-lg-3
-              each item, index in sideMiniArticles
-                .col-6
+            if sideMiniArticles && sideMiniArticles.length
+              .news-side-mini-grid
+                each item, index in sideMiniArticles
                   a.text-decoration-none(href=`/news/${item.slug}`)
                     .news-side-mini-card
                       if item.thumbnail_url
                         img.news-side-mini-image(
                           src=item.thumbnail_url, 
                           alt=item.title
+                          loading="lazy"
                         )
                       .news-side-mini-overlay
                         if item.sport_name
-                          span.badge.bg-dark.bg-opacity-75.text-white.small.mb-1
+                          span.badge.news-side-mini-badge
                             = item.sport_name
-                        p.small= item.title
+                        p.news-side-mini-title= item.title
 
   // ===== OTHER NEWS GRID =====
   .news-other-section
     .container
-      .section-title.mb-4
-        h3.text-danger Berita Lainnya
-        p.text-secondary.mb-0
-          | Kumpulan artikel terbaru dari berbagai cabang olahraga di Indonesia.
+      .section-header
+        .section-title-main
+          h2 Berita Lainnya
+          p.section-subtitle Kumpulan artikel terbaru dari berbagai cabang olahraga
+        if otherArticles && otherArticles.length
+          span.section-badge
+            i.bi.bi-newspaper.me-1
+            | #{otherArticles.length} Berita
       
       if otherArticles && otherArticles.length
         .row.g-4
           each item in otherArticles
             .col-md-6.col-lg-3
               a.text-decoration-none(href=`/news/${item.slug}`)
-                .card.border-0.sporter-news-card.h-100
-                  if item.thumbnail_url
-                    img.card-img-top(
-                      src=item.thumbnail_url, 
-                      alt=item.title
-                    )
-                  .card-body.d-flex.flex-column
-                    .d-flex.align-items-center.justify-content-between.mb-2
+                .sporter-news-card
+                  .news-card-image-wrapper
+                    if item.thumbnail_url
+                      img(
+                        src=item.thumbnail_url, 
+                        alt=item.title
+                        loading="lazy"
+                      )
+                  .card-body
+                    .news-card-meta
                       if item.sport_name
-                        span.badge.bg-light.text-primary.border(style="color: #0095FF !important; border-color: #0095FF !important;")
+                        span.news-card-sport
+                          i.bi.bi-trophy-fill.me-1
                           = item.sport_name
                       if item.published_at_formatted
-                        span.text-muted.small
+                        span.news-card-date
                           i.bi.bi-clock.me-1
                           = item.published_at_formatted
                     h6= item.title
                     if item.excerpt
-                      p.mb-3= item.excerpt.substring(0, 90) + '...'
+                      p= item.excerpt.substring(0, 100) + '...'
                     else if item.content
-                      p.mb-3= item.content.substring(0, 90) + '...'
-                    .mt-auto
-                      span.small.fw-semibold(style="color: #0095FF !important;")
-                        | Baca Selengkapnya
-                        i.bi.bi-arrow-right.ms-1
+                      p= item.content.substring(0, 100) + '...'
+                    span.news-card-readmore
+                      | Baca Selengkapnya
+                      i.bi.bi-arrow-right
       else
         .empty-state
           .empty-state-icon
@@ -548,54 +916,164 @@ block content
   //- Custom JavaScript
   script.
     (function() {
-      // Lazy load images
+      // Lazy load images with Intersection Observer
       if ('IntersectionObserver' in window) {
-        var imageObserver = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
             if (entry.isIntersecting) {
-              var img = entry.target;
+              const img = entry.target;
               if (img.dataset.src) {
                 img.src = img.dataset.src;
                 img.removeAttribute('data-src');
               }
-              imageObserver.unobserve(img);
+              observer.unobserve(img);
             }
           });
+        }, {
+          rootMargin: '50px 0px',
+          threshold: 0.1
         });
         
-        document.querySelectorAll('img[data-src]').forEach(function(img) {
-          imageObserver.observe(img);
+        document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+          // Convert src to data-src for lazy loading
+          if (img.src && !img.dataset.src) {
+            img.dataset.src = img.src;
+            img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9"%3E%3C/svg%3E';
+            imageObserver.observe(img);
+          }
         });
       }
       
-      // Scroll animations
+      // Card animation observer
       if ('IntersectionObserver' in window) {
-        var cardObserver = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
+        const cardObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
             if (entry.isIntersecting) {
               entry.target.style.opacity = '1';
-              entry.target.style.transform = 'translateY(0)';
+              entry.target.style.transform = 'translateY(0) scale(1)';
             }
           });
         }, {
           threshold: 0.1,
-          rootMargin: '0px 0px -50px 0px'
+          rootMargin: '0px 0px -100px 0px'
         });
         
-        document.querySelectorAll('.sporter-news-card').forEach(function(card) {
+        // Observe news cards
+        document.querySelectorAll('.sporter-news-card').forEach(card => {
+          cardObserver.observe(card);
+        });
+        
+        // Observe side cards
+        document.querySelectorAll('.news-side-mini-card').forEach(card => {
           cardObserver.observe(card);
         });
       }
       
-      // Read time estimator (optional)
-      document.querySelectorAll('.sporter-news-card').forEach(function(card) {
-        var textContent = card.textContent || '';
-        var wordCount = textContent.trim().split(/\s+/).length;
-        var readTime = Math.ceil(wordCount / 200); // 200 words per minute
-        
-        if (readTime > 0) {
-          // You can add read time indicator here if needed
-          card.dataset.readTime = readTime;
+      // Initialize animations on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        // Main card animation
+        const mainCard = document.querySelector('.news-main-card');
+        if (mainCard) {
+          setTimeout(() => {
+            mainCard.style.opacity = '1';
+            mainCard.style.transform = 'translateX(0)';
+          }, 100);
         }
+        
+        // Side top card animation
+        const sideTopCard = document.querySelector('.news-side-top-card');
+        if (sideTopCard) {
+          setTimeout(() => {
+            sideTopCard.style.opacity = '1';
+            sideTopCard.style.transform = 'scale(1)';
+          }, 200);
+        }
+        
+        // Side mini cards animation
+        document.querySelectorAll('.news-side-mini-card').forEach((card, index) => {
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'scale(1)';
+          }, 300 + (index * 100));
+        });
+        
+        // Add smooth hover effects
+        document.querySelectorAll('.news-card-readmore, .news-main-readmore').forEach(link => {
+          link.addEventListener('mouseenter', function() {
+            const icon = this.querySelector('i');
+            if (icon) {
+              icon.style.transform = 'translateX(3px)';
+            }
+          });
+          
+          link.addEventListener('mouseleave', function() {
+            const icon = this.querySelector('i');
+            if (icon) {
+              icon.style.transform = 'translateX(0)';
+            }
+          });
+        });
+        
+        // Add reading time estimation
+        document.querySelectorAll('.sporter-news-card').forEach(card => {
+          const textContent = card.textContent || '';
+          const wordCount = textContent.trim().split(/\s+/).length;
+          const readTime = Math.ceil(wordCount / 200);
+          
+          if (readTime > 0) {
+            const metaElement = card.querySelector('.news-card-meta');
+            if (metaElement) {
+              const readTimeElement = document.createElement('span');
+              readTimeElement.className = 'news-card-date';
+              readTimeElement.innerHTML = `<i class="bi bi-clock me-1"></i>${readTime} min read`;
+              metaElement.appendChild(readTimeElement);
+            }
+          }
+        });
+        
+        // Add parallax effect to hero section
+        window.addEventListener('scroll', function() {
+          const scrolled = window.scrollY;
+          const hero = document.querySelector('.news-hero-section');
+          if (hero && scrolled < 600) {
+            const parallaxValue = scrolled * 0.3;
+            hero.style.transform = `translateY(${parallaxValue}px)`;
+          }
+        });
+      });
+      
+      // Helper untuk icon olahraga
+      function getSportIcon(sportName) {
+        const icons = {
+          'Sepak Bola': 'bi-emoji-angry-fill',
+          'Basket': 'bi-basket2-fill',
+          'Bulu Tangkis': 'bi-shuttle',
+          'Tenis': 'bi-circle-half',
+          'Bola Voli': 'bi-circle-fill',
+          'Renang': 'bi-water',
+          'Atletik': 'bi-person-running',
+          'Sepeda': 'bi-bicycle',
+          'Panahan': 'bi-bullseye',
+          'Futsal': 'bi-dribbble',
+          'Badminton': 'bi-shuttle',
+          'Tenis Meja': 'bi-circle-square',
+          'Olahraga': 'bi-trophy-fill',
+          'Berita': 'bi-newspaper'
+        };
+        return icons[sportName] || 'bi-trophy-fill';
+      }
+      
+      // Apply sport icons
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.news-card-sport i, .news-main-sport-badge i').forEach(icon => {
+          const badge = icon.closest('.news-card-sport, .news-main-sport-badge');
+          if (badge) {
+            const sportText = badge.textContent.replace('Baca Selengkapnya', '').replace('i', '').trim();
+            const iconClass = getSportIcon(sportText);
+            if (iconClass) {
+              icon.className = 'bi ' + iconClass + ' me-1';
+            }
+          }
+        });
       });
     })();

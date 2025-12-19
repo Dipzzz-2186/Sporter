@@ -2,28 +2,29 @@ extends layout/main
 
 block content
   style.
-    /* Hero Section */
+    /* Hero Section Improvements */
     .sporter-hero {
       background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
       position: relative;
       overflow: hidden;
-      padding: 5rem 0;
+      padding: 6rem 0 5rem;
       animation: fadeIn 0.8s ease-out;
+      margin-bottom: 2rem;
     }
     
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     .sporter-hero::before {
       content: '';
       position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
+      top: -40%;
+      right: -15%;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.12) 0%, transparent 70%);
       border-radius: 50%;
       animation: float 8s ease-in-out infinite;
     }
@@ -31,28 +32,30 @@ block content
     .sporter-hero::after {
       content: '';
       position: absolute;
-      bottom: -40%;
-      left: -10%;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(52, 199, 255, 0.1) 0%, transparent 70%);
+      bottom: -30%;
+      left: -8%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(52, 199, 255, 0.08) 0%, transparent 70%);
       border-radius: 50%;
       animation: float 10s ease-in-out infinite reverse;
     }
     
     @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(50px, -50px) scale(1.1); }
+      0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+      33% { transform: translate(30px, -20px) scale(1.05) rotate(2deg); }
+      66% { transform: translate(-20px, 15px) scale(1.02) rotate(-1deg); }
     }
     
     .hero-content {
       position: relative;
       z-index: 2;
       animation: slideInLeft 0.8s ease-out;
+      padding-right: 1rem;
     }
     
     @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-50px); }
+      from { opacity: 0; transform: translateX(-40px); }
       to { opacity: 1; transform: translateX(0); }
     }
     
@@ -60,27 +63,39 @@ block content
       background: rgba(0, 149, 255, 0.15) !important;
       color: #0095FF !important;
       border: 2px solid rgba(0, 149, 255, 0.3);
-      padding: 0.6rem 1.2rem;
+      padding: 0.6rem 1.5rem;
       font-size: 0.95rem;
+      font-weight: 600;
       backdrop-filter: blur(10px);
       animation: pulse 2s infinite;
+      border-radius: 25px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     
     @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 149, 255, 0.4); }
-      50% { box-shadow: 0 0 0 10px rgba(0, 149, 255, 0); }
+      0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(0, 149, 255, 0.4), 
+                    0 4px 12px rgba(0, 149, 255, 0.1); 
+      }
+      50% { 
+        box-shadow: 0 0 0 8px rgba(0, 149, 255, 0), 
+                    0 6px 16px rgba(0, 149, 255, 0.15); 
+      }
     }
     
     .sporter-hero h1 {
       color: white;
-      font-size: 3.5rem;
-      line-height: 1.2;
-      margin-bottom: 1.5rem;
+      font-size: 3.2rem;
+      line-height: 1.15;
+      margin: 1.5rem 0;
+      font-weight: 800;
       animation: fadeInUp 0.8s ease-out 0.2s backwards;
     }
     
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
+      from { opacity: 0; transform: translateY(25px); }
       to { opacity: 1; transform: translateY(0); }
     }
     
@@ -89,25 +104,65 @@ block content
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      display: inline-block;
+      position: relative;
+    }
+    
+    .sporter-hero .text-danger::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      border-radius: 2px;
     }
     
     .sporter-hero .lead {
       color: rgba(255, 255, 255, 0.85) !important;
       font-size: 1.15rem;
       line-height: 1.8;
+      margin-bottom: 2rem;
       animation: fadeInUp 0.8s ease-out 0.4s backwards;
+      max-width: 90%;
     }
     
     .hero-buttons {
       animation: fadeInUp 0.8s ease-out 0.6s backwards;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
     }
     
     .sporter-hero .btn {
-      border-radius: 12px;
-      padding: 0.9rem 1.8rem;
+      border-radius: 14px;
+      padding: 0.95rem 2rem;
       font-weight: 600;
       font-size: 1rem;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .sporter-hero .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+    
+    .sporter-hero .btn:hover::before {
+      transform: translateX(100%);
     }
     
     .sporter-hero .btn-danger {
@@ -117,39 +172,62 @@ block content
     }
     
     .sporter-hero .btn-danger:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(0, 149, 255, 0.5);
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 149, 255, 0.5);
     }
     
     .sporter-hero .btn-outline-danger {
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.25);
       color: white;
       backdrop-filter: blur(10px);
     }
     
     .sporter-hero .btn-outline-danger:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
       color: white;
-      transform: translateY(-3px);
+      transform: translateY(-5px) scale(1.05);
     }
     
-    /* Hero Illustration */
+    /* Hero Illustration Improvements */
     .sporter-hero-illustration {
-      background: rgba(255, 255, 255, 0.08);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
       border-radius: 30px;
       padding: 3rem 2rem;
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255, 255, 255, 0.12);
       position: relative;
       z-index: 2;
       animation: fadeInScale 0.8s ease-out 0.4s backwards;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
     }
     
     @keyframes fadeInScale {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    
+    .sporter-hero-illustration::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      animation: slideRight 3s ease-in-out infinite;
+    }
+    
+    @keyframes slideRight {
+      0%, 100% { transform: translateX(-100%); }
+      50% { transform: translateX(100%); }
     }
     
     .sporter-hero-illustration i {
@@ -158,37 +236,70 @@ block content
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      animation: bounce 2s infinite;
+      animation: bounce 3s infinite;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 10px 20px rgba(0, 149, 255, 0.3));
     }
     
     @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
+      0%, 100% { transform: translateY(0) scale(1); }
+      25% { transform: translateY(-15px) scale(1.05); }
+      50% { transform: translateY(5px) scale(0.98); }
+      75% { transform: translateY(-8px) scale(1.02); }
     }
     
     .sporter-hero-illustration p {
       color: rgba(255, 255, 255, 0.7);
-      font-size: 1rem;
+      font-size: 1.05rem;
+      text-align: center;
+      max-width: 80%;
+      margin: 0 auto;
+      line-height: 1.6;
     }
     
-    /* Feature Section */
+    /* Feature Section Improvements */
     #features {
-      background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
+      background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
       padding: 5rem 0;
+      position: relative;
+    }
+    
+    #features::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #0095FF, transparent);
     }
     
     .section-title {
       animation: fadeInUp 0.6s ease-out;
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 4rem;
     }
     
     .section-title h2 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
+      letter-spacing: 1.5px;
+      margin-bottom: 0.75rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .section-title h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      border-radius: 3px;
     }
     
     .section-title .text-danger {
@@ -196,116 +307,212 @@ block content
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      position: relative;
     }
     
     .section-title p {
       color: #5a6c7d;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.7;
     }
     
     .sporter-feature-card {
-      border-radius: 20px;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 22px;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       height: 100%;
       background: white;
       border: 2px solid #e8edf2;
       animation: fadeInUp 0.6s ease-out backwards;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .sporter-feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.03) 0%, transparent 100%);
+      z-index: 0;
     }
     
     .sporter-feature-card:hover {
-      transform: translateY(-15px);
-      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
+      transform: translateY(-20px) scale(1.03);
+      box-shadow: 0 25px 50px rgba(0, 149, 255, 0.2);
       border-color: #0095FF;
     }
     
     .sporter-feature-card .card-body {
-      padding: 2.5rem 2rem;
+      padding: 2.8rem 2rem;
       text-align: center;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
     }
     
     .feature-icon-wrapper {
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
-      border-radius: 20px;
-      display: inline-flex;
+      border-radius: 22px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1.5rem;
-      transition: all 0.4s ease;
+      margin-bottom: 2rem;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       border: 2px solid #d6edff;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .feature-icon-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+    
+    .sporter-feature-card:hover .feature-icon-wrapper::before {
+      transform: translateX(100%);
     }
     
     .sporter-feature-card:hover .feature-icon-wrapper {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      transform: rotate(10deg) scale(1.1);
+      transform: rotate(12deg) scale(1.15);
       border-color: #0095FF;
+      box-shadow: 0 10px 25px rgba(0, 149, 255, 0.3);
     }
     
     .feature-icon-wrapper i {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       color: #0095FF;
-      transition: color 0.4s ease;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      z-index: 1;
     }
     
     .sporter-feature-card:hover .feature-icon-wrapper i {
       color: white;
+      transform: scale(1.1);
     }
     
     .sporter-feature-card h5 {
       color: #0B1F3F;
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
+      font-size: 1.4rem;
+      margin-bottom: 1.2rem;
       font-weight: 700;
+      min-height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     
     .sporter-feature-card p {
       color: #5a6c7d;
-      line-height: 1.6;
-      font-size: 0.95rem;
+      line-height: 1.7;
+      font-size: 0.98rem;
+      margin: 0;
+      flex-grow: 1;
     }
     
-    /* Event Section */
+    /* Event Section Improvements */
     .events-section {
       padding: 5rem 0;
       background: white;
+      position: relative;
+    }
+    
+    .events-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 149, 255, 0.2), transparent);
     }
     
     .section-header {
-      margin-bottom: 3rem;
+      margin-bottom: 4rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-end;
       flex-wrap: wrap;
-      gap: 1.5rem;
+      gap: 2rem;
+      animation: fadeInUp 0.6s ease-out;
     }
     
     .section-header h2 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       margin-bottom: 0.5rem;
+      position: relative;
+      padding-bottom: 1rem;
+    }
+    
+    .section-header h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      border-radius: 3px;
     }
     
     .section-header p {
       color: #5a6c7d;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       margin: 0;
+      max-width: 600px;
     }
     
     .section-header .btn {
       white-space: nowrap;
+      padding: 0.8rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 2px solid #e8edf2;
+      color: #5a6c7d;
+    }
+    
+    .section-header .btn:hover {
+      border-color: #0095FF;
+      color: #0095FF;
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.15);
     }
     
     .sporter-event-card {
-      border-radius: 20px;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 22px;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       border: 2px solid #e8edf2;
       overflow: hidden;
       position: relative;
       animation: fadeInUp 0.6s ease-out backwards;
       background: white;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     
     .sporter-event-card::before {
@@ -314,10 +521,11 @@ block content
       top: 0;
       left: 0;
       right: 0;
-      height: 5px;
+      height: 6px;
       background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
       transform: scaleX(0);
-      transition: transform 0.4s ease;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: left;
     }
     
     .sporter-event-card:hover::before {
@@ -325,86 +533,104 @@ block content
     }
     
     .sporter-event-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
+      transform: translateY(-15px) scale(1.03);
+      box-shadow: 0 25px 50px rgba(0, 149, 255, 0.15);
       border-color: #0095FF;
     }
     
     .sporter-event-card .card-body {
-      padding: 2rem;
+      padding: 2.5rem 2rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
     }
     
     .event-badge {
       background: rgba(0, 149, 255, 0.1) !important;
       color: #0095FF !important;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 25px;
+      font-size: 0.9rem;
       font-weight: 600;
       border: 1px solid rgba(0, 149, 255, 0.2);
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.5rem;
+      width: fit-content;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(10px);
     }
     
     .sporter-event-card h5 {
       color: #0B1F3F;
       font-weight: 700;
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       line-height: 1.4;
-      margin-bottom: 1rem;
-      min-height: 60px;
+      margin-bottom: 1.2rem;
+      min-height: 4rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     
     .event-location {
       color: #5a6c7d;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
     }
     
     .event-location i {
       color: #0095FF;
-      font-size: 1rem;
+      font-size: 1.1rem;
+      flex-shrink: 0;
     }
     
     .event-description {
       color: #5a6c7d;
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-      min-height: 60px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+      flex-grow: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     
     .event-actions {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      margin-top: auto;
     }
     
     .sporter-event-card .btn {
-      border-radius: 10px;
+      border-radius: 12px;
       font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.6rem 1.2rem;
-      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      padding: 0.7rem 1.4rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      justify-content: center;
+      gap: 0.5rem;
+      flex: 1;
     }
     
     .sporter-event-card .btn-outline-danger {
       border: 2px solid #e8edf2;
       color: #5a6c7d;
-      flex: 1;
     }
     
     .sporter-event-card .btn-outline-danger:hover {
-      background: #f8f9fa;
+      background: linear-gradient(135deg, #f8f9fa 0%, #f0f7ff 100%);
       border-color: #0095FF;
       color: #0095FF;
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.1);
     }
     
     .sporter-event-card .btn-danger {
@@ -414,68 +640,202 @@ block content
     }
     
     .sporter-event-card .btn-danger:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 149, 255, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
     }
     
-    /* Empty State */
+    /* Empty State Improvements */
     .empty-state {
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
       border: 2px dashed #d0d0d0;
-      border-radius: 20px;
-      padding: 4rem 2rem;
+      border-radius: 25px;
+      padding: 5rem 3rem;
       text-align: center;
-      animation: fadeInUp 0.6s ease-out;
+      animation: fadeInUp 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .empty-state::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
     
     .empty-state-icon {
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
       background: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem;
-      animation: float 3s ease-in-out infinite;
+      margin: 0 auto 2rem;
+      animation: float 4s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     }
     
     .empty-state-icon i {
-      font-size: 3rem;
-      color: #adb5bd;
+      font-size: 3.5rem;
+      background: linear-gradient(135deg, #adb5bd 0%, #868e96 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     
     .empty-state h3 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
+      font-size: 2.5rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
-      margin-bottom: 0.75rem;
+      letter-spacing: 1.2px;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
     }
     
     .empty-state p {
       color: #5a6c7d;
-      font-size: 1.05rem;
-      margin: 0;
+      font-size: 1.1rem;
+      margin: 0 auto 2rem;
+      max-width: 500px;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
     }
     
-    /* Responsive */
+    /* Stats Counter Section */
+    .stats-section {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      padding: 4rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stats-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #0095FF, transparent);
+    }
+    
+    .stat-item {
+      text-align: center;
+      animation: fadeInUp 0.6s ease-out backwards;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .stat-icon {
+      width: 70px;
+      height: 70px;
+      background: rgba(0, 149, 255, 0.15);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      border: 2px solid rgba(0, 149, 255, 0.3);
+    }
+    
+    .stat-icon i {
+      font-size: 2.2rem;
+      color: #0095FF;
+    }
+    
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.5rem;
+      line-height: 1;
+      font-family: 'Bebas Neue', cursive;
+      letter-spacing: 1px;
+    }
+    
+    .stat-label {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+      background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+      padding: 5rem 0;
+      text-align: center;
+      position: relative;
+    }
+    
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(0, 149, 255, 0.3), transparent);
+    }
+    
+    .cta-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 3rem;
+      color: #0B1F3F;
+      letter-spacing: 1.5px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .cta-description {
+      color: #5a6c7d;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      line-height: 1.7;
+    }
+    
+    /* Responsive Improvements */
+    @media (max-width: 1200px) {
+      .sporter-hero h1 {
+        font-size: 2.8rem;
+      }
+      
+      .section-title h2,
+      .section-header h2 {
+        font-size: 2.5rem;
+      }
+    }
+    
     @media (max-width: 991px) {
       .sporter-hero {
-        padding: 3rem 0;
+        padding: 4rem 0;
       }
       
       .sporter-hero h1 {
-        font-size: 2.5rem;
+        font-size: 2.4rem;
       }
       
       .sporter-hero .lead {
-        font-size: 1rem;
+        font-size: 1.05rem;
+        max-width: 100%;
       }
       
       .sporter-hero-illustration {
-        padding: 2rem 1.5rem;
-        margin-top: 2rem;
+        padding: 2.5rem 1.5rem;
+        margin-top: 3rem;
       }
       
       .sporter-hero-illustration i {
@@ -483,40 +843,103 @@ block content
       }
       
       #features,
-      .events-section {
-        padding: 3rem 0;
+      .events-section,
+      .cta-section {
+        padding: 4rem 0;
       }
       
       .section-title h2,
-      .section-header h2 {
-        font-size: 2rem;
+      .section-header h2,
+      .cta-title {
+        font-size: 2.2rem;
       }
       
       .section-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 1.5rem;
+      }
+      
+      .sporter-feature-card .card-body {
+        padding: 2.5rem 1.8rem;
+      }
+      
+      .feature-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 1.8rem;
+      }
+      
+      .feature-icon-wrapper i {
+        font-size: 2.5rem;
+      }
+      
+      .sporter-feature-card h5 {
+        font-size: 1.3rem;
+        min-height: 3rem;
+      }
+      
+      .sporter-event-card .card-body {
+        padding: 2rem 1.8rem;
+      }
+      
+      .sporter-event-card h5 {
+        font-size: 1.25rem;
+        min-height: 3.5rem;
+      }
+      
+      .stat-number {
+        font-size: 2.5rem;
       }
     }
     
     @media (max-width: 767px) {
       .sporter-hero h1 {
         font-size: 2rem;
+        line-height: 1.2;
       }
       
-      .sporter-hero .btn {
-        width: 100%;
+      .sporter-hero .lead {
+        font-size: 1rem;
       }
       
       .hero-buttons {
         flex-direction: column;
+        width: 100%;
+      }
+      
+      .sporter-hero .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .sporter-hero-illustration {
+        padding: 2rem 1.5rem;
+      }
+      
+      .section-title h2,
+      .section-header h2,
+      .cta-title {
+        font-size: 1.9rem;
+      }
+      
+      .section-title p,
+      .section-header p,
+      .cta-description {
+        font-size: 1rem;
       }
       
       .sporter-feature-card .card-body {
         padding: 2rem 1.5rem;
       }
       
+      .sporter-feature-card h5 {
+        min-height: auto;
+        margin-bottom: 1rem;
+      }
+      
       .sporter-event-card .card-body {
-        padding: 1.5rem;
+        padding: 1.8rem 1.5rem;
       }
       
       .sporter-event-card h5 {
@@ -527,17 +950,54 @@ block content
         min-height: auto;
       }
       
-      .section-title h2,
-      .section-header h2 {
-        font-size: 1.75rem;
+      .event-actions {
+        flex-direction: column;
+      }
+      
+      .sporter-event-card .btn {
+        width: 100%;
       }
       
       .empty-state {
-        padding: 3rem 1.5rem;
+        padding: 3rem 2rem;
       }
       
-      .section-header .btn {
-        width: 100%;
+      .empty-state h3 {
+        font-size: 2rem;
+      }
+      
+      .stat-item {
+        margin-bottom: 2rem;
+      }
+      
+      .stat-number {
+        font-size: 2.2rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .sporter-hero h1 {
+        font-size: 1.8rem;
+      }
+      
+      .hero-badge {
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+      }
+      
+      .section-title h2,
+      .section-header h2,
+      .cta-title {
+        font-size: 1.7rem;
+      }
+      
+      .empty-state-icon {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .empty-state-icon i {
+        font-size: 3rem;
       }
     }
     
@@ -553,55 +1013,90 @@ block content
     .sporter-event-card:nth-child(2) { animation-delay: 0.2s; }
     .sporter-event-card:nth-child(3) { animation-delay: 0.3s; }
     .sporter-event-card:nth-child(4) { animation-delay: 0.4s; }
+    
+    .stat-item:nth-child(1) { animation-delay: 0.1s; }
+    .stat-item:nth-child(2) { animation-delay: 0.2s; }
+    .stat-item:nth-child(3) { animation-delay: 0.3s; }
+    .stat-item:nth-child(4) { animation-delay: 0.4s; }
 
   // HERO SECTION
   .sporter-hero
     .container
-      .row.align-items-center.gy-4
-        .col-lg-7.hero-content
-          span.badge.hero-badge.mb-3
+      .row.align-items-center.gy-5
+        .col-lg-6.hero-content
+          span.badge.hero-badge.mb-4
             i.bi.bi-flag-fill.me-2
             | Platform Olahraga #1 Indonesia
-          h1.fw-bold.mb-3
+          h1.fw-bold.mb-4
             | Jadwal, Skor, dan Berita 
             span.text-danger Terupdate
-          p.lead.mb-4
-            | SPORTER mengumpulkan informasi olahraga Indonesia: event,
-            | jadwal pertandingan, skor, klasemen, livestream, dan tiket
-            | dalam satu platform yang mudah digunakan.
-          .d-flex.flex-wrap.gap-3.hero-buttons
-            a.btn.btn-danger.btn-lg(href="/sports")
+          p.lead.mb-5
+            | SPORTER menghadirkan informasi olahraga Indonesia yang lengkap dan terintegrasi. Dapatkan informasi event, jadwal pertandingan, skor live, klasemen, livestream, dan tiket dalam satu platform yang modern dan mudah digunakan.
+          .hero-buttons
+            a.btn.btn-danger.btn-lg.me-3.mb-2(href="/sports")
               i.bi.bi-collection-play.me-2
               | Jelajahi Cabang Olahraga
-            a.btn.btn-outline-danger.btn-lg(href="#features")
+            a.btn.btn-outline-danger.btn-lg.mb-2(href="#features")
               i.bi.bi-eye.me-2
-              | Lihat Fitur
+              | Lihat Fitur Lengkap
         
-        .col-lg-5.text-center
-          .sporter-hero-illustration.mx-auto
+        .col-lg-6
+          .sporter-hero-illustration
             i.bi.bi-trophy-fill
-            p.mb-0
-              | Statistik, skor, dan jadwal dalam satu dashboard yang rapi dan terintegrasi.
+            p
+              | Dashboard interaktif dengan statistik real-time, jadwal terpadu, dan update langsung dari berbagai cabang olahraga nasional.
+
+  // STATS SECTION
+  .stats-section
+    .container
+      .row.g-4.gy-5.text-center
+        .col-md-3.col-6
+          .stat-item
+            .stat-icon
+              i.bi.bi-calendar-event
+            .stat-number 500+
+            .stat-label Event Terselenggara
+        
+        .col-md-3.col-6
+          .stat-item
+            .stat-icon
+              i.bi.bi-trophy
+            .stat-number 50+
+            .stat-label Cabang Olahraga
+        
+        .col-md-3.col-6
+          .stat-item
+            .stat-icon
+              i.bi.bi-people-fill
+            .stat-number 10K+
+            .stat-label Pengguna Aktif
+        
+        .col-md-3.col-6
+          .stat-item
+            .stat-icon
+              i.bi.bi-camera-reels
+            .stat-number 200+
+            .stat-label Livestream
 
   // FEATURE SECTION
   #features
     .container
       .section-title
-        h2.fw-bold.mb-3
+        h2.fw-bold.mb-4
           | Fitur Utama 
           span.text-danger SPORTER
         p.text-secondary
-          | Semua kebutuhan informasi olahraga dalam satu platform: dari jadwal sampai tiket.
+          | Semua yang Anda butuhkan untuk mengikuti perkembangan olahraga Indonesia tersedia dalam satu platform yang terintegrasi.
       
-      .row.g-4
+      .row.g-4.gy-5
         .col-md-6.col-lg-4
           .card.border-0.shadow-sm.sporter-feature-card
             .card-body
               .feature-icon-wrapper
                 i.bi.bi-calendar-event
               h5.fw-semibold Jadwal & Event
-              p.mb-0
-                | Lihat daftar event dan jadwal pertandingan per cabang olahraga secara real-time.
+              p
+                | Akses jadwal lengkap event olahraga nasional dan internasional dengan notifikasi real-time.
         
         .col-md-6.col-lg-4
           .card.border-0.shadow-sm.sporter-feature-card
@@ -609,8 +1104,8 @@ block content
               .feature-icon-wrapper
                 i.bi.bi-clipboard2-data
               h5.fw-semibold Skor & Klasemen
-              p.mb-0
-                | Pantau skor pertandingan dan klasemen yang selalu terbarui secara otomatis.
+              p
+                | Pantau skor langsung, statistik pertandingan, dan klasemen yang diperbarui otomatis.
         
         .col-md-6.col-lg-4
           .card.border-0.shadow-sm.sporter-feature-card
@@ -618,8 +1113,8 @@ block content
               .feature-icon-wrapper
                 i.bi.bi-broadcast
               h5.fw-semibold Livestream & Video
-              p.mb-0
-                | Livestream dan rekaman pertandingan dalam satu platform terintegrasi.
+              p
+                | Nikmati siaran langsung pertandingan dan rekaman highlights dalam kualitas terbaik.
         
         .col-md-6.col-lg-4
           .card.border-0.shadow-sm.sporter-feature-card
@@ -627,8 +1122,8 @@ block content
               .feature-icon-wrapper
                 i.bi.bi-ticket-perforated
               h5.fw-semibold Pembelian Tiket
-              p.mb-0
-                | Beli tiket pertandingan secara online dengan mudah dan aman.
+              p
+                | Beli tiket event olahraga secara online dengan proses yang aman, cepat, dan mudah.
         
         .col-md-6.col-lg-4
           .card.border-0.shadow-sm.sporter-feature-card
@@ -636,8 +1131,8 @@ block content
               .feature-icon-wrapper
                 i.bi.bi-newspaper
               h5.fw-semibold Berita Olahraga
-              p.mb-0
-                | Dapatkan berita dan update terkini dari berbagai cabang olahraga.
+              p
+                | Dapatkan berita terkini, analisis mendalam, dan update dari berbagai cabang olahraga.
         
         .col-md-6.col-lg-4
           .card.border-0.shadow-sm.sporter-feature-card
@@ -645,8 +1140,8 @@ block content
               .feature-icon-wrapper
                 i.bi.bi-people-fill
               h5.fw-semibold Komunitas
-              p.mb-0
-                | Bergabung dengan komunitas pecinta olahraga di seluruh Indonesia.
+              p
+                | Bergabung dengan komunitas pecinta olahraga, diskusi, dan berbagi pengalaman.
 
   // EVENT SECTION
   .events-section
@@ -655,20 +1150,20 @@ block content
         div
           h2 Event & Turnamen Terbaru
           p
-            | Jelajahi event olahraga yang sedang dan akan berlangsung di Indonesia.
+            | Temukan event olahraga menarik yang sedang dan akan berlangsung di seluruh Indonesia.
         
         a.btn.btn-outline-danger(href="/events")
           span Lihat Semua Event
           i.bi.bi-arrow-right.ms-2
 
       if latestEvents && latestEvents.length
-        .row.g-4
+        .row.g-4.gy-5
           each e in latestEvents
             .col-md-6.col-lg-3
               .card.border-0.sporter-event-card.h-100
                 .card-body.d-flex.flex-column
                   if e.start_date_formatted
-                    span.badge.event-badge.mb-3
+                    span.badge.event-badge
                       i.bi.bi-calendar3
                       = e.start_date_formatted
                   
@@ -680,26 +1175,44 @@ block content
                       span= e.venue_name
                   
                   if e.description
-                    .event-description= e.description.length > 85 ? e.description.substring(0, 85) + '...' : e.description
+                    .event-description= e.description.length > 100 ? e.description.substring(0, 100) + '...' : e.description
                   else
-                    .event-description Event olahraga menarik yang akan segera berlangsung.
+                    .event-description Jangan lewatkan event olahraga seru ini. Dapatkan informasi lengkap dan tiketnya sekarang.
                   
                   .mt-auto.event-actions
-                    a.btn.btn-sm.btn-outline-danger(href=`/events/${e.slug || e.id}`)
-                      i.bi.bi-info-circle
+                    a.btn.btn-outline-danger(href=`/events/${e.slug || e.id}`)
+                      i.bi.bi-info-circle.me-1
                       | Detail
-                    a.btn.btn-sm.btn-danger(href=`/tickets/${e.id}`)
-                      i.bi.bi-ticket-perforated
+                    a.btn.btn-danger(href=`/tickets/${e.id}`)
+                      i.bi.bi-ticket-perforated.me-1
                       | Tiket
       else
         .empty-state
           .empty-state-icon
             i.bi.bi-calendar-x
-          h3 Belum Ada Event
+          h3 Belum Ada Event Saat Ini
           p
-            | Event dan turnamen olahraga akan segera hadir di platform SPORTER.
+            | Kami sedang mempersiapkan event dan turnamen olahraga terbaik untuk Anda.
             br
             | Pantau terus halaman ini untuk update terbaru!
+          a.btn.btn-danger.btn-lg.mt-3(href="/events")
+            i.bi.bi-bell-fill.me-2
+            | Notifikasi Event
+
+  // CTA SECTION
+  .cta-section
+    .container
+      .cta-title
+        | Bergabung dengan Komunitas Olahraga Indonesia
+      .cta-description
+        | Dapatkan pengalaman terbaik dalam mengikuti perkembangan olahraga nasional. Bergabung dengan ribuan pengguna lainnya di platform SPORTER.
+      .d-flex.flex-wrap.justify-content-center.gap-3
+        a.btn.btn-danger.btn-lg.px-5(href="/register")
+          i.bi.bi-person-plus-fill.me-2
+          | Daftar Sekarang
+        a.btn.btn-outline-danger.btn-lg.px-5(href="/about")
+          i.bi.bi-info-circle-fill.me-2
+          | Pelajari Lebih Lanjut
 
   //- Custom JavaScript
   script.
@@ -712,9 +1225,12 @@ block content
             e.preventDefault();
             var target = document.querySelector(href);
             if (target) {
-              target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+              var offset = 80;
+              var targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+              
+              window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
               });
             }
           }
@@ -723,38 +1239,113 @@ block content
       
       // Intersection Observer for animations
       if ('IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(function(entries) {
+        var observerOptions = {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        };
+        
+        var cardObserver = new IntersectionObserver(function(entries) {
           entries.forEach(function(entry) {
             if (entry.isIntersecting) {
               entry.target.style.opacity = '1';
-              entry.target.style.transform = 'translateY(0)';
+              entry.target.style.transform = 'translateY(0) scale(1)';
             }
           });
-        }, {
-          threshold: 0.1,
-          rootMargin: '0px 0px -50px 0px'
+        }, observerOptions);
+        
+        var statObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              var statNumber = entry.target.querySelector('.stat-number');
+              if (statNumber && !statNumber.classList.contains('animated')) {
+                animateCounter(statNumber);
+                statNumber.classList.add('animated');
+              }
+            }
+          });
+        }, { threshold: 0.5 });
+        
+        // Observe all cards and stats
+        document.querySelectorAll('.sporter-feature-card, .sporter-event-card').forEach(function(card) {
+          cardObserver.observe(card);
         });
         
-        // Observe all cards
-        document.querySelectorAll('.sporter-feature-card, .sporter-event-card').forEach(function(card) {
-          observer.observe(card);
+        document.querySelectorAll('.stat-item').forEach(function(stat) {
+          statObserver.observe(stat);
         });
       }
       
-      // Add hover sound effect (optional)
-      var cards = document.querySelectorAll('.sporter-feature-card, .sporter-event-card');
-      cards.forEach(function(card) {
-        card.addEventListener('mouseenter', function() {
-          this.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-        });
-      });
+      // Counter animation for stats
+      function animateCounter(element) {
+        var finalValue = parseInt(element.textContent.replace('+', ''));
+        var duration = 2000;
+        var startValue = 0;
+        var startTime = null;
+        
+        function animate(currentTime) {
+          if (!startTime) startTime = currentTime;
+          var progress = currentTime - startTime;
+          var percentage = Math.min(progress / duration, 1);
+          
+          var currentValue = Math.floor(percentage * finalValue);
+          element.textContent = currentValue + (element.textContent.includes('+') ? '+' : '');
+          
+          if (percentage < 1) {
+            requestAnimationFrame(animate);
+          }
+        }
+        
+        requestAnimationFrame(animate);
+      }
       
-      // Parallax effect for hero background
+      // Add hover effects with sound (optional)
+      var featureCards = document.querySelectorAll('.sporter-feature-card');
+      var eventCards = document.querySelectorAll('.sporter-event-card');
+      
+      function addCardHoverEffect(cards) {
+        cards.forEach(function(card) {
+          card.addEventListener('mouseenter', function() {
+            this.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            this.style.zIndex = '10';
+          });
+          
+          card.addEventListener('mouseleave', function() {
+            this.style.zIndex = '1';
+          });
+        });
+      }
+      
+      addCardHoverEffect(featureCards);
+      addCardHoverEffect(eventCards);
+      
+      // Parallax effect for hero
       window.addEventListener('scroll', function() {
-        var scrolled = window.scrollY;
+        var scrolled = window.pageYOffset || document.documentElement.scrollTop;
         var hero = document.querySelector('.sporter-hero');
+        var heroIllustration = document.querySelector('.sporter-hero-illustration');
+        
         if (hero && scrolled < 800) {
-          hero.style.transform = 'translateY(' + (scrolled * 0.5) + 'px)';
+          var parallaxValue = scrolled * 0.3;
+          hero.style.transform = 'translateY(' + parallaxValue + 'px)';
+          
+          if (heroIllustration) {
+            var illustrationValue = scrolled * 0.1;
+            heroIllustration.style.transform = 'translateY(' + illustrationValue + 'px)';
+          }
         }
       });
+      
+      // Initialize counters if they're already in view
+      if ('IntersectionObserver' in window) {
+        document.querySelectorAll('.stat-item').forEach(function(stat) {
+          var rect = stat.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom >= 0) {
+            var statNumber = stat.querySelector('.stat-number');
+            if (statNumber && !statNumber.classList.contains('animated')) {
+              animateCounter(statNumber);
+              statNumber.classList.add('animated');
+            }
+          }
+        });
+      }
     })();

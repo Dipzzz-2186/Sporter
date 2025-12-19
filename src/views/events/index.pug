@@ -2,14 +2,14 @@ extends ../layout/main
 
 block content
   style.
-    /* Hero Section with Modern Gradient */
+    /* Hero Section - Diperbaiki layout */
     .events-hero {
       background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
       position: relative;
       overflow: hidden;
-      padding: 5rem 0;
+      padding: 5rem 0 4rem;
       animation: fadeIn 0.8s ease-out;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
       border-radius: 0 0 30px 30px;
     }
     
@@ -50,12 +50,6 @@ block content
     .events-hero-content {
       position: relative;
       z-index: 2;
-      animation: slideInLeft 0.8s ease-out;
-    }
-    
-    @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-50px); }
-      to { opacity: 1; transform: translateX(0); }
     }
     
     .events-hero-badge {
@@ -69,6 +63,7 @@ block content
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
+      border-radius: 50px;
     }
     
     @keyframes pulseBlue {
@@ -78,15 +73,10 @@ block content
     
     .events-hero h1 {
       color: white;
-      font-size: 3.5rem;
+      font-size: 3.2rem;
       line-height: 1.2;
       margin-bottom: 1rem;
-      animation: fadeInUp 0.8s ease-out 0.2s backwards;
-    }
-    
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+      font-weight: 800;
     }
     
     .events-hero .text-success {
@@ -98,56 +88,73 @@ block content
     
     .events-hero .lead {
       color: rgba(255, 255, 255, 0.85) !important;
-      font-size: 1.15rem;
-      line-height: 1.8;
-      animation: fadeInUp 0.8s ease-out 0.4s backwards;
+      font-size: 1.1rem;
+      line-height: 1.7;
       max-width: 600px;
     }
     
-    /* Stats Cards */
+    /* Stats Cards - Layout lebih rapi */
     .events-stats {
-      margin: -3rem 0 3rem;
+      margin: -2rem auto 3rem;
       position: relative;
       z-index: 10;
+      max-width: 1200px;
     }
     
     .stat-card {
       background: white;
       border-radius: 20px;
-      padding: 1.5rem;
+      padding: 1.75rem 1.25rem;
       text-align: center;
       transition: all 0.3s ease;
       border: 2px solid #e8edf2;
       height: 100%;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      animation: fadeInUp 0.6s ease-out backwards;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover::before {
+      transform: scaleX(1);
     }
     
     .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 149, 255, 0.15);
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 149, 255, 0.12);
       border-color: #0095FF;
     }
     
     .stat-icon-wrapper {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.2) 100%);
-      border-radius: 15px;
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.08) 0%, rgba(52, 199, 255, 0.15) 100%);
+      border-radius: 18px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
       transition: all 0.3s ease;
     }
     
     .stat-card:hover .stat-icon-wrapper {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      transform: rotate(5deg) scale(1.1);
+      transform: scale(1.08);
     }
     
     .stat-icon-wrapper i {
-      font-size: 1.8rem;
+      font-size: 2rem;
       color: #0095FF;
       transition: color 0.3s ease;
     }
@@ -157,33 +164,45 @@ block content
     }
     
     .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: 2.2rem;
+      font-weight: 800;
       color: #0B1F3F;
       line-height: 1;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.5px;
     }
     
     .stat-label {
-      color: #0B1F3F;
-      font-size: 0.9rem;
+      color: #5a6c7d;
+      font-size: 0.95rem;
       margin: 0;
       font-weight: 600;
     }
     
-    /* Filter Section */
+    /* Filter Section - Layout lebih compact */
     .events-filter-section {
       background: white;
-      padding: 2rem 0;
+      padding: 1.5rem 0 2rem;
       border-bottom: 1px solid #f0f0f0;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
     
     .events-filter-container {
       background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
-      border-radius: 20px;
-      padding: 2rem;
-      animation: fadeInUp 0.6s ease-out;
+      border-radius: 18px;
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .events-filter-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
     }
     
     .filter-header {
@@ -192,15 +211,15 @@ block content
     
     .filter-header h3 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
+      font-size: 2.2rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
     }
     
     .filter-header p {
       color: #5a6c7d;
-      font-size: 1rem;
+      font-size: 0.95rem;
       margin: 0;
     }
     
@@ -215,23 +234,48 @@ block content
       background: white;
       border: 2px solid #d0d0d0;
       border-radius: 50px;
-      padding: 0.75rem 1.5rem;
+      padding: 0.8rem 1.75rem;
       font-weight: 600;
       color: #5a6c7d;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .events-chip::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+    
+    .events-chip span,
+    .events-chip i {
+      position: relative;
+      z-index: 2;
     }
     
     .events-chip:hover,
     .events-chip.active {
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      border-color: #0095FF;
+      border-color: transparent;
       color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.25);
+    }
+    
+    .events-chip.active::before,
+    .events-chip:hover::before {
+      opacity: 1;
     }
     
     .events-chip i {
@@ -240,23 +284,24 @@ block content
     
     .search-container {
       position: relative;
-      max-width: 300px;
+      max-width: 320px;
     }
     
     .search-input {
       width: 100%;
-      padding: 0.875rem 1rem 0.875rem 3rem;
+      padding: 0.9rem 1rem 0.9rem 3rem;
       border: 2px solid #d0d0d0;
       border-radius: 15px;
       font-size: 0.95rem;
       transition: all 0.3s ease;
       background: white;
+      font-weight: 500;
     }
     
     .search-input:focus {
       outline: none;
       border-color: #0095FF;
-      box-shadow: 0 0 0 3px rgba(0, 149, 255, 0.1);
+      box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.1);
     }
     
     .search-icon {
@@ -266,46 +311,50 @@ block content
       transform: translateY(-50%);
       color: #5a6c7d;
       font-size: 1.1rem;
+      z-index: 2;
     }
     
-    /* Event Cards */
+    /* Events Section - Layout lebih terstruktur */
     .events-section {
-      padding: 2rem 0 5rem;
+      padding: 1rem 0 5rem;
       background: white;
     }
     
     .section-header {
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1.5rem;
+      align-items: flex-end;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f0f0f0;
     }
     
     .section-header h2 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+      line-height: 1;
     }
     
     .section-header p {
       color: #5a6c7d;
-      font-size: 1.05rem;
+      font-size: 1rem;
       margin: 0;
     }
     
+    /* Event Cards - Layout baru yang lebih baik */
     .sporter-event-card {
       border-radius: 20px;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       border: 2px solid #e8edf2;
       overflow: hidden;
       position: relative;
-      animation: fadeInUp 0.6s ease-out backwards;
       background: white;
       height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     
     .sporter-event-card::before {
@@ -338,37 +387,43 @@ block content
     }
     
     .sporter-event-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
-      border-color: #0095FF;
+      transform: translateY(-12px);
+      box-shadow: 0 25px 50px rgba(0, 149, 255, 0.15);
+      border-color: transparent;
     }
     
+    /* Header card dengan layout baru */
     .event-card-header {
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid #f0f0f0;
+      padding: 1.5rem 1.75rem 1rem;
       position: relative;
-      overflow: visible;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
     
-    .event-date-badge {
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
+    .event-header-top {
       display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+    
+    .event-sport-badge {
+      background: rgba(0, 149, 255, 0.08) !important;
+      color: #0080e0 !important;
+      padding: 0.5rem 1.1rem;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1.5px solid rgba(0, 149, 255, 0.2);
+      display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.3);
+      letter-spacing: 0.3px;
     }
     
-    .event-date-badge.ongoing {
-      background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
-    }
-    
-    .event-date-badge.finished {
-      background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);
+    .event-sport-badge i {
+      font-size: 0.95rem;
     }
     
     .event-status {
@@ -376,10 +431,10 @@ block content
     }
     
     .status-badge {
-      padding: 0.4rem 0.9rem;
-      border-radius: 20px;
+      padding: 0.45rem 1rem;
+      border-radius: 50px;
       font-size: 0.75rem;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -392,12 +447,6 @@ block content
     .status-ongoing {
       background: rgba(16, 185, 129, 0.1);
       color: #059669;
-      animation: pulseGreen 2s infinite;
-    }
-    
-    @keyframes pulseGreen {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-      50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
     }
     
     .status-finished {
@@ -405,158 +454,312 @@ block content
       color: #4B5563;
     }
     
+    /* Date ribbon dengan layout baru */
+    .event-date-ribbon {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 1.25rem;
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.05) 0%, rgba(52, 199, 255, 0.1) 100%);
+      border-radius: 15px;
+      border: 1.5px solid rgba(0, 149, 255, 0.15);
+      margin-bottom: 0.5rem;
+    }
+    
+    .event-date-badge {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      color: white;
+      padding: 0.5rem 1.1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      min-width: fit-content;
+    }
+    
+    .event-date-badge.ongoing {
+      background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+    }
+    
+    .event-date-badge.finished {
+      background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);
+    }
+    
+    .event-time {
+      font-size: 0.9rem;
+      color: #5a6c7d;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    /* Body card dengan layout baru */
     .sporter-event-card .card-body {
-      padding: 1.5rem 1.75rem;
+      padding: 0 1.75rem 1.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
     
     .sporter-event-card h5 {
       color: #0B1F3F;
-      font-weight: 700;
-      font-size: 1.25rem;
+      font-weight: 800;
+      font-size: 1.3rem;
       line-height: 1.4;
       margin-bottom: 1rem;
-      min-height: 56px;
+      min-height: 3.6em;
+      letter-spacing: -0.3px;
     }
     
+    /* Event meta dengan layout grid */
     .event-meta {
-      margin-bottom: 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding: 1.25rem;
+      background: rgba(0, 149, 255, 0.02);
+      border-radius: 15px;
+      border: 1.5px solid rgba(0, 149, 255, 0.05);
     }
     
     .event-meta-item {
       color: #5a6c7d;
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
+      font-size: 0.92rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
     
     .event-meta-item i {
       color: #0095FF;
-      font-size: 1rem;
-      width: 20px;
+      font-size: 1.1rem;
+      width: 22px;
+      text-align: center;
     }
     
-    .event-sport-badge {
-      background: rgba(0, 149, 255, 0.1) !important;
-      color: #0080e0 !important;
-      padding: 0.4rem 0.9rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      border: 1px solid rgba(0, 149, 255, 0.2);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-bottom: 1rem;
-    }
-    
-    .event-sport-badge i {
-      font-size: 0.9rem;
-    }
-    
+    /* Description dengan layout lebih baik */
     .event-description {
       color: #5a6c7d;
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-      min-height: 84px;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      margin-bottom: 1.75rem;
+      flex: 1;
+      position: relative;
+      overflow: hidden;
     }
     
+    .event-description::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, white);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sporter-event-card:hover .event-description::after {
+      opacity: 1;
+    }
+    
+    /* Action buttons dengan layout baru */
     .event-actions {
       display: flex;
-      gap: 0.75rem;
+      gap: 0.85rem;
       margin-top: auto;
     }
     
     .sporter-event-card .btn {
       border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.75rem 1.5rem;
-      transition: all 0.3s ease;
-      display: inline-flex;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 0.85rem 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
-      flex: 1;
       justify-content: center;
+      gap: 0.6rem;
+      flex: 1;
+      border-width: 2px;
     }
     
     .sporter-event-card .btn-outline-success {
-      background: transparent;
-      border: 2px solid #0095FF;
-      color: #0080e0;
+      background: white;
+      border-color: #0095FF;
+      color: #0095FF;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .sporter-event-card .btn-outline-success::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+      z-index: -1;
+    }
+    
+    .sporter-event-card .btn-outline-success:hover::before {
+      transform: translateX(0);
     }
     
     .sporter-event-card .btn-outline-success:hover {
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.3);
+      border-color: #0095FF;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.25);
     }
     
     .sporter-event-card .btn-outline-secondary {
-      background: transparent;
-      border: 2px solid #d0d0d0;
+      background: white;
+      border-color: #d0d0d0;
       color: #5a6c7d;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .sporter-event-card .btn-outline-secondary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f8f9fa;
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+      z-index: -1;
+    }
+    
+    .sporter-event-card .btn-outline-secondary:hover::before {
+      transform: translateX(0);
     }
     
     .sporter-event-card .btn-outline-secondary:hover {
-      background: #f8f9fa;
       border-color: #5a6c7d;
       color: #4B5563;
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
     
-    /* Empty State */
+    /* Empty State - Layout lebih baik */
     .events-empty-state {
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
       border: 2px dashed #d0d0d0;
       border-radius: 20px;
-      padding: 4rem 2rem;
+      padding: 5rem 2rem;
       text-align: center;
-      animation: fadeInUp 0.6s ease-out;
+      max-width: 600px;
+      margin: 2rem auto;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .events-empty-state::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(0, 149, 255, 0.03) 50%, transparent 70%);
+      animation: shimmer 3s infinite linear;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
     
     .events-empty-state-icon {
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
       background: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem;
-      animation: float 3s ease-in-out infinite;
+      margin: 0 auto 1.75rem;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
     
     .events-empty-state-icon i {
-      font-size: 3rem;
+      font-size: 3.5rem;
       color: #adb5bd;
+      animation: bounce 3s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
     
     .events-empty-state h3 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
+      font-size: 2.5rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       margin-bottom: 0.75rem;
+      position: relative;
+      z-index: 2;
     }
     
     .events-empty-state p {
       color: #5a6c7d;
       font-size: 1.05rem;
       margin: 0;
+      line-height: 1.6;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Animasi untuk cards */
+    .event-item {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+    
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
     /* Responsive */
+    @media (max-width: 1200px) {
+      .events-hero h1 {
+        font-size: 2.8rem;
+      }
+      
+      .section-header h2 {
+        font-size: 2.5rem;
+      }
+    }
+    
     @media (max-width: 991px) {
       .events-hero {
-        padding: 3rem 0;
+        padding: 3.5rem 0 2.5rem;
       }
       
       .events-hero h1 {
-        font-size: 2.5rem;
+        font-size: 2.4rem;
       }
       
       .events-hero .lead {
@@ -564,11 +767,21 @@ block content
       }
       
       .events-stats {
-        margin-top: -2rem;
+        margin-top: -1.5rem;
+      }
+      
+      .stat-card {
+        padding: 1.5rem 1rem;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
       }
       
       .section-header h2 {
-        font-size: 2rem;
+        font-size: 2.2rem;
       }
       
       .filter-chips {
@@ -578,24 +791,20 @@ block content
       .sporter-event-card h5 {
         min-height: auto;
       }
-      
-      .event-description {
-        min-height: auto;
-      }
     }
     
-    @media (max-width: 767px) {
+    @media (max-width: 768px) {
       .events-hero h1 {
         font-size: 2rem;
       }
       
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
+      .events-hero-badge {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
       }
       
       .section-header h2 {
-        font-size: 1.75rem;
+        font-size: 1.9rem;
       }
       
       .events-filter-container {
@@ -603,7 +812,7 @@ block content
       }
       
       .events-chip {
-        width: 100%;
+        width: calc(50% - 0.375rem);
         justify-content: center;
       }
       
@@ -615,6 +824,14 @@ block content
         padding: 1.25rem;
       }
       
+      .event-card-header {
+        padding: 1.25rem 1.25rem 1rem;
+      }
+      
+      .event-meta {
+        padding: 1rem;
+      }
+      
       .event-actions {
         flex-direction: column;
       }
@@ -622,26 +839,66 @@ block content
       .sporter-event-card .btn {
         width: 100%;
       }
+      
+      .event-header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .event-status {
+        margin-left: 0;
+      }
+      
+      .event-date-ribbon {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
     }
     
-    /* Animation delays */
-    .sporter-event-card:nth-child(1) { animation-delay: 0.1s; }
-    .sporter-event-card:nth-child(2) { animation-delay: 0.2s; }
-    .sporter-event-card:nth-child(3) { animation-delay: 0.3s; }
-    .sporter-event-card:nth-child(4) { animation-delay: 0.4s; }
-    .sporter-event-card:nth-child(5) { animation-delay: 0.5s; }
-    .sporter-event-card:nth-child(6) { animation-delay: 0.6s; }
+    @media (max-width: 576px) {
+      .events-chip {
+        width: 100%;
+      }
+      
+      .stat-value {
+        font-size: 1.9rem;
+      }
+      
+      .stat-icon-wrapper {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .stat-icon-wrapper i {
+        font-size: 1.6rem;
+      }
+      
+      .event-sport-badge {
+        font-size: 0.78rem;
+        padding: 0.45rem 0.9rem;
+      }
+    }
     
-    .stat-card:nth-child(1) { animation-delay: 0.2s; }
-    .stat-card:nth-child(2) { animation-delay: 0.4s; }
-    .stat-card:nth-child(3) { animation-delay: 0.6s; }
-    .stat-card:nth-child(4) { animation-delay: 0.8s; }
+    /* Animation delays untuk cards */
+    .event-item:nth-child(1) { animation-delay: 0.1s; }
+    .event-item:nth-child(2) { animation-delay: 0.2s; }
+    .event-item:nth-child(3) { animation-delay: 0.3s; }
+    .event-item:nth-child(4) { animation-delay: 0.4s; }
+    .event-item:nth-child(5) { animation-delay: 0.5s; }
+    .event-item:nth-child(6) { animation-delay: 0.6s; }
+    
+    .stat-card:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.2s forwards; opacity: 0; }
+    .stat-card:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.3s forwards; opacity: 0; }
+    .stat-card:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.4s forwards; opacity: 0; }
+    .stat-card:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.5s forwards; opacity: 0; }
 
   // HERO SECTION
   .events-hero
     .container
       .row.align-items-center.gy-4
-        .col-lg-7.events-hero-content
+        .col-lg-8.events-hero-content
           span.badge.events-hero-badge.mb-3
             i.bi.bi-calendar-event.me-2
             | Event & Turnamen Terlengkap
@@ -652,37 +909,43 @@ block content
             | Temukan turnamen dan event olahraga terbaru di seluruh Indonesia. 
             | Dapatkan informasi lengkap tentang jadwal, lokasi, dan tiket dalam satu platform terintegrasi.
           
-          .row.mt-4.g-3
+          .row.g-3.mt-4
             .col-6.col-md-3
-              .d-flex.align-items-center.gap-2
-                i.bi.bi-check-circle-fill.text-info.fs-5
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-calendar-check-fill.text-info.fs-4
                 div
-                  .h4.mb-0.fw-bold.text-white #{events ? events.filter(e => e.status === 'upcoming').length : '0'}
-                  small.text-white-50.fs-7 Akan Datang
+                  .h5.mb-0.fw-bold.text-white #{events ? events.filter(e => e.status === 'upcoming').length : '0'}
+                  small.text-white-50.fs-8 Akan Datang
             .col-6.col-md-3
-              .d-flex.align-items-center.gap-2
-                i.bi.bi-broadcast.text-success.fs-5
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-broadcast.text-success.fs-4
                 div
-                  .h4.mb-0.fw-bold.text-white #{events ? events.filter(e => e.status === 'ongoing').length : '0'}
-                  small.text-white-50.fs-7 Berlangsung
+                  .h5.mb-0.fw-bold.text-white #{events ? events.filter(e => e.status === 'ongoing').length : '0'}
+                  small.text-white-50.fs-8 Berlangsung
             .col-6.col-md-3
-              .d-flex.align-items-center.gap-2
-                i.bi.bi-geo-alt.text-warning.fs-5
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-geo-alt-fill.text-warning.fs-4
                 div
-                  .h4.mb-0.fw-bold.text-white #{events ? new Set(events.map(e => e.venue_name)).size : '0'}
-                  small.text-white-50.fs-7 Venue
+                  .h5.mb-0.fw-bold.text-white #{events ? new Set(events.map(e => e.venue_name)).size : '0'}
+                  small.text-white-50.fs-8 Venue
             .col-6.col-md-3
-              .d-flex.align-items-center.gap-2
-                i.bi.bi-trophy.text-info.fs-5
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-trophy.text-info.fs-4
                 div
-                  .h4.mb-0.fw-bold.text-white #{events ? new Set(events.map(e => e.sport_name)).size : '0'}
-                  small.text-white-50.fs-7 Cabang
+                  .h5.mb-0.fw-bold.text-white #{events ? new Set(events.map(e => e.sport_name)).size : '0'}
+                  small.text-white-50.fs-8 Cabang
         
-        .col-lg-5.text-center
-          .sporter-hero-illustration.mx-auto(style="padding: 2.5rem 2rem; background: rgba(0, 149, 255, 0.08); border: 2px solid rgba(0, 149, 255, 0.2); border-radius: 30px; backdrop-filter: blur(10px);")
-            i.bi.bi-trophy-fill(style="font-size: 6rem; color: rgba(255, 255, 255, 0.3);")
-            p.mb-0.fs-6.text-white-50
-              | Jadwal Lengkap • Lokasi Akurat • Tiket Terintegrasi
+        .col-lg-4.text-center.d-none.d-lg-block
+          .position-relative(style="padding: 2.5rem 2rem;")
+            .position-absolute.top-0.start-0.w-100.h-100.rounded-4(style="background: linear-gradient(135deg, rgba(0, 149, 255, 0.08) 0%, rgba(52, 199, 255, 0.15) 100%); border: 2px solid rgba(0, 149, 255, 0.2); backdrop-filter: blur(10px);")
+            .position-relative.z-1
+              i.bi.bi-calendar2-event-fill(style="font-size: 5rem; color: rgba(255, 255, 255, 0.2); margin-bottom: 1rem;")
+              p.mb-0.fs-6.text-white-50.fw-medium
+                | Jadwal Lengkap 
+                br
+                | Lokasi Akurat 
+                br
+                | Tiket Terintegrasi
 
   // STATS SECTION
   .events-stats
@@ -691,7 +954,7 @@ block content
         .col-md-3.col-sm-6
           .stat-card
             .stat-icon-wrapper
-              i.bi.bi-calendar-check-fill
+              i.bi.bi-calendar2-week-fill
             .stat-value #{events ? events.length : '0'}
             .stat-label Total Event
         
@@ -712,7 +975,7 @@ block content
         .col-md-3.col-sm-6
           .stat-card
             .stat-icon-wrapper
-              i.bi.bi-building
+              i.bi.bi-geo-fill
             .stat-value #{events ? new Set(events.map(e => e.venue_name)).size : '0'}
             .stat-label Arena
 
@@ -724,26 +987,27 @@ block content
           h3 Temukan Event Favorit Anda
           p Filter berdasarkan status dan cari event yang sesuai
         
-        .d-flex.flex-column.flex-md-row.justify-content-between.align-items-md-center.gap-3
+        .d-flex.flex-column.flex-md-row.justify-content-between.align-items-md-center.gap-4
           .filter-chips
             button.events-chip.active(type="button" data-filter="all")
               i.bi.bi-stars
-              | Semua Event
+              span Semua Event
             button.events-chip(type="button" data-filter="upcoming")
               i.bi.bi-sunrise
-              | Akan Datang
+              span Akan Datang
             button.events-chip(type="button" data-filter="ongoing")
               i.bi.bi-broadcast-pin
-              | Sedang Berlangsung
+              span Sedang Berlangsung
             button.events-chip(type="button" data-filter="finished")
               i.bi.bi-flag-checkered
-              | Selesai
+              span Selesai
           
           .search-container
             i.bi.bi-search.search-icon
             input.search-input.form-control#eventsSearchInput(
               type="search" 
               placeholder="Cari event, lokasi, cabang..."
+              aria-label="Search events"
             )
 
   // EVENTS SECTION
@@ -756,7 +1020,7 @@ block content
         
         if events && events.length > 0
           .d-flex.align-items-center.gap-2
-            span.text-muted.small#events-count #{events.length} Event Tersedia
+            span.text-muted.small.fw-semibold#events-count #{events.length} Event Tersedia
             i.bi.bi-calendar-check.text-primary
 
       if !events || events.length === 0
@@ -782,15 +1046,25 @@ block content
               class=e.status
             )
               .sporter-event-card(class=e.status)
-                .event-card-header.d-flex.justify-content-between.align-items-center
-                  if e.start_date_formatted
-                    span.event-date-badge(class=e.status)
-                      i.bi.bi-calendar3
-                      | #{e.start_date_formatted}
+                .event-card-header
+                  .event-header-top
+                    if e.sport_name
+                      span.event-sport-badge
+                        i.bi.bi-trophy-fill
+                        | #{e.sport_name}
+                    span.status-badge(class=statusLabel)= statusLabel
                   
-                  span.status-badge(class=statusClass)= statusLabel
+                  if e.start_date_formatted
+                    .event-date-ribbon
+                      span.event-date-badge(class=e.status)
+                        i.bi.bi-calendar3
+                        | #{e.start_date_formatted}
+                      if e.start_time_formatted
+                        span.event-time
+                          i.bi.bi-clock
+                          | #{e.start_time_formatted}
                 
-                .card-body.d-flex.flex-column
+                .card-body
                   h5= e.title
                   
                   .event-meta
@@ -799,28 +1073,29 @@ block content
                         i.bi.bi-geo-alt-fill
                         span= e.venue_name
                     
-                    if e.sport_name
+                    if e.organizer_name
                       .event-meta-item
-                        i.bi.bi-trophy-fill
-                        span= e.sport_name
+                        i.bi.bi-person-circle
+                        span= e.organizer_name
                     
-                    if e.start_date_formatted && e.end_date_formatted && e.end_date_formatted !== e.start_date_formatted
+                    if e.end_date_formatted && e.end_date_formatted !== e.start_date_formatted
                       .event-meta-item
-                        i.bi.bi-clock-history
-                        span #{e.start_date_formatted} - #{e.end_date_formatted}
+                        i.bi.bi-calendar-range
+                        span Berakhir: #{e.end_date_formatted}
                   
-                  if e.description
-                    .event-description= e.description.length > 110 ? e.description.substring(0, 110) + '...' : e.description
-                  else
-                    .event-description Event olahraga menarik dengan peserta terbaik.
+                  .event-description
+                    if e.description
+                      | #{e.description.length > 120 ? e.description.substring(0, 120) + '...' : e.description}
+                    else
+                      | Event olahraga menarik dengan peserta terbaik dari berbagai daerah.
                   
-                  .mt-auto.event-actions
-                    a.btn.btn-outline-success(href=`/events/${e.slug || e.id}`)
+                  .event-actions
+                    a.btn.btn-outline-success(href=`/events/${e.slug || e.id}` role="button")
                       i.bi.bi-info-circle
-                      | Detail Event
-                    a.btn.btn-outline-secondary(href=`/tickets/${e.id}`)
+                      span.d-none.d-md-inline Detail
+                    a.btn.btn-outline-secondary(href=`/tickets/${e.id}` role="button")
                       i.bi.bi-ticket-perforated
-                      | Tiket
+                      span.d-none.d-md-inline Tiket
 
   //- Custom JavaScript
   script.
@@ -836,43 +1111,26 @@ block content
           'Renang': 'bi-water',
           'Atletik': 'bi-person-running',
           'Sepeda': 'bi-bicycle',
-          'Panahan': 'bi-bullseye'
+          'Panahan': 'bi-bullseye',
+          'Futsal': 'bi-dribbble',
+          'Badminton': 'bi-shuttle',
+          'Tenis Meja': 'bi-circle-square'
         };
         return icons[sportName] || 'bi-trophy-fill';
       }
       
-      // Apply icons to existing badges
       document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.event-meta-item i.bi-trophy-fill').forEach(function(icon) {
-          const sportName = icon.parentElement.textContent.trim();
-          const iconClass = getSportIcon(sportName);
-          if (iconClass) {
-            icon.className = 'bi ' + iconClass;
+        // Apply icons to sport badges
+        document.querySelectorAll('.event-sport-badge i').forEach(function(icon) {
+          const badge = icon.closest('.event-sport-badge');
+          if (badge) {
+            const sportName = badge.textContent.trim();
+            const iconClass = getSportIcon(sportName);
+            if (iconClass) {
+              icon.className = 'bi ' + iconClass;
+            }
           }
         });
-        
-        // Inisialisasi Intersection Observer
-        if ('IntersectionObserver' in window) {
-          const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-              if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-              }
-            });
-          }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-          });
-          
-          // Observe all cards
-          document.querySelectorAll('.sporter-event-card, .stat-card').forEach(function(card) {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(card);
-          });
-        }
         
         // Sistem Filter
         const filterButtons = document.querySelectorAll('.events-chip');
@@ -992,9 +1250,10 @@ block content
           // Clear search button
           const clearButton = document.createElement('button');
           clearButton.type = 'button';
-          clearButton.className = 'btn btn-sm btn-link position-absolute end-0 top-50 translate-middle-y me-2';
-          clearButton.innerHTML = '<i class="bi bi-x"></i>';
+          clearButton.className = 'btn btn-sm btn-link position-absolute end-0 top-50 translate-middle-y me-2 p-0';
+          clearButton.innerHTML = '<i class="bi bi-x-circle text-muted"></i>';
           clearButton.style.display = 'none';
+          clearButton.style.zIndex = '3';
           clearButton.addEventListener('click', function() {
             searchInput.value = '';
             searchInput.focus();
@@ -1012,124 +1271,16 @@ block content
             }
             applyFilter();
           });
-          
-          // Enter key untuk search
-          searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              applyFilter();
-            }
-          });
         }
         
-        // Keyboard navigation untuk filter
-        document.addEventListener('keydown', function(e) {
-          const activeFilter = document.querySelector('.events-chip.active');
-          if (!activeFilter) return;
-          
-          const filters = Array.from(filterButtons);
-          const currentIndex = filters.indexOf(activeFilter);
-          
-          if (e.key === 'ArrowLeft' && currentIndex > 0) {
-            e.preventDefault();
-            filters[currentIndex - 1].click();
-          } else if (e.key === 'ArrowRight' && currentIndex < filters.length - 1) {
-            e.preventDefault();
-            filters[currentIndex + 1].click();
-          } else if (e.key === 'Home') {
-            e.preventDefault();
-            filters[0].click();
-          } else if (e.key === 'End') {
-            e.preventDefault();
-            filters[filters.length - 1].click();
-          }
-        });
-        
-        // Hover effects untuk cards
+        // Add animation untuk cards on hover
         document.querySelectorAll('.sporter-event-card').forEach(function(card) {
           card.addEventListener('mouseenter', function() {
             this.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
           });
-        });
-        
-        // Parallax effect untuk hero
-        window.addEventListener('scroll', function() {
-          const scrolled = window.scrollY;
-          const hero = document.querySelector('.events-hero');
-          if (hero && scrolled < 800) {
-            hero.style.transform = 'translateY(' + (scrolled * 0.5) + 'px)';
-          }
-        });
-        
-        // Simulasi real-time update untuk event yang sedang berlangsung
-        function simulateLiveUpdates() {
-          const ongoingEvents = document.querySelectorAll('.event-item[data-status="ongoing"]');
-          ongoingEvents.forEach(event => {
-            // Update participant count secara acak
-            const participantElement = event.querySelector('.event-meta-item:nth-child(3)');
-            if (participantElement) {
-              const currentText = participantElement.textContent;
-              const match = currentText.match(/(\d+)/);
-              if (match) {
-                const currentCount = parseInt(match[1]);
-                const change = Math.floor(Math.random() * 10) - 3; // -3 to +6
-                const newCount = Math.max(50, currentCount + change);
-                participantElement.textContent = currentText.replace(/\d+/, newCount);
-              }
-            }
-          });
-        }
-        
-        // Jalankan simulasi jika ada event ongoing
-        if (document.querySelector('.event-item[data-status="ongoing"]')) {
-          setInterval(simulateLiveUpdates, 10000); // Update setiap 10 detik
-        }
-        
-        // Add animation untuk status badge ongoing
-        const ongoingBadges = document.querySelectorAll('.status-ongoing');
-        ongoingBadges.forEach(badge => {
-          setInterval(() => {
-            badge.classList.toggle('pulse');
-          }, 2000);
-        });
-        
-        // Initialize tooltips jika Bootstrap tersedia
-        if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
-          const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-          tooltipTriggerList.map(function(tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-          });
-        }
-        
-        // Add smooth scroll untuk anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-          anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href !== '#' && href !== '#!') {
-              e.preventDefault();
-              const target = document.querySelector(href);
-              if (target) {
-                target.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'start'
-                });
-              }
-            }
-          });
-        });
-        
-        // Add loading animation untuk images
-        document.querySelectorAll('.sporter-event-card img').forEach(img => {
-          img.addEventListener('load', function() {
-            this.classList.add('loaded');
-          });
           
-          img.addEventListener('error', function() {
-            this.style.display = 'none';
-            const fallback = document.createElement('div');
-            fallback.className = 'event-image-fallback';
-            fallback.innerHTML = '<i class="bi bi-calendar-event"></i>';
-            this.parentElement.appendChild(fallback);
+          card.addEventListener('mouseleave', function() {
+            this.style.transition = 'all 0.3s ease';
           });
         });
         
@@ -1139,21 +1290,6 @@ block content
         // Add CSS untuk additional animations
         const style = document.createElement('style');
         style.textContent = `
-          .event-image-fallback {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 15px;
-          }
-          
-          .event-image-fallback i {
-            font-size: 3rem;
-            color: #adb5bd;
-          }
-          
           .events-chip:focus {
             outline: 2px solid #0095FF;
             outline-offset: 2px;
@@ -1161,7 +1297,7 @@ block content
           
           .search-input:focus {
             border-color: #0095FF;
-            box-shadow: 0 0 0 3px rgba(0, 149, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.1);
           }
           
           @keyframes slideInRight {
@@ -1175,50 +1311,32 @@ block content
             }
           }
           
+          @keyframes fadeInScale {
+            from {
+              opacity: 0;
+              transform: scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+          
           .sporter-hero-illustration {
             animation: slideInRight 0.8s ease-out 0.3s backwards;
           }
           
-          @keyframes bounce {
-            0%, 100% {
-              transform: translateY(0);
-            }
-            50% {
-              transform: translateY(-10px);
-            }
+          .status-ongoing {
+            animation: pulse 2s infinite;
           }
           
-          .sporter-hero-illustration i {
-            animation: bounce 3s infinite;
-          }
-          
-          .status-ongoing.pulse {
-            animation: pulseGreen 1.5s infinite;
-          }
-          
-          @keyframes pulseGreen {
+          @keyframes pulse {
             0%, 100% {
               box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
             }
             50% {
-              box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+              box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
             }
-          }
-          
-          /* Animation untuk stat cards */
-          @keyframes countUp {
-            from {
-              opacity: 0;
-              transform: translateY(10px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          
-          .stat-card .stat-value {
-            animation: countUp 0.5s ease-out;
           }
           
           /* Responsive tweaks */
@@ -1228,126 +1346,21 @@ block content
               min-width: 120px;
               justify-content: center;
             }
-            
-            .sporter-event-card {
-              margin-bottom: 1rem;
-            }
           }
           
-          /* Dark mode support */
-          @media (prefers-color-scheme: dark) {
-            .stat-card {
-              background: #1a1a1a;
-              border-color: #333;
-              color: #fff;
-            }
-            
-            .stat-card .stat-value {
-              color: #0B1F3F;
-            }
-            
-            .stat-card .stat-label {
-              color: #4B5565;
-            }
-            
-            .stat-icon-wrapper {
-              background: rgba(0, 149, 255, 0.2);
-            }
-            
-            .stat-card:hover {
-              border-color: #0095FF;
-              box-shadow: 0 15px 40px rgba(0, 149, 255, 0.2);
-            }
+          /* Smooth hover transitions */
+          .sporter-event-card,
+          .stat-card,
+          .events-chip {
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
           }
           
-          /* Prefers reduced motion */
-          @media (prefers-reduced-motion: reduce) {
-            .sporter-event-card,
-            .stat-card,
-            .events-chip {
-              transition: none !important;
-              animation: none !important;
-            }
-            
-            .events-hero::before,
-            .events-hero::after {
-              animation: none;
-            }
+          /* Improve focus styles for accessibility */
+          .btn:focus,
+          .events-chip:focus {
+            box-shadow: 0 0 0 3px rgba(0, 149, 255, 0.25);
           }
         `;
         document.head.appendChild(style);
-        
-        // Add event listener untuk reset filter
-        const resetFilterBtn = document.createElement('button');
-        resetFilterBtn.type = 'button';
-        resetFilterBtn.className = 'btn btn-sm btn-outline-secondary mt-2 d-none';
-        resetFilterBtn.innerHTML = '<i class="bi bi-arrow-counterclockwise me-1"></i>Reset Filter';
-        resetFilterBtn.id = 'resetFilterBtn';
-        resetFilterBtn.addEventListener('click', function() {
-          filterButtons.forEach(btn => {
-            if (btn.getAttribute('data-filter') === 'all') {
-              btn.classList.add('active');
-            } else {
-              btn.classList.remove('active');
-            }
-          });
-          if (searchInput) {
-            searchInput.value = '';
-            const clearBtn = searchInput.parentElement.querySelector('.btn-link');
-            if (clearBtn) clearBtn.style.display = 'none';
-          }
-          applyFilter();
-          this.classList.add('d-none');
-        });
-        
-        // Add reset button setelah filter chips
-        const filterContainer = document.querySelector('.filter-chips');
-        if (filterContainer) {
-          filterContainer.parentElement.appendChild(resetFilterBtn);
-        }
-        
-        // Tampilkan reset button jika filter aktif bukan "all" atau ada search
-        function checkResetButton() {
-          const activeFilter = document.querySelector('.events-chip.active');
-          const hasSearch = searchInput && searchInput.value.trim() !== '';
-          const isDefaultFilter = activeFilter && activeFilter.getAttribute('data-filter') === 'all';
-          
-          if (!isDefaultFilter || hasSearch) {
-            resetFilterBtn.classList.remove('d-none');
-          } else {
-            resetFilterBtn.classList.add('d-none');
-          }
-        }
-        
-        // Panggil checkResetButton saat filter berubah
-        filterButtons.forEach(button => {
-          button.addEventListener('click', checkResetButton);
-        });
-        
-        if (searchInput) {
-          searchInput.addEventListener('input', checkResetButton);
-        }
-        
-        // Initial check
-        checkResetButton();
       });
-      
-      // Add global helper function untuk formatting
-      window.formatEventDate = function(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('id-ID', {
-          weekday: 'short',
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric'
-        });
-      };
-      
-      window.formatTime = function(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleTimeString('id-ID', {
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-      };
     })();
