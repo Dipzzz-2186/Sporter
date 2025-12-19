@@ -13,12 +13,12 @@ block content
     
     /* Header Section */
     .edit-form-header {
-      background: linear-gradient(135deg, #1C1C1E 0%, #2c2c2e 100%);
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
       border-radius: 24px;
       padding: 2rem;
       margin-bottom: 2rem;
       color: white;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 10px 30px rgba(0, 149, 255, 0.1);
       animation: fadeInDown 0.6s ease-out;
     }
     
@@ -32,7 +32,7 @@ block content
       font-size: 2.5rem;
       letter-spacing: 1px;
       margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -42,22 +42,23 @@ block content
     }
     
     .edit-form-header p {
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.85);
       font-size: 1rem;
       margin: 0;
     }
     
     .match-id-badge {
-      background: rgba(255, 59, 48, 0.15);
-      color: #FF3B30;
+      background: rgba(0, 149, 255, 0.15);
+      color: #0095FF;
       padding: 0.5rem 1rem;
       border-radius: 20px;
       font-weight: 700;
       font-size: 0.9rem;
-      border: 2px solid rgba(255, 59, 48, 0.3);
+      border: 2px solid rgba(0, 149, 255, 0.3);
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
+      backdrop-filter: blur(10px);
     }
     
     /* Alerts */
@@ -78,28 +79,36 @@ block content
     }
     
     .alert-danger {
-      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-      color: #991b1b;
-      border-left: 4px solid #dc2626;
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      color: #0080e0;
+      border-left: 4px solid #0095FF;
     }
     
     .alert-success {
       background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
       color: #065f46;
-      border-left: 4px solid #059669;
+      border-left: 4px solid #10b981;
     }
     
     .alert i {
       font-size: 1.2rem;
     }
     
+    .alert-danger i {
+      color: #0095FF;
+    }
+    
+    .alert-success i {
+      color: #10b981;
+    }
+    
     /* Form Card */
     .edit-form-card {
       background: white;
       border-radius: 24px;
-      border: 2px solid #f0f0f0;
+      border: 2px solid #e8edf2;
       padding: 2.5rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 20px rgba(0, 149, 255, 0.05);
       animation: fadeInUp 0.6s ease-out;
     }
     
@@ -124,7 +133,7 @@ block content
     .section-title {
       font-family: 'Bebas Neue', cursive;
       font-size: 1.5rem;
-      color: #1C1C1E;
+      color: #0B1F3F;
       letter-spacing: 0.5px;
       margin-bottom: 1.5rem;
       display: flex;
@@ -133,12 +142,12 @@ block content
     }
     
     .section-title i {
-      color: #FF3B30;
+      color: #0095FF;
       font-size: 1.5rem;
     }
     
     .section-description {
-      color: #6c757d;
+      color: #5a6c7d;
       font-size: 0.9rem;
       margin-bottom: 1.5rem;
       padding-left: 2rem;
@@ -146,7 +155,7 @@ block content
     
     /* Form Elements */
     .form-label {
-      color: #1C1C1E;
+      color: #0B1F3F;
       font-weight: 600;
       font-size: 0.95rem;
       margin-bottom: 0.75rem;
@@ -156,18 +165,18 @@ block content
     }
     
     .form-label i {
-      color: #FF3B30;
+      color: #0095FF;
       font-size: 1rem;
     }
     
     .form-label .badge {
-      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e6 100%);
-      color: #FF3B30;
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      color: #0095FF;
       font-size: 0.7rem;
       padding: 0.25rem 0.5rem;
       border-radius: 8px;
       font-weight: 600;
-      border: 1px solid #ffeded;
+      border: 1px solid #d6edff;
     }
     
     .badge-required {
@@ -178,7 +187,7 @@ block content
     
     .form-control,
     .form-select {
-      border: 2px solid #e8e8e8;
+      border: 2px solid #e8edf2;
       border-radius: 12px;
       padding: 0.9rem 1.2rem;
       font-size: 0.95rem;
@@ -188,8 +197,8 @@ block content
     
     .form-control:focus,
     .form-select:focus {
-      border-color: #FF3B30;
-      box-shadow: 0 0 0 0.25rem rgba(255, 59, 48, 0.15);
+      border-color: #0095FF;
+      box-shadow: 0 0 0 0.25rem rgba(0, 149, 255, 0.15);
       background: white;
     }
     
@@ -217,7 +226,7 @@ block content
     }
     
     .status-indicator.scheduled { background: #f59e0b; }
-    .status-indicator.ongoing { background: #3b82f6; }
+    .status-indicator.ongoing { background: #0095FF; }
     .status-indicator.finished { background: #10b981; }
     .status-indicator.cancelled { background: #6c757d; }
     
@@ -227,7 +236,7 @@ block content
     
     /* Help Text */
     .form-text {
-      color: #6c757d;
+      color: #5a6c7d;
       font-size: 0.85rem;
       margin-top: 0.5rem;
       display: flex;
@@ -236,7 +245,7 @@ block content
     }
     
     .form-text i {
-      color: #FF3B30;
+      color: #0095FF;
       font-size: 0.9rem;
     }
     
@@ -250,7 +259,7 @@ block content
     }
     
     .btn-submit {
-      background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       border: none;
       color: white;
       padding: 1rem 2rem;
@@ -258,7 +267,7 @@ block content
       font-weight: 700;
       font-size: 1rem;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -268,14 +277,14 @@ block content
     
     .btn-submit:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(255, 59, 48, 0.4);
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
       color: white;
     }
     
     .btn-back {
       background: white;
-      border: 2px solid #e8e8e8;
-      color: #6c757d;
+      border: 2px solid #e8edf2;
+      color: #5a6c7d;
       padding: 1rem 2rem;
       border-radius: 12px;
       font-weight: 600;
@@ -290,8 +299,8 @@ block content
     
     .btn-back:hover {
       background: #f8f9fa;
-      border-color: #1C1C1E;
-      color: #1C1C1E;
+      border-color: #0095FF;
+      color: #0B1F3F;
       transform: translateY(-2px);
     }
     
@@ -663,7 +672,7 @@ block content
         var maxLength = 200;
         var counter = document.createElement('small');
         counter.className = 'form-text text-end d-block mt-1';
-        counter.style.color = '#6c757d';
+        counter.style.color = '#5a6c7d';
         titleInput.parentNode.appendChild(counter);
         
         function updateCounter() {
@@ -671,9 +680,9 @@ block content
           counter.textContent = length + ' / ' + maxLength + ' karakter';
           
           if (length > maxLength * 0.9) {
-            counter.style.color = '#FF3B30';
+            counter.style.color = '#0095FF';
           } else {
-            counter.style.color = '#6c757d';
+            counter.style.color = '#5a6c7d';
           }
         }
         
