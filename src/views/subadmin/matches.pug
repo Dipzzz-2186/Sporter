@@ -767,7 +767,7 @@ block content
                           .status-badge.status-scheduled
                             i.bi.bi-calendar-check
                             | Dijadwalkan
-                        else if m.status === 'ongoing'
+                        else if m.status === 'live'
                           .status-badge.status-ongoing
                             i.bi.bi-broadcast
                             | Berlangsung
@@ -776,24 +776,29 @@ block content
                             i.bi.bi-check-circle
                             | Selesai
                         else
-                          .status-badge
-                            = m.status || 'N/A'
+                          .status-badge= m.status || 'N/A'
+
                       
                       if !isReadOnly
                         td
                           .action-buttons
-                            if m.sport_name && m.sport_name.toLowerCase() === 'padel' && m.status !== 'finished'
-                              button.btn.btn-sm.btn-primary(
-                                type="button"
-                                data-match-id=m.id
-                                data-mode=(m.match_mode || 'team')
-                                data-participants=(m.participants_names || '')
-                                data-home=(m.home_team_name || '')
-                                data-away=(m.away_team_name || '')
-                                onclick="openScoreModal(this)"
-                              )
-                                i.bi.bi-pencil-square
-                                | Input Skor
+                            if m.sport_name && m.sport_name.toLowerCase() === 'padel'
+                              if Number(m.is_started) === 1
+                                button.btn.btn-sm.btn-primary(
+                                  type="button"
+                                  data-match-id=m.id
+                                  data-mode=(m.match_mode || '').toLowerCase()
+                                  data-participants=(m.participants_names || '')
+                                  data-home=(m.home_team_name || '')
+                                  data-away=(m.away_team_name || '')
+                                  onclick="openScoreModal(this)"
+                                )
+                                  i.bi.bi-pencil-square.me-1
+                                  | Input Skor
+                              else
+                                button.btn.btn-sm.btn-secondary(disabled)
+                                  i.bi.bi-lock-fill.me-1
+                                  | Belum Mulai
 
                             a.btn.btn-action.btn-action-edit(
                               href=`/subadmin/matches/${m.id}/edit`
