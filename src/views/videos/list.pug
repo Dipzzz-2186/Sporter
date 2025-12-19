@@ -2,85 +2,10 @@ extends ../layout/main
 
 block content
   style.
-    /* Hero Section for Video */
-    .videos-hero {
-      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
-      position: relative;
-      overflow: hidden;
-      padding: 5rem 0;
-      animation: fadeIn 0.8s ease-out;
-      margin-bottom: 3rem;
-    }
-    
+    /* Global Animations */
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
-    }
-    
-    .videos-hero::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: float 8s ease-in-out infinite;
-    }
-    
-    .videos-hero::after {
-      content: '';
-      position: absolute;
-      bottom: -40%;
-      left: -10%;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(52, 199, 255, 0.1) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: float 10s ease-in-out infinite reverse;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(50px, -50px) scale(1.1); }
-    }
-    
-    .videos-hero-content {
-      position: relative;
-      z-index: 2;
-      animation: slideInLeft 0.8s ease-out;
-    }
-    
-    @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-50px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-    
-    .videos-hero-badge {
-      background: rgba(0, 149, 255, 0.15) !important;
-      color: #0095FF !important;
-      border: 2px solid rgba(0, 149, 255, 0.3);
-      padding: 0.6rem 1.2rem;
-      font-size: 0.95rem;
-      backdrop-filter: blur(10px);
-      animation: pulse 2s infinite;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 149, 255, 0.4); }
-      50% { box-shadow: 0 0 0 10px rgba(0, 149, 255, 0); }
-    }
-    
-    .videos-hero h1 {
-      color: white;
-      font-size: 3.5rem;
-      line-height: 1.2;
-      margin-bottom: 1rem;
-      animation: fadeInUp 0.8s ease-out 0.2s backwards;
     }
     
     @keyframes fadeInUp {
@@ -88,7 +13,84 @@ block content
       to { opacity: 1; transform: translateY(0); }
     }
     
-    .videos-hero .text-danger {
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-20px) scale(1.05); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 149, 255, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(0, 149, 255, 0); }
+    }
+    
+    /* Hero Section - Layout diperbaiki */
+    .videos-hero {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      position: relative;
+      overflow: hidden;
+      padding: 4.5rem 0 3rem;
+      margin-bottom: 2.5rem;
+    }
+    
+    .videos-hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -15%;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .videos-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -5%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(52, 199, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite reverse;
+    }
+    
+    .videos-hero-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .videos-hero-badge {
+      background: rgba(0, 149, 255, 0.15);
+      color: #0095FF;
+      border: 2px solid rgba(0, 149, 255, 0.3);
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      animation: pulse 2s infinite;
+    }
+    
+    .videos-hero h1 {
+      color: white;
+      font-size: 3.2rem;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      font-weight: 800;
+    }
+    
+    .videos-hero .text-primary {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -96,16 +98,16 @@ block content
     }
     
     .videos-hero .lead {
-      color: rgba(255, 255, 255, 0.85) !important;
-      font-size: 1.15rem;
-      line-height: 1.8;
-      animation: fadeInUp 0.8s ease-out 0.4s backwards;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      max-width: 600px;
     }
     
-    /* Video Filter Section */
+    /* Filter Section - Layout lebih baik */
     .video-filter-section {
       background: white;
-      padding: 2rem 0;
+      padding: 2rem 0 2.5rem;
       border-bottom: 1px solid #f0f0f0;
     }
     
@@ -113,7 +115,18 @@ block content
       background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
       border-radius: 20px;
       padding: 2rem;
-      animation: fadeInUp 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .filter-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
     }
     
     .filter-header {
@@ -122,9 +135,9 @@ block content
     
     .filter-header h3 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
+      font-size: 2.2rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       margin-bottom: 0.5rem;
     }
     
@@ -134,77 +147,124 @@ block content
       margin: 0;
     }
     
-    .filter-buttons {
-      display: flex;
-      flex-wrap: wrap;
+    .filter-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 0.75rem;
-      margin-bottom: 1.5rem;
     }
     
     .btn-filter {
       background: white;
       border: 2px solid #d0d0d0;
-      border-radius: 50px;
-      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
       font-weight: 600;
       color: #5a6c7d;
-      transition: all 0.3s ease;
-      display: inline-flex;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: center;
+      gap: 0.75rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-filter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+    
+    .btn-filter span,
+    .btn-filter i {
+      position: relative;
+      z-index: 2;
     }
     
     .btn-filter:hover,
     .btn-filter.active {
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      border-color: #0095FF;
+      border-color: transparent;
       color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.25);
     }
     
-    .btn-filter i {
-      font-size: 1.1rem;
+    .btn-filter.active::before,
+    .btn-filter:hover::before {
+      opacity: 1;
     }
     
-    /* Video Cards */
+    /* Videos Section - Layout baru */
     .videos-section {
-      padding: 3rem 0 5rem;
+      padding: 3rem 0 4rem;
       background: white;
     }
     
-    .section-header {
-      margin-bottom: 3rem;
+    .videos-header {
+      margin-bottom: 2.5rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1.5rem;
+      align-items: flex-end;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f0f0f0;
     }
     
-    .section-header h2 {
+    .videos-header-left {
+      flex: 1;
+    }
+    
+    .videos-header-left h2 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+      margin: 0 0 0.5rem 0;
+      line-height: 1;
     }
     
-    .section-header p {
+    .videos-header-left p {
       color: #5a6c7d;
       font-size: 1.05rem;
       margin: 0;
     }
     
+    .videos-header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .video-counter {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(0, 149, 255, 0.1);
+      padding: 0.75rem 1.25rem;
+      border-radius: 50px;
+      color: #0095FF;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    
+    /* Video Cards Grid */
     .sporter-video-card {
       border-radius: 20px;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       border: 2px solid #e8edf2;
       overflow: hidden;
       position: relative;
-      animation: fadeInUp 0.6s ease-out backwards;
       background: white;
       height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     
     .sporter-video-card::before {
@@ -225,87 +285,156 @@ block content
     }
     
     .sporter-video-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
-      border-color: #0095FF;
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(0, 149, 255, 0.15);
+      border-color: transparent;
     }
     
-    .video-thumbnail {
+    .video-card-media {
       position: relative;
-      overflow: hidden;
       height: 200px;
+      overflow: hidden;
       border-radius: 18px 18px 0 0;
     }
     
-    .video-thumbnail img {
+    .video-card-media .video-player {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
     }
     
-    .sporter-video-card:hover .video-thumbnail img {
-      transform: scale(1.05);
-    }    
-    
-    .sporter-video-card .card-body {
-      padding: 1.75rem;
+    .video-card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
-    .video-sport-badge {
-      background: rgba(0, 149, 255, 0.1) !important;
-      color: #0080e0 !important;
-      padding: 0.4rem 0.9rem;
-      border-radius: 20px;
+    .sporter-video-card:hover .video-card-media img {
+      transform: scale(1.08);
+    }
+    
+    /* Video Play Overlay */
+    .video-play-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sporter-video-card:hover .video-play-overlay {
+      opacity: 1;
+    }
+    
+    .play-button {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      transform: scale(0.8);
+      transition: transform 0.3s ease;
+    }
+    
+    .sporter-video-card:hover .play-button {
+      transform: scale(1);
+    }
+    
+    .video-duration {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 15px;
       font-size: 0.8rem;
       font-weight: 600;
-      border: 1px solid rgba(0, 149, 255, 0.2);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
+      backdrop-filter: blur(10px);
+    }
+    
+    .video-card-content {
+      padding: 1.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .video-card-header {
       margin-bottom: 1rem;
     }
     
-    .video-sport-badge i {
-      font-size: 0.9rem;
-    }
-    
-    .sporter-video-card h5 {
-      color: #0B1F3F;
+    .video-sport-badge {
+      background: rgba(0, 149, 255, 0.1);
+      color: #0080e0;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
       font-weight: 700;
-      font-size: 1.2rem;
-      line-height: 1.4;
-      margin-bottom: 0.75rem;
-      min-height: 56px;
-    }
-    
-    .video-event-info {
-      color: #5a6c7d;
-      font-size: 0.9rem;
-      margin-bottom: 1.25rem;
-      display: flex;
+      border: 1.5px solid rgba(0, 149, 255, 0.2);
+      display: inline-flex;
       align-items: center;
       gap: 0.5rem;
     }
     
-    .video-event-info i {
+    .video-card-title {
+      color: #0B1F3F;
+      font-weight: 700;
+      font-size: 1.25rem;
+      line-height: 1.4;
+      margin: 0.75rem 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .video-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    
+    .video-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #5a6c7d;
+      font-size: 0.9rem;
+    }
+    
+    .video-meta-item i {
       color: #0095FF;
       font-size: 1rem;
     }
     
-    .video-stats {
-      display: flex;
-      justify-content: space-between;
-      border-top: 1px solid #f0f0f0;
+    .video-card-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-top: auto;
       padding-top: 1rem;
-      margin-top: 1rem;
+      border-top: 1px solid #f0f0f0;
     }
     
-    .stat-item {
+    .video-stat-item {
       text-align: center;
     }
     
-    .stat-value {
+    .video-stat-value {
       display: block;
       font-size: 1.1rem;
       font-weight: 700;
@@ -314,130 +443,245 @@ block content
       margin-bottom: 0.25rem;
     }
     
-    .stat-label {
+    .video-stat-label {
       display: block;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       color: #5a6c7d;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     
-    .sporter-video-card .btn {
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.75rem 1.5rem;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 1rem;
+    .video-card-actions {
+      margin-top: 1.5rem;
     }
     
-    .sporter-video-card .btn-danger {
+    .btn-watch-video {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       border: none;
-      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
       width: 100%;
-      justify-content: center;
-      color: white !important;
-    }
-    
-    .sporter-video-card .btn-danger:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 149, 255, 0.4);
-    }
-    
-    /* Empty State */
-    .videos-empty-state {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      border: 2px dashed #d0d0d0;
-      border-radius: 20px;
-      padding: 4rem 2rem;
-      text-align: center;
-      animation: fadeInUp 0.6s ease-out;
-    }
-    
-    .videos-empty-state-icon {
-      width: 100px;
-      height: 100px;
-      background: white;
-      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem;
-      animation: float 3s ease-in-out infinite;
+      gap: 0.75rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
     }
     
-    .videos-empty-state-icon i {
-      font-size: 3rem;
-      color: #adb5bd;
+    .btn-watch-video::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0080e0 0%, #0095FF 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
     }
     
-    .videos-empty-state h3 {
+    .btn-watch-video:hover::before {
+      opacity: 1;
+    }
+    
+    .btn-watch-video:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 149, 255, 0.3);
+    }
+    
+    /* Featured Video Section */
+    .featured-video-section {
+      padding: 2rem 0 3rem;
+      background: white;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .featured-video-header {
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .featured-video-header h3 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
+      font-size: 2.4rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
-      margin-bottom: 0.75rem;
+      letter-spacing: 0.5px;
+      margin: 0 0 0.25rem 0;
     }
     
-    .videos-empty-state p {
+    .featured-video-header p {
       color: #5a6c7d;
       font-size: 1.05rem;
       margin: 0;
     }
     
-    /* Video Stats Section */
+    .featured-badge {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      color: white !important;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+    }
+    
+    .featured-video-card {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      border-radius: 25px;
+      overflow: hidden;
+      border: 2px solid #e8edf2;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    
+    .featured-video-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
+      border-color: #0095FF;
+    }
+    
+    .featured-video-player {
+      position: relative;
+      height: 380px;
+      overflow: hidden;
+      border-radius: 23px 23px 0 0;
+    }
+    
+    .featured-video-player iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    .featured-video-content {
+      padding: 2rem;
+    }
+    
+    .featured-video-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #0B1F3F;
+      margin-bottom: 1rem;
+    }
+    
+    .featured-video-description {
+      color: #5a6c7d;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+    
+    .featured-video-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .featured-detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .featured-detail-label {
+      color: #5a6c7d;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    
+    .featured-detail-value {
+      color: #0B1F3F;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    
+    /* Stats Section - Layout lebih baik */
     .video-stats-section {
       background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-      padding: 3rem 0;
-      border-radius: 30px;
+      padding: 4rem 0;
+      border-radius: 25px;
       margin-top: 3rem;
-      animation: fadeInUp 0.6s ease-out;
     }
     
-    .video-stats-header {
+    .stats-header {
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 3rem;
     }
     
-    .video-stats-header h3 {
+    .stats-header h3 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.2rem;
+      font-size: 2.4rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       margin-bottom: 0.5rem;
     }
     
-    .video-stats-header p {
+    .stats-header p {
       color: #5a6c7d;
       font-size: 1.05rem;
-      margin: 0;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
     }
     
     .stats-card {
       background: white;
       border-radius: 20px;
-      padding: 2rem;
+      padding: 2rem 1.5rem;
       text-align: center;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 2px solid #e8edf2;
-      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stats-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .stats-card:hover::before {
+      transform: scaleX(1);
     }
     
     .stats-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0, 149, 255, 0.1);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
       border-color: #0095FF;
     }
     
     .stats-icon-wrapper {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(0, 149, 255, 0.2) 100%);
-      border-radius: 15px;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.2) 100%);
+      border-radius: 20px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -447,11 +691,11 @@ block content
     
     .stats-card:hover .stats-icon-wrapper {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      transform: rotate(5deg) scale(1.1);
+      transform: scale(1.1);
     }
     
     .stats-icon-wrapper i {
-      font-size: 2rem;
+      font-size: 2.2rem;
       color: #0095FF;
       transition: color 0.3s ease;
     }
@@ -462,46 +706,145 @@ block content
     
     .stats-value {
       font-size: 2.5rem;
-      font-weight: 700;
+      font-weight: 800;
       color: #0B1F3F;
       line-height: 1;
       margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
     }
     
     .stats-label {
       color: #5a6c7d;
       font-size: 1rem;
+      font-weight: 600;
       margin: 0;
     }
     
+    /* Empty State */
+    .video-empty-state {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 2px dashed #d0d0d0;
+      border-radius: 20px;
+      padding: 4rem 2rem;
+      text-align: center;
+      max-width: 800px;
+      margin: 2rem auto;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .video-empty-state::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(0, 149, 255, 0.05) 50%, transparent 70%);
+      animation: shimmer 3s infinite linear;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .video-empty-state-icon {
+      width: 120px;
+      height: 120px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.75rem;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    
+    .video-empty-state-icon i {
+      font-size: 3.5rem;
+      color: #adb5bd;
+      animation: float 3s infinite;
+    }
+    
+    .video-empty-state h3 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.2rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .video-empty-state p {
+      color: #5a6c7d;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin: 0;
+      position: relative;
+      z-index: 2;
+    }
+    
     /* Responsive */
+    @media (max-width: 1199px) {
+      .videos-hero h1 {
+        font-size: 2.8rem;
+      }
+      
+      .videos-header-left h2 {
+        font-size: 2.4rem;
+      }
+      
+      .featured-video-header h3 {
+        font-size: 2rem;
+      }
+      
+      .featured-video-player {
+        height: 350px;
+      }
+    }
+    
     @media (max-width: 991px) {
       .videos-hero {
-        padding: 3rem 0;
+        padding: 3.5rem 0 2.5rem;
       }
       
       .videos-hero h1 {
-        font-size: 2.5rem;
+        font-size: 2.4rem;
       }
       
       .videos-hero .lead {
         font-size: 1rem;
       }
       
-      .section-header h2 {
+      .filter-buttons-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .videos-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .videos-header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .featured-video-player {
+        height: 300px;
+      }
+      
+      .featured-video-content {
+        padding: 1.75rem;
+      }
+      
+      .stats-header h3 {
         font-size: 2rem;
-      }
-      
-      .filter-buttons {
-        justify-content: center;
-      }
-      
-      .sporter-video-card h5 {
-        min-height: auto;
-      }
-      
-      .video-stats-header h3 {
-        font-size: 1.8rem;
       }
     }
     
@@ -510,49 +853,79 @@ block content
         font-size: 2rem;
       }
       
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      
-      .section-header h2 {
-        font-size: 1.75rem;
-      }
-      
       .filter-container {
         padding: 1.5rem;
       }
       
-      .btn-filter {
-        width: 100%;
-        justify-content: center;
+      .filter-buttons-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
       
-      .sporter-video-card .card-body {
+      .videos-header-left h2 {
+        font-size: 2rem;
+      }
+      
+      .video-card-content {
         padding: 1.5rem;
       }
       
-      .video-stats-section {
-        padding: 2rem 1rem;
+      .featured-video-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .featured-video-header h3 {
+        font-size: 1.8rem;
+      }
+      
+      .featured-video-player {
+        height: 250px;
+      }
+      
+      .featured-video-title {
+        font-size: 1.3rem;
+      }
+      
+      .featured-video-details {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
-    .video-thumbnail iframe {
-      border-radius: 18px 18px 0 0;
-    }
-    /* Animation delays */
-    .sporter-video-card:nth-child(1) { animation-delay: 0.1s; }
-    .sporter-video-card:nth-child(2) { animation-delay: 0.2s; }
-    .sporter-video-card:nth-child(3) { animation-delay: 0.3s; }
-    .sporter-video-card:nth-child(4) { animation-delay: 0.4s; }
-    .sporter-video-card:nth-child(5) { animation-delay: 0.5s; }
-    .sporter-video-card:nth-child(6) { animation-delay: 0.6s; }
     
-    .stats-card:nth-child(1) { animation-delay: 0.2s; }
-    .stats-card:nth-child(2) { animation-delay: 0.4s; }
-    .stats-card:nth-child(3) { animation-delay: 0.6s; }
-    .stats-card:nth-child(4) { animation-delay: 0.8s; }
+    @media (max-width: 575px) {
+      .filter-buttons-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .video-card-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Animation delays */
+    .sporter-video-card:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.1s forwards; opacity: 0; }
+    .sporter-video-card:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.2s forwards; opacity: 0; }
+    .sporter-video-card:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.3s forwards; opacity: 0; }
+    .sporter-video-card:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.4s forwards; opacity: 0; }
+    .sporter-video-card:nth-child(5) { animation: fadeInUp 0.6s ease-out 0.5s forwards; opacity: 0; }
+    .sporter-video-card:nth-child(6) { animation: fadeInUp 0.6s ease-out 0.6s forwards; opacity: 0; }
+    
+    .stats-card:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.2s forwards; opacity: 0; }
+    .stats-card:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.3s forwards; opacity: 0; }
+    .stats-card:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.4s forwards; opacity: 0; }
+    .stats-card:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.5s forwards; opacity: 0; }
 
-  // HERO SECTION FOR VIDEOS
+  // HERO SECTION
   .videos-hero
     .container
       .row.align-items-center.gy-4
@@ -560,19 +933,103 @@ block content
           span.badge.videos-hero-badge.mb-3
             i.bi.bi-play-circle-fill.me-2
             | Koleksi Video Terlengkap
+          
           h1.fw-bold.mb-3
             | Video 
-            span.text-danger Pertandingan
+            span.text-primary Pertandingan
+          
           p.lead.mb-4
             | Tonton highlight, rekaman pertandingan lengkap, dan analisis eksklusif 
             | dari berbagai cabang olahraga. Nikmati pengalaman menonton yang imersif 
             | dengan kualitas terbaik.
+          
+          .row.g-3.mt-4
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-camera-reels-fill.text-primary.fs-4
+                div
+                  .h5.mb-0.fw-bold.text-white #{videos.length}
+                  small.text-white-50.fs-8 Video
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-clock-fill.text-warning.fs-4
+                div
+                  - const totalHours = videos.length > 0 ? Math.floor(videos.reduce((acc, v) => acc + (v.duration || 0), 0) / 60) : 0
+                  .h5.mb-0.fw-bold.text-white #{totalHours}
+                  small.text-white-50.fs-8 Jam
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-eye-fill.text-success.fs-4
+                div
+                  .h5.mb-0.fw-bold.text-white #{videos.length * 1250}
+                  small.text-white-50.fs-8 Views
+            .col-6.col-md-3
+              .d-flex.align-items-center.gap-2.p-3.rounded-3(style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);")
+                i.bi.bi-trophy-fill.text-info.fs-4
+                div
+                  .h5.mb-0.fw-bold.text-white #{Math.floor(videos.length / 3)}
+                  small.text-white-50.fs-8 Turnamen
         
-        .col-lg-4.text-center
-          .sporter-hero-illustration.mx-auto(style="padding: 2.5rem 2rem; background: rgba(0, 149, 255, 0.08); border: 2px solid rgba(0, 149, 255, 0.2); border-radius: 30px; backdrop-filter: blur(10px);")
-            i.bi.bi-camera-reels-fill(style="font-size: 6rem; color: rgba(255, 255, 255, 0.3);")
-            p.mb-0.fs-6.text-white-50
-              | HD Quality • Multi-angle • Real-time Replay
+        .col-lg-4.text-center.d-none.d-lg-block
+          .position-relative(style="padding: 2.5rem 2rem;")
+            .position-absolute.top-0.start-0.w-100.h-100.rounded-4(style="background: linear-gradient(135deg, rgba(0, 149, 255, 0.08) 0%, rgba(52, 199, 255, 0.15) 100%); border: 2px solid rgba(0, 149, 255, 0.2); backdrop-filter: blur(10px);")
+            .position-relative.z-1
+              i.bi.bi-play-btn-fill(style="font-size: 5rem; color: rgba(255, 255, 255, 0.2); margin-bottom: 1rem;")
+              p.mb-0.fs-6.text-white-50.fw-medium
+                | HD Quality 
+                br
+                | Multi Angle 
+                br
+                | Instant Replay
+
+  // FEATURED VIDEO
+  - const featuredVideo = videos[0]
+  if featuredVideo
+    .featured-video-section
+      .container
+        .featured-video-header
+          div
+            h3 Video Utama
+            p Tonton highlight terbaik minggu ini
+        
+        a.text-decoration-none(href=`/videos/${featuredVideo.id}`)
+          .featured-video-card
+            .featured-video-player
+              if featuredVideo.embed_url
+                iframe(
+                  src=featuredVideo.embed_url
+                  frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                )
+              else
+                .bg-dark.d-flex.align-items-center.justify-content-center.h-100
+                  i.bi.bi-play-circle-fill.text-primary(style="font-size: 4rem;")
+            
+            .featured-video-content
+              h3.featured-video-title= featuredVideo.title
+              
+              if featuredVideo.description
+                p.featured-video-description= featuredVideo.description.substring(0, 200) + '...'
+              
+              .featured-video-details
+                .featured-detail-item
+                  span.featured-detail-label Cabang Olahraga
+                  span.featured-detail-value= featuredVideo.sport_name || 'Olahraga'
+                .featured-detail-item
+                  span.featured-detail-label Durasi
+                  - const duration = Math.floor(Math.random() * 120) + 1
+                  span.featured-detail-value #{duration} menit
+                .featured-detail-item
+                  span.featured-detail-label Views
+                  span.featured-detail-value #{Math.floor(Math.random() * 10000) + 1000}
+                .featured-detail-item
+                  span.featured-detail-label Upload
+                  span.featured-detail-value= new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+              
+              button.btn.btn-primary.btn-lg.w-100(type="button")
+                i.bi.bi-play-circle-fill.me-2
+                | Tonton Sekarang
 
   // FILTER SECTION
   .video-filter-section
@@ -581,42 +1038,47 @@ block content
         .filter-header
           h3 Filter Video
           p Temukan video berdasarkan cabang olahraga favorit Anda
-        .filter-buttons
+        
+        .filter-buttons-grid
           button.btn-filter.active(type="button" data-sport="all")
             i.bi.bi-grid-fill
-            | Semua Video
+            span Semua
           button.btn-filter(type="button" data-sport="football")
             i.bi.bi-emoji-angry-fill
-            | Sepak Bola
+            span Sepak Bola
           button.btn-filter(type="button" data-sport="basketball")
             i.bi.bi-basket2-fill
-            | Basket
+            span Basket
           button.btn-filter(type="button" data-sport="badminton")
             i.bi.bi-brightness-alt-high-fill
-            | Bulu Tangkis
+            span Bulu Tangkis
           button.btn-filter(type="button" data-sport="tennis")
             i.bi.bi-circle-half
-            | Tenis
+            span Tenis
           button.btn-filter(type="button" data-sport="volleyball")
             i.bi.bi-circle-fill
-            | Bola Voli
+            span Bola Voli
 
-  // VIDEOS SECTION
+  // VIDEOS GRID
   .videos-section
     .container
-      .section-header
-        div
+      .videos-header
+        .videos-header-left
           h2 Koleksi Video
           p Tonton kembali momen-momen terbaik dari pertandingan terkini
         
-        if videos.length > 0
+        .videos-header-right
+          .video-counter#video-count
+            i.bi.bi-camera-video-fill.text-primary
+            span #{videos.length} Video
+          
           .d-flex.align-items-center.gap-2
-            span.text-muted.small #{videos.length} Video Tersedia
+            span.text-muted.small Total: #{videos.length} Video
             i.bi.bi-check-circle-fill.text-success
 
       if videos.length === 0
-        .videos-empty-state
-          .videos-empty-state-icon
+        .video-empty-state
+          .video-empty-state-icon
             i.bi.bi-camera-video-off-fill
           h3 Belum Ada Video
           p
@@ -628,147 +1090,217 @@ block content
         .row.g-4
           each v in videos
             .col-md-6.col-lg-4
-              .sporter-video-card
-                .video-thumbnail
-                  if v.embed_url
-                    .ratio.ratio-16x9
-                      iframe(
-                        src=v.embed_url
-                        frameborder="0"
-                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen
-                      )
-                  else
-                    .bg-dark.d-flex.align-items-center.justify-content-center(style="height:100%;")
-                      i.bi.bi-play-circle-fill.text-primary(style="font-size:3rem")
+              a.text-decoration-none(href=`/videos/${v.id}`)
+                .sporter-video-card
+                  .video-card-media
+                    if v.thumbnail_url
+                      img(src=v.thumbnail_url alt=v.title loading="lazy")
+                    else
+                      .bg-dark.d-flex.align-items-center.justify-content-center.h-100
+                        i.bi.bi-play-circle-fill.text-primary(style="font-size: 3rem;")
+                    
+                    .video-play-overlay
+                      .play-button
+                        i.bi.bi-play-fill
+                    
+                    .video-duration #{Math.floor(Math.random() * 120) + 1}:#{Math.floor(Math.random() * 60).toString().padStart(2, '0')}
+                  
+                  .video-card-content
+                    .video-card-header
+                      span.video-sport-badge
+                        i.bi.bi-trophy-fill
+                        = v.sport_name || 'Olahraga'
+                      h4.video-card-title= v.title
+                    
+                    .video-card-meta
+                      .video-meta-item
+                        i.bi.bi-calendar-event
+                        span= new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+                      .video-meta-item
+                        i.bi.bi-clock
+                        span #{Math.floor(Math.random() * 120) + 1} menit
+                    
+                    .video-card-stats
+                      .video-stat-item
+                        span.video-stat-value #{Math.floor(Math.random() * 1000) + 100}
+                        span.video-stat-label Views
+                      .video-stat-item
+                        span.video-stat-value #{Math.floor(Math.random() * 500) + 50}
+                        span.video-stat-label Likes
+                      .video-stat-item
+                        span.video-stat-value #{Math.floor(Math.random() * 100) + 10}
+                        span.video-stat-label Comments
+                    
+                    .video-card-actions
+                      button.btn-watch-video(type="button")
+                        i.bi.bi-play-circle-fill
+                        span Tonton Video
 
-
-                  .video-play-overlay
-                    .play-button
-                      i.bi.bi-play-fill
-                  
-                  .video-duration #{Math.floor(Math.random() * 120) + 1}:#{Math.floor(Math.random() * 60).toString().padStart(2, '0')}
-                
-                .card-body.d-flex.flex-column
-                  span.video-sport-badge
-                    i(class=getSportIcon(v.sport_name))
-                    = v.sport_name || 'Olahraga'
-                  
-                  h5= v.title
-                  
-                  .video-event-info
-                    i.bi.bi-calendar-event
-                    span= v.event_title || 'Pertandingan Umum'
-                  
-                  .video-stats
-                    .stat-item
-                      span.stat-value #{Math.floor(Math.random() * 1000) + 100}
-                      span.stat-label Tayang
-                    .stat-item
-                      span.stat-value #{Math.floor(Math.random() * 500) + 50}
-                      span.stat-label Like
-                    .stat-item
-                      span.stat-value #{Math.floor(Math.random() * 100) + 10}
-                      span.stat-label Komentar
-                  
-                  a.btn.btn-danger.mt-auto(href=`/videos/${v.id}`)
-                    i.bi.bi-play-circle.me-2
-                    | Tonton Sekarang
-
-  // VIDEO STATS SECTION
+  // STATS SECTION
   .video-stats-section
     .container
-      .video-stats-header
+      .stats-header
         h3 Statistik Video
         p Koleksi video terlengkap dari berbagai cabang olahraga
       
-      .row.g-4
-        .col-md-3.col-sm-6
-          .stats-card
-            .stats-icon-wrapper
-              i.bi.bi-camera-reels-fill
-            .stats-value #{videos.length}
-            .stats-label Total Video
+      .stats-grid
+        .stats-card
+          .stats-icon-wrapper
+            i.bi.bi-camera-reels-fill
+          .stats-value #{videos.length}
+          .stats-label Total Video
         
-        .col-md-3.col-sm-6
-          .stats-card
-            .stats-icon-wrapper
-              i.bi.bi-clock-fill
-            .stats-value #{videos.length > 0 ? Math.floor(videos.reduce((acc, v) => acc + (v.duration || 0), 0) / 60).toFixed(1) : '0'}
-            .stats-label Jam Tayang
+        .stats-card
+          .stats-icon-wrapper
+            i.bi.bi-clock-fill
+          .stats-value #{videos.length > 0 ? Math.floor(videos.reduce((acc, v) => acc + (v.duration || 0), 0) / 60) : 0}
+          .stats-label Jam Tayang
         
-        .col-md-3.col-sm-6
-          .stats-card
-            .stats-icon-wrapper
-              i.bi.bi-eye-fill
-            .stats-value #{videos.length * 1250}
-            .stats-label Total View
+        .stats-card
+          .stats-icon-wrapper
+            i.bi.bi-eye-fill
+          .stats-value #{videos.length * 1250}
+          .stats-label Total Views
         
-        .col-md-3.col-sm-6
-          .stats-card
-            .stats-icon-wrapper
-              i.bi.bi-trophy-fill
-            .stats-value #{Math.floor(videos.length / 3)}
-            .stats-label Turnamen
+        .stats-card
+          .stats-icon-wrapper
+            i.bi.bi-trophy-fill
+          .stats-value #{Math.max(1, Math.floor(videos.length / 3))}
+          .stats-label Turnamen
 
   //- Custom JavaScript
   script.
-    // Helper function untuk icon olahraga
-    function getSportIcon(sportName) {
-      const icons = {
-        'Sepak Bola': 'bi-emoji-angry-fill',
-        'Basket': 'bi-basket2-fill',
-        'Bulu Tangkis': 'bi-brightness-alt-high-fill',
-        'Tenis': 'bi-circle-half',
-        'Bola Voli': 'bi-circle-fill'
-      };
-      return icons[sportName] || 'bi-trophy-fill';
-    }
-    
-    // Apply icons to existing badges
-    document.querySelectorAll('.video-sport-badge i').forEach(function(icon) {
-      const sportName = icon.parentElement.textContent.trim();
-      const iconClass = getSportIcon(sportName);
-      icon.className = 'bi ' + iconClass;
-    });
-
     (function() {
-      // Smooth scroll
-      document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-        anchor.addEventListener('click', function(e) {
-          var href = this.getAttribute('href');
-          if (href !== '#' && href !== '#!') {
-            e.preventDefault();
-            var target = document.querySelector(href);
-            if (target) {
-              target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-              });
+      // Helper function untuk icon olahraga
+      function getSportIcon(sportName) {
+        const icons = {
+          'Sepak Bola': 'bi-emoji-angry-fill',
+          'Basket': 'bi-basket2-fill',
+          'Bulu Tangkis': 'bi-brightness-alt-high-fill',
+          'Tenis': 'bi-circle-half',
+          'Bola Voli': 'bi-circle-fill',
+          'Renang': 'bi-water',
+          'Atletik': 'bi-person-running',
+          'Sepeda': 'bi-bicycle',
+          'Panahan': 'bi-bullseye',
+          'Futsal': 'bi-dribbble'
+        };
+        return icons[sportName] || 'bi-trophy-fill';
+      }
+      
+      // Apply icons to existing badges
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.video-sport-badge i').forEach(function(icon) {
+          const badge = icon.closest('.video-sport-badge');
+          if (badge) {
+            const sportName = badge.textContent.trim();
+            const iconClass = getSportIcon(sportName);
+            if (iconClass) {
+              icon.className = 'bi ' + iconClass;
             }
           }
         });
-      });
-      
-      // Video filtering
-      const filterButtons = document.querySelectorAll('.btn-filter');
-      const videoCards = document.querySelectorAll('.sporter-video-card');
-      
-      filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          // Remove active class from all buttons
-          filterButtons.forEach(btn => btn.classList.remove('active'));
-          // Add active class to clicked button
-          this.classList.add('active');
+        
+        // Intersection Observer for animations
+        if ('IntersectionObserver' in window) {
+          const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+              }
+            });
+          }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+          });
           
-          const sport = this.getAttribute('data-sport');
+          // Observe all cards
+          document.querySelectorAll('.sporter-video-card, .stats-card').forEach(function(card) {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+          });
+        }
+        
+        // Video filtering system
+        const filterButtons = document.querySelectorAll('.btn-filter');
+        const videoCards = document.querySelectorAll('.sporter-video-card');
+        const videoCountElement = document.getElementById('video-count');
+        
+        function updateVideoCount() {
+          const visibleCards = document.querySelectorAll('.sporter-video-card:not([style*="display: none"])');
           
-          // Filter video cards
-          videoCards.forEach(card => {
-            const sportBadge = card.querySelector('.video-sport-badge');
-            const sportName = sportBadge ? sportBadge.textContent.toLowerCase().replace(' ', '-') : '';
+          if (videoCountElement) {
+            const countSpan = videoCountElement.querySelector('span');
+            if (countSpan) {
+              countSpan.textContent = `${visibleCards.length} Video`;
+            }
+          }
+          
+          // Update stats cards
+          animateCounter('.stats-card:nth-child(1) .stats-value', visibleCards.length);
+          
+          const totalDuration = visibleCards.length > 0 ? 
+            Math.floor(visibleCards.length * 30) : 0;
+          animateCounter('.stats-card:nth-child(2) .stats-value', totalDuration);
+          
+          const totalViews = visibleCards.length * 1250;
+          animateCounter('.stats-card:nth-child(3) .stats-value', totalViews);
+          
+          const tournaments = Math.max(1, Math.floor(visibleCards.length / 3));
+          animateCounter('.stats-card:nth-child(4) .stats-value', tournaments);
+        }
+        
+        function animateCounter(selector, targetValue) {
+          const element = document.querySelector(selector);
+          if (!element) return;
+          
+          const currentValue = parseInt(element.textContent) || 0;
+          const duration = 800;
+          const steps = 40;
+          const increment = (targetValue - currentValue) / steps;
+          let currentStep = 0;
+          
+          const timer = setInterval(() => {
+            currentStep++;
+            const newValue = Math.floor(currentValue + (increment * currentStep));
+            element.textContent = newValue;
             
-            if (sport === 'all' || sportName.includes(sport)) {
+            if (currentStep >= steps) {
+              clearInterval(timer);
+              element.textContent = targetValue;
+            }
+          }, duration / steps);
+        }
+        
+        function applyFilter() {
+          const activeButton = document.querySelector('.btn-filter.active');
+          const sport = activeButton ? activeButton.getAttribute('data-sport') : 'all';
+          
+          videoCards.forEach(function(card) {
+            const sportBadge = card.querySelector('.video-sport-badge');
+            const sportName = sportBadge ? sportBadge.textContent.toLowerCase() : '';
+            
+            let shouldShow = false;
+            
+            if (sport === 'all') {
+              shouldShow = true;
+            } else if (sport === 'football') {
+              shouldShow = sportName.includes('sepak') || sportName.includes('bola') || 
+                          sportName.includes('football') || sportName.includes('soccer');
+            } else if (sport === 'basketball') {
+              shouldShow = sportName.includes('basket');
+            } else if (sport === 'badminton') {
+              shouldShow = sportName.includes('bulu') || sportName.includes('badminton');
+            } else if (sport === 'tennis') {
+              shouldShow = sportName.includes('tenis');
+            } else if (sport === 'volleyball') {
+              shouldShow = sportName.includes('voli') || sportName.includes('volleyball');
+            }
+            
+            if (shouldShow) {
               card.style.display = 'block';
               setTimeout(() => {
                 card.style.opacity = '1';
@@ -782,61 +1314,67 @@ block content
               }, 300);
             }
           });
-        });
-      });
-      
-      // Intersection Observer for animations
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              entry.target.style.opacity = '1';
-              entry.target.style.transform = 'translateY(0)';
-            }
+          
+          setTimeout(updateVideoCount, 350);
+        }
+        
+        // Event listeners untuk filter
+        filterButtons.forEach(function(button) {
+          button.addEventListener('click', function() {
+            filterButtons.forEach(function(btn) {
+              btn.classList.remove('active');
+            });
+            this.classList.add('active');
+            applyFilter();
           });
-        }, {
-          threshold: 0.1,
-          rootMargin: '0px 0px -50px 0px'
         });
         
-        // Observe all cards
-        document.querySelectorAll('.sporter-video-card, .stats-card').forEach(function(card) {
-          card.style.opacity = '0';
-          card.style.transform = 'translateY(30px)';
-          card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-          observer.observe(card);
-        });
-      }
-      
-      // Hover effect with GSAP-like easing
-      document.querySelectorAll('.sporter-video-card').forEach(function(card) {
-        card.addEventListener('mouseenter', function() {
-          this.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-        });
-      });
-      
-      // Animate stats counters
-      if (document.querySelector('.stats-value')) {
-        const statValues = document.querySelectorAll('.stats-value');
-        statValues.forEach((element, index) => {
-          const finalValue = parseFloat(element.textContent.replace(/[^0-9.]/g, ''));
-          const isDecimal = element.textContent.includes('.');
+        // Add smooth hover effects
+        document.querySelectorAll('.btn-watch-video').forEach(button => {
+          button.addEventListener('mouseenter', function() {
+            const icon = this.querySelector('i');
+            if (icon) {
+              icon.style.transform = 'scale(1.2)';
+              icon.style.transition = 'transform 0.3s ease';
+            }
+          });
           
-          if (!isNaN(finalValue)) {
-            let current = 0;
-            const increment = finalValue / 30;
-            const duration = 1500;
-            const stepTime = duration / 30;
-            
-            const timer = setInterval(() => {
-              current += increment;
-              if (current >= finalValue) {
-                current = finalValue;
-                clearInterval(timer);
-              }
-              element.textContent = isDecimal ? current.toFixed(1) : Math.floor(current);
-            }, stepTime);
-          }
+          button.addEventListener('mouseleave', function() {
+            const icon = this.querySelector('i');
+            if (icon) {
+              icon.style.transform = 'scale(1)';
+            }
+          });
         });
-      }
+        
+        // Simulate view count updates
+        function simulateViewUpdates() {
+          const visibleCards = document.querySelectorAll('.sporter-video-card:not([style*="display: none"])');
+          visibleCards.forEach(card => {
+            const viewElement = card.querySelector('.video-stat-item:nth-child(1) .video-stat-value');
+            if (viewElement) {
+              const current = parseInt(viewElement.textContent) || 100;
+              const change = Math.floor(Math.random() * 10) + 1;
+              const newCount = current + change;
+              viewElement.textContent = newCount;
+            }
+            
+            const likeElement = card.querySelector('.video-stat-item:nth-child(2) .video-stat-value');
+            if (likeElement) {
+              const current = parseInt(likeElement.textContent) || 50;
+              const change = Math.floor(Math.random() * 5);
+              const newCount = current + change;
+              likeElement.textContent = newCount;
+            }
+          });
+        }
+        
+        // Start simulation
+        if (videoCards.length > 0) {
+          setInterval(simulateViewUpdates, 10000);
+        }
+        
+        // Initialize dengan filter aktif
+        applyFilter();
+      });
     })();
