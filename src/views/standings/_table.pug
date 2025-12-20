@@ -1,0 +1,101 @@
+// standings/_table.pug
+
+if standings.length
+  .standings-group
+    .group-title
+      .group-title-icon
+        i.bi.bi-flag-fill
+      h5= standings[0].sport_name
+
+    .standings-table
+      .table-responsive
+        table.table.table-hover
+          thead
+            tr
+              th No.
+              th= (mode === 'individual' ? 'Nama Atlet' : 'Nama Tim')
+
+              if isPadel
+                th.text-center Jumlah Match
+                th.text-center Menang
+                th.text-center Kalah
+                th.text-center Selisih Game
+                th.text-center Selisih Skor
+              else
+                th.text-center PJ
+                th.text-center M
+                th.text-center S
+                th.text-center K
+                th.text-center GM
+                th.text-center GK
+                th.text-center SG
+                th.text-center Poin
+                if !isReadOnly
+                  th.text-center Aksi
+          tbody
+            each row, index in standings
+              tr
+                td
+                  if index === 0
+                    span.position-badge.position-1 1
+                  else if index === 1
+                    span.position-badge.position-2 2
+                  else if index === 2
+                    span.position-badge.position-3 3
+                  else
+                    span.position-badge.position-other= index + 1
+
+                td
+                  .team-name
+                    b= row.team_name
+
+                if isPadel
+                  td.text-center= row.total_match
+                  td.text-center= row.win
+                  td.text-center= row.loss
+
+                  td.text-center
+                    | #{row.set_win} - #{row.set_loss}
+                    span.ms-1(
+                        class= row.set_diff > 0
+                        ? 'diff-positive'
+                        : row.set_diff < 0
+                            ? 'diff-negative'
+                            : 'diff-zero'
+                    )
+                      | (#{row.set_diff > 0 ? '+' : ''}#{row.set_diff})
+
+                  td.text-center
+                    | #{row.score_for} - #{row.score_against}
+                    span.ms-1(
+                        class= row.score_diff > 0
+                        ? 'diff-positive'
+                        : row.score_diff < 0
+                            ? 'diff-negative'
+                            : 'diff-zero'
+                    )
+                      | (#{row.score_diff > 0 ? '+' : ''}#{row.score_diff})
+
+                else
+                  td.text-center= row.played
+                  td.text-center= row.win
+                  td.text-center= row.draw
+                  td.text-center= row.loss
+                  td.text-center= row.goals_for
+                  td.text-center= row.goals_against
+                  td.text-center= row.goal_diff
+                  td.text-center.points-cell= row.pts
+
+                  if !isReadOnly && !isPadel
+                    td.text-center
+                        .action-buttons
+                        a.btn-action-compact.btn-win-compact(
+                            href=`/subadmin/standings/${row.id}/add-win?sport_id=${query.sport_id}`
+                        ) +W
+                        a.btn-action-compact.btn-loss-compact(
+                            href=`/subadmin/standings/${row.id}/add-loss?sport_id=${query.sport_id}`
+                        ) -L
+
+else
+  .empty-state
+    h4 Belum Ada Klasemen

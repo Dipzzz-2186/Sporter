@@ -1,40 +1,10 @@
 // src/controllers/standings.controller.js
 const db = require('../config/db');
-
-async function syncPadelStandings(sportId, mode) {
-  if (mode === 'individual') {
-    await db.query(`
-      INSERT IGNORE INTO standings
-        (sport_id, team_id, played, win, draw, loss, game_win, game_loss, pts)
-      SELECT DISTINCT
-        m.sport_id,
-        mp.team_id,
-        0,0,0,0,0,0,0
-      FROM matches m
-      JOIN match_participants mp ON mp.match_id = m.id
-      JOIN teams t ON t.id = mp.team_id
-      WHERE m.sport_id = ?
-        AND t.is_individual = 1
-        AND t.sport_id = m.sport_id
-        AND mp.team_id IS NOT NULL
-    `, [sportId]);
-  } else {
-    await db.query(`
-    INSERT IGNORE INTO standings
-      (sport_id, team_id, played, win, draw, loss, game_win, game_loss, pts)
-    SELECT DISTINCT
-      m.sport_id,
-      t.id,
-      0,0,0,0,0,0,0
-    FROM matches m
-    JOIN teams t
-      ON (t.id = m.home_team_id OR t.id = m.away_team_id)
-    WHERE m.sport_id = ?
-      AND t.sport_id = m.sport_id
-      AND COALESCE(t.is_individual,0) = 0
-  `, [sportId]);
-  }
-}
+const { getStandings } = require('../services/standings.service');
+const {
+  syncPadelStandings,
+  syncGenericStandings
+} = require('../services/standingsSync.service');
 
 async function hasPadelIndividualMatch(sportId) {
   const [[row]] = await db.query(`
@@ -46,154 +16,107 @@ async function hasPadelIndividualMatch(sportId) {
 
   return row.total > 0;
 }
-exports.listStandings = async (req, res) => {
-  try {
-    const allowed = req.allowedSports || [];
-    const mode = (req.query.mode === 'individual') ? 'individual' : 'team';
-    const isIndividual = mode === 'individual';
-    
 
-    const ids = (allowed || []).map(Number).filter(Boolean);
-    if (!ids.length) {
-      return res.render('subadmin/standings', {
-        standings: [],
-        sports: [],
-        query: req.query || {},
-        isPadel: false,
-        mode
-      });
-    }
+// tambahin helper di atas fungsi yang ada di file
+function isValidPadelSet(homeScore, awayScore) {
+  // must be integer >= 0 and not equal
+  if (!Number.isInteger(homeScore) || !Number.isInteger(awayScore)) return false;
+  if (homeScore < 0 || awayScore < 0) return false;
+  if (homeScore === awayScore) return false;
 
+  const winner = Math.max(homeScore, awayScore);
+  const loser = Math.min(homeScore, awayScore);
 
-    const [sports] = await db.query(
-      `SELECT id, name FROM sports WHERE id IN (${ids.map(()=>'?').join(',')}) ORDER BY name`,
-      ids
+  // normal win: winner >= 6 and diff >= 2
+  if (winner >= 6 && (winner - loser) >= 2) return true;
+
+  // tie-break set: 7-6 only allowed (we don't model tie-break points here)
+  if (winner === 7 && loser === 6) return true;
+
+  return false;
+}
+
+async function getAvailableSports(req) {
+  if (!req.session.user) return [];
+
+  if (req.session.user.role === 'admin') {
+    const [rows] = await db.query(
+      `SELECT id, name FROM sports ORDER BY name`
     );
-
-    const sportId = req.query.sport_id
-      ? Number(req.query.sport_id)
-      : sports[0]?.id;
-
-    if (!sportId) {
-      return res.render('subadmin/standings', {
-        standings: [],
-        sports,
-        query: {},
-        isPadel: false,
-        mode
-      });
-    }
-
-    const [[sport]] = await db.query(
-      `SELECT id, name FROM sports WHERE id = ?`,
-      [sportId]
-    );
-
-   const isPadel = sport.name.toLowerCase() === 'padel';
-
-    let rows = [];
-
-    if (isPadel && mode === 'individual') {
-      await syncPadelStandings(sportId, 'individual');
-
-      [rows] = await db.query(`
-    SELECT
-      s.id,
-      t.name AS team_name,
-      sp.name AS sport_name,
-      (
-      SELECT COUNT(*)
-      FROM match_participants mp
-      JOIN matches m ON m.id = mp.match_id
-      WHERE mp.team_id = s.team_id
-        AND m.sport_id = s.sport_id
-        AND m.match_mode = 'individual'
-    ) AS total_match,
-      s.played AS played_scored,
-      s.win,
-      s.loss,
-      s.game_win,
-      s.game_loss,
-      s.pts
-    FROM standings s
-    JOIN teams t 
-      ON t.id = s.team_id
-     AND t.is_individual = 1
-    JOIN sports sp 
-      ON sp.id = s.sport_id
-    WHERE s.sport_id = ?
-    ORDER BY s.pts DESC, s.win DESC
-  `, [sportId]);
-    }else if (isPadel) {
-
-      // ✅ PADEL TEAM
-      ;[rows] = await db.query(`
-    SELECT
-      s.id,
-      s.sport_id,
-      sp.name AS sport_name,
-      t.id AS team_id,
-      t.name AS team_name,
-
-      (
-        SELECT COUNT(*)
-        FROM matches m
-        WHERE m.sport_id = s.sport_id
-          AND (m.home_team_id = t.id OR m.away_team_id = t.id)
-      ) AS total_match,
-
-      s.win,
-      s.loss,
-      s.game_win,
-      s.game_loss,
-      s.pts
-    FROM standings s
-    JOIN teams t 
-      ON t.id = s.team_id
-    AND t.sport_id = s.sport_id   -- 🔥 WAJIB
-    JOIN sports sp 
-      ON sp.id = s.sport_id
-    WHERE s.sport_id = ?
-      AND COALESCE(t.is_individual, 0) = 0
-    ORDER BY s.pts DESC
-  `, [sportId]);
-
-    } else {
-      // 🔥 NON PADEL (klasemen klasik)
-      [rows] = await db.query(`
-    SELECT
-      s.id,
-      t.name AS team_name,
-      sp.name AS sport_name,
-      s.played,
-      s.win,
-      s.draw,
-      s.loss,
-      s.goals_for,
-      s.goals_against,
-      (s.goals_for - s.goals_against) AS goal_diff,
-      s.pts
-    FROM standings s
-    JOIN teams t ON t.id = s.team_id
-    JOIN sports sp ON sp.id = s.sport_id
-    WHERE s.sport_id = ?
-    ORDER BY s.pts DESC, goal_diff DESC, s.win DESC
-  `, [sportId]);
-    }
-
-
-    return res.render('subadmin/standings', {
-      standings: rows,
-      sports,
-      query: { ...req.query, sport_id: sportId, mode }, // ✅ KEEP MODE
-      isPadel,
-      mode
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.redirect('/subadmin');
+    return rows;
   }
+
+  // ✅ SUBADMIN: hanya cabang miliknya
+  const [rows] = await db.query(`
+    SELECT s.id, s.name
+    FROM sports s
+    JOIN user_sports us ON us.sport_id = s.id
+    WHERE us.user_id = ?
+    ORDER BY s.name
+  `, [req.session.user.id]);
+
+  return rows;
+}
+
+exports.listStandings = async (req, res) => {
+  const mode = req.query.mode === 'individual' ? 'individual' : 'team';
+  const sportId = Number(req.query.sport_id);
+
+  // ✅ WAJIB: ambil sports
+  const sports = await getAvailableSports(req);
+  
+  if (
+    req.session.user.role === 'subadmin' &&
+    sports.length === 1 &&
+    !Number.isInteger(sportId)
+  ) {
+    return res.redirect(
+      `/subadmin/standings?sport_id=${sports[0].id}&mode=${mode}`
+    );
+  }
+
+  if (req.session.user.role === 'subadmin') {
+    const allowedSportIds = sports.map(s => String(s.id));
+    if (sportId && !allowedSportIds.includes(String(sportId))) {
+      return res.status(403).send('Akses ditolak');
+    }
+  }
+
+  // ✅ guard kalau sport_id kosong / NaN
+  if (!Number.isInteger(sportId)) {
+    return res.render('subadmin/standings', {
+      standings: [],
+      sports,
+      query: req.query,
+      isPadel: false,
+      mode,
+      isReadOnly: false
+    });
+  }
+
+  const [[sport]] = await db.query(
+    'SELECT name FROM sports WHERE id = ?',
+    [sportId]
+  );
+
+  const isPadel = sport.name.toLowerCase() === 'padel';
+
+  if (isPadel) {
+    await syncPadelStandings(sportId, mode);
+  } else {
+    await syncGenericStandings(sportId);
+  }
+
+  const { rows } = await getStandings({ sportId, mode });
+
+  res.render('subadmin/standings', {
+    standings: rows,
+    sports,
+    query: { sport_id: sportId, mode },
+    isPadel,
+    mode,
+    isReadOnly: false
+  });
 };
 
 exports.addWin = async (req, res) => {
@@ -210,8 +133,8 @@ exports.addWin = async (req, res) => {
     WHERE id = ?
   `, [game_win, game_loss, id]);
 
- const mode = req.query.mode === 'individual' ? 'individual' : 'team';
- res.redirect(`/subadmin/standings?sport_id=${req.query.sport_id}&mode=${mode}`);
+  const mode = req.query.mode === 'individual' ? 'individual' : 'team';
+  res.redirect(`/subadmin/standings?sport_id=${req.query.sport_id}&mode=${mode}`);
 
 };
 
@@ -260,175 +183,346 @@ exports.submitScore = async (req, res) => {
 
   res.json({ success: true });
 };
+function submitPadelScore() {
+  const modal = document.getElementById('padelScoreModal');
+  const mode = modal.dataset.mode;
+  const matchId = document.getElementById('matchId').value;
+
+  const home = Number(document.getElementById('homeScore').value);
+  const away = Number(document.getElementById('awayScore').value);
+
+  if (home === away) {
+    alert('Skor tidak boleh seri');
+    return;
+  }
+
+  const url =
+    mode === 'individual'
+      ? `/subadmin/matches/${matchId}/submit-individual-score`
+      : `/subadmin/matches/${matchId}/submit-score`;
+
+  const btnSave = document.querySelector('#padelScoreModal .btn-primary');
+  // disable to prevent double submit + show spinner
+  if (btnSave) {
+    btnSave.disabled = true;
+    btnSave.dataset.orig = btnSave.innerHTML;
+    btnSave.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Simpan';
+  }
+
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ home_score: home, away_score: away })
+  })
+    .then(res => res.json())
+    .then(data => {
+      // restore button
+      if (btnSave) {
+        btnSave.disabled = false;
+        btnSave.innerHTML = btnSave.dataset.orig || 'Simpan';
+      }
+
+      if (!data || data.success === false) {
+        alert(data && data.message ? data.message : 'Gagal menyimpan skor');
+        return;
+      }
+
+      // jika match selesai, update UI: tutup modal + ubah status/tombol di row
+      if (data.finished) {
+        // close modal
+        const bsModal = bootstrap.Modal.getInstance(modal);
+        if (bsModal) bsModal.hide();
+
+        // update row DOM tanpa reload (best effort)
+        const actionBtn = document.querySelector(`button[data-match-id="${matchId}"]`);
+        if (actionBtn) {
+          // replace input button with a finished badge
+          const parent = actionBtn.parentElement;
+          if (parent) {
+            const finishedSpan = document.createElement('span');
+            finishedSpan.className = 'status-badge status-finished';
+            finishedSpan.innerHTML = '<i class="bi bi-check-circle me-1"></i> BO3 Selesai';
+            parent.replaceChild(finishedSpan, actionBtn);
+          }
+        }
+
+        // update status cell in the same row (if exists)
+        const row = actionBtn ? actionBtn.closest('tr') : null;
+        if (row) {
+          const statusCell = row.querySelector('td:last-of-type .status-badge') || row.querySelector('.status-badge');
+          if (statusCell) {
+            statusCell.className = 'status-badge status-finished';
+            statusCell.innerHTML = '<i class="bi bi-check-circle"></i> Selesai';
+          }
+        }
+
+        // optional: reload if you want canonical state from server
+        // location.reload();
+      } else {
+        // not finished yet -> close modal & optionally show notification or update small set-count
+        const bsModal = bootstrap.Modal.getInstance(modal);
+        if (bsModal) bsModal.hide();
+
+        // small toast/notification
+        (function () {
+          const n = document.createElement('div');
+          n.className = 'alert alert-success';
+          n.style.position = 'fixed';
+          n.style.right = '20px';
+          n.style.top = '20px';
+          n.style.zIndex = 9999;
+          n.innerText = 'Skor tersimpan — match belum selesai.';
+          document.body.appendChild(n);
+          setTimeout(() => n.remove(), 2200);
+        })();
+
+        // simplest: reload to fetch updated set counts if you don't handle partial UI update
+        // location.reload();
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      if (btnSave) {
+        btnSave.disabled = false;
+        btnSave.innerHTML = btnSave.dataset.orig || 'Simpan';
+      }
+      alert('Terjadi kesalahan, coba lagi.');
+    });
+}
 
 exports.submitPadelMatchScore = async (req, res) => {
-  const matchId = Number(req.params.id);
-  const { home_score, away_score } = req.body;
+  const conn = await db.getConnection();
+  try {
+    await conn.beginTransaction();
 
-  if (!matchId || home_score == null || away_score == null) {
-    return res.status(400).json({ message: 'Data tidak lengkap' });
+    const matchId = Number(req.params.id);
+    let { home_score, away_score } = req.body;
+
+    // coerce to ints
+    home_score = Number(home_score);
+    away_score = Number(away_score);
+
+    if (!isValidPadelSet(home_score, away_score)) {
+      return res.status(400).json({ message: 'Skor set tidak valid menurut aturan padel (6 dengan selisih 2, atau 7-6).' });
+    }
+
+    const [[match]] = await conn.query(`
+      SELECT id, sport_id, home_team_id, away_team_id, is_finished
+      FROM matches WHERE id = ?
+      FOR UPDATE
+    `, [matchId]);
+
+    if (!match) return res.status(404).json({ message: 'Match tidak ditemukan' });
+    if (match.is_finished) return res.status(400).json({ message: 'Match sudah selesai' });
+
+    const [[{ total_game }]] = await conn.query(`
+      SELECT COUNT(*) total_game FROM match_games WHERE match_id = ?
+    `, [matchId]);
+
+    if (total_game >= 3) // safety check
+      return res.status(400).json({ message: 'BO3 sudah penuh' });
+
+    const gameNo = total_game + 1;
+    const winner = home_score > away_score ? 'home' : 'away';
+
+    // insert set (match_games)
+    await conn.query(`
+      INSERT INTO match_games (match_id, game_no, home_score, away_score, winner)
+      VALUES (?, ?, ?, ?, ?)
+    `, [matchId, gameNo, home_score, away_score, winner]);
+
+    // --- setelah insert match_games ---
+    const homeTeamId = match.home_team_id;
+    const awayTeamId = match.away_team_id;
+
+    // set menang (1/0)
+    const homeSet = home_score > away_score ? 1 : 0;
+    const awaySet = home_score < away_score ? 1 : 0;
+
+    // update legacy game_win/game_loss (biar kompatibel) + set_win/set_loss + score_for/score_against
+    await conn.query(`
+  UPDATE standings
+  SET
+    game_win     = game_win + ?,
+    game_loss    = game_loss + ?,
+    set_win      = set_win + ?,
+    set_loss     = set_loss + ?,
+    score_for    = score_for + ?,
+    score_against= score_against + ?
+  WHERE sport_id = ? AND team_id = ?
+`, [homeSet, awaySet, homeSet, awaySet, home_score, away_score, match.sport_id, homeTeamId]);
+
+    await conn.query(`
+  UPDATE standings
+  SET
+    game_win     = game_win + ?,
+    game_loss    = game_loss + ?,
+    set_win      = set_win + ?,
+    set_loss     = set_loss + ?,
+    score_for    = score_for + ?,
+    score_against= score_against + ?
+  WHERE sport_id = ? AND team_id = ?
+`, [awaySet, homeSet, awaySet, homeSet, away_score, home_score, match.sport_id, awayTeamId]);
+
+    // hitung jumlah set dimenangkan masing2 setelah insert
+    const [wins] = await conn.query(`
+      SELECT winner, COUNT(*) total
+      FROM match_games
+      WHERE match_id = ?
+      GROUP BY winner
+    `, [matchId]);
+
+    const homeWin = wins.find(w => w.winner === 'home')?.total || 0;
+    const awayWin = wins.find(w => w.winner === 'away')?.total || 0;
+
+    // kalau belum ada pemenang match (belum 2 set), commit dan return finished=false
+    if (homeWin < 2 && awayWin < 2) {
+      await conn.commit();
+      return res.json({ success: true, finished: false, homeWin, awayWin });
+    }
+
+    // ada pemenang match (first to 2 sets) -> update standings played/win/loss/pts dan tandai match selesai
+    const winnerId = homeWin >= 2 ? homeTeamId : awayTeamId;
+    const loserId = homeWin >= 2 ? awayTeamId : homeTeamId;
+
+    await conn.query(`
+      UPDATE standings
+      SET played = played + 1, win = win + 1, pts = pts + 3
+      WHERE sport_id = ? AND team_id = ?
+    `, [match.sport_id, winnerId]);
+
+    await conn.query(`
+      UPDATE standings
+      SET played = played + 1, loss = loss + 1
+      WHERE sport_id = ? AND team_id = ?
+    `, [match.sport_id, loserId]);
+
+    await conn.query(`UPDATE matches SET is_finished = 1 WHERE id = ?`, [matchId]);
+
+    await conn.commit();
+    return res.json({ success: true, finished: true, homeWin, awayWin, winnerId });
+  } catch (err) {
+    await conn.rollback();
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  } finally {
+    conn.release();
   }
-
-  if (Number(home_score) === Number(away_score)) {
-    return res.status(400).json({ message: 'Skor tidak boleh seri' });
-  }
-
-  // Ambil match + team
-  const [[match]] = await db.query(`
-    SELECT m.id, m.sport_id, m.home_team_id, m.away_team_id
-    FROM matches m
-    JOIN sports s ON s.id = m.sport_id
-    WHERE m.id = ? AND LOWER(s.name) = 'padel'
-  `, [matchId]);
-
-  if (!match) {
-    return res.status(404).json({ message: 'Match padel tidak ditemukan' });
-  }
-
-  const homeWin = Number(home_score) > Number(away_score);
-
-  // Update HOME
-  await db.query(`
-    UPDATE standings
-    SET
-      played = played + 1,
-      win = win + ?,
-      loss = loss + ?,
-      game_win = game_win + ?,
-      game_loss = game_loss + ?,
-      pts = pts + ?
-    WHERE sport_id = ? AND team_id = ?
-  `, [
-    homeWin ? 1 : 0,
-    homeWin ? 0 : 1,
-    home_score,
-    away_score,
-    homeWin ? 3 : 0,
-    match.sport_id,
-    match.home_team_id  
-  ]);
-
-  // Update AWAY
-  await db.query(`
-    UPDATE standings
-    SET
-      played = played + 1,
-      win = win + ?,
-      loss = loss + ?,
-      game_win = game_win + ?,
-      game_loss = game_loss + ?,
-      pts = pts + ?
-    WHERE sport_id = ? AND team_id = ?
-  `, [
-    homeWin ? 0 : 1,
-    homeWin ? 1 : 0,
-    away_score,
-    home_score,
-    homeWin ? 0 : 3,
-    match.sport_id,
-    match.away_team_id
-  ]);
-  
-  res.json({ success: true });
 };
 
 exports.submitIndividualScore = async (req, res) => {
-  const matchId = Number(req.params.id);
-  const { home_score, away_score } = req.body;
+  // implementasi identik dengan submitPadelMatchScore,
+  // tapi ambil home/away team dari match_participants
+  const conn = await db.getConnection();
+  try {
+    await conn.beginTransaction();
 
-  if (!matchId || home_score == null || away_score == null) {
-    return res.status(400).json({ message: 'Data tidak lengkap' });
-  }
+    const matchId = Number(req.params.id);
+    let { home_score, away_score } = req.body;
+    home_score = Number(home_score);
+    away_score = Number(away_score);
 
-  if (home_score === away_score) {
-    return res.status(400).json({ message: 'Skor tidak boleh seri' });
-  }
+    if (!isValidPadelSet(home_score, away_score)) {
+      return res.status(400).json({ message: 'Skor set tidak valid menurut aturan padel (6 dengan selisih 2, atau 7-6).' });
+    }
 
-  const [participants] = await db.query(`
-    SELECT mp.athlete_id
-    FROM match_participants mp
-    WHERE mp.match_id = ?
-    ORDER BY mp.position ASC
-  `, [matchId]);
+    const [[match]] = await conn.query(`
+      SELECT id, sport_id, is_finished
+      FROM matches WHERE id = ?
+      FOR UPDATE
+    `, [matchId]);
 
-  if (participants.length !== 2) {
-    return res.status(400).json({ message: 'Match individual harus 2 peserta' });
-  }
+    if (!match) return res.status(404).json({ message: 'Match tidak ditemukan' });
+    if (match.is_finished) return res.status(400).json({ message: 'Match sudah selesai' });
 
-  const [p1, p2] = participants;
-  const p1Win = home_score > away_score;
+    const [[{ total_game }]] = await conn.query(`SELECT COUNT(*) total_game FROM match_games WHERE match_id = ?`, [matchId]);
+    if (total_game >= 3) return res.status(400).json({ message: 'BO3 sudah penuh' });
 
-  // simpan log (boleh overwrite)
-  await db.query(`
-  INSERT INTO match_participant_scores
-    (match_id, athlete_id, game_win, game_loss, is_winner)
-  VALUES
-    (?, ?, ?, ?, ?),
-    (?, ?, ?, ?, ?)
-  ON DUPLICATE KEY UPDATE
-    game_win  = game_win  + VALUES(game_win),
-    game_loss = game_loss + VALUES(game_loss),
-    is_winner = is_winner OR VALUES(is_winner)
-`, [
-    matchId, p1.athlete_id, home_score, away_score, p1Win ? 1 : 0,
-    matchId, p2.athlete_id, away_score, home_score, p1Win ? 0 : 1
-  ]);
-  // ambil team_id per atlet dari match_participants
-  const [[t1]] = await db.query(`
-  SELECT team_id
-  FROM match_participants
-  WHERE match_id = ? AND athlete_id = ?
-  LIMIT 1
-`, [matchId, p1.athlete_id]);
+    const [teams] = await conn.query(`
+      SELECT team_id
+      FROM match_participants
+      WHERE match_id = ?
+      ORDER BY position ASC
+      FOR UPDATE
+    `, [matchId]);
 
-  const [[t2]] = await db.query(`
-  SELECT team_id
-  FROM match_participants
-  WHERE match_id = ? AND athlete_id = ?
-  LIMIT 1
-`, [matchId, p2.athlete_id]);
+    if (teams.length !== 2) throw new Error('Match individual harus 2 peserta');
 
-  // UPDATE P1
-  await db.query(`
+    const homeTeamId = teams[0].team_id;
+    const awayTeamId = teams[1].team_id;
+
+    await conn.query(`
+      INSERT INTO match_games (match_id, game_no, home_score, away_score, winner)
+      VALUES (?, ?, ?, ?, ?)
+    `, [matchId, total_game + 1, home_score, away_score, home_score > away_score ? 'home' : 'away']);
+
+    // after insert match_games
+    const homeSet = home_score > away_score ? 1 : 0;
+    const awaySet = home_score < away_score ? 1 : 0;
+
+    await conn.query(`
   UPDATE standings
   SET
-    played = played + 1,
-    win = win + ?,
-    loss = loss + ?,
-    game_win = game_win + ?,
-    game_loss = game_loss + ?,
-    pts = pts + ?
+    game_win     = game_win + ?,
+    game_loss    = game_loss + ?,
+    set_win      = set_win + ?,
+    set_loss     = set_loss + ?,
+    score_for    = score_for + ?,
+    score_against= score_against + ?
   WHERE sport_id = ? AND team_id = ?
-`, [
-    p1Win ? 1 : 0,
-    p1Win ? 0 : 1,
-    home_score,
-    away_score,
-    p1Win ? 3 : 0,
-  /* sport_id */ (await db.query(`SELECT sport_id FROM matches WHERE id=?`, [matchId]))[0][0].sport_id,
-    t1.team_id
-  ]);
+`, [homeSet, awaySet, homeSet, awaySet, home_score, away_score, match.sport_id, homeTeamId]);
 
-  // UPDATE P2
-  await db.query(`
+    await conn.query(`
   UPDATE standings
   SET
-    played = played + 1,
-    win = win + ?,
-    loss = loss + ?,
-    game_win = game_win + ?,
-    game_loss = game_loss + ?,
-    pts = pts + ?
+    game_win     = game_win + ?,
+    game_loss    = game_loss + ?,
+    set_win      = set_win + ?,
+    set_loss     = set_loss + ?,
+    score_for    = score_for + ?,
+    score_against= score_against + ?
   WHERE sport_id = ? AND team_id = ?
-`, [
-    p1Win ? 0 : 1,
-    p1Win ? 1 : 0,
-    away_score,
-    home_score,
-    p1Win ? 0 : 3,
-    (await db.query(`SELECT sport_id FROM matches WHERE id=?`, [matchId]))[0][0].sport_id,
-    t2.team_id
-  ]);
+`, [awaySet, homeSet, awaySet, homeSet, away_score, home_score, match.sport_id, awayTeamId]);
 
-  res.json({ success: true });
+    const [wins] = await conn.query(`
+      SELECT winner, COUNT(*) total
+      FROM match_games
+      WHERE match_id = ?
+      GROUP BY winner
+    `, [matchId]);
+
+    const homeWin = wins.find(w => w.winner === 'home')?.total || 0;
+    const awayWin = wins.find(w => w.winner === 'away')?.total || 0;
+
+    if (homeWin < 2 && awayWin < 2) {
+      await conn.commit();
+      return res.json({ success: true, finished: false, homeWin, awayWin });
+    }
+
+    const winnerId = homeWin >= 2 ? homeTeamId : awayTeamId;
+    const loserId = homeWin >= 2 ? awayTeamId : homeTeamId;
+
+    await conn.query(`
+      UPDATE standings
+      SET played = played + 1, win = win + 1, pts = pts + 3
+      WHERE sport_id = ? AND team_id = ?
+    `, [match.sport_id, winnerId]);
+
+    await conn.query(`
+      UPDATE standings
+      SET played = played + 1, loss = loss + 1
+      WHERE sport_id = ? AND team_id = ?
+    `, [match.sport_id, loserId]);
+
+    await conn.query(`UPDATE matches SET is_finished = 1 WHERE id = ?`, [matchId]);
+
+    await conn.commit();
+    res.json({ success: true, finished: true, homeWin, awayWin, winnerId });
+  } catch (err) {
+    await conn.rollback();
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  } finally {
+    conn.release();
+  }
 };

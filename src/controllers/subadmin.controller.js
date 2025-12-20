@@ -488,7 +488,12 @@ exports.createNews = async (req, res) => {
       const [matches] = await db.query(
   `
         SELECT
-          m.id, m.title, m.start_time, m.end_time, m.status,
+          m.id,
+          m.title,
+          m.start_time,
+          m.end_time,
+          m.status,
+          m.is_finished,        -- 🔥 TAMBAH INI
           m.match_mode,
           s.name AS sport_name,
           v.name AS venue_name,
@@ -656,8 +661,17 @@ exports.createMatch = async (req, res) => {
         .filter(Boolean);
 
       const unique = [...new Set(ids)];
+
       if (unique.length < 2) {
         req.flash("error", "Mode INDIVIDUAL butuh minimal 2 peserta.");
+        return res.redirect("/subadmin/matches/create");
+      }
+
+      const sport = await getSportMetaById(sportId);
+      const isPadel = String(sport?.slug || '').toLowerCase() === 'padel';
+
+      if (isPadel && unique.length !== 2) {
+        req.flash("error", "Padel individual harus 1 vs 1 (2 peserta).");
         return res.redirect("/subadmin/matches/create");
       }
       is_individual = match_mode === 'individual' ? 1 : 0
@@ -1672,7 +1686,8 @@ exports.renderTeamMembers = async (req, res) => {
     return res.render('subadmin/team_members', {
       title: 'Kelola Anggota',
       team,
-      members
+      members,
+      isPadel: team.sport_name && team.sport_name.toLowerCase() === 'padel'
     });
   } catch (err) {
     console.error('renderTeamMembers error', err);

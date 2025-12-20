@@ -548,7 +548,21 @@ block content
         font-size: 0.7rem;
       }
     }
-    
+    /* ===== Diff Colors ===== */
+    .diff-positive {
+      color: #34C759; /* hijau */
+      font-weight: 700;
+    }
+
+    .diff-negative {
+      color: #FF3B30; /* merah */
+      font-weight: 700;
+    }
+
+    .diff-zero {
+      color: #adb5bd; /* abu */
+      font-weight: 600;
+    }
     /* Animation delays */
     .standings-group:nth-child(1) { animation-delay: 0.1s; }
     .standings-group:nth-child(2) { animation-delay: 0.2s; }
@@ -610,106 +624,8 @@ block content
                 selected=(query && Number(query.sport_id) === s.id)
               )= s.name
 
-      if standings.length
-        .standings-group
-          .group-title
-            .group-title-icon
-              i.bi.bi-flag-fill
-            h5= standings[0].sport_name
-          .standings-table
-            .table-responsive
-              table.table.table-hover
-                thead
-                  tr
-                    th No.
-                    th= (mode === 'individual' ? 'Nama Atlet' : 'Nama Tim')
 
-                    if isPadel
-                      th.text-center Jumlah Match
-                      th.text-center M-K
-                      th.text-center Selisih Skor
-                      th.text-center Poin
-                    else
-                      th.text-center PJ
-                      th.text-center M
-                      th.text-center S
-                      th.text-center K
-                      th.text-center GM
-                      th.text-center GK
-                      th.text-center SG
-                      th.text-center Poin
-                      if !isPadel && !isReadOnly
-                        th.text-center Aksi
-                tbody
-                  each row, index in standings
-                    tr
-                      td
-                        if index === 0
-                          span.position-badge.position-1 1
-                        else if index === 1
-                          span.position-badge.position-2 2
-                        else if index === 2
-                          span.position-badge.position-3 3
-                        else
-                          span.position-badge.position-other= index + 1
-
-                      td
-                        .team-name
-                          if mode === 'individual'
-                            i.bi.bi-person-fill-check
-                          else
-                            i.bi.bi-shield-fill-check
-                          b= row.team_name
-
-                      if isPadel
-                        td.text-center.stat-cell= row.total_match
-                        td.text-center.stat-cell #{row.win} - #{row.loss}
-                        td.text-center.stat-cell
-                          | #{row.game_win} - #{row.game_loss}
-                          if (row.game_win - row.game_loss) >= 0
-                            span.text-success.ms-1 (+#{row.game_win - row.game_loss})
-                          else
-                            span.text-danger.ms-1 (#{row.game_win - row.game_loss})
-                      else
-                        td.text-center.stat-cell= row.played
-                        td.text-center.stat-cell= row.win
-                        td.text-center.stat-cell= row.draw
-                        td.text-center.stat-cell= row.loss
-                        td.text-center.stat-cell= row.goals_for
-                        td.text-center.stat-cell= row.goals_against
-                        td.text-center.stat-cell
-                          if row.goal_diff >= 0
-                            span.text-success +#{row.goal_diff}
-                          else
-                            span.text-danger #{row.goal_diff}
-
-                      td.text-center.points-cell= row.pts
-
-                      td.text-center
-                        if !isReadOnly
-                          .action-buttons
-                            if isPadel
-                            else
-                              a.btn-action-compact.btn-win-compact(
-                                href=`/subadmin/standings/${row.id}/add-win?sport_id=${query.sport_id}`
-                              )
-                                i.bi.bi-plus-lg
-                                | +W
-                              
-                              a.btn-action-compact.btn-loss-compact(
-                                href=`/subadmin/standings/${row.id}/add-loss?sport_id=${query.sport_id}`
-                              )
-                                i.bi.bi-dash-lg
-                                | -L
-      else
-        .empty-state
-          .empty-state-icon
-            i.bi.bi-clipboard2-x
-          h4 Belum Ada Klasemen
-          if mode === 'individual'
-            p Belum ada skor pertandingan padel individual.
-          else
-            p Belum ada pertandingan padel yang selesai.
+      include ../standings/_table.pug
 
   if !isReadOnly
     #scoreModal.modal.fade(tabindex='-1')

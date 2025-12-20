@@ -686,13 +686,12 @@ block content
             h5.modal-title Tambah Pemain Baru
             button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
           .modal-body
+            input(type="hidden" name="sport_id" id="ath_sport_id")
+
+            //- Sport Name (display only)
             .mb-3
-              label.form-label(for="ath_sport_id") Cabang Olahraga
-              select.form-select#ath_sport_id(name="sport_id" required)
-                option(value="" selected disabled) -- pilih cabang --
-                if sports && sports.length
-                  each s in sports
-                    option(value=s.id)= s.name
+              label.form-label Cabang Olahraga
+              input.form-control#ath_sport_name(type="text" disabled)
 
             .mb-3
               label.form-label(for="ath_name") Nama Pemain
@@ -909,6 +908,20 @@ block content
           toggleAfterSport();
           filterTeamsBySport();
           filterTeamsByMode();
+
+          // 🔥 RESET PARTICIPANTS
+          if (participantsList) {
+            participantsList.innerHTML = '';
+          }
+
+          // 🔥 RE-EVALUATE MODE UI BASED ON NEW SPORT
+          toggleModeUI();
+
+          // rebuild participant selects kalau individual
+          if (modeInd && modeInd.checked) {
+            ensureMinParticipants();
+            refreshParticipantSelects(false);
+          }
         });
       }
       toggleAfterSport();
@@ -973,23 +986,49 @@ block content
           }
         });
       }
-
+      function isPadelSelected() {
+        if (!sportSelect || !sportSelect.value) return false;
+        var opt = sportSelect.options[sportSelect.selectedIndex];
+        var name = (opt.textContent || '').toLowerCase();
+        return name.includes('padel');
+      }
       // ========================================
       // MODE SWITCHING (TEAM / INDIVIDUAL)
       // ========================================
       function toggleModeUI() {
         if (!modeTeam || !modeInd) return;
 
+        // reset participant list saat switch mode
+        if (participantsList) {
+          participantsList.innerHTML = '';
+        }
+
         var participantSelects = document.querySelectorAll('[name="participant_ids[]"]');
 
         if (modeInd.checked) {
           teamVs.style.display = 'none';
           individualBox.style.display = 'block';
+
+          // === KHUSUS PADEL ===
+          if (isPadelSelected()) {
+            if (btnAddParticipant) btnAddParticipant.style.display = 'none';
+
+            // pastikan hanya 2 peserta
+            while (participantsList.children.length > 2) {
+              participantsList.lastChild.remove();
+            }
+            ensureMinParticipants(); // bikin tepat 2
+          } else {
+            if (btnAddParticipant) btnAddParticipant.style.display = 'inline-flex';
+            ensureMinParticipants();
+          }
+
           participantSelects.forEach(function(s) { s.required = true; });
-          ensureMinParticipants();
+
         } else {
           teamVs.style.display = 'block';
           individualBox.style.display = 'none';
+          if (btnAddParticipant) btnAddParticipant.style.display = 'none';
           participantSelects.forEach(function(s) { s.required = false; });
         }
 
@@ -1082,6 +1121,7 @@ block content
 
       if (btnAddParticipant) {
         btnAddParticipant.addEventListener('click', function() {
+          if (isPadelSelected()) return; // ❌ PADDEL GA BOLEH NAMBAH
           participantsList.appendChild(createParticipantRow());
         });
       }
@@ -1210,8 +1250,19 @@ block content
       var athOkBox = document.getElementById('athOk');
 
       function syncAthleteSport() {
-        if (!athSport || !sportSelect) return;
-        athSport.value = sportSelect.value || '';
+        if (!sportSelect) return;
+
+        const sportId = sportSelect.value;
+        if (!sportId) return;
+
+        const sportName =
+          sportSelect.options[sportSelect.selectedIndex]?.textContent || '';
+
+        const hid = document.getElementById('ath_sport_id');
+        const txt = document.getElementById('ath_sport_name');
+
+        if (hid) hid.value = sportId;
+        if (txt) txt.value = sportName;
       }
 
       if (sportSelect) sportSelect.addEventListener('change', syncAthleteSport);

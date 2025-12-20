@@ -420,7 +420,7 @@ block content
     .container
       .team-header-content
         //- - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin/teams' : '/subadmin/teams'
-        a.btn.btn-sm.btn-outline-secondary.mb-3.team-back-btn(href="javascript:void(0);" onclick="history.back()")
+        a.btn.btn-sm.btn-outline-secondary.mb-3.team-back-btn(href="/subadmin/teams")
           i.bi.bi-arrow-left
           | Kembali ke Daftar Tim
         
@@ -437,12 +437,16 @@ block content
 
   .container.py-4
     // Add Member Form
-    .card.add-member-card.mb-4
+    - const isPadelTeamFull = isPadel && members && members.length >= 2
+    .card.add-member-card.mb-4(class=isPadelTeamFull ? 'opacity-50' : '')
       .card-header.border-0
         .row.align-items-center
           .col
             h5.add-member-title.mb-2 Tambah Anggota Baru
-            p.add-member-subtitle.mb-0 Isi data anggota tim di bawah ini
+            if isPadelTeamFull
+              p.text-danger.mb-0 Maksimal 2 pemain untuk tim Padel
+            else
+              p.add-member-subtitle.mb-0 Isi data anggota tim di bawah ini
           .col-auto
             .add-member-icon
               i.bi.bi-person-plus-fill
@@ -455,38 +459,41 @@ block content
               .input-group
                 span.input-group-text.bg-transparent.border-end-0
                   i.bi.bi-person.text-primary
-                input.form-control(type="text" id="memberName" name="name" required placeholder="Masukkan nama anggota")
+                input.form-control(type="text" id="memberName" name="name" required placeholder="Masukkan nama anggota" disabled=isPadelTeamFull)
             
             .col-md-6
               label.form-label(for="memberPosition") Posisi
               .input-group
                 span.input-group-text.bg-transparent.border-end-0
                   i.bi.bi-gear.text-primary
-                input.form-control(type="text" id="memberPosition" name="position" placeholder="Posisi dalam tim (opsional)")
+                input.form-control(type="text" id="memberPosition" name="position" placeholder="Posisi dalam tim (opsional)" disabled=isPadelTeamFull)
             
             .col-md-4
               label.form-label(for="memberNumber") Nomor Punggung
               .input-group
                 span.input-group-text.bg-transparent.border-end-0
                   i.bi.bi-123.text-primary
-                input.form-control(type="text" id="memberNumber" name="number" placeholder="No (opsional)")
+                input.form-control(type="text" id="memberNumber" name="number" placeholder="No (opsional)" disabled=isPadelTeamFull)
             
             .col-md-4
               label.form-label(for="memberBirthDate") Tanggal Lahir
               .input-group
                 span.input-group-text.bg-transparent.border-end-0
                   i.bi.bi-calendar3.text-primary
-                input.form-control(type="date" id="memberBirthDate" name="birth_date")
+                input.form-control(type="date" id="memberBirthDate" name="birth_date" disabled=isPadelTeamFull)
             
             .col-md-4
               label.form-label(for="memberPhone") No. Telepon (opsional)
               .input-group
                 span.input-group-text.bg-transparent.border-end-0
                   i.bi.bi-telephone.text-primary
-                input.form-control(type="tel" id="memberPhone" name="phone" placeholder="08xx-xxxx-xxxx")
+                input.form-control(type="tel" id="memberPhone" name="phone" placeholder="08xx-xxxx-xxxx" disabled=isPadelTeamFull)
           
           .d-flex.justify-content-end.mt-4
-            button.btn.btn-primary(type="submit")
+            button.btn.btn-primary(
+              type="submit"
+              disabled=isPadelTeamFull
+            )
               i.bi.bi-plus-circle-fill.me-2
               | Tambahkan Anggota
 

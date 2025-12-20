@@ -137,42 +137,7 @@ block content
       background: rgba(255,255,255,.18);
       opacity: 1;
     }
-
-    /* Guide Button */
-    .btn-guide {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 10px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.35rem 0.75rem;
-      transition: all 0.25s ease;
-    }
-
-    .btn-guide i {
-      font-size: 0.95rem;
-    }
-
-    .btn-guide:hover {
-      background: rgba(255, 255, 255, 0.25);
-      border-color: rgba(255, 255, 255, 0.6);
-      color: #fff;
-      transform: translateY(-1px);
-    }
-
-    .btn-guide:active {
-      transform: translateY(0);
-    }
-
-    .btn-guide:focus {
-      box-shadow: 0 0 0 0.15rem rgba(255, 255, 255, 0.25);
-    }
     
-    /* ===== FILTER SECTION ===== */
     .filter-section {
       background: white;
       border-radius: 15px;
@@ -214,7 +179,6 @@ block content
       box-shadow: 0 0 0 0.2rem rgba(0, 149, 255, 0.15);
     }
     
-    /* ===== STANDINGS GROUP ===== */
     .standings-group {
       background: white;
       border-radius: 20px;
@@ -267,7 +231,6 @@ block content
       margin: 0;
     }
     
-    /* ===== STANDINGS TABLE ===== */
     .standings-table {
       border-radius: 15px;
       overflow: hidden;
@@ -318,16 +281,6 @@ block content
       gap: 0.5rem;
     }
     
-    .team-name a {
-      color: #0B1F3F;
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-    
-    .team-name a:hover {
-      color: #0095FF;
-    }
-    
     .team-name i {
       color: #0095FF;
       font-size: 1rem;
@@ -347,55 +300,55 @@ block content
       background-clip: text;
     }
     
-    /* ===== POSITION BADGES ===== */
-    .position-badge {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
+    /* ===== IMPROVED ACTION BUTTONS ===== */
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    
+    /* Compact modern buttons */
+    .btn-action-compact {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 0.3rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 8px;
       font-weight: 700;
-      font-size: 0.85rem;
-      margin-right: 0.5rem;
+      font-size: 0.75rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: none;
+      min-width: 45px;
     }
     
-    .position-1 {
-      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    .btn-win-compact {
+      background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
       color: white;
-      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+      box-shadow: 0 2px 6px rgba(52, 199, 89, 0.3);
     }
     
-    .position-2 {
-      background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+    .btn-win-compact:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(52, 199, 89, 0.4);
       color: white;
-      box-shadow: 0 2px 8px rgba(192, 192, 192, 0.4);
+      background: linear-gradient(135deg, #30D158 0%, #2BC653 100%);
     }
     
-    .position-3 {
-      background: linear-gradient(135deg, #CD7F32 0%, #B87333 100%);
+    .btn-loss-compact {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       color: white;
-      box-shadow: 0 2px 8px rgba(205, 127, 50, 0.4);
+      box-shadow: 0 2px 6px rgba(0, 149, 255, 0.3);
     }
     
-    .position-other {
-      background: #f8f9fa;
-      color: #5a6c7d;
-      border: 2px solid #e9ecef;
+    .btn-loss-compact:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 149, 255, 0.4);
+      color: white;
+      background: linear-gradient(135deg, #34C7FF 0%, #0095FF 100%);
     }
     
-    /* ===== STATS HIGHLIGHT ===== */
-    .stat-positive {
-      color: #34C759;
-      font-weight: 600;
-    }
-    
-    .stat-negative {
-      color: #FF3B30;
-      font-weight: 600;
-    }
-    
-    /* ===== EMPTY STATE ===== */
     .empty-state {
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
       border: 2px dashed #d0d0d0;
@@ -441,7 +394,78 @@ block content
       margin: 0;
     }
     
-    /* ===== RESPONSIVE ===== */
+    /* Position badges */
+    .position-badge {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-right: 0.5rem;
+    }
+    
+    .position-1 {
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+    }
+    
+    .position-2 {
+      background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(192, 192, 192, 0.4);
+    }
+    
+    .position-3 {
+      background: linear-gradient(135deg, #CD7F32 0%, #B87333 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(205, 127, 50, 0.4);
+    }
+    
+    .position-other {
+      background: #f8f9fa;
+      color: #5a6c7d;
+      border: 2px solid #e9ecef;
+    }
+    
+    /* Guide Button */
+    .btn-guide {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      transition: all 0.25s ease;
+    }
+
+    .btn-guide i {
+      font-size: 0.95rem;
+    }
+
+    .btn-guide:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.6);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-guide:active {
+      transform: translateY(0);
+    }
+
+    .btn-guide:focus {
+      box-shadow: 0 0 0 0.15rem rgba(255, 255, 255, 0.25);
+    }
+    
+    /* Responsive */
     @media (max-width: 991px) {
       .standings-header {
         padding: 2rem;
@@ -512,8 +536,33 @@ block content
       .standings-table table {
         min-width: 700px;
       }
+      
+      .action-buttons {
+        flex-direction: row;
+        gap: 0.3rem;
+      }
+      
+      .btn-action-compact {
+        min-width: 40px;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.7rem;
+      }
     }
-    
+    /* ===== Diff Colors ===== */
+    .diff-positive {
+      color: #34C759; /* hijau */
+      font-weight: 700;
+    }
+
+    .diff-negative {
+      color: #FF3B30; /* merah */
+      font-weight: 700;
+    }
+
+    .diff-zero {
+      color: #adb5bd; /* abu */
+      font-weight: 600;
+    }
     /* Animation delays */
     .standings-group:nth-child(1) { animation-delay: 0.1s; }
     .standings-group:nth-child(2) { animation-delay: 0.2s; }
@@ -576,96 +625,8 @@ block content
                 selected=(query && Number(query.sport_id) === s.id)
               )= s.name
 
-      if standings.length
-        .standings-group
-          .group-title
-            .group-title-icon
-              i.bi.bi-flag-fill
-            h5= standings[0].sport_name
-          .standings-table
-            .table-responsive
-              table.table.table-hover
-                thead
-                  tr
-                    th No.
-                    
-                    - const isIndividualMode = (mode === 'individual');
-                    - const isPadelIndividual = (isPadel && isIndividualMode);
-                    
-                    if isPadel
-                      th Nama
-                      th.text-center Jumlah Match
-                      th.text-center M-K
-                      th.text-center Selisih Game
-                      th.text-center Poin
-                    else
-                      th Nama Tim
-                      th.text-center PJ
-                      th.text-center M
-                      th.text-center S
-                      th.text-center K
-                      th.text-center GM
-                      th.text-center GK
-                      th.text-center SG
-                      th.text-center Poin
 
-                tbody
-                  each row, index in standings
-                    tr
-                      td
-                        if index === 0
-                          span.position-badge.position-1 1
-                        else if index === 1
-                          span.position-badge.position-2 2
-                        else if index === 2
-                          span.position-badge.position-3 3
-                        else
-                          span.position-badge.position-other= index + 1
-
-                      if isPadel
-                        td
-                          .team-name
-                            if mode === 'individual'
-                              i.bi.bi-person-fill-check
-                            else
-                              i.bi.bi-people-fill
-                            = row.team_name
-
-                        td.text-center= row.total_match
-                        td.text-center #{row.win} - #{row.loss}
-                        td.text-center
-                          | #{row.game_win} - #{row.game_loss}
-                          if (row.game_win - row.game_loss) >= 0
-                            span.text-success.ms-1 (+#{row.game_win - row.game_loss})
-                          else
-                            span.text-danger.ms-1 (#{row.game_win - row.game_loss})
-
-                        td.text-center.points-cell= row.pts
-                        
-                      else
-                        td
-                          .team-name
-                            i.bi.bi-people-fill
-                            = row.team_name
-
-                        td.text-center= row.played
-                        td.text-center= row.win
-                        td.text-center= row.draw
-                        td.text-center= row.loss
-                        td.text-center= row.game_win
-                        td.text-center= row.game_loss
-                        td.text-center
-                          if (row.game_win - row.game_loss) >= 0
-                            span.stat-positive +#{row.game_win - row.game_loss}
-                          else
-                            span.stat-negative #{row.game_win - row.game_loss}
-                        td.text-center.points-cell= row.pts
-      else
-        .empty-state
-          .empty-state-icon
-            i.bi.bi-clipboard2-x
-          h4 Belum Ada Klasemen
-          p Belum ada data klasemen untuk cabang #{query && query.sport_id ? 'ini' : 'tersedia'}. Data akan muncul setelah pertandingan selesai.
+      include ./_table.pug
 
   //- Custom JavaScript (Disederhanakan seperti subadmin)
   script.
