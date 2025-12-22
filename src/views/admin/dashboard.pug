@@ -2,91 +2,898 @@ extends ../layout/main
 
 block content
   style.
-    /* Admin Dashboard Styles (kept as requested) */
-    .admin-dashboard { background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%); min-height: 100vh; padding: 2rem 0; }
-    .admin-header { background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%); border-radius: 24px; padding: 2rem; margin-bottom: 2rem; color: white; box-shadow: 0 10px 30px rgba(0,0,0,.15); animation: fadeInDown .6s ease-out; }
-    @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px);} to {opacity:1; transform:translateY(0);} }
-    .admin-header h1 { font-family:'Bebas Neue', cursive; font-size:2.5rem; letter-spacing:1px; margin-bottom:.5rem; background:linear-gradient(135deg,#0095FF 0%,#34C7FF 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-    .admin-header p { color:rgba(255,255,255,.7); font-size:1rem; margin:0; }
-    .admin-badge { background:rgba(0,149,255,0.15); color:#0095FF; padding:.6rem 1.2rem; border-radius:20px; font-weight:600; font-size:.9rem; border:2px solid rgba(0,149,255,0.3); display:inline-flex; align-items:center; gap:.5rem; }
-    .admin-header .btn { background:rgba(255,255,255,0.1); border:2px solid rgba(255,255,255,0.3); color:white; padding:.6rem 1.2rem; border-radius:12px; font-weight:600; transition:all .3s; backdrop-filter: blur(10px); }
-    .admin-header .btn:hover { background:rgba(255,255,255,0.2); border-color:#0095FF; transform:translateY(-2px); }
-    .admin-stat-card { background:white; border-radius:20px; border:2px solid #e8edf2; transition:all .4s cubic-bezier(.4,0,.2,1); overflow:hidden; animation:fadeInUp .6s ease-out backwards; position:relative; }
-    @keyframes fadeInUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
-    .admin-stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; background:linear-gradient(90deg,#0095FF 0%,#34C7FF 100%); transform:scaleX(0); transition:transform .4s; }
-    .admin-stat-card:hover::before { transform:scaleX(1); }
-    .admin-stat-card:hover { transform:translateY(-8px); box-shadow:0 15px 35px rgba(0,149,255,.15); border-color:#0095FF; }
-    .admin-stat-card .card-body { padding:2rem; }
-    .stat-icon-wrapper { width:60px; height:60px; background:linear-gradient(135deg,rgba(0,149,255,0.1) 0%,rgba(0,149,255,0.2) 100%); border-radius:16px; display:flex; align-items:center; justify-content:center; margin-bottom:1rem; transition:all .4s; border:2px solid rgba(0,149,255,0.2); }
-    .admin-stat-card:hover .stat-icon-wrapper { background:linear-gradient(135deg,#0095FF 0%,#34C7FF 100%); transform: rotate(10deg) scale(1.1); border-color:#0095FF; }
-    .stat-icon { font-size:1.8rem; color:#0095FF; transition:color .4s; }
-    .admin-stat-card:hover .stat-icon { color:white; }
-    .stat-label { color:#5a6c7d; font-size:.9rem; font-weight:500; margin-bottom:.5rem; display:block; }
-    .stat-number { font-family:'Bebas Neue', cursive; font-size:2.5rem; color:#0B1F3F; letter-spacing:1px; margin:0; transition:color .3s; }
-    .admin-content-card { background:white; border-radius:20px; border:2px solid #e8edf2; overflow:hidden; animation:fadeInUp .6s ease-out backwards; height:100%; }
-    .admin-content-card .card-header { background:linear-gradient(135deg,#f5f8fa 0%,#e9eef3 100%); border-bottom:2px solid #e8e8e8; padding:1.5rem; }
-    .admin-content-card .card-header h5 { color:#0B1F3F; font-weight:700; font-size:1.2rem; display:flex; align-items:center; gap:.5rem; margin:0; }
-    .admin-content-card .card-header i { color:#0095FF; font-size:1.3rem; }
-    .admin-content-card .card-header a { color:#5a6c7d; font-weight:600; text-decoration:none; transition:all .3s; }
-    .admin-content-card .card-header a:hover { color:#0095FF; transform:translateX(3px); }
-    .admin-table { margin:0; }
-    .admin-table thead { background:#f8f9fa; }
-    .admin-table thead th { color:#5a6c7d; font-weight:600; font-size:.85rem; text-transform:uppercase; letter-spacing:.5px; padding:1rem; border:none; }
-    .admin-table tbody tr { border-bottom:1px solid #f0f0f0; transition:all .3s; }
-    .admin-table tbody tr:hover { background:#f8f9fa; transform:translateX(5px); }
-    .admin-table tbody td { padding:1rem; vertical-align:middle; border:none; }
-    .admin-table tbody td a { color:#0B1F3F; font-weight:600; text-decoration:none; transition:color .3s; }
-    .admin-table tbody td a:hover { color:#0095FF; }
-    .admin-table .badge { padding:.4rem .8rem; border-radius:20px; font-weight:600; font-size:.75rem; text-transform:uppercase; }
-    .news-list-item { border:none; border-bottom:1px solid #f0f0f0; padding:1.25rem; transition:all .3s; text-decoration:none; }
-    .news-list-item:hover { background:#f8f9fa; transform:translateX(5px); }
-    .news-list-item h6 { color:#0B1F3F; font-weight:700; font-size:1rem; margin-bottom:.5rem; transition:color .3s; }
-    .news-list-item:hover h6 { color:#0095FF; }
-    .empty-state { padding:3rem 2rem; text-align:center; }
-    .empty-state-icon { width:80px; height:80px; background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; animation:float 3s ease-in-out infinite; }
-    @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
-    .empty-state-icon i { font-size:2.5rem; color:#adb5bd; }
-    .empty-state p { color:#5a6c7d; font-size:.95rem; margin:0; }
-    .video-thumb { width:84px; height:56px; object-fit:cover; border-radius:8px; }
-    .ticket-badge { border-radius:12px; padding:.25rem .6rem; font-weight:700; }
-    @media (max-width:991px) { .admin-header { padding:1.5rem } .admin-header h1{font-size:2rem} .stat-number{font-size:2rem} .admin-stat-card .card-body{padding:1.5rem} }
-    @media (max-width:767px) { .admin-dashboard { padding:1rem 0 } .admin-header { padding:1.25rem; border-radius:16px } .admin-header h1{font-size:1.75rem} .video-thumb{width:64px;height:44px} }
+    /* ========== VARIABLES & BASE ========== */
+    :root {
+      --primary: #0095FF;
+      --primary-dark: #0066CC;
+      --primary-light: #34C7FF;
+      --secondary: #0B1F3F;
+      --secondary-light: #152844;
+      --success: #00CC88;
+      --warning: #FFAA00;
+      --danger: #FF4757;
+      --purple: #8B5CF6;
+      --gray-50: #F8FAFC;
+      --gray-100: #F1F5F9;
+      --gray-200: #E2E8F0;
+      --gray-300: #CBD5E1;
+      --gray-400: #94A3B8;
+      --gray-500: #64748B;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1E293B;
+      --gray-900: #0F172A;
+      --shadow-sm: 0 2px 8px rgba(0, 149, 255, 0.05);
+      --shadow-md: 0 8px 25px rgba(0, 149, 255, 0.1);
+      --shadow-lg: 0 15px 35px rgba(0, 149, 255, 0.15);
+      --shadow-xl: 0 25px 50px rgba(0, 149, 255, 0.2);
+    }
+
+    /* ========== ADMIN DASHBOARD ========== */
+    .admin-dashboard {
+      background: var(--gray-50);
+      min-height: 100vh;
+      padding: 2rem 0 3rem;
+      position: relative;
+    }
+
+    /* ========== HEADER IMPROVED (Subadmin Reference Style) ========== */
+    .admin-header-wrapper {
+      position: relative;
+      margin-bottom: 2.5rem;
+    }
+
+    .admin-hero {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+      border-radius: 28px;
+      padding: 3.5rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+      animation: slideInDown 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    @keyframes slideInDown {
+      from { 
+        opacity: 0; 
+        transform: translateY(-30px) scale(0.95); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+    }
+
+    /* Background effects */
+    .admin-hero::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.25) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 20s linear infinite;
+      z-index: 1;
+    }
+
+    .admin-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: -100px;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(52, 199, 255, 0.2) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 25s linear infinite reverse;
+      z-index: 1;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(100px, 100px) rotate(360deg); }
+    }
+
+    /* Hero content container */
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+    }
+
+    /* Main greeting */
+    .hero-greeting {
+      font-size: 3rem;
+      font-weight: 700;
+      font-family: 'Bebas Neue', cursive;
+      color: white;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      letter-spacing: 2px;
+      line-height: 1.1;
+      animation: fadeInUp 0.6s ease-out 0.2s backwards;
+      background: linear-gradient(135deg, #FFFFFF 0%, rgba(255, 255, 255, 0.9) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @keyframes fadeInUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+
+    /* Role badge */
+    .admin-role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 0.8rem 1.8rem;
+      border-radius: 50px;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.6s ease-out 0.4s backwards;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .admin-role-badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+      z-index: 1;
+    }
+
+    .admin-role-badge:hover {
+      background: rgba(255, 255, 255, 0.35);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .admin-role-badge i {
+      font-size: 1.2rem;
+      color: var(--primary-light);
+      position: relative;
+      z-index: 2;
+    }
+
+    .admin-role-badge span {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Hero description */
+    .hero-description {
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 1.15rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+      animation: fadeInUp 0.6s ease-out 0.6s backwards;
+      font-weight: 500;
+      max-width: 600px;
+    }
+
+    /* Quick actions bar */
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      animation: fadeInUp 0.6s ease-out 0.8s backwards;
+      flex-wrap: wrap;
+    }
+
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .hero-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s;
+    }
+
+    .hero-btn:hover::before {
+      left: 100%;
+    }
+
+    .hero-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.2);
+    }
+
+    .hero-btn-primary {
+      background: rgba(0, 149, 255, 0.25);
+      border-color: rgba(0, 149, 255, 0.4);
+    }
+
+    .hero-btn-primary:hover {
+      background: rgba(0, 149, 255, 0.35);
+    }
+
+    .hero-btn-warning {
+      background: rgba(255, 170, 0, 0.25);
+      border-color: rgba(255, 170, 0, 0.4);
+    }
+
+    .hero-btn-warning:hover {
+      background: rgba(255, 170, 0, 0.35);
+    }
+
+    /* User info in top right */
+    .user-info-panel {
+      position: absolute;
+      top: 2rem;
+      right: 2.5rem;
+      z-index: 3;
+      animation: slideInRight 0.6s ease-out 0.3s backwards;
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .user-info:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .user-email {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.85rem;
+      line-height: 1.2;
+    }
+
+    /* ========== STATS CARDS (Tetap sama) ========== */
+    .admin-stat-card {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid var(--gray-200);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out backwards;
+      position: relative;
+      height: 100%;
+      box-shadow: var(--shadow-md);
+    }
+
+    .admin-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+      transform: scaleX(0);
+      transition: transform 0.4s;
+    }
+
+    .admin-stat-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .admin-stat-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--primary);
+    }
+
+    .admin-stat-card .card-body {
+      padding: 2.5rem 2rem;
+    }
+
+    .stat-icon-wrapper {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(0, 149, 255, 0.2) 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      transition: all 0.4s;
+      border: 2px solid rgba(0, 149, 255, 0.2);
+    }
+
+    .admin-stat-card:hover .stat-icon-wrapper {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      transform: rotate(15deg) scale(1.1);
+      border-color: var(--primary);
+    }
+
+    .stat-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      transition: color 0.4s;
+    }
+
+    .admin-stat-card:hover .stat-icon {
+      color: white;
+    }
+
+    .stat-label {
+      color: var(--gray-600);
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .stat-number {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 3rem;
+      color: var(--secondary);
+      letter-spacing: 1px;
+      margin: 0;
+      transition: color 0.3s;
+      line-height: 1;
+    }
+
+    /* ========== CONTENT CARDS (Tetap sama) ========== */
+    .admin-content-card {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid var(--gray-200);
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out backwards;
+      height: 100%;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+    }
+
+    .admin-content-card:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--gray-300);
+      transform: translateY(-3px);
+    }
+
+    .admin-content-card .card-header {
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+      border-bottom: 2px solid var(--gray-200);
+      padding: 1.75rem 2rem;
+    }
+
+    .admin-content-card .card-header h5 {
+      color: var(--secondary);
+      font-weight: 700;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0;
+    }
+
+    .admin-content-card .card-header i {
+      color: var(--primary);
+      font-size: 1.4rem;
+    }
+
+    .admin-content-card .card-header a {
+      color: var(--gray-600);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .admin-content-card .card-header a:hover {
+      color: var(--primary);
+      background: rgba(0, 149, 255, 0.1);
+      transform: translateX(3px);
+    }
+
+    /* ========== TABLES (Tetap sama) ========== */
+    .admin-table {
+      margin: 0;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .admin-table thead {
+      background: var(--gray-50);
+    }
+
+    .admin-table thead th {
+      color: var(--gray-600);
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 1.25rem 1rem;
+      border: none;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .admin-table tbody tr {
+      border-bottom: 1px solid var(--gray-200);
+      transition: all 0.3s ease;
+    }
+
+    .admin-table tbody tr:hover {
+      background: linear-gradient(90deg, rgba(0, 149, 255, 0.05) 0%, rgba(52, 199, 255, 0.02) 100%);
+      transform: translateX(5px);
+    }
+
+    .admin-table tbody td {
+      padding: 1.25rem 1rem;
+      vertical-align: middle;
+      border: none;
+      color: var(--gray-700);
+    }
+
+    .admin-table tbody td a {
+      color: var(--secondary);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .admin-table tbody td a:hover {
+      color: var(--primary);
+    }
+
+    .admin-table .badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid;
+    }
+
+    .badge.bg-warning {
+      background: linear-gradient(135deg, rgba(255, 170, 0, 0.1) 0%, rgba(255, 170, 0, 0.05) 100%) !important;
+      color: var(--warning) !important;
+      border-color: rgba(255, 170, 0, 0.2) !important;
+    }
+
+    .badge.bg-success {
+      background: linear-gradient(135deg, rgba(0, 204, 136, 0.1) 0%, rgba(0, 204, 136, 0.05) 100%) !important;
+      color: var(--success) !important;
+      border-color: rgba(0, 204, 136, 0.2) !important;
+    }
+
+    .badge.bg-secondary {
+      background: linear-gradient(135deg, rgba(100, 116, 139, 0.1) 0%, rgba(100, 116, 139, 0.05) 100%) !important;
+      color: var(--gray-500) !important;
+      border-color: rgba(100, 116, 139, 0.2) !important;
+    }
+
+    .badge.bg-danger {
+      background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, rgba(255, 107, 122, 0.05) 100%) !important;
+      color: var(--danger) !important;
+      border-color: rgba(255, 71, 87, 0.2) !important;
+    }
+
+    /* ========== NEWS LIST (Tetap sama) ========== */
+    .news-list-item {
+      border: none;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 1.5rem;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+
+    .news-list-item:hover {
+      background: var(--gray-50);
+      transform: translateX(8px);
+      border-radius: 12px;
+    }
+
+    .news-list-item h6 {
+      color: var(--secondary);
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s;
+      line-height: 1.4;
+    }
+
+    .news-list-item:hover h6 {
+      color: var(--primary);
+    }
+
+    .news-list-item .badge {
+      background: rgba(0, 149, 255, 0.1) !important;
+      color: var(--primary) !important;
+      border: 1px solid rgba(0, 149, 255, 0.2) !important;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    .news-list-item small {
+      color: var(--gray-500);
+      font-size: 0.85rem;
+    }
+
+    /* ========== VIDEO THUMB (Tetap sama) ========== */
+    .video-thumb {
+      width: 90px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid var(--gray-200);
+      transition: all 0.3s ease;
+    }
+
+    .list-group-item:hover .video-thumb {
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    /* ========== TICKET BADGE (Tetap sama) ========== */
+    .ticket-badge {
+      border-radius: 20px;
+      padding: 0.4rem 1rem;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid;
+    }
+
+    /* ========== EMPTY STATE (Tetap sama) ========== */
+    .empty-state {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .empty-state-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      animation: float 3s ease-in-out infinite;
+      border: 2px solid var(--gray-200);
+    }
+
+    .empty-state-icon i {
+      font-size: 3rem;
+      color: var(--gray-400);
+    }
+
+    .empty-state p {
+      color: var(--gray-500);
+      font-size: 1rem;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    /* ========== ALERTS (Tetap sama) ========== */
+    .alert {
+      border-radius: 16px;
+      border: none;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid;
+      animation: slideInDown 0.4s ease-out;
+    }
+
+    .alert-success {
+      background: linear-gradient(135deg, rgba(0, 204, 136, 0.1) 0%, rgba(0, 204, 136, 0.05) 100%);
+      color: var(--success);
+      border-left-color: var(--success);
+    }
+
+    .alert-danger {
+      background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, rgba(255, 107, 122, 0.05) 100%);
+      color: var(--danger);
+      border-left-color: var(--danger);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 1200px) {
+      .hero-greeting {
+        font-size: 2.5rem;
+      }
+      
+      .stat-number {
+        font-size: 2.5rem;
+      }
+      
+      .admin-stat-card .card-body {
+        padding: 2rem 1.5rem;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .admin-hero {
+        padding: 3rem 2rem;
+        min-height: 240px;
+      }
+      
+      .hero-greeting {
+        font-size: 2.2rem;
+      }
+      
+      .hero-description {
+        font-size: 1.05rem;
+      }
+      
+      .user-info-panel {
+        position: static;
+        margin-top: 1.5rem;
+        animation: fadeInUp 0.6s ease-out 0.6s backwards;
+      }
+      
+      .user-info {
+        display: inline-flex;
+      }
+      
+      .stat-number {
+        font-size: 2.2rem;
+      }
+      
+      .stat-icon-wrapper {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .stat-icon {
+        font-size: 1.6rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .admin-dashboard {
+        padding: 1.5rem 0 2rem;
+      }
+      
+      .admin-hero {
+        padding: 2.5rem 1.5rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+      }
+      
+      .hero-greeting {
+        font-size: 2rem;
+      }
+      
+      .hero-actions {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .hero-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .admin-stat-card .card-body {
+        padding: 1.75rem 1.25rem;
+      }
+      
+      .stat-number {
+        font-size: 2rem;
+      }
+      
+      .admin-content-card .card-header {
+        padding: 1.5rem;
+      }
+      
+      .admin-content-card .card-header h5 {
+        font-size: 1.1rem;
+      }
+      
+      .video-thumb {
+        width: 70px;
+        height: 50px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .admin-hero {
+        padding: 2rem 1.25rem;
+      }
+      
+      .hero-greeting {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+      }
+      
+      .admin-role-badge {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+      
+      .hero-btn {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.9rem;
+      }
+      
+      .admin-stat-card .card-body {
+        padding: 1.5rem;
+      }
+      
+      .stat-icon-wrapper {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 1rem;
+      }
+      
+      .stat-icon {
+        font-size: 1.4rem;
+      }
+      
+      .stat-number {
+        font-size: 1.8rem;
+      }
+      
+      .admin-table thead th,
+      .admin-table tbody td {
+        padding: 1rem 0.75rem;
+      }
+      
+      .news-list-item {
+        padding: 1.25rem;
+      }
+      
+      .empty-state {
+        padding: 3rem 1.5rem;
+      }
+      
+      .empty-state-icon {
+        width: 80px;
+        height: 80px;
+      }
+      
+      .empty-state-icon i {
+        font-size: 2.5rem;
+      }
+    }
 
   .admin-dashboard
     .container-fluid
-      // Header
-      .admin-header
-        .row.align-items-center.g-3
-          .col-lg-7
-            h1 Admin Dashboard
-            p
+      // ========== IMPROVED HEADER ==========
+      .admin-header-wrapper
+        .admin-hero
+          // User info panel (top right)
+          .user-info-panel
+            if currentUser
+              .user-info
+                .user-avatar
+                  - const initials = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'A'
+                  = initials
+                .user-details
+                  .user-name= currentUser.name || currentUser.email || 'Administrator'
+                  .user-email= currentUser.role ? currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1) : 'Admin'
+
+          // Hero content
+          .hero-content
+            h1.hero-greeting Admin Dashboard
+            
+            .admin-role-badge
+              i.bi.bi-shield-check
+              | Super Admin Dashboard
+
+            p.hero-description
               i.bi.bi-speedometer2.me-2
-              | Kelola event, berita, jadwal, video, livestream, dan tiket.
-          .col-lg-5
-            .d-flex.align-items-center.justify-content-lg-end.gap-2.flex-wrap
-              if currentUser
-                .admin-badge
-                  i.bi.bi-person-badge
-                  span= currentUser.name || currentUser.email || currentUser.role
-              a.btn(href="/")
+              | Kelola event, berita, jadwal, video, livestream, dan tiket dengan akses penuh.
+
+            .hero-actions
+              a.hero-btn.hero-btn-primary(href="/")
                 i.bi.bi-house-door.me-2
                 | Lihat Website
+              
               if currentUser && currentUser.role === 'admin'
-                a.btn.btn-primary.btn-sm.ms-2(href="/admin/subadmins")
-                  i.bi.bi-people-fill.me-1
+                a.hero-btn(href="/admin/subadmins")
+                  i.bi.bi-people-fill.me-2
                   | Manage Subadmins
+              
               if currentUser && currentUser.role === 'admin'
-                a.btn.btn-warning.ms-2(href="/admin/sellers")
-                  i.bi.bi-shop.me-1
+                a.hero-btn.hero-btn-warning(href="/admin/sellers")
+                  i.bi.bi-shop.me-2
                   | Manage Seller
 
-      // Note: quick-create buttons removed — create must be done via "Kelola" pages
+      // ========== FLASH MESSAGES ==========
       if flash && flash.success && flash.success.length
         .alert.alert-success(role="alert")= flash.success[0]
       if flash && flash.error && flash.error.length
         .alert.alert-danger(role="alert")= flash.error[0]
 
-      // Stats
+      // ========== STATS CARDS ==========
       .row.g-3.g-lg-4.mb-4
         .col-6.col-lg-3
           .card.border-0.admin-stat-card
@@ -117,7 +924,8 @@ block content
               span.stat-label Berita Terpublikasi
               h3.stat-number= (stats && stats.news) || 0
 
-      // Main content: Event & News top row
+      // ========== MAIN CONTENT ==========
+      // Event & News top row
       .row.g-4
         .col-lg-6
           .card.border-0.admin-content-card
@@ -174,7 +982,7 @@ block content
                   a.list-group-item.news-list-item.d-flex.justify-content-between.align-items-start(href=`/news/${n.slug}`)
                     .flex-grow-1
                       if n.sport_name
-                        span.badge.bg-light.text-primary.border.mb-2(style="color: #0095FF !important; border-color: #0095FF !important;")= n.sport_name
+                        span.badge.bg-light.text-primary.border.mb-2(style="color: var(--primary) !important; border-color: var(--primary) !important;")= n.sport_name
                       h6= n.title
                       if n.published_at
                         - const dn = new Date(n.published_at)
@@ -190,7 +998,6 @@ block content
 
       // Second row: Jadwal, Klasemen
       .row.g-4.mt-1
-        // Jadwal card
         .col-lg-6
           .card.border-0.admin-content-card
             .card-header.d-flex.justify-content-between.align-items-center
@@ -231,7 +1038,6 @@ block content
               .empty-state
                 p.text-muted Tidak ada jadwal.
 
-        // Klasemen card
         .col-lg-6
           .card.border-0.admin-content-card
             .card-header.d-flex.justify-content-between.align-items-center
@@ -328,6 +1134,7 @@ block content
   // small JS for stat animate
   script.
     (function(){
+      // Animate stats counting
       document.querySelectorAll('.stat-number').forEach(function(el){
         var target = parseInt(el.textContent) || 0;
         if(target <= 0) return;
@@ -336,8 +1143,70 @@ block content
         var cur = 0;
         var t = setInterval(function(){
           cur += step;
-          if(cur >= target){ el.textContent = target; clearInterval(t); }
-          else el.textContent = cur;
-        }, 20);
+          if(cur >= target){ 
+            el.textContent = target; 
+            clearInterval(t); 
+          } else {
+            el.textContent = cur;
+          }
+        }, 30);
       });
-    })();
+
+      // Add glow effect to role badge
+      const roleBadge = document.querySelector('.admin-role-badge');
+      if (roleBadge) {
+        setInterval(() => {
+          roleBadge.style.boxShadow = '0 8px 32px rgba(0, 149, 255, 0.3)';
+          setTimeout(() => {
+            roleBadge.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2)';
+          }, 1000);
+        }, 3000);
+      }
+
+      // Add parallax effect to background circles
+      const hero = document.querySelector('.admin-hero');
+      if (hero) {
+        hero.addEventListener('mousemove', (e) => {
+          const { left, top, width, height } = hero.getBoundingClientRect();
+          const x = (e.clientX - left) / width;
+          const y = (e.clientY - top) / height;
+          
+          const circles = hero.querySelectorAll('.admin-hero::before, .admin-hero::after');
+          circles.forEach((circle, index) => {
+            const moveX = (x - 0.5) * 20;
+            const moveY = (y - 0.5) * 20;
+            circle.style.transform = `translate(${moveX}px, ${moveY}px)`;
+          });
+        });
+      }
+
+      // Add typing effect to greeting
+      const greeting = document.querySelector('.hero-greeting');
+      if (greeting) {
+        const text = greeting.textContent;
+        greeting.textContent = '';
+        let i = 0;
+        
+        function typeWriter() {
+          if (i < text.length) {
+            greeting.textContent += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 50);
+          }
+        }
+        
+        // Start typing after a delay
+        setTimeout(typeWriter, 500);
+      }
+
+      // Auto-dismiss alerts
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        setTimeout(() => {
+          alert.style.opacity = '0';
+          alert.style.transform = 'translateY(-10px)';
+          setTimeout(() => alert.remove(), 300);
+        }, 5000);
+      });
+
+    })(); 

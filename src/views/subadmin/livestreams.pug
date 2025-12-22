@@ -9,46 +9,125 @@ block content
       padding: 2rem 0;
     }
     
-    /* Header Section */
+    /* ===== HEADER SECTION - DIUBAH SESUAI REFERENSI TEAMS ===== */
     .livestreams-header {
       background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
       border-radius: 24px;
-      padding: 2rem;
+      padding: 2.5rem;
       margin-bottom: 2rem;
-      color: white;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
       animation: fadeInDown 0.6s ease-out;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      color: white;
     }
     
     @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-20px); }
+      from { opacity: 0; transform: translateY(-30px); }
       to { opacity: 1; transform: translateY(0); }
     }
     
-    .livestreams-header h1 {
+    .livestreams-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255, 71, 87, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    .livestreams-header-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .livestreams-title {
+      color: white;
       font-family: 'Bebas Neue', cursive;
       font-size: 2.5rem;
       letter-spacing: 1px;
-      margin-bottom: 0;
+      margin: 0 0 0.5rem 0;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .livestreams-title i {
       background: linear-gradient(135deg, #FF4757 0%, #FF6B7A 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      margin-right: 0.5rem;
+    }
+    
+    .livestreams-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+    
+    /* ===== BACK BUTTON (FROM TEAMS REFERENCE) ===== */
+    .btn-back-modern {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-top: 1rem;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 12px;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+    
+    .btn-back-modern:hover {
+      background: rgba(255, 255, 255, 0.28);
+      transform: translateX(-3px);
+      color: #fff;
+    }
+    
+    /* HEADER TOP LAYOUT (Like in Teams) */
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+    
+    /* HEADER ACTIONS (From Teams) */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
     }
     
     .btn-add-livestream {
       background: linear-gradient(135deg, #FF4757 0%, #FF6B7A 100%);
       border: none;
       color: white;
-      padding: 0.8rem 1.5rem;
+      padding: 0.9rem 1.8rem;
       border-radius: 12px;
       font-weight: 600;
+      font-size: 1rem;
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
-      text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
+      text-decoration: none;
+      animation: fadeInUp 0.6s ease-out 0.4s backwards;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     .btn-add-livestream:hover {
@@ -65,11 +144,6 @@ block content
       overflow: hidden;
       animation: fadeInUp 0.6s ease-out;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    }
-    
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
     }
     
     .livestreams-table-card .card-body {
@@ -117,7 +191,13 @@ block content
     .stream-title {
       color: #0B1F3F;
       font-weight: 600;
+      text-decoration: none;
       font-size: 0.95rem;
+    }
+    
+    .stream-title:hover {
+      color: #FF4757;
+      text-decoration: underline;
     }
     
     .sport-badge {
@@ -264,10 +344,10 @@ block content
     /* Responsive */
     @media (max-width: 991px) {
       .livestreams-header {
-        padding: 1.5rem;
+        padding: 2rem;
       }
       
-      .livestreams-header h1 {
+      .livestreams-title {
         font-size: 2rem;
       }
       
@@ -279,26 +359,39 @@ block content
       .livestreams-table tbody td {
         padding: 1rem 0.75rem;
       }
-    }
-    
-    @media (max-width: 767px) {
-      .livestreams-page {
-        padding: 1rem 0;
+      
+      .header-top {
+        flex-direction: column;
+        gap: 1rem;
       }
       
-      .livestreams-header {
-        padding: 1.25rem;
-        border-radius: 16px;
-      }
-      
-      .livestreams-header h1 {
-        font-size: 1.75rem;
+      .header-actions {
+        flex-direction: column;
+        align-items: stretch;
       }
       
       .btn-add-livestream {
         width: 100%;
         justify-content: center;
-        margin-top: 1rem;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .livestreams-page {
+        padding: 1.5rem 0;
+      }
+      
+      .livestreams-header {
+        padding: 1.5rem;
+        border-radius: 16px;
+      }
+      
+      .livestreams-title {
+        font-size: 1.75rem;
+      }
+      
+      .livestreams-subtitle {
+        font-size: 1rem;
       }
       
       .livestreams-table {
@@ -334,28 +427,38 @@ block content
       .empty-state h4 {
         font-size: 1.6rem;
       }
-    }
-    .stream-title {
-      color: #0B1F3F;
-      font-weight: 600;
-      text-decoration: none;
+      
+      .btn-back-modern {
+        align-self: flex-start;
+      }
     }
 
-    .stream-title:hover {
-      color: #FF4757;
-      text-decoration: underline;
-    }
   .livestreams-page
     .container
-      //- Header Section
-      - const base = isAdmin ? '/admin' : '/subadmin'
-      .livestreams-header.d-flex.justify-content-between.align-items-center
-        h1
-          i.bi.bi-broadcast.me-2
-          | Kelola Livestream
-        a.btn-add-livestream(href="/subadmin/livestreams/create")
-          i.bi.bi-plus-circle
-          span Tambah Livestream
+      //- ===== IMPROVED HEADER SECTION (FROM TEAMS REFERENCE) =====
+      .livestreams-header
+        .livestreams-header-content
+          //- Header Top with Back Button (Like in Teams)
+          .header-top
+            h1.livestreams-title
+              i.bi.bi-broadcast
+              | Kelola Livestream
+            
+            //- Back Button from Teams Reference
+            - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin' : '/subadmin'
+            a.btn-back-modern(href=backUrl)
+              i.bi.bi-arrow-left.me-1
+              | Kembali
+          
+          //- Subtitle
+          p.livestreams-subtitle
+            | Siarkan pertandingan secara langsung, jadwalkan streaming, dan kelola konten live untuk cabang olahraga Anda.
+          
+          //- Header Actions with Add Livestream Button
+          .header-actions
+            a.btn-add-livestream(href="/subadmin/livestreams/create")
+              i.bi.bi-plus-circle
+              span Tambah Livestream Baru
 
       if livestreams && livestreams.length
         .card.livestreams-table-card.border-0
