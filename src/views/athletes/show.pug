@@ -3,6 +3,7 @@ extends ../layout/main
 block content
   - const photo = athlete.photo_url || null;
   - const eff = Number(effectiveness || 0).toFixed(1);
+  - const isSubadmin = currentUser && (currentUser.role === 'subadmin' || currentUser.role === 'admin');
 
   style.
     .athlete-page { background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%); min-height: 100vh; padding: 2.5rem 0; }
@@ -30,6 +31,16 @@ block content
               .rank #{rank || '-'}
               .flex-grow-1
                 h1.name= athlete.name
+
+                if isSubadmin
+                  .mt-3
+                    button.btn.btn-light.btn-sm(
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#editAthleteModal"
+                    )
+                      i.bi.bi-pencil-square.me-1
+                      | Edit Atlet
                 .d-flex.flex-wrap.gap-2.mt-2
                   span.meta-badge
                     i.bi.bi-flag
@@ -75,6 +86,60 @@ block content
             else
               .avatar.d-flex.align-items-center.justify-content-center
                 i.bi.bi-person-circle(style='font-size:5rem; opacity:.8;')
+    if isSubadmin
+      //- EDIT MODAL (taruh di paling bawah halaman)
+      .modal.fade#editAthleteModal(tabindex="-1" aria-hidden="true")
+        .modal-dialog.modal-lg.modal-dialog-scrollable
+          .modal-content
+            form(method="POST" action=`/subadmin/athletes/${athlete.id}` enctype="multipart/form-data")
+              .modal-header
+                h5.modal-title Edit Profil Atlet
+                button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+              .modal-body
+                .row.g-3
+                  .col-md-6
+                    label.form-label Nama
+                    input.form-control(type="text" name="name" required value=athlete.name)
+                  .col-md-6
+                    label.form-label Country Code
+                    input.form-control(type="text" name="country_code" value=(athlete.country_code || '') placeholder="ID / US / ...")
+
+                  .col-md-6
+                    label.form-label Posisi
+                    input.form-control(type="text" name="playing_position" value=(athlete.playing_position || ''))
+                  .col-md-6
+                    label.form-label Coach
+                    input.form-control(type="text" name="coach" value=(athlete.coach || ''))
+
+                  .col-md-6
+                    label.form-label Born in
+                    input.form-control(type="text" name="born_in" value=(athlete.born_in || ''))
+                  .col-md-6
+                    label.form-label Height (cm)
+                    input.form-control(type="number" name="height_cm" min="0" value=(athlete.height_cm || ''))
+
+                  .col-md-12
+                    label.form-label Bio
+                    textarea.form-control(name="bio" rows="3")= athlete.bio || ''
+
+                  .col-md-6
+                    label.form-label Titles
+                    input.form-control(type="number" name="titles" min="0" value=(athlete.titles || 0))
+                  .col-md-6
+                    label.form-label Race
+                    input.form-control(type="text" name="race" value=(athlete.race || ''))
+
+                  .col-md-12
+                    label.form-label Foto Atlet (opsional)
+                    input.form-control(type="file" name="photo" accept="image/*")
+                    if athlete.photo_url
+                      small.text-muted.d-block.mt-2 Foto sekarang: #{athlete.photo_url}
+
+              .modal-footer
+                button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Batal
+                button.btn.btn-primary(type="submit")
+                  i.bi.bi-save.me-1
+                  | Simpan
 
       .stat-grid.mb-4
         .stat

@@ -8,7 +8,15 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const { attachAllowedSports } = require('../middlewares/sport.middleware');
+const subadminAthletes = require("../controllers/subadmin.athletes.controller");
 
+// ✅ 1) FILE FILTER HARUS PALING ATAS (dipakai news & athlete)
+const fileFilter = function (req, file, cb) {
+  if (!file.mimetype.startsWith('image/')) return cb(new Error('File harus berupa gambar'), false);
+  cb(null, true);
+};
+
+// ===== NEWS UPLOAD =====
 const uploadsDir = path.join(__dirname, '..', 'public', 'uploads', 'news');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
@@ -23,16 +31,32 @@ const storage = multer.diskStorage({
   }
 });
 
-const fileFilter = function (req, file, cb) {
-  if (!file.mimetype.startsWith('image/')) return cb(new Error('File harus berupa gambar'), false);
-  cb(null, true);
-};
-
 const uploadNewsThumb = multer({
   storage,
   fileFilter,
   limits: { fileSize: 3 * 1024 * 1024 } // 3MB
 });
+
+// ===== ATHLETE PHOTO UPLOAD =====
+const athleteUploadsDir = path.join(__dirname, '..', 'public', 'uploads', 'athletes');
+if (!fs.existsSync(athleteUploadsDir)) fs.mkdirSync(athleteUploadsDir, { recursive: true });
+
+const athleteStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, athleteUploadsDir),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const base = 'athlete-' + Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, base + ext);
+  }
+});
+
+const uploadAthletePhoto = multer({
+  storage: athleteStorage,
+  fileFilter,
+  limits: { fileSize: 3 * 1024 * 1024 } // 3MB
+});
+
+
 // apply to all subadmin routes (after requireLogin & requireAdminOrSubadmin in router usage)
 router.use(requireLogin, requireAdminOrSubadmin, attachAllowedSports);
 
@@ -115,5 +139,8 @@ router.post('/teams/:id/members', subadminCtrl.addTeamMember);
 router.post('/teams/:teamId/members/:athleteId/delete', subadminCtrl.deleteTeamMember);
 router.get('/teams/create', subadminCtrl.renderCreateTeam);
 router.post('/teams/create', subadminCtrl.createTeam);
+
+//athletes
+router.post('/athletes/:id', uploadAthletePhoto.single('photo'), subadminAthletes.updateAthlete);
 
 module.exports = router;
