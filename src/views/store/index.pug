@@ -976,44 +976,6 @@ block content
           | Kaos jersey, aksesoris, dan koleksi limited edition dari berbagai cabang olahraga.
 
   .container
-    // Store Navigation - TIDAK STICKY
-    .store-nav
-      .store-nav-container
-        .store-category-nav
-          button.category-btn.active(data-category="all")
-            i.bi.bi-grid-fill
-            | Semua Produk
-          button.category-btn(data-category="sepak-bola")
-            i.bi.bi-trophy
-            | Sepak Bola
-          button.category-btn(data-category="basket")
-            i.bi.bi-trophy
-            | Basket
-          button.category-btn(data-category="badminton")
-            i.bi.bi-trophy
-            | Badminton
-          button.category-btn(data-category="renang")
-            i.bi.bi-trophy
-            | Renang
-          button.category-btn(data-category="tenis")
-            i.bi.bi-trophy
-            | Tenis
-
-        .store-controls
-          .store-search
-            i.bi.bi-search.store-search-icon
-            input.store-search-input.form-control#searchInput(
-              type="search" 
-              placeholder="Cari merchandise, brand, atau cabang olahraga..."
-              oninput="filterProducts(this.value)"
-            )
-          
-          select.filter-select#sortFilter
-            option(value="featured") Terpopuler
-            option(value="newest") Terbaru
-            option(value="price-asc") Harga Terendah
-            option(value="price-desc") Harga Tertinggi
-
     // Featured Banner
     .featured-banner
       .featured-banner-content
@@ -1049,6 +1011,37 @@ block content
         .stat-value 4.8
         .stat-label Rating Pengguna
 
+    // Store Navigation - TIDAK STICKY
+    .store-nav
+        .store-controls
+          .store-search
+            i.bi.bi-search.store-search-icon
+            input.store-search-input.form-control#searchInput(
+              type="search" 
+              placeholder="Cari merchandise, brand, atau cabang olahraga..."
+              oninput="filterProducts(this.value)"
+            )
+          
+          select.filter-select#sortFilter
+            option(value="featured") Terpopuler
+            option(value="newest") Terbaru
+            option(value="price-asc") Harga Terendah
+            option(value="price-desc") Harga Tertinggi
+        br
+        .store-nav-container
+          .store-category-nav
+            button.category-btn.active(type="button" data-category="all")
+              i.bi.bi-grid-fill
+              | Semua Produk
+
+            each s in sports
+              button.category-btn(
+                type="button"
+                data-category=s.name.toLowerCase().replace(/\s+/g, '-')
+              )
+                i.bi.bi-trophy
+                = s.name
+
     // Products Grid
     if products && products.length
       .products-grid#productsGrid
@@ -1056,9 +1049,8 @@ block content
           .product-card(
             data-id=product.id
             data-name=product.name
-            data-seller=product.seller_name
             data-price=product.price
-            data-category=product.sport_name
+            data-category=product.sport_name.toLowerCase().replace(/\s+/g, '-')
             data-date=product.created_at
           )
             .product-image-container
@@ -1083,18 +1075,6 @@ block content
             
             .product-content
               h3.product-title= product.name
-              
-              .product-seller
-                .seller-avatar= product.seller_name ? product.seller_name.charAt(0).toUpperCase() : 'S'
-                .seller-info
-                  .seller-name= product.seller_name || 'Sporter Official'
-                  .seller-rating
-                    i.bi.bi-star-fill
-                    i.bi.bi-star-fill
-                    i.bi.bi-star-fill
-                    i.bi.bi-star-fill
-                    i.bi.bi-star-half
-                    span.ms-1 (4.5)
               
               .product-price
                 span.price-amount Rp #{Number(product.price).toLocaleString('id-ID')}
@@ -1140,64 +1120,45 @@ block content
     .cart-badge#cartBadge 3
 
   script.
-    // Product Search and Filter
-    function filterProducts(query) {
-      const q = query.toLowerCase().trim();
-      const productCards = document.querySelectorAll('#productsGrid .product-card');
-      let visibleCount = 0;
-      
-      productCards.forEach(card => {
+    let currentSearch = '';
+    let activeCategory = 'all';
+
+    function applyFilters() {
+      const cards = document.querySelectorAll('#productsGrid .product-card');
+
+      cards.forEach(card => {
         const name = card.dataset.name.toLowerCase();
-        const seller = card.dataset.seller ? card.dataset.seller.toLowerCase() : '';
-        const category = card.dataset.category ? card.dataset.category.toLowerCase() : '';
-        const shouldShow = q === '' || name.includes(q) || seller.includes(q) || category.includes(q);
-        
-        if (shouldShow) {
-          card.style.display = 'flex';
-          card.style.animation = 'fadeInUp 0.4s ease-out';
-          visibleCount++;
-        } else {
-          card.style.display = 'none';
-        }
+        const category = card.dataset.category;
+
+        const matchSearch =
+          currentSearch === '' || name.includes(currentSearch);
+
+        const matchCategory =
+          activeCategory === 'all' || category === activeCategory;
+
+        card.style.display = (matchSearch && matchCategory)
+          ? 'flex'
+          : 'none';
       });
-      
-      // Update product count
-      const productCountElement = document.querySelector('.stat-icon-products + .stat-value');
-      if (productCountElement) {
-        productCountElement.textContent = visibleCount;
-      }
     }
-    
-    // Category Filter
+
+    // Search
+    function filterProducts(query) {
+      currentSearch = query.toLowerCase().trim();
+      applyFilters();
+    }
+
+    // Category buttons
     const categoryButtons = document.querySelectorAll('.category-btn');
     categoryButtons.forEach(btn => {
-      btn.addEventListener('click', function() {
-        // Remove active class from all buttons
+      btn.addEventListener('click', function () {
         categoryButtons.forEach(b => b.classList.remove('active'));
-        // Add active class to clicked button
         this.classList.add('active');
-        
-        const category = this.dataset.category;
-        // Filter products by category
-        filterByCategory(category);
+
+        activeCategory = this.dataset.category;
+        applyFilters();
       });
     });
-    
-    function filterByCategory(category) {
-      const productCards = document.querySelectorAll('#productsGrid .product-card');
-      
-      productCards.forEach(card => {
-        const productCategory = card.dataset.category ? card.dataset.category.toLowerCase().replace(' ', '-') : '';
-        const shouldShow = category === 'all' || productCategory === category;
-        
-        if (shouldShow) {
-          card.style.display = 'flex';
-          card.style.animation = 'fadeInUp 0.4s ease-out';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
     
     // Sort Products
     const sortFilter = document.getElementById('sortFilter');
@@ -1234,7 +1195,6 @@ block content
       products.forEach(product => container.appendChild(product));
     }
     
-    // Add to Cart functionality
     const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
     addToCartButtons.forEach(btn => {
       btn.addEventListener('click', function() {
