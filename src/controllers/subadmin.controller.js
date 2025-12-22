@@ -1958,3 +1958,226 @@ exports.createTeam = async (req, res) => {
     conn.release();
   }
 };
+
+/* -------------------------
+   VIDEOS – LIST / EDIT / DELETE
+   ------------------------- */
+
+// GET /subadmin/videos
+exports.listVideos = async (req, res) => {
+  try {
+    const allowedSports = Array.isArray(req.allowedSports) ? req.allowedSports : [];
+
+    let where = '';
+    let params = [];
+
+    if (req.session.user.role !== 'admin') {
+      if (!allowedSports.length) {
+        return res.render('subadmin/videos', {
+          title: 'Kelola Video',
+          videos: []
+        });
+      }
+      where = `WHERE v.type <> 'livestream' AND v.sport_id IN (${allowedSports.map(() => '?').join(',')})`;
+      params = allowedSports;
+    } else {
+      where = `WHERE v.type <> 'livestream'`;
+    }
+
+    const [videos] = await db.query(
+      `
+      SELECT
+        v.id,
+        v.title,
+        v.thumbnail_url,
+        s.name AS sport_name
+      FROM videos v
+      LEFT JOIN sports s ON s.id = v.sport_id
+      ${where}
+      ORDER BY v.created_at DESC
+      `,
+      params
+    );
+
+    res.render('subadmin/videos', {
+      title: 'Kelola Video',
+      videos
+    });
+  } catch (err) {
+    console.error('listVideos error', err);
+    req.flash('error', 'Gagal memuat video');
+    res.redirect('/subadmin');
+  }
+};
+
+// GET /subadmin/videos/:id/edit
+exports.renderEditVideo = async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) return res.redirect('/subadmin/videos');
+
+  const [[video]] = await db.query(
+    `SELECT * FROM videos WHERE id = ? AND type <> 'livestream' LIMIT 1`,
+    [id]
+  );
+
+  if (!video) {
+    req.flash('error', 'Video tidak ditemukan');
+    return res.redirect('/subadmin/videos');
+  }
+
+  const sports = await loadSportsList(req.session.user);
+
+  res.render('subadmin/create_video', {
+    title: 'Edit Video',
+    mode: 'edit',
+    video,
+    sports
+  });
+};
+
+// POST /subadmin/videos/:id/edit
+exports.updateVideo = async (req, res) => {
+  const id = Number(req.params.id);
+
+  try {
+    const { sport_id, title, url, platform } = req.body;
+
+    await db.query(
+      `
+      UPDATE videos
+      SET sport_id = ?, title = ?, url = ?, platform = ?, updated_at = NOW()
+      WHERE id = ? AND type <> 'livestream'
+      `,
+      [sport_id || null, title, url, platform || null, id]
+    );
+
+    req.flash('success', 'Video berhasil diperbarui');
+    res.redirect('/subadmin/videos');
+  } catch (err) {
+    console.error('updateVideo error', err);
+    req.flash('error', 'Gagal update video');
+    res.redirect('/subadmin/videos');
+  }
+};
+
+// POST /subadmin/videos/:id/delete
+exports.deleteVideo = async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) return res.redirect('/subadmin/videos');
+
+  await db.query(`DELETE FROM videos WHERE id = ? AND type <> 'livestream'`, [id]);
+  req.flash('success', 'Video berhasil dihapus');
+  res.redirect('/subadmin/videos');
+};
+
+
+/* -------------------------
+   LIVESTREAMS – LIST / EDIT / DELETE
+   ------------------------- */
+
+// GET /subadmin/livestreams
+exports.listLivestreams = async (req, res) => {
+  try {
+    const allowedSports = Array.isArray(req.allowedSports) ? req.allowedSports : [];
+
+    let where = '';
+    let params = [];
+
+    if (req.session.user.role !== 'admin') {
+      if (!allowedSports.length) {
+        return res.render('subadmin/livestreams', {
+          title: 'Kelola Livestream',
+          livestreams: []
+        });
+      }
+      where = `WHERE v.type = 'livestream' AND v.sport_id IN (${allowedSports.map(() => '?').join(',')})`;
+      params = allowedSports;
+    } else {
+      where = `WHERE v.type = 'livestream'`;
+    }
+
+    const [livestreams] = await db.query(
+      `
+      SELECT
+        v.id,
+        v.title,
+        v.is_live,
+        s.name AS sport_name
+      FROM videos v
+      LEFT JOIN sports s ON s.id = v.sport_id
+      ${where}
+      ORDER BY v.created_at DESC
+      `,
+      params
+    );
+
+    res.render('subadmin/livestreams', {
+      title: 'Kelola Livestream',
+      livestreams
+    });
+  } catch (err) {
+    console.error('listLivestreams error', err);
+    req.flash('error', 'Gagal memuat livestream');
+    res.redirect('/subadmin');
+  }
+};
+
+// GET /subadmin/livestreams/:id/edit
+exports.renderEditLivestream = async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) return res.redirect('/subadmin/livestreams');
+
+  const [[livestream]] = await db.query(
+    `SELECT * FROM videos WHERE id = ? AND type = 'livestream' LIMIT 1`,
+    [id]
+  );
+
+  if (!livestream) {
+    req.flash('error', 'Livestream tidak ditemukan');
+    return res.redirect('/subadmin/livestreams');
+  }
+
+  const sports = await loadSportsList(req.session.user);
+
+  res.render('subadmin/create_livestream', {
+    title: 'Edit Livestream',
+    mode: 'edit',
+    livestream,
+    sports
+  });
+};
+
+// POST /subadmin/livestreams/:id/edit
+exports.updateLivestream = async (req, res) => {
+  const id = Number(req.params.id);
+
+  try {
+    const { sport_id, title, url, description, is_live } = req.body;
+
+    await db.query(
+      `
+      UPDATE videos
+      SET sport_id = ?, title = ?, url = ?, description = ?, is_live = ?, updated_at = NOW()
+      WHERE id = ? AND type = 'livestream'
+      `,
+      [sport_id || null, title, url, description || null, Number(is_live) ? 1 : 0, id]
+    );
+
+    req.flash('success', 'Livestream berhasil diperbarui');
+    res.redirect('/subadmin/livestreams');
+  } catch (err) {
+    console.error('updateLivestream error', err);
+    req.flash('error', 'Gagal update livestream');
+    res.redirect('/subadmin/livestreams');
+  }
+};
+
+// POST /subadmin/livestreams/:id/delete
+exports.deleteLivestream = async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) return res.redirect('/subadmin/livestreams');
+
+  await db.query(`DELETE FROM videos WHERE id = ? AND type = 'livestream'`, [id]);
+  req.flash('success', 'Livestream berhasil dihapus');
+  res.redirect('/subadmin/livestreams');
+};

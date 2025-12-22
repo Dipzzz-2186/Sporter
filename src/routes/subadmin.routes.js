@@ -143,4 +143,16 @@ router.post('/teams/create', subadminCtrl.createTeam);
 //athletes
 router.post('/athletes/:id', uploadAthletePhoto.single('photo'), subadminAthletes.updateAthlete);
 
+// videos
+router.get('/videos', subadminCtrl.listVideos);
+router.get('/videos/:id/edit', subadminCtrl.renderEditVideo);
+router.post('/videos/:id/edit', subadminCtrl.updateVideo);
+router.post('/videos/:id/delete', subadminCtrl.deleteVideo);
+
+// livestreams
+router.get('/livestreams', subadminCtrl.listLivestreams);
+router.get('/livestreams/:id/edit', subadminCtrl.renderEditLivestream);
+router.post('/livestreams/:id/edit', subadminCtrl.updateLivestream);
+router.post('/livestreams/:id/delete', subadminCtrl.deleteLivestream);
+
 module.exports = router;
