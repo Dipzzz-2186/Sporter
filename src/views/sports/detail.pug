@@ -2,7 +2,7 @@ extends ../layout/main
 
 block content
   style.
-    /* Sport Detail Page Styles */
+    /* Sport Detail Page Mobile Optimized */
     .sport-detail-page {
       background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
       min-height: 100vh;
@@ -12,20 +12,42 @@ block content
     /* Hero Section */
     .sport-hero {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      padding: 4rem 0 3rem;
+      padding: 2rem 0 1.5rem;
       position: relative;
       overflow: hidden;
+    }
+    
+    @media (min-width: 768px) {
+      .sport-hero {
+        padding: 3rem 0 2rem;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .sport-hero {
+        padding: 4rem 0 3rem;
+      }
     }
     
     .sport-hero::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.05)"/></svg>');
+      top: -30%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
       opacity: 0.3;
+    }
+    
+    @media (min-width: 768px) {
+      .sport-hero::before {
+        top: -40%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+      }
     }
     
     .sport-hero-content {
@@ -36,63 +58,139 @@ block content
     .sport-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
       background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
-      padding: 0.5rem 1.25rem;
+      padding: 0.4rem 1rem;
       border-radius: 50px;
       color: white;
       font-weight: 600;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
       animation: fadeInDown 0.6s ease-out;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    @media (min-width: 768px) {
+      .sport-badge {
+        padding: 0.5rem 1.25rem;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
     }
     
     @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-20px); }
+      from { opacity: 0; transform: translateY(-15px); }
       to { opacity: 1; transform: translateY(0); }
     }
     
     .sport-hero h1 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 4rem;
+      font-size: 2rem;
       color: white;
-      letter-spacing: 2px;
-      margin-bottom: 1rem;
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      letter-spacing: 1.5px;
+      margin-bottom: 0.75rem;
+      text-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
       animation: fadeInUp 0.6s ease-out 0.2s both;
+      line-height: 1.1;
+    }
+    
+    @media (min-width: 576px) {
+      .sport-hero h1 {
+        font-size: 2.5rem;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .sport-hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        letter-spacing: 2px;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .sport-hero h1 {
+        font-size: 4rem;
+      }
     }
     
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
     
     .sport-description {
-      font-size: 1.2rem;
+      font-size: 0.95rem;
       color: rgba(255, 255, 255, 0.9);
-      max-width: 700px;
-      line-height: 1.8;
+      line-height: 1.5;
       animation: fadeInUp 0.6s ease-out 0.4s both;
+      margin-bottom: 1.5rem;
+    }
+    
+    @media (min-width: 768px) {
+      .sport-description {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        max-width: 700px;
+        margin-bottom: 2rem;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .sport-description {
+        font-size: 1.2rem;
+        line-height: 1.8;
+      }
     }
     
     .hero-actions {
-      margin-top: 2rem;
+      margin-top: 1.5rem;
       display: flex;
-      gap: 1rem;
+      flex-direction: column;
+      gap: 0.75rem;
       animation: fadeInUp 0.6s ease-out 0.6s both;
     }
     
+    @media (min-width: 576px) {
+      .hero-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+    }
+    
     .btn-hero {
-      padding: 1rem 2rem;
-      border-radius: 12px;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.9rem;
       transition: all 0.3s ease;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.5rem;
       text-decoration: none;
-      margin-right: 3px;
+      width: 100%;
+      text-align: center;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    @media (min-width: 576px) {
+      .btn-hero {
+        width: auto;
+        padding: 0.9rem 1.75rem;
+        font-size: 1rem;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .btn-hero {
+        padding: 1rem 2rem;
+      }
     }
     
     .btn-hero-primary {
@@ -101,10 +199,16 @@ block content
       border: 2px solid white;
     }
     
-    .btn-hero-primary:hover {
-      background: rgba(255, 255, 255, 0.9);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    .btn-hero-primary:active {
+      transform: scale(0.98);
+    }
+    
+    @media (min-width: 768px) {
+      .btn-hero-primary:hover {
+        background: rgba(255, 255, 255, 0.9);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
     }
     
     .btn-hero-outline {
@@ -113,119 +217,241 @@ block content
       border: 2px solid white;
     }
     
-    .btn-hero-outline:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-3px);
+    .btn-hero-outline:active {
+      transform: scale(0.98);
+    }
+    
+    @media (min-width: 768px) {
+      .btn-hero-outline:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-3px);
+      }
     }
     
     /* Stats Section */
     .stats-section {
       background: #152844;
-      padding: 2rem 0;
+      padding: 1.5rem 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    @media (min-width: 768px) {
+      .stats-section {
+        padding: 2rem 0;
+      }
     }
     
     .stat-card {
       background: linear-gradient(135deg, #1a3454 0%, #152844 100%);
-      border-radius: 16px;
-      padding: 1.5rem;
+      border-radius: 14px;
+      padding: 1.25rem;
       text-align: center;
       border: 1px solid rgba(255, 255, 255, 0.1);
       transition: all 0.3s ease;
+      margin-bottom: 1rem;
+      height: 100%;
     }
     
-    .stat-card:hover {
-      transform: translateY(-5px);
-      border-color: #0095FF;
-      box-shadow: 0 10px 30px rgba(0, 149, 255, 0.2);
+    @media (min-width: 768px) {
+      .stat-card {
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 0;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: #0095FF;
+        box-shadow: 0 10px 30px rgba(0, 149, 255, 0.2);
+      }
     }
     
     .stat-icon {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1rem;
-      font-size: 1.8rem;
+      margin: 0 auto 0.75rem;
+      font-size: 1.5rem;
       color: white;
+    }
+    
+    @media (min-width: 768px) {
+      .stat-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
     }
     
     .stat-number {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
+      font-size: 1.8rem;
       color: white;
       margin: 0;
+      line-height: 1;
+    }
+    
+    @media (min-width: 768px) {
+      .stat-number {
+        font-size: 2.2rem;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .stat-number {
+        font-size: 2.5rem;
+      }
     }
     
     .stat-label {
       color: rgba(255, 255, 255, 0.6);
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
+      margin-top: 0.25rem;
+    }
+    
+    @media (min-width: 768px) {
+      .stat-label {
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+      }
     }
     
     /* Content Section */
     .content-section {
-      padding: 3rem 0;
+      padding: 2rem 0;
+    }
+    
+    @media (min-width: 768px) {
+      .content-section {
+        padding: 3rem 0;
+      }
     }
     
     .section-header {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
       padding-bottom: 1rem;
       border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     }
     
+    @media (min-width: 768px) {
+      .section-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+    }
+    
     .section-title {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
+      font-size: 1.5rem;
       color: white;
       letter-spacing: 1px;
       margin: 0;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
+      line-height: 1.1;
+    }
+    
+    @media (min-width: 768px) {
+      .section-title {
+        font-size: 1.8rem;
+        gap: 0.75rem;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .section-title {
+        font-size: 2rem;
+      }
     }
     
     .section-title i {
       color: #0095FF;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
+    }
+    
+    @media (min-width: 768px) {
+      .section-title i {
+        font-size: 1.8rem;
+      }
     }
     
     /* Match Cards */
     .match-card {
       background: linear-gradient(135deg, #152844 0%, #0B1F3F 100%);
-      border-radius: 16px;
-      padding: 1.5rem;
+      border-radius: 14px;
+      padding: 1.25rem;
       margin-bottom: 1rem;
       border: 1px solid rgba(255, 255, 255, 0.1);
       transition: all 0.3s ease;
       animation: fadeInUp 0.5s ease-out;
+      touch-action: manipulation;
     }
     
-    .match-card:hover {
-      transform: translateX(10px);
-      border-color: #0095FF;
-      box-shadow: 0 5px 20px rgba(0, 149, 255, 0.2);
+    @media (min-width: 768px) {
+      .match-card {
+        border-radius: 16px;
+        padding: 1.5rem;
+      }
+    }
+    
+    .match-card:active {
+      transform: scale(0.99);
+    }
+    
+    @media (min-width: 768px) {
+      .match-card:hover {
+        transform: translateX(5px);
+        border-color: #0095FF;
+        box-shadow: 0 5px 20px rgba(0, 149, 255, 0.2);
+      }
     }
     
     .match-header {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      gap: 0.75rem;
       margin-bottom: 1rem;
+    }
+    
+    @media (min-width: 576px) {
+      .match-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
     }
     
     .match-title {
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: white;
       margin: 0;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    @media (min-width: 768px) {
+      .match-title {
+        font-size: 1.1rem;
+      }
     }
     
     .match-status {
@@ -233,115 +459,296 @@ block content
       color: white;
       padding: 0.35rem 1rem;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
+      white-space: nowrap;
+      width: fit-content;
     }
     
     .match-info {
       display: flex;
-      gap: 2rem;
+      flex-direction: column;
+      gap: 0.75rem;
       color: rgba(255, 255, 255, 0.7);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+    }
+    
+    @media (min-width: 576px) {
+      .match-info {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
     }
     
     .match-info-item {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 0.5rem;
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    @media (min-width: 768px) {
+      .match-info-item {
+        align-items: center;
+        font-size: 0.9rem;
+      }
     }
     
     .match-info-item i {
       color: #0095FF;
+      font-size: 1rem;
+      margin-top: 0.2rem;
+      flex-shrink: 0;
+    }
+    
+    @media (min-width: 768px) {
+      .match-info-item i {
+        margin-top: 0;
+      }
+    }
+    
+    /* Match Actions */
+    .match-actions {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    
+    .match-actions .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      min-height: 42px;
+      flex: 1;
+      justify-content: center;
+    }
+    
+    @media (min-width: 576px) {
+      .match-actions .btn {
+        flex: 0 1 auto;
+        min-height: 44px;
+      }
     }
     
     /* Empty State */
     .empty-state {
       background: linear-gradient(135deg, #152844 0%, #0B1F3F 100%);
-      border-radius: 24px;
-      padding: 4rem 2rem;
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
       text-align: center;
       border: 2px dashed rgba(255, 255, 255, 0.2);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @media (min-width: 768px) {
+      .empty-state {
+        border-radius: 20px;
+        padding: 3rem 2rem;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .empty-state {
+        border-radius: 24px;
+        padding: 4rem 2rem;
+      }
     }
     
     .empty-icon {
-      width: 120px;
-      height: 120px;
+      width: 80px;
+      height: 80px;
       background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.1) 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 2rem;
-      font-size: 3rem;
+      margin: 0 auto 1.5rem;
+      font-size: 2rem;
       color: #0095FF;
+    }
+    
+    @media (min-width: 768px) {
+      .empty-icon {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .empty-icon {
+        width: 120px;
+        height: 120px;
+        font-size: 3rem;
+      }
     }
     
     .empty-title {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
+      font-size: 1.5rem;
       color: white;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: 1px;
+      line-height: 1.1;
+    }
+    
+    @media (min-width: 768px) {
+      .empty-title {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .empty-title {
+        font-size: 2rem;
+      }
     }
     
     .empty-text {
       color: rgba(255, 255, 255, 0.6);
-      font-size: 1.1rem;
-      max-width: 500px;
-      margin: 0 auto 2rem;
+      font-size: 0.9rem;
+      margin: 0 auto 1.5rem;
+      line-height: 1.4;
     }
     
-    /* Responsive */
-    @media (max-width: 991px) {
-      .sport-hero h1 {
-        font-size: 3rem;
+    @media (min-width: 768px) {
+      .empty-text {
+        font-size: 1rem;
+        max-width: 500px;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .empty-text {
+        font-size: 1.1rem;
+      }
+    }
+    
+    /* Modal Mobile Optimizations */
+    .modal-dialog {
+      margin: 1rem;
+    }
+    
+    @media (min-width: 768px) {
+      .modal-dialog {
+        margin: 1.75rem auto;
+      }
+    }
+    
+    .modal-content {
+      border-radius: 12px;
+      overflow: hidden;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .modal-header {
+      padding: 1rem;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    @media (min-width: 768px) {
+      .modal-header {
+        padding: 1rem 1.5rem;
+      }
+    }
+    
+    .modal-body {
+      padding: 1rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    @media (min-width: 768px) {
+      .modal-body {
+        padding: 1.5rem;
+      }
+    }
+    
+    .modal-body .border {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+    }
+    
+    .modal-body form input[type="number"] {
+      min-height: 44px;
+    }
+    
+    .modal-body .btn {
+      min-height: 44px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    
+    /* Grid Gaps */
+    .sports-grid {
+      --bs-gutter-x: 1rem;
+      --bs-gutter-y: 1rem;
+    }
+    
+    @media (min-width: 576px) {
+      .sports-grid {
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 1.5rem;
+      }
+    }
+    
+    /* Touch-friendly improvements */
+    @media (hover: none) and (pointer: coarse) {
+      .stat-card,
+      .match-card,
+      .btn-hero,
+      .match-actions .btn {
+        transform: none !important;
+        transition: none !important;
       }
       
-      .sport-description {
+      .stat-card:active,
+      .match-card:active,
+      .btn-hero:active,
+      .match-actions .btn:active {
+        transform: scale(0.98) !important;
+      }
+      
+      .btn-hero,
+      .match-actions .btn {
+        min-height: 50px;
+        padding: 0.9rem 1.5rem;
         font-size: 1rem;
       }
     }
     
-    @media (max-width: 767px) {
-      .sport-hero {
-        padding: 3rem 0 2rem;
+    /* Safe area insets */
+    @supports (padding: max(0px)) {
+      .sport-hero,
+      .stats-section,
+      .content-section {
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
       }
-      
-      .sport-hero h1 {
-        font-size: 2.5rem;
-      }
-      
-      .hero-actions {
-        flex-direction: column;
-      }
-      
-      .btn-hero {
-        width: 100%;
-        justify-content: center;
-      }
-      
-      .stats-section {
-        padding: 1.5rem 0;
-      }
-      
-      .stat-card {
-        margin-bottom: 1rem;
-      }
-      
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-      }
-      
-      .match-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-      }
-      
-      .match-info {
-        flex-direction: column;
-        gap: 0.5rem;
+    }
+    
+    /* Performance optimizations */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
     }
 
@@ -377,22 +784,22 @@ block content
     //- Stats Section
     .stats-section
       .container
-        .row.g-4
-          .col-md-4
+        .row.g-3.g-md-4
+          .col-6.col-md-4
             .stat-card
               .stat-icon
                 i.bi.bi-trophy-fill
               .stat-number= matches.length
               .stat-label Pertandingan
           
-          .col-md-4
+          .col-6.col-md-4
             .stat-card
               .stat-icon
                 i.bi.bi-calendar-event
               .stat-number 12
               .stat-label Event Aktif
           
-          .col-md-4
+          .col-12.col-md-4
             .stat-card
               .stat-icon
                 i.bi.bi-people-fill
@@ -411,7 +818,6 @@ block content
           -   if (!ticketMap[t.match_id]) ticketMap[t.match_id] = [];
           -   ticketMap[t.match_id].push(t);
           - });
-
 
         if matches.length
           each m in matches
@@ -440,21 +846,21 @@ block content
                 - const isFuture = new Date(m.start_time) > new Date()
                 - const hasAvailable = matchTickets.some(t => t.available > 0)
 
-                if !isFuture
-                  span.badge.bg-secondary Jadwal lewat
-                else if !hasAvailable
-                  span.badge.bg-danger Tiket habis
-                else
-                  button.btn.btn-success(
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#ticketModal"
-                    data-match-id=m.id
-                  )
-                    i.bi.bi-ticket-perforated
-                    | Beli Tiket
-
-
+                .match-actions
+                  if !isFuture
+                    span.badge.bg-secondary.mt-1 Jadwal lewat
+                  else if !hasAvailable
+                    span.badge.bg-danger.mt-1 Tiket habis
+                  else
+                    button.btn.btn-success(
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#ticketModal"
+                      data-match-id=m.id
+                      aria-label="Beli tiket untuk pertandingan ini"
+                    )
+                      i.bi.bi-ticket-perforated
+                      | Beli Tiket
 
         else
           .empty-state
@@ -463,103 +869,285 @@ block content
             .empty-title Belum Ada Jadwal
             .empty-text Di halaman ini nanti akan tampil daftar event & jadwal khusus untuk cabang olahraga #{sport.name}.
             if currentUser && currentUser.role == 'subadmin'
-              a.btn.btn-hero-primary(href="/subadmin/matches/create")
+              a.btn.btn-hero-primary.mt-2(href="/subadmin/matches/create")
                 i.bi.bi-plus-circle
                 | Tambah Pertandingan
-            else
-              i 
 
-  .modal.fade#ticketModal(tabindex="-1")
-    .modal-dialog.modal-lg
+  //- Ticket Modal
+  .modal.fade#ticketModal(tabindex="-1" role="dialog" aria-labelledby="ticketModalLabel" aria-hidden="true")
+    .modal-dialog.modal-dialog-centered(role="document")
       .modal-content
         .modal-header
-          h5.modal-title Detail Tiket
-          button.btn-close(type="button" data-bs-dismiss="modal")
+          h5.modal-title#ticketModalLabel Detail Tiket
+          button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
         .modal-body
           #ticketModalBody
             p.text-muted Memuat data tiket...
 
-  //- Smooth Scroll Script
+  //- Mobile Optimized JavaScript
   script.
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
+    (function() {
+      'use strict';
+      
+      // Detect touch device
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      
+      // Mobile-optimized smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            // Mobile optimization: smaller offset
+            const offset = window.innerWidth < 768 ? 60 : 80;
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+          }
+        });
       });
-    });
-
-    const tickets = !{JSON.stringify(tickets)};
-    const modal = document.getElementById('ticketModal');
-    const userTicketMap = !{JSON.stringify(userTicketMap || {})};
-    const isLoggedIn = !{JSON.stringify(isLoggedIn)};
-
-    modal.addEventListener('show.bs.modal', e => {
-      const btn = e.relatedTarget;
-      const matchId = btn.getAttribute('data-match-id');
-
-      const list = tickets.filter(t => t.match_id == matchId);
-      const body = document.getElementById('ticketModalBody');
-
-      if (!list.length) {
-        body.innerHTML = '<p>Tiket tidak tersedia</p>';
-        return;
-      }
-
-      body.innerHTML = list.map(t => {
-        // ✅ SUDAH LOGIN
-        const bought = userTicketMap[t.id] || 0;
-        const max = t.max_per_user || 1;
-        const remaining = Math.max(0, max - bought);
-
-        // ❌ BELUM LOGIN
-        if (!isLoggedIn) {
+      
+      const tickets = !{JSON.stringify(tickets)};
+      const modal = document.getElementById('ticketModal');
+      const userTicketMap = !{JSON.stringify(userTicketMap || {})};
+      const isLoggedIn = !{JSON.stringify(isLoggedIn)};
+      
+      // Mobile-optimized modal handling
+      modal.addEventListener('show.bs.modal', e => {
+        const btn = e.relatedTarget;
+        const matchId = btn.getAttribute('data-match-id');
+        
+        const list = tickets.filter(t => t.match_id == matchId);
+        const body = document.getElementById('ticketModalBody');
+        
+        if (!list.length) {
+          body.innerHTML = '<p class="text-center py-3">Tiket tidak tersedia</p>';
+          return;
+        }
+        
+        body.innerHTML = list.map(t => {
+          const bought = userTicketMap[t.id] || 0;
+          const max = t.max_per_user || 1;
+          const remaining = Math.max(0, max - bought);
+          
+          // Not logged in
+          if (!isLoggedIn) {
+            return `
+              <div class="border rounded p-3 mb-3">
+                <h6 class="mb-2">${t.name}</h6>
+                <p class="mb-1"><i class="bi bi-currency-exchange me-2"></i>Rp ${Number(t.price).toLocaleString()}</p>
+                <p class="mb-1"><i class="bi bi-ticket me-2"></i>Sisa: ${t.available} tiket</p>
+                <p class="mb-3"><i class="bi bi-person-check me-2"></i>Batas: ${max} tiket/akun</p>
+                
+                <a href="/login?next=${encodeURIComponent(location.pathname)}"
+                  class="btn btn-warning w-100 py-2">
+                  <i class="bi bi-box-arrow-in-right me-2"></i>Login untuk beli tiket
+                </a>
+              </div>
+            `;
+          }
+          
+          // Logged in
           return `
-            <div class="border rounded p-3 mb-2">
-              <h6>${t.name}</h6>
-              <p>Harga: Rp ${Number(t.price).toLocaleString()}</p>
-              <p>Sisa kuota: ${t.available}</p>
-              <p>Batas per akun: ${max}</p>
-
-              <a href="/login?next=${encodeURIComponent(location.pathname)}"
-                class="btn btn-warning w-100">
-                Login untuk beli tiket
-              </a>
+            <div class="border rounded p-3 mb-3">
+              <h6 class="mb-2">${t.name}</h6>
+              <p class="mb-1"><i class="bi bi-currency-exchange me-2"></i>Rp ${Number(t.price).toLocaleString()}</p>
+              <p class="mb-1"><i class="bi bi-ticket me-2"></i>Sisa kuota: ${t.available}</p>
+              <p class="mb-1"><i class="bi bi-person-check me-2"></i>Batas: ${max} tiket/akun</p>
+              <p class="mb-3 text-success"><i class="bi bi-check-circle me-2"></i>Sudah dibeli: ${bought}</p>
+              
+              <form method="POST" action="/purchase/buy" id="ticketForm-${t.id}" class="ticket-purchase-form">
+                <input type="hidden" name="ticket_type_id" value="${t.id}">
+                
+                <div class="mb-3">
+                  <label class="form-label">Jumlah tiket:</label>
+                  <input type="number"
+                    name="quantity"
+                    class="form-control form-control-lg"
+                    min="1"
+                    max="${remaining}"
+                    value="1"
+                    ${remaining <= 0 ? 'disabled' : ''}
+                    style="height: 48px;">
+                </div>
+                
+                <button type="submit" 
+                  class="btn btn-primary w-100 py-3"
+                  ${remaining <= 0 ? 'disabled' : ''}
+                  style="font-size: 1rem; font-weight: 600;">
+                  <i class="bi bi-cart-check me-2"></i>
+                  ${remaining <= 0 ? 'Limit pembelian tercapai' : 'Beli Tiket Sekarang'}
+                </button>
+              </form>
             </div>
           `;
+        }).join('');
+        
+        // Add form submission handling for mobile
+        setTimeout(() => {
+          document.querySelectorAll('.ticket-purchase-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+              if (isTouchDevice) {
+                // Add loading state for mobile
+                const btn = this.querySelector('button[type="submit"]');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Memproses...';
+                btn.disabled = true;
+                
+                // Handle form submission
+                setTimeout(() => {
+                  btn.innerHTML = originalText;
+                  btn.disabled = false;
+                }, 3000);
+              }
+            });
+          });
+        }, 100);
+      });
+      
+      // Touch feedback for interactive elements
+      if (isTouchDevice) {
+        const interactiveElements = [
+          '.stat-card',
+          '.match-card',
+          '.btn-hero',
+          '.btn-success',
+          '.btn-hero-primary'
+        ];
+        
+        interactiveElements.forEach(selector => {
+          document.querySelectorAll(selector).forEach(el => {
+            el.classList.add('touch-device');
+            
+            el.addEventListener('touchstart', function() {
+              this.classList.add('touch-active');
+            }, { passive: true });
+            
+            el.addEventListener('touchend', function() {
+              setTimeout(() => {
+                this.classList.remove('touch-active');
+              }, 150);
+            }, { passive: true });
+            
+            el.addEventListener('touchcancel', function() {
+              this.classList.remove('touch-active');
+            }, { passive: true });
+          });
+        });
+      }
+      
+      // Handle viewport changes
+      function handleResize() {
+        // Adjust layout for mobile
+        const heroActions = document.querySelector('.hero-actions');
+        const matchCards = document.querySelectorAll('.match-card');
+        
+        if (window.innerWidth < 576 && heroActions) {
+          heroActions.classList.add('mobile-layout');
+        } else if (heroActions) {
+          heroActions.classList.remove('mobile-layout');
         }
-        return `
-          <div class="border rounded p-3 mb-2">
-            <h6>${t.name}</h6>
-            <p>Harga: Rp ${Number(t.price).toLocaleString()}</p>
-            <p>Sisa kuota: ${t.available}</p>
-            <p>Batas per akun: ${max}</p>
-            <p>Sudah dibeli: ${bought}</p>
-
-            <form method="POST" action="/purchase/buy">
-              <input type="hidden" name="ticket_type_id" value="${t.id}">
-
-              <input type="number"
-                name="quantity"
-                min="1"
-                max="${remaining}"
-                value="1"
-                class="form-control mb-2"
-                ${remaining <= 0 ? 'disabled' : ''}>
-
-              <button class="btn btn-primary w-100"
-                ${remaining <= 0 ? 'disabled' : ''}>
-                ${remaining <= 0
-                  ? 'Limit pembelian tercapai'
-                  : 'Beli Tiket'}
-              </button>
-            </form>
-          </div>
-        `;
-      }).join('');
-    });
+        
+        // Adjust match card layouts
+        matchCards.forEach(card => {
+          if (window.innerWidth < 576) {
+            card.classList.add('mobile-card');
+          } else {
+            card.classList.remove('mobile-card');
+          }
+        });
+      }
+      
+      // Initial call
+      handleResize();
+      
+      // Debounced resize handler for mobile performance
+      let resizeTimer;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(handleResize, 250);
+      }, { passive: true });
+      
+      // Prevent zoom on double tap (iOS)
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', function(event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
+      
+      // Intersection Observer for scroll animations (mobile optimized)
+      if ('IntersectionObserver' in window) {
+        const observerOptions = {
+          threshold: 0.05,
+          rootMargin: '30px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }
+          });
+        }, observerOptions);
+        
+        // Observe match cards
+        document.querySelectorAll('.match-card').forEach(card => {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(10px)';
+          card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          observer.observe(card);
+        });
+        
+        // Observe stat cards
+        document.querySelectorAll('.stat-card').forEach(card => {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(10px)';
+          card.style.transition = 'opacity 0.4s ease 0.2s, transform 0.4s ease 0.2s';
+          observer.observe(card);
+        });
+      }
+      
+      // Optimize for slow connections
+      if ('connection' in navigator) {
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        
+        if (connection) {
+          if (connection.saveData === true || connection.effectiveType.includes('2g') || connection.effectiveType.includes('slow-2g')) {
+            // Reduce animations for slow connections
+            document.documentElement.style.setProperty('--animation-speed', '0.3s');
+            
+            // Disable heavy animations
+            document.querySelectorAll('.sport-badge, .match-card, .stat-card').forEach(function(el) {
+              el.style.animation = 'none';
+            });
+          }
+        }
+      }
+      
+      // Mobile analytics tracking
+      document.querySelectorAll('.match-card .btn-success').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (typeof gtag !== 'undefined' && navigator.connection?.effectiveType !== 'slow-2g') {
+            gtag('event', 'ticket_button_click', {
+              'event_category': 'sport_detail',
+              'event_label': 'Beli Tiket Button'
+            });
+          }
+        }, { passive: true });
+      });
+      
+      // Handle modal close on mobile
+      const modalInstance = new bootstrap.Modal(modal);
+      modal.addEventListener('hidden.bs.modal', function() {
+        // Clear modal body
+        document.getElementById('ticketModalBody').innerHTML = '<p class="text-muted">Memuat data tiket...</p>';
+      });
+      
+    })();
