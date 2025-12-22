@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/publicTeam.controller');
+const publicTeam = require('../controllers/publicTeam.controller');
 
-router.get('/:id', controller.show);
+router.get('/:id', publicTeam.show);
 
 module.exports = router;

@@ -1720,12 +1720,20 @@ exports.addTeamMember = async (req, res) => {
     }
 
     // 1️⃣ insert athlete
-    const [ins] = await db.query(
-      `INSERT INTO athletes (sport_id, name, member_type, created_at, updated_at)
-       VALUES (?, ?, 'team', NOW(), NOW())`,
+   const [ins] = await db.query(
+      `INSERT INTO athletes (sport_id, name, slug, member_type, created_at, updated_at)
+      VALUES (?, ?, NULL, 'team', NOW(), NOW())`,
       [team.sport_id, name]
     );
+
     const athleteId = ins.insertId;
+    const finalSlug = `${generateSlug(name)}-${athleteId}`;
+
+    await db.query(
+      `UPDATE athletes SET slug = ? WHERE id = ?`,
+      [finalSlug, athleteId]
+    );
+
 
     // 2️⃣ link ke team_members
     await db.query(
@@ -1919,19 +1927,28 @@ exports.createTeam = async (req, res) => {
       ? members.map(m => String(m).trim()).filter(Boolean)
       : [];
 
-    for (const memberName of memberNames) {
-      const [ath] = await conn.query(
-        `INSERT INTO athletes (sport_id, name, member_type, created_at, updated_at)
-         VALUES (?, ?, 'team', NOW(), NOW())`,
+   for (const memberName of memberNames) {
+      const [athIns] = await conn.query(
+        `INSERT INTO athletes (sport_id, name, slug, member_type, created_at, updated_at)
+        VALUES (?, ?, NULL, 'team', NOW(), NOW())`,
         [sportId, memberName]
+      );
+
+      const athleteId = athIns.insertId;
+      const finalSlug = `${generateSlug(memberName)}-${athleteId}`;
+
+      await conn.query(
+        `UPDATE athletes SET slug = ? WHERE id = ?`,
+        [finalSlug, athleteId]
       );
 
       await conn.query(
         `INSERT INTO team_members (team_id, athlete_id)
-         VALUES (?, ?)`,
-        [teamId, ath.insertId]
+        VALUES (?, ?)`,
+        [teamId, athleteId]
       );
     }
+
 
     await conn.commit();
 

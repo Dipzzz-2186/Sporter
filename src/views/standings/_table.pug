@@ -49,13 +49,13 @@ if standings.length
                   .team-name
                     if mode === 'individual'
                       if row.athlete_slug
-                        a(href=`/athletes/${row.athlete_slug}` class="text-decoration-none fw-bold")= row.team_name
+                        a.text-decoration-none.fw-bold(href=`/athletes/${row.athlete_slug}`)= row.team_name
                       else
                         b= row.team_name
                     else
-                      b= row.team_name
-
-
+                       a.fw-bold.text-decoration-none(
+                          href=`/teams/${row.team_id}`
+                        )= row.team_name
                 if isPadel
                   td.text-center= row.total_match
                   td.text-center= row.win

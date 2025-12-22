@@ -16,6 +16,7 @@ const teamRoutes = require('./routes/team.routes');
 const favoritesRoutes = require('./routes/favorites.routes');
 const profileRoutes = require('./routes/profile.routes');
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));

@@ -1,23 +1,27 @@
 extends ../layout/main
 
 block content
-  .container.py-4
-    a.btn.btn-sm.btn-outline-secondary.mb-3(href="/standings")
-      i.bi.bi-arrow-left.me-1
-      | Kembali
+  .container.mt-5
+    h1.mb-3= team.name
+    p.text-muted Cabang: #{team.sport_name}
 
-    h2.fw-bold.mb-1= team.name
-    p.text-muted.mb-4
-      | Cabang: #{team.sport_name}
+    if members.length
+      .row.g-3.mt-4
+        each m in members
+          .col-md-4
+            .card.shadow-sm
+              .card-body.d-flex.align-items-center.gap-3
+                if m.photo_url
+                  img(
+                    src=m.photo_url
+                    style="width:60px;height:60px;border-radius:50%;object-fit:cover"
+                  )
+                else
+                  i.bi.bi-person-circle.fs-1.text-muted
 
-    .card.shadow-sm.border-0
-      .card-body
-        h5.fw-bold.mb-3 Anggota Tim
-        if members && members.length
-          ul.list-group
-            each m in members
-              li.list-group-item.d-flex.justify-content-between.align-items-center
-                span= m.name
-                small.text-muted= m.email
-        else
-          p.text-muted.mb-0 Belum ada anggota tim.
+                .flex-grow-1
+                  a.text-decoration-none.fw-bold(href=`/athletes/${m.slug}`)= m.name
+                  if m.role
+                    div.small.text-muted= m.role
+    else
+      p.text-muted Tidak ada anggota tim
