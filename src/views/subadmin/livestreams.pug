@@ -348,6 +348,7 @@ block content
   .livestreams-page
     .container
       //- Header Section
+      - const base = isAdmin ? '/admin' : '/subadmin'
       .livestreams-header.d-flex.justify-content-between.align-items-center
         h1
           i.bi.bi-broadcast.me-2

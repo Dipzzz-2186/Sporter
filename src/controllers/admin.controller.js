@@ -1151,3 +1151,60 @@ exports.listStandingsReadOnly = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+exports.listVideosAsAdmin = async (req, res) => {
+  try {
+    const [videos] = await db.query(`
+      SELECT
+        v.id,
+        v.title,
+        v.thumbnail_url,
+        v.type,
+        s.name AS sport_name
+      FROM videos v
+      LEFT JOIN sports s ON s.id = v.sport_id
+      WHERE v.type <> 'livestream'
+      ORDER BY v.created_at DESC
+    `);
+
+    res.render("subadmin/videos", {
+      title: "Kelola Video",
+      videos,
+      currentUser: req.session.user,
+      isAdmin: true
+    });
+  } catch (err) {
+    console.error("ERROR admin videos:", err);
+    res.status(500).send("Server error");
+  }
+};
+
+
+exports.listLivestreamsAsAdmin = async (req, res) => {
+  try {
+    const [livestreams] = await db.query(`
+      SELECT
+        v.id,
+        v.title,
+        v.is_live,
+        v.start_time,
+        s.name AS sport_name
+      FROM videos v
+      LEFT JOIN sports s ON s.id = v.sport_id
+      WHERE v.type = 'livestream'
+      ORDER BY
+        v.is_live DESC,
+        v.start_time IS NULL,
+        v.start_time ASC
+    `);
+
+    res.render("subadmin/livestreams", {
+      title: "Kelola Livestream",
+      livestreams,
+      currentUser: req.session.user,
+      isAdmin: true
+    });
+  } catch (err) {
+    console.error("ERROR admin livestreams:", err);
+    res.status(500).send("Server error");
+  }
+};

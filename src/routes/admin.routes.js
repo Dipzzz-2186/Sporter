@@ -151,5 +151,17 @@ router.get(
   adminController.listStandingsReadOnly
 );
 
+// ========== ADMIN: VIDEOS (REUSE SUBADMIN VIEW) ==========
+router.get(
+  "/videos",
+  authMiddleware.requireAdmin,
+  adminController.listVideosAsAdmin
+);
+
+router.get(
+  "/livestreams",
+  authMiddleware.requireAdmin,
+  adminController.listLivestreamsAsAdmin
+);
 
 module.exports = router;
