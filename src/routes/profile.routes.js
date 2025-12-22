@@ -7,9 +7,8 @@ const profileController = require('../controllers/profile.controller');
 // const { authRequired } = require('../middlewares/auth.middleware');
 
 router.get('/profile', profileController.profilePage);
-// router.post('/profile', profileController.updateProfile); // opsional
-
 router.get('/profile/password', profileController.passwordPage);
 router.post('/profile/password', profileController.updatePassword);
 
+router.get('/profile/tickets', profileController.myTicketsPage);
 module.exports = router;

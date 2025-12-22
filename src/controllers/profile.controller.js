@@ -99,3 +99,38 @@ exports.updatePassword = async (req, res) => {
     return res.redirect('/profile/password');
   }
 };
+// ✅ GET tiket milik user (group per match)
+exports.myTicketsPage = async (req, res) => {
+  const currentUser = getCurrentUser(req, res);
+  if (!currentUser) return res.redirect('/login');
+
+  const userId = currentUser.id;
+
+  const [rows] = await db.query(`
+    SELECT
+      m.id            AS match_id,
+      m.title         AS match_title,
+      m.start_time,
+      t.id            AS ticket_id,
+      t.ticket_code,
+      t.holder_name,
+      tt.price
+    FROM orders o
+    JOIN order_items oi ON oi.order_id = o.id
+    JOIN tickets t       ON t.order_item_id = oi.id
+    JOIN ticket_types tt ON tt.id = oi.ticket_type_id
+    JOIN matches m       ON m.id = tt.match_id
+    WHERE o.user_id = ?
+    ORDER BY m.start_time DESC, t.id ASC
+  `, [userId]);
+
+  res.render('profile/my-tickets', {
+    title: 'Tiket Saya',
+    user: currentUser,
+    rows,
+    messages: {
+      error: req.flash ? req.flash('error') : null,
+      success: req.flash ? req.flash('success') : null
+    }
+  });
+};
