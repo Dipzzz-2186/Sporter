@@ -1,0 +1,414 @@
+extends ../layout/main
+
+block content
+  style.
+    /* Videos Management Page Styles */
+    .videos-page {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Header Section */
+    .videos-header {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      animation: fadeInDown 0.6s ease-out;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .videos-header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .btn-add-video {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border: none;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-add-video:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
+      color: white;
+    }
+    
+    /* Table Card */
+    .videos-table-card {
+      background: white;
+      border-radius: 20px;
+      border: 2px solid #e8edf2;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .videos-table-card .card-body {
+      padding: 0;
+    }
+    
+    /* Table Styles */
+    .videos-table {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+    
+    .videos-table thead {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+    }
+    
+    .videos-table thead th {
+      background: transparent !important;
+      color: white !important;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 1.25rem 1rem;
+      border: none;
+      white-space: nowrap;
+    }
+    
+    .videos-table tbody tr {
+      border-bottom: 1px solid #e8edf2;
+      transition: all 0.3s ease;
+    }
+    
+    .videos-table tbody tr:hover {
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.05) 0%, rgba(52, 199, 255, 0.05) 100%);
+      transform: translateX(5px);
+    }
+    
+    .videos-table tbody td {
+      padding: 1.25rem 1rem;
+      vertical-align: middle;
+      border: none;
+    }
+    
+    /* Thumbnail Styles */
+    .video-thumb {
+      width: 90px;
+      height: 55px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid #e8edf2;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+    
+    .video-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.2);
+      border-color: #0095FF;
+    }
+    
+    .video-title {
+      color: #0B1F3F;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    
+    .sport-badge {
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      color: #0095FF;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      border: 1px solid #d6edff;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+    
+    .btn-action {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      border: 2px solid;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .btn-action-edit {
+      background: white;
+      border-color: #0095FF;
+      color: #0095FF;
+    }
+    
+    .btn-action-edit:hover {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.3);
+    }
+    
+    .btn-action-delete {
+      background: white;
+      border-color: #dc2626;
+      color: #dc2626;
+    }
+    
+    .btn-action-delete:hover {
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      background: white;
+      border: 2px dashed #e8edf2;
+      border-radius: 24px;
+      padding: 5rem 2rem;
+      text-align: center;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .empty-state-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    
+    .empty-state-icon i {
+      font-size: 4rem;
+      color: #adb5bd;
+    }
+    
+    .empty-state h4 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2rem;
+      color: #0B1F3F;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+      color: #5a6c7d;
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .videos-header {
+        padding: 1.5rem;
+      }
+      
+      .videos-header h1 {
+        font-size: 2rem;
+      }
+      
+      .videos-table {
+        font-size: 0.85rem;
+      }
+      
+      .videos-table thead th,
+      .videos-table tbody td {
+        padding: 1rem 0.75rem;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .videos-page {
+        padding: 1rem 0;
+      }
+      
+      .videos-header {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .videos-header h1 {
+        font-size: 1.75rem;
+      }
+      
+      .btn-add-video {
+        width: 100%;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+      
+      .videos-table {
+        font-size: 0.8rem;
+      }
+      
+      .videos-table thead th,
+      .videos-table tbody td {
+        padding: 0.75rem 0.5rem;
+      }
+      
+      .video-thumb {
+        width: 70px;
+        height: 45px;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .btn-action {
+        width: 100%;
+      }
+      
+      .empty-state {
+        padding: 3rem 1.5rem;
+      }
+      
+      .empty-state-icon {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .empty-state-icon i {
+        font-size: 3rem;
+      }
+      
+      .empty-state h4 {
+        font-size: 1.6rem;
+      }
+    }
+    .video-title {
+      color: #0B1F3F;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .video-title:hover {
+      color: #0095FF;
+      text-decoration: underline;
+    }
+  .videos-page
+    .container
+      //- Header Section
+      .videos-header.d-flex.justify-content-between.align-items-center
+        h1
+          i.bi.bi-play-btn-fill.me-2
+          | Kelola Video
+        a.btn-add-video(href="/subadmin/videos/create")
+          i.bi.bi-plus-circle
+          span Tambah Video
+
+      if videos && videos.length
+        .card.videos-table-card.border-0
+          .card-body
+            .table-responsive
+              table.table.videos-table.mb-0
+                thead
+                  tr
+                    th
+                      i.bi.bi-image.me-1
+                      | Thumbnail
+                    th
+                      i.bi.bi-card-heading.me-1
+                      | Judul
+                    th
+                      i.bi.bi-dribbble.me-1
+                      | Cabang
+                    th.text-end
+                      i.bi.bi-gear.me-1
+                      | Aksi
+                tbody
+                  each v in videos
+                    tr
+                      td
+                        if v.thumbnail_url
+                          img.video-thumb(src=v.thumbnail_url alt=v.title)
+                        else
+                          span.text-muted -
+                      td
+                        a.video-title(
+                            href=`/videos/${v.id}`
+                            title="Lihat Video"
+                        )= v.title
+                      td
+                        if v.sport_name
+                          .sport-badge
+                            i.bi.bi-trophy
+                            span= v.sport_name
+                        else
+                          span.text-muted -
+                      td
+                        .action-buttons
+                          a.btn-action.btn-action-edit(
+                            href=`/subadmin/videos/${v.id}/edit`
+                            title="Edit Video"
+                          )
+                            i.bi.bi-pencil-fill
+                          form.d-inline(
+                            method="post"
+                            action=`/subadmin/videos/${v.id}/delete`
+                            onsubmit="return confirm('⚠️ Yakin ingin menghapus video ini?');"
+                          )
+                            button.btn-action.btn-action-delete(
+                              type="submit"
+                              title="Hapus Video"
+                            )
+                              i.bi.bi-trash-fill
+      else
+        //- Empty State
+        .empty-state
+          .empty-state-icon
+            i.bi.bi-play-btn
+          h4 Belum Ada Video
+          p
+            | Tambahkan video pertama untuk meningkatkan engagement dengan atlet dan penonton.
+            br
+            | Mulai upload video sekarang!
+          a.btn-add-video(href="/subadmin/videos/create")
+            i.bi.bi-plus-circle
+            span Tambah Video Pertama

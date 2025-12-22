@@ -448,14 +448,19 @@ block content
       .video-form-header
         h1
           i.bi.bi-camera-video-fill
-          | Tambah Video
+          | #{mode === 'edit' ? 'Edit Video' : 'Tambah Video'}
         p
           i.bi.bi-info-circle.me-2
           | Upload video VOD, Highlight, atau Livestream untuk pertandingan
 
       //- Form Card
       .video-form-card
-        form(method="post" action="/subadmin/videos/create")
+        form(
+          method="post"
+          action= mode === 'edit'
+            ? `/subadmin/videos/${video.id}/edit`
+            : '/subadmin/videos/create'
+        )
           
           //- Section 1: Basic Info
           .video-form-section
@@ -471,11 +476,14 @@ block content
                   label.form-label(for="sport_id")
                     i.bi.bi-trophy
                     | Cabang Olahraga
-                    span.badge Opsional
-                  select.form-select#sport_id(name="sport_id")
-                    option(value="" selected) -- Pilih cabang olahraga --
+                    span.badge Wajib
+                  select.form-select#sport_id(name="sport_id" required)
+                    option(value="" disabled selected) -- Pilih Cabang --
                     each s in sports
-                      option(value=s.id)= s.name
+                      option(
+                        value=s.id
+                        selected=(mode === 'edit' && video && Number(video.sport_id) === Number(s.id))
+                      )= s.name
                   small.form-text
                     i.bi.bi-info-circle
                     | Kategorisasi video berdasarkan cabang olahraga
@@ -491,6 +499,7 @@ block content
                     name="event_id"
                     min="1"
                     placeholder="Masukkan ID event (contoh: 123)"
+                    value=mode === 'edit' ? video.event_id : ''
                   )
                   small.form-text
                     i.bi.bi-info-circle
@@ -507,6 +516,7 @@ block content
                     name="match_id"
                     min="1"
                     placeholder="Masukkan ID pertandingan (contoh: 456)"
+                    value=mode === 'edit' ? video.match_id : ''
                   )
                   small.form-text
                     i.bi.bi-info-circle
@@ -529,7 +539,7 @@ block content
                 type="text"
                 name="title"
                 required
-                placeholder="Contoh: Final Basket Putra - SMKN 8 vs SMAN 1 | Full Match"
+                value=mode === 'edit' ? video.title : ''
               )
               small.form-text
                 i.bi.bi-info-circle
@@ -542,7 +552,12 @@ block content
                 span.badge.badge-required Wajib
               .type-radio-group
                 .type-radio-card
-                  input#type-vod(type="radio" name="type" value="vod" checked)
+                  input#type-vod(
+                    type="radio"
+                    name="type"
+                    value="full_match"
+                    checked=(mode !== 'edit' || video.type === 'full_match')
+                  )
                   label.type-radio-label(for="type-vod")
                     .type-radio-icon
                       i.bi.bi-play-circle-fill
@@ -550,7 +565,12 @@ block content
                     .type-radio-desc Video on Demand - Rekaman lengkap
                 
                 .type-radio-card
-                  input#type-highlight(type="radio" name="type" value="highlight")
+                  input#type-highlight(
+                    type="radio"
+                    name="type"
+                    value="highlight"
+                    checked=(mode === 'edit' && video.type === 'highlight')
+                  )
                   label.type-radio-label(for="type-highlight")
                     .type-radio-icon
                       i.bi.bi-star-fill
@@ -558,7 +578,12 @@ block content
                     .type-radio-desc Cuplikan momen terbaik
                 
                 .type-radio-card
-                  input#type-livestream(type="radio" name="type" value="livestream")
+                  input#type-livestream(
+                    type="radio"
+                    name="type"
+                    value="livestream"
+                    checked=(mode === 'edit' && video.type === 'livestream')
+                  )
                   label.type-radio-label(for="type-livestream")
                     .type-radio-icon
                       i.bi.bi-broadcast
@@ -582,6 +607,7 @@ block content
                 type="text"
                 name="platform"
                 placeholder="YouTube, Vimeo, Facebook, Instagram, dll"
+                value=mode === 'edit' ? video.platform : ''
               )
               .platform-suggestions
                 span.platform-chip(data-platform="YouTube")
@@ -609,7 +635,7 @@ block content
                 name="url"
                 rows="3"
                 placeholder="https://youtube.com/watch?v=... atau <iframe>...</iframe>"
-              )
+              )=mode === 'edit' ? video.url : ''
               small.form-text
                 i.bi.bi-info-circle
                 | Masukkan URL video atau embed code dari platform

@@ -1207,7 +1207,7 @@ exports.createVideo = async (req, res) => {
     );
 
     req.flash("success", "Video berhasil ditambahkan.");
-    return res.redirect("/subadmin");
+    return res.redirect("/subadmin/videos");
   } catch (err) {
     console.error("createVideo error", err);
     req.flash("error", "Gagal menambahkan video. Cek input dan coba lagi.");
@@ -1276,7 +1276,7 @@ exports.createLivestream = async (req, res) => {
 
 
         req.flash('success', 'Livestream berhasil dibuat.');
-        return res.redirect('/livestreams');
+        return res.redirect('/subadmin/livestreams');
     } catch (err) {
         console.error('createLivestream error', err);
         req.flash('error', 'Gagal menambahkan livestream. Cek server log.');

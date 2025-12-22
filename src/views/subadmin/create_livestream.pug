@@ -442,7 +442,7 @@ block content
       .livestream-header
         h1
           i.bi.bi-broadcast-pin
-          | Tambah Livestream
+          | #{mode === 'edit' ? 'Edit Livestream' : 'Tambah Livestream'}
           .live-badge
             i.bi.bi-circle-fill(style="font-size: 0.6rem;")
             | LIVE
@@ -450,20 +450,14 @@ block content
           i.bi.bi-info-circle.me-2
           | Tambahkan livestream YouTube untuk siaran langsung pertandingan
 
-      //- Flash Messages
-      if flash && flash.error
-        .alert.alert-danger(role="alert")
-          i.bi.bi-exclamation-triangle-fill
-          span= flash.error
-      
-      if flash && flash.success
-        .alert.alert-success(role="alert")
-          i.bi.bi-check-circle-fill
-          span= flash.success
-
       //- Form Card
       .livestream-form-card
-        form(method="post" action="/subadmin/livestreams/create")
+        form(
+          method="post"
+          action= mode === 'edit'
+            ? `/subadmin/livestreams/${livestream.id}/edit`
+            : '/subadmin/livestreams/create'
+        )
           
           //- Section 1: Basic Info
           .form-section
@@ -479,9 +473,12 @@ block content
                 | Cabang Olahraga
                 span.badge.badge-required Wajib
               select.form-select#sport_id(name="sport_id" required)
-                option(value="" selected disabled) -- Pilih cabang olahraga --
+                option(value="" disabled selected) -- Pilih cabang olahraga --
                 each s in sports
-                  option(value=s.id)= s.name
+                  option(
+                    value=s.id
+                    selected=(mode === 'edit' && Number(livestream.sport_id) === Number(s.id))
+                  )= s.name
               small.form-text
                 i.bi.bi-info-circle
                 | Kategorisasi livestream berdasarkan cabang olahraga
@@ -496,6 +493,7 @@ block content
                 name="title"
                 required
                 placeholder="Contoh: LIVE - Final Basket Putra SMKN 8 vs SMAN 1"
+                value=mode === 'edit' ? livestream.title : ''
               )
               small.form-text
                 i.bi.bi-info-circle
@@ -520,6 +518,7 @@ block content
                 name="url"
                 required
                 placeholder="https://www.youtube.com/watch?v=..."
+                value=mode === 'edit' ? livestream.url : ''
               )
               #urlValidation.url-validation
               
@@ -552,7 +551,7 @@ block content
                 name="description"
                 rows="4"
                 placeholder="Deskripsi tentang pertandingan, tim yang bertanding, atau informasi penting lainnya..."
-              )
+              )= mode === 'edit' ? livestream.description : ''
               small.form-text
                 i.bi.bi-info-circle
                 | Deskripsi akan membantu penonton memahami konten livestream
