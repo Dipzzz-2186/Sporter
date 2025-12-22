@@ -5,6 +5,11 @@ block content
     h1.mb-3= team.name
     p.text-muted Cabang: #{team.sport_name}
 
+  .container.py-4
+    a.btn.btn-sm.btn-outline-secondary.mb-3(href="javascript:history.back()")
+      i.bi.bi-arrow-left.me-1
+      | Kembali
+
     if members.length
       .row.g-3.mt-4
         each m in members
