@@ -1015,27 +1015,36 @@ exports.listMatchesReadOnly = async (req, res) => {
         : 'ORDER BY m.created_at DESC';
 
     const [matches] = await db.query(`
-      SELECT
-        m.id,
-        m.title,
-        m.start_time,
-        m.end_time,
-        m.status,
-        m.match_mode,
-        s.name AS sport_name,
-        v.name AS venue_name,
-        e.title AS event_title,
-        ht.name AS home_team_name,
-        at.name AS away_team_name
-      FROM matches m
-      LEFT JOIN sports s ON s.id = m.sport_id
-      LEFT JOIN venues v ON v.id = m.venue_id
-      LEFT JOIN events e ON e.id = m.event_id
-      LEFT JOIN teams ht ON ht.id = m.home_team_id
-      LEFT JOIN teams at ON at.id = m.away_team_id
-      ${whereSql}
-      ${orderSql}
-    `, params);
+    SELECT
+      m.id,
+      m.title,
+      m.start_time,
+      m.end_time,
+      m.status,
+      m.match_mode,
+      s.name AS sport_name,
+      v.name AS venue_name,
+      e.title AS event_title,
+      ht.name AS home_team_name,
+      at.name AS away_team_name,
+
+      -- 🔥 INI KUNCI
+      (
+        SELECT GROUP_CONCAT(a.name ORDER BY mp.position SEPARATOR ' vs ')
+        FROM match_participants mp
+        JOIN athletes a ON a.id = mp.athlete_id
+        WHERE mp.match_id = m.id
+      ) AS participants_names
+
+    FROM matches m
+    LEFT JOIN sports s ON s.id = m.sport_id
+    LEFT JOIN venues v ON v.id = m.venue_id
+    LEFT JOIN events e ON e.id = m.event_id
+    LEFT JOIN teams ht ON ht.id = m.home_team_id
+    LEFT JOIN teams at ON at.id = m.away_team_id
+    ${whereSql}
+    ${orderSql}
+  `, params);
 
     return res.render('subadmin/matches', {
       title: 'Daftar Pertandingan',
