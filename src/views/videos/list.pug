@@ -925,6 +925,40 @@ block content
     .stats-card:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.4s forwards; opacity: 0; }
     .stats-card:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.5s forwards; opacity: 0; }
 
+    .video-type-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      z-index: 3;
+      backdrop-filter: blur(8px);
+    }
+
+    /* HIGHLIGHT */
+    .video-type-badge.highlight {
+      background: linear-gradient(135deg, #facc15 0%, #f97316 100%);
+      box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.6);
+      animation: pulseHighlight 2s infinite;
+    }
+
+    @keyframes pulseHighlight {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.6); }
+      50% { box-shadow: 0 0 0 8px rgba(250, 204, 21, 0); }
+    }
+
+    /* FULL MATCH */
+    .video-type-badge.full {
+      background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);
+    }
+
   // HERO SECTION
   .videos-hero
     .container
@@ -1096,18 +1130,23 @@ block content
               a.text-decoration-none(href=`/videos/${v.id}`)
                 .sporter-video-card
                   .video-card-media
-                    if v.thumbnail_url
-                      img(src=v.thumbnail_url alt=v.title loading="lazy")
-                    else
-                      .bg-dark.d-flex.align-items-center.justify-content-center.h-100
-                        i.bi.bi-play-circle-fill.text-primary(style="font-size: 3rem;")
-                    
-                    .video-play-overlay
-                      .play-button
-                        i.bi.bi-play-fill
-                    
-                    .video-duration #{Math.floor(Math.random() * 120) + 1}:#{Math.floor(Math.random() * 60).toString().padStart(2, '0')}
-                  
+                    img(
+                      src=(v.thumbnail_url && v.thumbnail_url.trim()) ? v.thumbnail_url : '/images/video-placeholder.jpg'
+                      alt=v.title
+                      loading="lazy"
+                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    )
+                                    
+                  // BADGE STATUS VIDEO
+                  if v.type === 'highlight'
+                    span.video-type-badge.highlight
+                      i.bi.bi-lightning-fill
+                      | HIGHLIGHT
+                  else if v.type === 'full_match'
+                    span.video-type-badge.full
+                      i.bi.bi-camera-reels-fill
+                      | FULL MATCH
+
                   .video-card-content
                     .video-card-header
                       span.video-sport-badge

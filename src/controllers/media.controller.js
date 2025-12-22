@@ -69,25 +69,49 @@ function getSportIconClass(sportName) {
     return 'bi bi-trophy-fill';
 }
 
+function getYouTubeId(url) {
+    if (!url) return null;
+
+    let m =
+        url.match(/youtube\.com\/watch\?v=([^&]+)/) ||
+        url.match(/youtu\.be\/([^?]+)/) ||
+        url.match(/youtube\.com\/embed\/([^?]+)/) ||
+        url.match(/youtube\.com\/live\/([^?]+)/);
+
+    return m ? m[1] : null;
+}
+
+function getYouTubeThumbnail(url) {
+    const id = getYouTubeId(url);
+    return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+}
+
 // =====================
 // LIST VIDEOS
 // =====================
 exports.listVideos = async (req, res) => {
     const [rows] = await db.query(`
-    SELECT v.id, v.title, v.type, v.url, v.thumbnail_url,
-           s.name AS sport_name, e.title AS event_title
-    FROM videos v
-    LEFT JOIN sports s ON s.id = v.sport_id
-    LEFT JOIN events e ON e.id = v.event_id
-    WHERE v.type IN ('full_match','highlight')
-    ORDER BY v.created_at DESC
-  `);
+        SELECT v.id, v.title, v.type, v.url, v.thumbnail_url,
+               s.name AS sport_name, e.title AS event_title
+        FROM videos v
+        LEFT JOIN sports s ON s.id = v.sport_id
+        LEFT JOIN events e ON e.id = v.event_id
+        WHERE v.type IN ('full_match','highlight')
+        ORDER BY v.created_at DESC
+    `);
 
     const videos = rows.map(v => {
         const embed_url = parseYouTubeEmbed(v.url);
+
+        // ⬇️ INI YANG KAMU LUPA
+        const thumbnail_url =
+            v.thumbnail_url ||
+            getYouTubeThumbnail(v.url);
+
         return {
             ...v,
-            embed_url
+            embed_url,
+            thumbnail_url
         };
     });
 
@@ -97,7 +121,6 @@ exports.listVideos = async (req, res) => {
         getSportIcon: getSportIconClass
     });
 };
-
 
 // =====================
 // LIST LIVESTREAMS
