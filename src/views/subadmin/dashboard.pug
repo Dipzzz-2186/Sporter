@@ -852,7 +852,7 @@ block content
                           td
                             if match.buyer_user_id
                               a.btn.btn-sm.btn-outline-primary(
-                                href=`/subadmin/ticket-orders/${match.buyer_user_id}/${match.sport_id}`
+                                href=`/subadmin/ticket-orders?sport_id=${match.sport_id}`
                               )
                                 i.bi.bi-receipt.me-1
                                 | Lihat Order
