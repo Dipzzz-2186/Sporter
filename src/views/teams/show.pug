@@ -1,32 +1,117 @@
 extends ../layout/main
 
 block content
-  .container.mt-5
-    h1.mb-3= team.name
-    p.text-muted Cabang: #{team.sport_name}
+  //- Hero Section dengan Navy Theme
+  .bg-navy.text-white.py-5.mb-4
+    .container
+      .row.align-items-center
+        .col-lg-8
+          .d-flex.align-items-center.gap-3.mb-3
+            .bg-cyan.rounded-circle.p-3
+              i.bi.bi-people-fill.fs-1.text-navy
+          h1.display-4.fw-bold.mb-3= team.name
+          .d-flex.align-items-center.gap-2
+            span.badge.bg-cyan.text-navy.px-3.py-2.fs-6.fw-semibold
+              i.bi.bi-trophy.me-2
+              = team.sport_name
 
-  .container.py-4
-    a.btn.btn-sm.btn-outline-secondary.mb-3(href="javascript:history.back()")
-      i.bi.bi-arrow-left.me-1
-      | Kembali
+  .container.pb-5
+    //- Tombol Kembali Modern
+    a.btn.btn-outline-secondary.mb-4.d-inline-flex.align-items-center.gap-2(href="javascript:history.back()")
+      i.bi.bi-arrow-left
+      span Kembali
 
+    //- Section Title
+    .d-flex.justify-content-between.align-items-center.mb-4
+      div
+        h2.h4.mb-1.fw-bold Anggota Tim
+        p.text-muted.mb-0 #{members.length} orang terdaftar
+      
     if members.length
-      .row.g-3.mt-4
+      .row.g-4
         each m in members
-          .col-md-4
-            .card.shadow-sm
-              .card-body.d-flex.align-items-center.gap-3
-                if m.photo_url
-                  img(
-                    src=m.photo_url
-                    style="width:60px;height:60px;border-radius:50%;object-fit:cover"
-                  )
-                else
-                  i.bi.bi-person-circle.fs-1.text-muted
-
-                .flex-grow-1
-                  a.text-decoration-none.fw-bold(href=`/athletes/${m.slug}`)= m.name
+          .col-md-6.col-lg-4
+            .card.h-100.border-0.shadow-sm.hover-lift.transition.bg-light-navy
+              .card-body.p-4
+                .d-flex.flex-column.align-items-center.text-center
+                  //- Photo dengan Border Cyan
+                  .position-relative.mb-3
+                    if m.photo_url
+                      .rounded-circle.overflow-hidden(style="width:100px;height:100px;border:4px solid #3dd5f3")
+                        img.w-100.h-100(
+                          src=m.photo_url
+                          style="object-fit:cover"
+                          alt=m.name
+                        )
+                    else
+                      .rounded-circle.bg-white.d-flex.align-items-center.justify-content-center(style="width:100px;height:100px;border:4px solid #3dd5f3")
+                        i.bi.bi-person-circle.fs-1.text-muted
+                  
+                  //- Info Anggota
+                  a.text-decoration-none.text-dark.fw-bold.fs-5.mb-2.hover-cyan(href=`/athletes/${m.slug}`)= m.name
+                  
                   if m.role
-                    div.small.text-muted= m.role
+                    span.badge.bg-cyan.text-navy.px-3.py-2.fw-semibold= m.role
+                  
+                  //- Tombol Detail
+                  a.btn.btn-sm.btn-cyan.mt-3.w-100(href=`/athletes/${m.slug}`)
+                    | Lihat Profil
+                    i.bi.bi-arrow-right.ms-2
     else
-      p.text-muted Tidak ada anggota tim
+      .text-center.py-5
+        .mb-4
+          i.bi.bi-people.text-muted(style="font-size:4rem")
+        h3.h5.text-muted Belum Ada Anggota Tim
+        p.text-muted Saat ini belum ada anggota yang terdaftar dalam tim ini
+
+  style.
+    .bg-navy {
+      background-color: #0f2744;
+    }
+    
+    .bg-light-navy {
+      background-color: #1a3a5c;
+    }
+    
+    .bg-cyan {
+      background-color: #3dd5f3;
+    }
+    
+    .text-navy {
+      color: #0f2744;
+    }
+    
+    .btn-cyan {
+      background-color: #3dd5f3;
+      color: #0f2744;
+      border: none;
+      font-weight: 600;
+    }
+    
+    .btn-cyan:hover {
+      background-color: #2bc4e2;
+      color: #0f2744;
+    }
+    
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(61, 213, 243, 0.3) !important;
+    }
+    
+    .hover-cyan:hover {
+      color: #3dd5f3 !important;
+    }
+    
+    .transition {
+      transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+      .display-4 {
+        font-size: 2rem;
+      }
+    }

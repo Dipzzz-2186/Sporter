@@ -2,107 +2,199 @@
 
 if standings.length
   .standings-group
-    .group-title
-      .group-title-icon
-        i.bi.bi-flag-fill
-      h5= standings[0].sport_name
+    .group-title.bg-navy.text-white.rounded-top.p-3.d-flex.align-items-center.gap-3
+      .group-title-icon.bg-cyan.rounded-circle.p-2.d-flex.align-items-center.justify-content-center(style="width:40px;height:40px")
+        i.bi.bi-flag-fill.text-navy
+      h5.mb-0.fw-bold= standings[0].sport_name
 
-    .standings-table
+    .standings-table.bg-white.rounded-bottom.shadow-sm
       .table-responsive
-        table.table.table-hover
-          thead
+        table.table.table-hover.mb-0
+          thead.bg-light-navy
             tr
-              th No.
-              th= (mode === 'individual' ? 'Nama Atlet' : 'Nama Tim')
+              th.text-white No.
+              th.text-white= (mode === 'individual' ? 'Nama Atlet' : 'Nama Tim')
 
               if isPadel
-                th.text-center Jumlah Match
-                th.text-center Menang
-                th.text-center Kalah
-                th.text-center Set
-                th.text-center Game
+                th.text-center.text-white Jumlah Match
+                th.text-center.text-white Menang
+                th.text-center.text-white Kalah
+                th.text-center.text-white Set
+                th.text-center.text-white Game
               else
-                th.text-center PJ
-                th.text-center M
-                th.text-center S
-                th.text-center K
-                th.text-center GM
-                th.text-center GK
-                th.text-center SG
-                th.text-center Poin
+                th.text-center.text-white PJ
+                th.text-center.text-white M
+                th.text-center.text-white S
+                th.text-center.text-white K
+                th.text-center.text-white GM
+                th.text-center.text-white GK
+                th.text-center.text-white SG
+                th.text-center.text-white Poin
                 if !isReadOnly
-                  th.text-center Aksi
+                  th.text-center.text-white Aksi
           tbody
             each row, index in standings
-              tr
+              tr.border-bottom
                 td
                   if index === 0
-                    span.position-badge.position-1 1
+                    span.position-badge.position-1.bg-cyan.text-navy.fw-bold 1
                   else if index === 1
-                    span.position-badge.position-2 2
+                    span.position-badge.position-2.bg-secondary.text-white.fw-bold 2
                   else if index === 2
-                    span.position-badge.position-3 3
+                    span.position-badge.position-3.bg-warning.text-dark.fw-bold 3
                   else
-                    span.position-badge.position-other= index + 1
+                    span.position-badge.position-other.bg-light.text-dark= index + 1
 
                 td
                   .team-name
                     if mode === 'individual'
                       if row.athlete_slug
-                        a.text-decoration-none.fw-bold(href=`/athletes/${row.athlete_slug}`)= row.team_name
+                        a.text-decoration-none.fw-bold.text-navy.hover-cyan(href=`/athletes/${row.athlete_slug}`)= row.team_name
                       else
-                        b= row.team_name
+                        b.text-navy= row.team_name
                     else
-                       a.fw-bold.text-decoration-none(
+                       a.fw-bold.text-decoration-none.text-navy.hover-cyan(
                           href=`/teams/${row.team_id}`
                         )= row.team_name
                 if isPadel
                   td.text-center= row.total_match
-                  td.text-center= row.win
-                  td.text-center= row.loss
+                  td.text-center.fw-semibold.text-success= row.win
+                  td.text-center.fw-semibold.text-danger= row.loss
 
                   td.text-center
                     | #{row.set_win} - #{row.set_loss}
-                    span.ms-1(
+                    span.ms-1.badge(
                         class= row.set_diff > 0
-                        ? 'diff-positive'
+                        ? 'bg-success bg-opacity-10 text-success'
                         : row.set_diff < 0
-                            ? 'diff-negative'
-                            : 'diff-zero'
+                            ? 'bg-danger bg-opacity-10 text-danger'
+                            : 'bg-secondary bg-opacity-10 text-secondary'
                     )
-                      | (#{row.set_diff > 0 ? '+' : ''}#{row.set_diff})
+                      | #{row.set_diff > 0 ? '+' : ''}#{row.set_diff}
 
                   td.text-center
                     | #{row.score_for} - #{row.score_against}
-                    span.ms-1(
+                    span.ms-1.badge(
                         class= row.score_diff > 0
-                        ? 'diff-positive'
+                        ? 'bg-success bg-opacity-10 text-success'
                         : row.score_diff < 0
-                            ? 'diff-negative'
-                            : 'diff-zero'
+                            ? 'bg-danger bg-opacity-10 text-danger'
+                            : 'bg-secondary bg-opacity-10 text-secondary'
                     )
-                      | (#{row.score_diff > 0 ? '+' : ''}#{row.score_diff})
+                      | #{row.score_diff > 0 ? '+' : ''}#{row.score_diff}
 
                 else
                   td.text-center= row.played
-                  td.text-center= row.win
-                  td.text-center= row.draw
-                  td.text-center= row.loss
+                  td.text-center.fw-semibold.text-success= row.win
+                  td.text-center.text-muted= row.draw
+                  td.text-center.fw-semibold.text-danger= row.loss
                   td.text-center= row.goals_for
                   td.text-center= row.goals_against
-                  td.text-center= row.goal_diff
-                  td.text-center.points-cell= row.pts
+                  td.text-center
+                    span.badge(
+                      class= row.goal_diff > 0
+                      ? 'bg-success bg-opacity-10 text-success'
+                      : row.goal_diff < 0
+                          ? 'bg-danger bg-opacity-10 text-danger'
+                          : 'bg-secondary bg-opacity-10 text-secondary'
+                    )= row.goal_diff > 0 ? '+' + row.goal_diff : row.goal_diff
+                  td.text-center
+                    span.badge.bg-cyan.text-navy.fw-bold.fs-6= row.pts
 
                   if !isReadOnly && !isPadel
                     td.text-center
-                        .action-buttons
-                        a.btn-action-compact.btn-win-compact(
+                        .action-buttons.d-flex.gap-2.justify-content-center
+                        a.btn.btn-sm.btn-success(
                             href=`/subadmin/standings/${row.id}/add-win?sport_id=${query.sport_id}`
-                        ) +W
-                        a.btn-action-compact.btn-loss-compact(
+                        )
+                          i.bi.bi-plus-circle.me-1
+                          | W
+                        a.btn.btn-sm.btn-danger(
                             href=`/subadmin/standings/${row.id}/add-loss?sport_id=${query.sport_id}`
-                        ) -L
+                        )
+                          i.bi.bi-dash-circle.me-1
+                          | L
 
 else
-  .empty-state
-    h4 Belum Ada Klasemen
+  .empty-state.text-center.py-5
+    .mb-3
+      i.bi.bi-trophy.text-muted(style="font-size:4rem")
+    h4.text-muted Belum Ada Klasemen
+    p.text-muted.mb-0 Data klasemen akan muncul setelah pertandingan dimulai
+
+style.
+  .bg-navy {
+    background-color: white;
+  }
+  
+  .bg-light-navy {
+    background-color: #1a3a5c;
+  }
+  
+  .bg-cyan {
+    background-color: #3dd5f3;
+  }
+  
+  .text-navy {
+    color: #0f2744;
+  }
+  
+  .hover-cyan:hover {
+    color: #3dd5f3 !important;
+    transition: color 0.3s ease;
+  }
+  
+  .position-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 0.875rem;
+  }
+  
+  .standings-table {
+    overflow: hidden;
+  }
+  
+  .standings-table tbody tr {
+    transition: all 0.2s ease;
+  }
+  
+  .standings-table tbody tr:hover {
+    background-color: rgba(61, 213, 243, 0.05);
+  }
+  
+  .table thead th {
+    border-bottom: 2px solid #3dd5f3;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 1rem 0.75rem;
+  }
+  
+  .table tbody td {
+    vertical-align: middle;
+    padding: 1rem 0.75rem;
+  }
+  
+  .action-buttons .btn {
+    min-width: 45px;
+    font-weight: 600;
+  }
+  
+  @media (max-width: 768px) {
+    .group-title h5 {
+      font-size: 1rem;
+    }
+    
+    .position-badge {
+      width: 28px;
+      height: 28px;
+      font-size: 0.75rem;
+    }
+    
+    .table {
+      font-size: 0.875rem;
+    }
+  }
