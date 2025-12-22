@@ -47,7 +47,14 @@ if standings.length
 
                 td
                   .team-name
-                    b= row.team_name
+                    if mode === 'individual'
+                      if row.athlete_slug
+                        a(href=`/athletes/${row.athlete_slug}` class="text-decoration-none fw-bold")= row.team_name
+                      else
+                        b= row.team_name
+                    else
+                      b= row.team_name
+
 
                 if isPadel
                   td.text-center= row.total_match
