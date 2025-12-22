@@ -2,49 +2,361 @@ extends ../layout/main
 
 block content
   style.
-    .fav-page { background: linear-gradient(135deg,#f5f8fa 0%,#e9eef3 100%); min-height:100vh; padding:2.5rem 0; }
-    .wrap { background:#fff; border:2px solid #e8edf2; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,.06); padding:2rem; }
-    .titlex { font-family:'Bebas Neue',cursive; font-size:2.3rem; letter-spacing:1px; color:#0B1F3F; margin:0 0 .25rem; }
-    .sub { color:#5a6c7d; margin-bottom:1.5rem; }
-    .item { border:2px solid #e8edf2; border-radius:16px; padding:1rem 1.25rem; background:#fff; transition:.2s; }
-    .item:hover { transform: translateY(-2px); box-shadow:0 10px 25px rgba(0,0,0,.06); }
-    .meta { color:#5a6c7d; font-size:.95rem; display:flex; gap:1rem; flex-wrap:wrap; }
-    .btnx { background: linear-gradient(135deg,#0095FF 0%,#34C7FF 100%); color:#fff; border:none; border-radius:12px; padding:.6rem 1rem; font-weight:700; text-decoration:none; display:inline-flex; gap:.5rem; align-items:center; }
-    .btnx:hover { opacity:.95; color:#fff; }
+    .favorites-page {
+      background: #f8fafc;
+      min-height: 100vh;
+      padding: 2.5rem 0;
+    }
+    
+    .page-header {
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+    
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0B1F3F;
+      margin-bottom: 0.5rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .page-title:after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #0095FF, #34C7FF);
+      border-radius: 2px;
+    }
+    
+    .page-subtitle {
+      color: #64748b;
+      font-size: 0.95rem;
+      max-width: 500px;
+      margin: 1rem auto 0;
+      line-height: 1.5;
+    }
+    
+    .empty-state {
+      background: white;
+      border-radius: 16px;
+      padding: 4rem 2rem;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+      max-width: 500px;
+      margin: 3rem auto;
+    }
+    
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      color: #0095FF;
+    }
+    
+    .empty-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #0B1F3F;
+      margin-bottom: 0.75rem;
+    }
+    
+    .empty-text {
+      color: #64748b;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    
+    .btn-back {
+      background: #f8fafc;
+      color: #475569;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .btn-back:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      color: #0B1F3F;
+      transform: translateY(-1px);
+    }
+    
+    .btn-find {
+      background: #0095FF;
+      color: white;
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    
+    .btn-find:hover {
+      background: #007acc;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.15);
+      color: white;
+    }
+    
+    .event-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      height: 100%;
+      transition: all 0.25s ease;
+      border: 1px solid #e2e8f0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .event-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      border-color: #cbd5e1;
+    }
+    
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+    }
+    
+    .event-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #0B1F3F;
+      line-height: 1.4;
+      margin: 0;
+      flex: 1;
+    }
+    
+    .event-badge {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 0.3rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      margin-left: 1rem;
+    }
+    
+    .event-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+    
+    .meta-icon {
+      width: 20px;
+      color: #94a3b8;
+      text-align: center;
+    }
+    
+    .event-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1.25rem;
+      border-top: 1px solid #f1f5f9;
+    }
+    
+    .event-sport {
+      background: #f8fafc;
+      color: #475569;
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    .btn-detail {
+      background: transparent;
+      color: #0095FF;
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .btn-detail:hover {
+      background: #f0f8ff;
+      border-color: #0095FF;
+      color: #0095FF;
+    }
+    
+    .favorites-count {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .favorites-count strong {
+      color: #0B1F3F;
+    }
+    
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+      .favorites-page {
+        padding: 1.5rem 0;
+      }
+      
+      .events-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .empty-state {
+        padding: 3rem 1.5rem;
+        margin: 2rem auto;
+      }
+      
+      .page-title {
+        font-size: 1.75rem;
+      }
+      
+      .event-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .event-badge {
+        margin-left: 0;
+        align-self: flex-start;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .button-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .btn-back, .btn-find {
+        justify-content: center;
+        text-align: center;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .event-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+      
+      .btn-detail {
+        text-align: center;
+        justify-content: center;
+      }
+    }
 
-  .fav-page
+  .favorites-page
     .container
-      .wrap
-        h1.titlex Disimpan (Favorites)
-        p.sub Ini event yang kamu simpan.
-
-        if !items || items.length === 0
-          .text-center.py-5
-            i.bi.bi-bookmark-x(style="font-size:3rem;color:#9aa6b2;")
-            h5.mt-3 Belum ada event yang disimpan
-            p.text-muted Simpan event dari halaman detail event dulu.
-            a.btnx(href="/events")
-              i.bi.bi-calendar3
-              | Lihat Event
-        else
-          .d-grid.gap-3
-            each ev in items
-              .item
-                .d-flex.justify-content-between.align-items-start.gap-3.flex-wrap
-                  div
-                    h5.fw-bold.mb-1= ev.title
-                    .meta
-                      if ev.start_date_formatted
-                        span
-                          i.bi.bi-calendar3.me-2
-                          | #{ev.start_date_formatted}#{ev.end_date_formatted ? ' - ' + ev.end_date_formatted : ''}
-                      if ev.status
-                        span
-                          i.bi.bi-info-circle.me-2
-                          | #{ev.status}
-                    if ev.favorited_at_formatted
-                      small.text-muted Disimpan: #{ev.favorited_at_formatted}
-
-                  a.btnx(href=`/events/${ev.slug}`)
-                    i.bi.bi-arrow-right-circle
-                    | Buka
+      .page-header
+        h2.page-title Event Disimpan
+        p.page-subtitle Semua event yang telah Anda simpan tersedia di sini untuk akses cepat dan mudah.
+      
+      if !events || events.length === 0
+        .empty-state
+          .empty-icon
+            i.bi.bi-bookmark-star
+          h3.empty-title Tidak ada event disimpan
+          p.empty-text Mulai jelajahi event menarik dan simpan favorit Anda untuk mengaksesnya nanti dengan mudah.
+          .button-group
+            a.btn-back(href="/profile")
+              i.bi.bi-arrow-left.me-2
+              span Kembali
+            a.btn-find(href="/events")
+              i.bi.bi-search.me-2
+              span Telusuri Event
+      else
+        .favorites-count
+          | Anda memiliki 
+          strong #{events.length} event 
+          | yang disimpan
+        
+        .events-grid
+          each e in events
+            .event-card
+              .event-header
+                h3.event-title= e.title
+                if e.status
+                  span.event-badge= e.status
+              
+              .event-meta
+                if e.sport_name
+                  .meta-item
+                    .meta-icon
+                      i.bi.bi-trophy
+                    span= e.sport_name
+                
+                if e.venue_name
+                  .meta-item
+                    .meta-icon
+                      i.bi.bi-geo-alt
+                    span= e.venue_name
+              
+              .event-footer
+                if e.sport_name
+                  span.event-sport= e.sport_name
+                
+                a.btn-detail(href=`/events/${e.slug || e.id}`)
+                  span Detail
+                  i.bi.bi-arrow-right-short
