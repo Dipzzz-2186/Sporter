@@ -1,105 +1,979 @@
 extends ../layout/main
 
 block content
-  .container.py-4
-    h3.mb-4 Buat Tim Baru
-
-    form(method="POST" action="/subadmin/teams/create" id="createTeamForm")
-
-      // ===== CABANG (SELALU TAMPIL) =====
-      .mb-3
-        label.form-label Cabang Olahraga
-        select.form-select(name="sport_id" id="sportSelect" required)
-          option(value="") Pilih cabang
-          each s in sports
-            option(value=s.id)= s.name
-
-      // ===== FIELD LAIN (SEMBUNYI DULU) =====
-      #teamFormFields(style="display:none")
-        .mb-3
-          label.form-label Nama Tim
-          input.form-control(type="text" name="name" required)
-
-        hr
-
-        h5.mb-3 Anggota Tim
-        small.text-muted.mb-2.d-block
-          | Jumlah anggota harus sesuai cabang olahraga
-
-        #membersContainer
-
-        button.btn.btn-outline-primary.mb-3(type="button" id="btnAddMember")
-          | + Tambah Anggota
-
-        hr
-
-        button.btn.btn-primary(type="submit")
-          | Simpan Tim
-
-  script.
-    const membersContainer = document.getElementById('membersContainer');
-    const btnAdd = document.getElementById('btnAddMember');
-    const sportSelect = document.getElementById('sportSelect');
-    const teamFormFields = document.getElementById('teamFormFields');
-    const form = document.getElementById('createTeamForm');
-
-    function getMemberRule() {
-      if (!sportSelect.value) return null;
-
-      const twoPlayerSports = ['padel', 'tenis'];
-      const selectedText =
-        sportSelect.options[sportSelect.selectedIndex].text.toLowerCase();
-
-      if (twoPlayerSports.some(s => selectedText.includes(s))) {
-        return { min: 2, max: 2 };
+  style.
+    /* Team Create Form Styles */
+    .team-form-page {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    /* Header Section */
+    .form-header {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      animation: fadeInDown 0.6s ease-out;
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .form-header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .form-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      margin: 0;
+    }
+    
+    /* Flash Messages */
+    .alert {
+      border-radius: 12px;
+      border: none;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      animation: slideInDown 0.4s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .alert-danger {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b;
+      border-left: 4px solid #dc2626;
+    }
+    
+    .alert-success {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+      border-left: 4px solid #059669;
+    }
+    
+    .alert-info {
+      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+      color: #0369a1;
+      border-left: 4px solid #0ea5e9;
+    }
+    
+    .alert i {
+      font-size: 1.2rem;
+    }
+    
+    /* Form Card */
+    .form-card {
+      background: white;
+      border-radius: 24px;
+      border: 2px solid #e8edf2;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Form Sections */
+    .form-section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .section-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .section-title i {
+      color: #0095FF;
+      font-size: 1.5rem;
+    }
+    
+    .section-description {
+      color: #5a6c7d;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    
+    /* Form Elements */
+    .form-label {
+      color: #0B1F3F;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .form-label i {
+      color: #0095FF;
+      font-size: 1rem;
+    }
+    
+    .form-label .badge {
+      background: linear-gradient(135deg, rgba(0,149,255,0.1) 0%, rgba(0,149,255,0.2) 100%);
+      color: #0080e0;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 1px solid rgba(0,149,255,0.2);
+    }
+    
+    .form-control,
+    .form-select {
+      border: 2px solid #e8e8e8;
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #0095FF;
+      box-shadow: 0 0 0 0.25rem rgba(0, 149, 255, 0.15);
+      background: white;
+    }
+    
+    .form-control:hover,
+    .form-select:hover {
+      border-color: #d0d0d0;
+      background: white;
+    }
+    
+    .form-control::placeholder {
+      color: #adb5bd;
+      font-style: italic;
+    }
+    
+    /* Required Indicator */
+    .required-indicator {
+      color: #ff4757;
+      font-weight: 700;
+      margin-left: 0.25rem;
+    }
+    
+    /* Input Groups */
+    .input-group-icon {
+      position: relative;
+    }
+    
+    .input-group-icon i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #5a6c7d;
+      font-size: 1.1rem;
+      z-index: 10;
+    }
+    
+    .input-group-icon .form-control {
+      padding-left: 3rem;
+    }
+    
+    /* Members Container */
+    .members-container {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 2px solid #e8edf2;
+    }
+    
+    .member-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      border: 2px solid #e8e8e8;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .member-card:hover {
+      border-color: #0095FF;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.1);
+    }
+    
+    .member-index {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border-radius: 8px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    
+    .member-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 0.95rem;
+      color: #0B1F3F;
+      background: transparent;
+    }
+    
+    .member-input::placeholder {
+      color: #94a3b8;
+    }
+    
+    .btn-remove-member {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      border: 2px solid #fecaca;
+      color: #dc2626;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .btn-remove-member:hover {
+      background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+      border-color: #fca5a5;
+      transform: scale(1.1);
+    }
+    
+    .empty-members {
+      text-align: center;
+      padding: 2rem;
+      color: #94a3b8;
+    }
+    
+    .empty-members i {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    
+    /* Members Info */
+    .members-info {
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.05) 0%, rgba(52, 199, 255, 0.05) 100%);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      border: 2px solid rgba(0, 149, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .members-info i {
+      color: #0095FF;
+      font-size: 1.5rem;
+    }
+    
+    .members-info-content {
+      flex: 1;
+    }
+    
+    .members-info-title {
+      font-weight: 600;
+      color: #0B1F3F;
+      margin-bottom: 0.25rem;
+    }
+    
+    .members-info-desc {
+      font-size: 0.85rem;
+      color: #5a6c7d;
+    }
+    
+    /* Action Buttons */
+    .btn-add-member {
+      background: white;
+      border: 2px solid #e8e8e8;
+      color: #5a6c7d;
+      padding: 0.875rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+    }
+    
+    .btn-add-member:hover {
+      background: #f8f9fa;
+      border-color: #0095FF;
+      color: #0095FF;
+      transform: translateY(-2px);
+    }
+    
+    .btn-add-member i {
+      font-size: 1.1rem;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 2px solid #f0f0f0;
+      margin-top: 2rem;
+    }
+    
+    .btn-submit {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border: none;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
+      color: white;
+    }
+    
+    .btn-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-submit:active {
+      transform: translateY(-1px);
+    }
+    
+    .btn-back {
+      background: white;
+      border: 2px solid #e8e8e8;
+      color: #5a6c7d;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      justify-content: center;
+    }
+    
+    .btn-back:hover {
+      background: #f8f9fa;
+      border-color: #0B1F3F;
+      color: #0B1F3F;
+      transform: translateY(-2px);
+    }
+    
+    /* Sport Info */
+    .sport-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e8ecf1 100%);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .sport-info-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+    
+    .sport-info-content {
+      flex: 1;
+    }
+    
+    .sport-info-title {
+      font-weight: 600;
+      color: #0B1F3F;
+      margin-bottom: 0.25rem;
+    }
+    
+    .sport-info-desc {
+      font-size: 0.85rem;
+      color: #5a6c7d;
+    }
+    
+    /* Help Text */
+    .form-text {
+      color: #5a6c7d;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .form-text i {
+      color: #0095FF;
+      font-size: 0.9rem;
+    }
+    
+    /* Loading Animation */
+    .loading-spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .form-header {
+        padding: 1.5rem;
       }
-
-      return { min: 1, max: 99 };
+      
+      .form-header h1 {
+        font-size: 2rem;
+      }
+      
+      .form-card {
+        padding: 2rem;
+      }
+      
+      .section-title {
+        font-size: 1.4rem;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .team-form-page {
+        padding: 1rem 0;
+      }
+      
+      .form-header {
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+      
+      .form-header h1 {
+        font-size: 1.75rem;
+      }
+      
+      .form-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+      }
+      
+      .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+      }
+      
+      .form-control,
+      .form-select {
+        padding: 0.8rem 1rem;
+      }
+      
+      .member-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+      }
+      
+      .member-input {
+        width: 100%;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn-submit,
+      .btn-back {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .members-info {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .sport-info {
+        flex-direction: column;
+        text-align: center;
+      }
     }
 
-    sportSelect.addEventListener('change', () => {
-      membersContainer.innerHTML = '';
+  .team-form-page
+    .container
+      //- Header Section
+      .form-header
+        h1
+          i.bi.bi-people-fill
+          | Buat Tim Baru
+        p
+          i.bi.bi-info-circle.me-2
+          | Lengkapi form di bawah untuk membuat tim baru dalam sistem
 
-      if (!sportSelect.value) {
-        teamFormFields.style.display = 'none';
-        return;
+      //- Flash Messages
+      if flash && flash.error && flash.error.length
+        each msg in flash.error
+          .alert.alert-danger(role="alert")
+            i.bi.bi-exclamation-triangle-fill
+            span= msg
+      
+      if flash && flash.success && flash.success.length
+        each msg in flash.success
+          .alert.alert-success(role="alert")
+            i.bi.bi-check-circle-fill
+            span= msg
+
+      //- Form Card
+      .form-card
+        form(method="POST" action="/subadmin/teams/create" id="createTeamForm")
+          
+          //- Section 1: Basic Info
+          .form-section
+            .section-title
+              i.bi.bi-trophy-fill
+              | Informasi Dasar
+            
+            .section-description
+              | Pilih cabang olahraga untuk tim ini. Jumlah anggota tim akan menyesuaikan dengan cabang yang dipilih.
+            
+            .mb-3
+              label.form-label(for="sportSelect")
+                i.bi.bi-trophy
+                | Cabang Olahraga
+                span.required-indicator *
+              select.form-select#sportSelect(name="sport_id" required)
+                option(value="" selected disabled) -- Pilih cabang olahraga --
+                each s in sports
+                  option(value=s.id)= s.name
+              .form-text
+                i.bi.bi-info-circle
+                | Pilih cabang olahraga untuk menentukan aturan jumlah anggota tim
+
+          //- Section 2: Team Details
+          #teamFormFields(style="display:none;")
+            .form-section
+              .section-title
+                i.bi.bi-card-heading
+                | Detail Tim
+              
+              .section-description
+                | Berikan nama untuk tim ini dan tambahkan anggota-anggotanya.
+              
+              .mb-3
+                label.form-label(for="teamName")
+                  i.bi.bi-card-text
+                  | Nama Tim
+                  span.required-indicator *
+                input.form-control#teamName(
+                  type="text"
+                  name="name"
+                  required
+                  placeholder="Contoh: Tim Basket Putra SMAN 1"
+                )
+                .form-text
+                  i.bi.bi-info-circle
+                  | Berikan nama yang jelas dan mudah dikenali
+
+              //- Sport Info Card
+              #sportInfo.sport-info
+                .sport-info-icon
+                  i.bi.bi-trophy
+                .sport-info-content
+                  .sport-info-title#sportInfoTitle Cabang Olahraga
+                  .sport-info-desc#sportInfoDesc
+                    | Jumlah anggota: 
+                    span#memberRuleText Menunggu pemilihan cabang
+
+              //- Members Section
+              .section-title
+                i.bi.bi-people
+                | Anggota Tim
+              
+              .section-description
+                | Tambahkan anggota-anggota tim. Pastikan jumlah sesuai dengan aturan cabang olahraga.
+              
+              .members-info
+                i.bi.bi-info-circle-fill
+                .members-info-content
+                  .members-info-title Informasi Anggota
+                  .members-info-desc#membersInfoDesc
+                    | Minimal: 
+                    span#minMembers 0
+                    | , Maksimal: 
+                    span#maxMembers 0
+                    |  orang
+              
+              #membersContainer.members-container
+                .empty-members#emptyMembers
+                  i.bi.bi-people
+                  p Tambahkan anggota pertama Anda
+              
+              button.btn-add-member#btnAddMember(type="button")
+                i.bi.bi-plus-circle
+                | Tambah Anggota
+
+          //- Action Buttons
+          .form-actions
+            button.btn.btn-submit#submitBtn(
+              type="submit"
+              style="display:none;"
+              disabled
+            )
+              i.bi.bi-save-fill
+              span Simpan Tim
+            
+            a.btn.btn-back(href="javascript:void(0);" onclick="history.back()")
+              i.bi.bi-arrow-left
+              span Kembali ke Daftar
+
+  script.
+    (function() {
+      'use strict';
+      
+      console.log('=== TEAM FORM SCRIPT LOADED ===');
+
+      // ========================================
+      // GLOBAL VARIABLES & ELEMENT REFERENCES
+      // ========================================
+      const form = document.getElementById('createTeamForm');
+      const sportSelect = document.getElementById('sportSelect');
+      const teamFormFields = document.getElementById('teamFormFields');
+      const teamNameInput = document.getElementById('teamName');
+      const membersContainer = document.getElementById('membersContainer');
+      const emptyMembers = document.getElementById('emptyMembers');
+      const btnAddMember = document.getElementById('btnAddMember');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      const sportInfoTitle = document.getElementById('sportInfoTitle');
+      const sportInfoDesc = document.getElementById('sportInfoDesc');
+      const memberRuleText = document.getElementById('memberRuleText');
+      const minMembersSpan = document.getElementById('minMembers');
+      const maxMembersSpan = document.getElementById('maxMembers');
+      const membersInfoDesc = document.getElementById('membersInfoDesc');
+      
+      const sportInfo = document.getElementById('sportInfo');
+
+      // ========================================
+      // ALERT AUTO DISMISS
+      // ========================================
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          alert.style.opacity = '0';
+          alert.style.transform = 'translateY(-20px)';
+          setTimeout(function() {
+            alert.remove();
+          }, 500);
+        }, 5000);
+      });
+
+      // ========================================
+      // SPORT RULES
+      // ========================================
+      const twoPlayerSports = ['padel', 'tenis'];
+      
+      function getMemberRule() {
+        if (!sportSelect || !sportSelect.value) return null;
+
+        const selectedText = sportSelect.options[sportSelect.selectedIndex].text.toLowerCase();
+
+        if (twoPlayerSports.some(s => selectedText.includes(s))) {
+          return { min: 2, max: 2 };
+        }
+
+        return { min: 1, max: 99 };
       }
 
-      teamFormFields.style.display = 'block';
-    });
+      function updateSportInfo() {
+        if (!sportSelect || !sportSelect.value) {
+          sportInfo.style.display = 'none';
+          return;
+        }
 
-    btnAdd.addEventListener('click', () => {
-      const rule = getMemberRule();
-      if (!rule) return;
+        const sportName = sportSelect.options[sportSelect.selectedIndex].text;
+        const rule = getMemberRule();
 
-      const count = membersContainer.children.length;
-      if (count >= rule.max) {
-        alert(`Jumlah anggota maksimal ${rule.max}`);
-        return;
+        if (sportInfoTitle) sportInfoTitle.textContent = sportName;
+        if (sportInfoDesc) {
+          sportInfoDesc.textContent = `Jumlah anggota: ${rule.min} - ${rule.max} orang`;
+        }
+        
+        if (memberRuleText) memberRuleText.textContent = `${rule.min} - ${rule.max} orang`;
+        if (minMembersSpan) minMembersSpan.textContent = rule.min;
+        if (maxMembersSpan) maxMembersSpan.textContent = rule.max;
+        
+        if (membersInfoDesc) {
+          membersInfoDesc.innerHTML = `Minimal: <strong>${rule.min}</strong>, Maksimal: <strong>${rule.max}</strong> orang`;
+        }
+
+        sportInfo.style.display = 'flex';
       }
 
-      const div = document.createElement('div');
-      div.className = 'mb-2 d-flex gap-2';
-      div.innerHTML = `
-        <input type="text" name="members[]" class="form-control" placeholder="Nama anggota" required>
-        <button type="button" class="btn btn-outline-danger">X</button>
-      `;
-      div.querySelector('button').onclick = () => div.remove();
-      membersContainer.appendChild(div);
-    });
-
-    form.addEventListener('submit', (e) => {
-      const rule = getMemberRule();
-      const count = membersContainer.children.length;
-
-      if (!rule) {
-        e.preventDefault();
-        alert('Pilih cabang olahraga terlebih dahulu');
-        return;
+      function updateEmptyMembersVisibility() {
+        if (!emptyMembers) return;
+        
+        const memberCount = membersContainer.querySelectorAll('.member-card').length;
+        if (memberCount === 0) {
+          emptyMembers.style.display = 'block';
+        } else {
+          emptyMembers.style.display = 'none';
+        }
       }
 
-      if (count < rule.min || count > rule.max) {
-        e.preventDefault();
-        alert(`Jumlah anggota harus tepat ${rule.min} orang`);
+      function updateSubmitButton() {
+        if (!submitBtn) return;
+        
+        const rule = getMemberRule();
+        if (!rule) {
+          submitBtn.style.display = 'none';
+          return;
+        }
+
+        const memberCount = membersContainer.querySelectorAll('.member-card').length;
+        const isValid = memberCount >= rule.min && memberCount <= rule.max;
+
+        submitBtn.style.display = 'block';
+        submitBtn.disabled = !isValid;
+
+        if (!isValid) {
+          submitBtn.title = `Jumlah anggota harus antara ${rule.min} dan ${rule.max}`;
+        } else {
+          submitBtn.title = '';
+        }
       }
-    });
+
+      function createMemberElement(index) {
+        const memberCard = document.createElement('div');
+        memberCard.className = 'member-card';
+        
+        const memberIndex = document.createElement('div');
+        memberIndex.className = 'member-index';
+        memberIndex.textContent = index;
+        
+        const memberInput = document.createElement('input');
+        memberInput.className = 'member-input';
+        memberInput.type = 'text';
+        memberInput.name = 'members[]';
+        memberInput.placeholder = `Nama anggota ${index}`;
+        memberInput.required = true;
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'btn-remove-member';
+        removeBtn.type = 'button';
+        removeBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+        
+        removeBtn.addEventListener('click', function() {
+          memberCard.remove();
+          updateEmptyMembersVisibility();
+          updateSubmitButton();
+          updateMemberIndices();
+        });
+        
+        memberCard.appendChild(memberIndex);
+        memberCard.appendChild(memberInput);
+        memberCard.appendChild(removeBtn);
+        
+        return memberCard;
+      }
+
+      function updateMemberIndices() {
+        const memberCards = membersContainer.querySelectorAll('.member-card');
+        memberCards.forEach((card, index) => {
+          const indexElement = card.querySelector('.member-index');
+          if (indexElement) {
+            indexElement.textContent = index + 1;
+          }
+          
+          const input = card.querySelector('.member-input');
+          if (input) {
+            input.placeholder = `Nama anggota ${index + 1}`;
+          }
+        });
+      }
+
+      function addMember() {
+        const rule = getMemberRule();
+        if (!rule) return;
+
+        const memberCount = membersContainer.querySelectorAll('.member-card').length;
+        
+        if (memberCount >= rule.max) {
+          alert(`Maksimal ${rule.max} anggota untuk cabang ini`);
+          return;
+        }
+
+        const newMember = createMemberElement(memberCount + 1);
+        membersContainer.appendChild(newMember);
+        
+        updateEmptyMembersVisibility();
+        updateSubmitButton();
+      }
+
+      // ========================================
+      // EVENT LISTENERS
+      // ========================================
+      if (sportSelect) {
+        sportSelect.addEventListener('change', function() {
+          const hasValue = !!this.value;
+          
+          // Show/hide team form fields
+          if (teamFormFields) {
+            teamFormFields.style.display = hasValue ? 'block' : 'none';
+          }
+          
+          // Clear members container when sport changes
+          if (membersContainer) {
+            membersContainer.innerHTML = '';
+            const emptyDiv = document.createElement('div');
+            emptyDiv.id = 'emptyMembers';
+            emptyDiv.className = 'empty-members';
+            emptyDiv.innerHTML = '<i class="bi bi-people"></i><p>Tambahkan anggota pertama Anda</p>';
+            membersContainer.appendChild(emptyDiv);
+          }
+          
+          // Update sport info
+          updateSportInfo();
+          updateEmptyMembersVisibility();
+          updateSubmitButton();
+          
+          // Auto-focus team name
+          if (hasValue && teamNameInput) {
+            setTimeout(() => {
+              teamNameInput.focus();
+            }, 300);
+          }
+        });
+      }
+
+      if (btnAddMember) {
+        btnAddMember.addEventListener('click', addMember);
+      }
+
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          const rule = getMemberRule();
+          if (!rule) {
+            e.preventDefault();
+            alert('Pilih cabang olahraga terlebih dahulu');
+            return;
+          }
+
+          const memberCount = membersContainer.querySelectorAll('.member-card').length;
+          
+          if (memberCount < rule.min || memberCount > rule.max) {
+            e.preventDefault();
+            alert(`Jumlah anggota harus tepat antara ${rule.min} dan ${rule.max} orang untuk cabang ini`);
+            return;
+          }
+
+          // Validate member names
+          const memberInputs = membersContainer.querySelectorAll('.member-input');
+          let emptyNames = false;
+          
+          memberInputs.forEach(input => {
+            if (!input.value.trim()) {
+              emptyNames = true;
+              input.style.border = '2px solid #ff4757';
+              setTimeout(() => {
+                input.style.border = '';
+              }, 2000);
+            }
+          });
+          
+          if (emptyNames) {
+            e.preventDefault();
+            alert('Semua nama anggota harus diisi');
+            return;
+          }
+
+          // Show loading state
+          const submitText = submitBtn.querySelector('span');
+          if (submitText) {
+            submitText.innerHTML = '<span class="loading-spinner me-2"></span>Menyimpan...';
+            submitBtn.disabled = true;
+          }
+        });
+      }
+
+      // Initialize
+      updateSportInfo();
+      updateEmptyMembersVisibility();
+      updateSubmitButton();
+
+      console.log('=== TEAM FORM SCRIPT READY ===');
+
+    })();
