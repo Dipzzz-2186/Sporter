@@ -3,13 +3,8 @@ const db = require('../config/db');
 exports.show = async (req, res) => {
   try {
     const slug = (req.params.slug || '').trim();
+    if (!slug) return res.redirect('/');
 
-    if (!slug) {
-      req.flash('error', 'Atlet tidak ditemukan');
-      return res.redirect('/');
-    }
-
-    // Query athlete dengan data lengkap
     const [[athlete]] = await db.query(`
       SELECT
         a.*,
@@ -17,13 +12,8 @@ exports.show = async (req, res) => {
         pw.name AS paired_with_name,
         pw.slug AS paired_with_slug,
         (SELECT COUNT(*) + 1
-        FROM athletes a2
-        WHERE a2.sport_id = a.sport_id AND a2.points > a.points) AS rank_pos,
-        CASE
-          WHEN (a.match_won + a.match_lost) > 0
-          THEN ROUND((a.match_won / (a.match_won + a.match_lost)) * 100, 1)
-          ELSE 0
-        END AS effectiveness
+         FROM athletes a2
+         WHERE a2.sport_id = a.sport_id AND a2.points > a.points) AS rank_pos
       FROM athletes a
       JOIN sports sp ON sp.id = a.sport_id
       LEFT JOIN athletes pw ON pw.id = a.paired_with_athlete_id
@@ -31,12 +21,64 @@ exports.show = async (req, res) => {
       LIMIT 1
     `, [slug]);
 
-    if (!athlete) {
-      req.flash('error', 'Atlet tidak ditemukan');
-      return res.redirect('/');
+    if (!athlete) return res.redirect('/');
+
+    // ✅ Step A: cari team_id individual milik atlet (team name = athlete.name)
+    const [[indTeam]] = await db.query(`
+      SELECT t.id
+      FROM standings s
+      JOIN teams t ON t.id = s.team_id
+      WHERE s.sport_id = ?
+        AND t.is_individual = 1
+        AND LOWER(TRIM(t.name)) = LOWER(TRIM(?))
+      LIMIT 1
+    `, [athlete.sport_id, athlete.name]);
+
+    const teamId = indTeam?.id || null;
+
+
+    // ✅ Step B: ambil stats dari standings berdasarkan team_id
+    let stats = { match_played: 0, match_won: 0, match_lost: 0 };
+
+    if (teamId) {
+      const [[stat]] = await db.query(`
+        SELECT
+          COALESCE(SUM(s.played), 0) AS match_played,
+          COALESCE(SUM(s.win), 0)    AS match_won,
+          COALESCE(SUM(s.loss), 0)   AS match_lost
+        FROM standings s
+        WHERE s.sport_id = ?
+          AND s.team_id = ?
+      `, [athlete.sport_id, teamId]);
+
+      stats = {
+        match_played: Number(stat.match_played || 0),
+        match_won: Number(stat.match_won || 0),
+        match_lost: Number(stat.match_lost || 0),
+      };
     }
 
-    // Points breakdown (riwayat poin)
+    const [[rankRow]] = await db.query(`
+      SELECT COUNT(*) + 1 AS rank_pos
+      FROM standings s2
+      WHERE s2.sport_id = ?
+        AND s2.pts > (
+          SELECT s1.pts
+          FROM standings s1
+          WHERE s1.sport_id = ? AND s1.team_id = ?
+          LIMIT 1
+        )
+    `, [athlete.sport_id, athlete.sport_id, teamId]);
+
+    const rank = Number(rankRow?.rank_pos || 1);
+
+    // hitung ulang effectiveness dari standings
+    const effectiveness =
+      (stats.match_won + stats.match_lost) > 0
+        ? Number(((stats.match_won / (stats.match_won + stats.match_lost)) * 100).toFixed(1))
+        : 0;
+
+
     const [pointsBreakdown] = await db.query(`
       SELECT tournament, category, event_date, round_name, points
       FROM athlete_points
@@ -45,13 +87,8 @@ exports.show = async (req, res) => {
       LIMIT 50
     `, [athlete.id]);
 
-    // Points by tournament (agregat per turnamen)
     const [pointsByTournament] = await db.query(`
-      SELECT 
-        tournament,
-        category,
-        SUM(points) AS total_points,
-        MAX(event_date) AS last_event
+      SELECT tournament, category, SUM(points) AS total_points, MAX(event_date) AS last_event
       FROM athlete_points
       WHERE athlete_id = ?
       GROUP BY tournament, category
@@ -62,15 +99,16 @@ exports.show = async (req, res) => {
     res.render('athletes/show', {
       title: athlete.name || 'Athlete',
       athlete,
-      rank: athlete.rank || '-',
-      effectiveness: athlete.effectiveness || 0,
+      stats,                   
+      rank,
+      effectiveness,
       pointsBreakdown,
       pointsByTournament
     });
 
+
   } catch (err) {
     console.error('athlete.show error:', err);
-    req.flash('error', 'Terjadi kesalahan server');
     return res.redirect('/');
   }
 };
