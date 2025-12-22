@@ -800,7 +800,7 @@ block content
                                   onclick="openScoreModal(this)"
                                 )
                                   i.bi.bi-pencil-square.me-1
-                                  | Input Skor
+                                  | Input Set
 
                               else
                                 button.btn.btn-sm.btn-secondary(disabled)
@@ -843,7 +843,7 @@ block content
       .modal-dialog
         .modal-content
           .modal-header
-            h5.modal-title Input Skor Padel
+            h5.modal-title Input Set Padel
             button.btn-close(type='button', data-bs-dismiss='modal')
 
           .modal-body
@@ -859,11 +859,21 @@ block content
 
             .mb-3
               label.form-label#homeLabel
-              input.form-control(type="number" id="homeScore" min="0")
+              input.form-control(
+                type="number"
+                id="homeScore"
+                min="0"
+                max="7"
+              )
 
             .mb-3
               label.form-label#awayLabel
-              input.form-control(type="number" id="awayScore" min="0")
+              input.form-control(
+                type="number"
+                id="awayScore"
+                min="0"
+                max="7"
+              )
 
           .modal-footer
             button.btn.btn-secondary(data-bs-dismiss='modal') Batal
@@ -875,42 +885,39 @@ block content
           .modal-header
             h5.modal-title
               i.bi.bi-question-circle-fill.me-2
-              | Panduan Input Skor Padel
+              | Panduan Input Set Padel
             button.btn-close(type='button', data-bs-dismiss='modal')
 
           .modal-body
-            h6.text-primary.mb-2 1. Apa itu Game Menang & Game Kalah?
-            p.mb-3
-              | Game Menang adalah jumlah game yang dimenangkan tim.
-              | Game Kalah adalah jumlah game yang kalah dari lawan.
+          h6.text-primary.mb-2 1. Apa yang Diinput?
+          p.mb-3
+            | Yang diinput adalah <b>skor SET</b>, yaitu jumlah <b>game</b> yang dimenangkan dalam satu set.
+            | Sistem ini <b>TIDAK menggunakan poin 0–15–30–40</b>.
 
-            h6.text-primary.mb-2 2. Contoh Pengisian yang Benar
-            ul
-              li Tim A menang 6–4 → isi:
-                ul
-                  li Game Menang: <b>6</b>
-                  li Game Kalah: <b>4</b>
-              li Tim kalah 3–6 → isi:
-                ul
-                  li Game Menang: <b>3</b>
-                  li Game Kalah: <b>6</b>
+          h6.text-primary.mb-2 2. Contoh Input yang Benar
+          ul
+            li Tim A menang set 6–4
+              ul
+                li Skor Tim A: <b>6</b>
+                li Skor Tim B: <b>4</b>
+            li Tim A menang set 7–5
+              ul
+                li Skor Tim A: <b>7</b>
+                li Skor Tim B: <b>5</b>
 
-            h6.text-danger.mb-2 3. Aturan Penting
-            ul
-              li ❌ Game Menang dan Game Kalah <b>tidak boleh sama</b>
-              li ✅ Tim dengan angka lebih besar otomatis dianggap menang
-              li 🏆 Menang mendapat <b>3 poin</b>, kalah <b>0 poin</b>
+          h6.text-danger.mb-2 3. Aturan Skor Set
+          ul
+            li ❌ Skor tidak boleh sama (tidak ada seri)
+            li ✅ Menang set minimal <b>6 game</b> dengan selisih <b>2 game</b>
+            li ✅ Skor <b>7–6</b> diperbolehkan (tie-break)
+            li ❌ Skor seperti 6–6 atau 5–5 tidak valid
 
-            h6.text-primary.mb-2 4. Yang Dihitung Sistem
-            ul
-              li Jumlah Match diambil dari <b>jadwal pertandingan</b>
-              li Poin & klasemen dihitung otomatis
-              li Tidak perlu input poin manual
-
-            .alert.alert-warning.mt-3
-              i.bi.bi-exclamation-triangle-fill.me-2
-              | Pastikan skor sudah benar sebelum disimpan. Saat ini skor tidak bisa di-edit ulang.
-
+          h6.text-primary.mb-2 4. Cara Kerja Sistem
+          ul
+            li Set disimpan satu per satu (Best of 3)
+            li Tim yang menang <b>2 set</b> otomatis menang match
+            li Klasemen dihitung dari <b>match & set</b>, bukan poin reli
+            
           .modal-footer
             button.btn.btn-secondary(data-bs-dismiss='modal') Tutup
 
@@ -1017,6 +1024,35 @@ block content
 
         if (Number.isNaN(home) || Number.isNaN(away)) { alert('Isi skor yang valid'); return; }
         if (home === away) { alert('Skor tidak boleh seri'); return; }
+        
+        // batas maksimal
+        if (home > 7 || away > 7) {
+          alert('Skor maksimal adalah 7');
+          return;
+        }
+
+        const max = Math.max(home, away);
+        const min = Math.min(home, away);
+        const diff = max - min;
+
+        // menang di 6 harus selisih 2
+        if (max === 6 && diff !== 2) {
+          alert('Skor 6 harus selisih 2 (contoh: 6–4)');
+          return;
+        }
+
+        // menang di 7:
+        // 7–5 (diff 2) atau 7–6 (tie-break)
+        if (max === 7 && !(diff === 1 || diff === 2)) {
+          alert('Skor 7 hanya boleh 7–5 atau 7–6');
+          return;
+        }
+
+        // tidak boleh skor aneh di bawah 6
+        if (max < 6) {
+          alert('Set belum selesai');
+          return;
+        }
 
         const url = mode === 'individual'
           ? `/subadmin/matches/${matchId}/submit-individual-score`

@@ -19,19 +19,33 @@ async function hasPadelIndividualMatch(sportId) {
 
 // tambahin helper di atas fungsi yang ada di file
 function isValidPadelSet(homeScore, awayScore) {
-  // must be integer >= 0 and not equal
+  // harus integer
   if (!Number.isInteger(homeScore) || !Number.isInteger(awayScore)) return false;
+
+  // tidak boleh negatif
   if (homeScore < 0 || awayScore < 0) return false;
+
+  // tidak boleh seri
   if (homeScore === awayScore) return false;
 
-  const winner = Math.max(homeScore, awayScore);
-  const loser = Math.min(homeScore, awayScore);
+  const max = Math.max(homeScore, awayScore);
+  const min = Math.min(homeScore, awayScore);
+  const diff = max - min;
 
-  // normal win: winner >= 6 and diff >= 2
-  if (winner >= 6 && (winner - loser) >= 2) return true;
+  // skor maksimal 7
+  if (max > 7) return false;
 
-  // tie-break set: 7-6 only allowed (we don't model tie-break points here)
-  if (winner === 7 && loser === 6) return true;
+  // menang di 6 harus selisih 2 (6–4, 6–3, dst)
+  if (max === 6) {
+    return diff === 2;
+  }
+
+  // menang di 7:
+  // 7–5 (lanjutan dari 6–5)
+  // 7–6 (tie-break)
+  if (max === 7) {
+    return diff === 1 || diff === 2;
+  }
 
   return false;
 }
