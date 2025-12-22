@@ -491,8 +491,15 @@ block content
             h2 Informasi Seller
             p Isi formulir di bawah untuk membuat akun seller baru
         
-        form(method="post" action="/admin/sellers/create" id="createSellerForm")
-          
+        - const isEdit = mode === 'edit'
+
+        form(
+          method="post"
+          action=isEdit 
+            ? `/admin/sellers/${sellerData.id}/edit`
+            : "/admin/sellers/create"
+        )
+        
           // Personal Information Section
           .form-section
             h3.section-title

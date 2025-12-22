@@ -882,11 +882,12 @@ exports.renderEditSeller = async (req, res) => {
     // semua sport untuk ditampilkan dalam checkbox
     const [sports] = await db.query("SELECT id, name FROM sports ORDER BY name");
 
-    return res.render("admin/edit_seller", {
+    return res.render("admin/create_seller", {
       title: "Edit Seller - SPORTER",
-      seller: sub,
+      sellerData: sub,
       sports,
-      selectedIds
+      selectedIds,
+      mode: "edit"
     });
   } catch (err) {
     console.error("ERROR renderEditSeller:", err);
