@@ -791,7 +791,7 @@ block content
       .stat-card
         .stat-icon.stat-icon-tickets
           i.bi.bi-ticket-perforated
-        .stat-value= stats.ticketOrders || 0
+        .stat-value= stats.ticketsSold || 0
         .stat-label Order Tiket
 
     .content-grid
@@ -844,32 +844,21 @@ block content
                           if match.ticket_available === 0
                             span.ticket-badge.ticket-sold-out
                               i.bi.bi-x-circle.me-1
-                              | Sold out
-                          else if !match.can_buy
-                            span.ticket-badge.ticket-disabled
-                              i.bi.bi-slash-circle.me-1
-                              | Disabled
+                              | Tidak Tersedia
                           else
                             span.ticket-badge.ticket-available
                               i.bi.bi-check-circle.me-1
                               = match.ticket_available + " tersedia"
-                        td
-                          if match.can_buy
-                            .quick-buy-form
-                              input.quantity-input.form-control.form-control-sm(
-                                type="number" 
-                                name="quantity" 
-                                min="1" 
-                                max=match.ticket_available 
-                                value="1"
+                          td
+                            if match.buyer_user_id
+                              a.btn.btn-sm.btn-outline-primary(
+                                href=`/subadmin/ticket-orders/${match.buyer_user_id}/${match.sport_id}`
                               )
-                              button.buy-btn.btn-sm(type="button" onclick=`buyTickets('${match.id}', this.previousElementSibling.value)`)
-                                i.bi.bi-cart3.me-1
-                                | Beli
-                          else
-                            a.btn.btn-sm.btn-outline-secondary(href=`/subadmin/matches/${match.id}/edit`)
-                              i.bi.bi-pencil.me-1
-                              | Edit
+                                i.bi.bi-receipt.me-1
+                                | Lihat Order
+                            else
+                              span.text-muted Belum ada order
+
                   else
                     tr
                       td(colspan="5")
