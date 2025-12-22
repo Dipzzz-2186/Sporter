@@ -9,9 +9,9 @@ block content
     }
     .profile-card {
       background: #fff;
-      border: 2px solid #e8edf2;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,.06);
+      border: 1px solid #e8edf2;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
       overflow: hidden;
     }
     .profile-header {
@@ -32,38 +32,48 @@ block content
       background: radial-gradient(circle, rgba(0,149,255,.18) 0%, transparent 70%);
     }
     .avatar {
-      width: 84px;
-      height: 84px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.12);
-      border: 2px solid rgba(255,255,255,.18);
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.1);
+      border: 2px solid rgba(255,255,255,.15);
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size: 2rem;
-      font-weight: 800;
+      font-size: 1.8rem;
+      font-weight: 700;
       letter-spacing: 1px;
       flex-shrink: 0;
     }
     .profile-name {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.3rem;
+      font-size: 2rem;
       letter-spacing: 1px;
       margin: 0;
-      line-height: 1.1;
+      line-height: 1.2;
     }
     .profile-sub {
-      margin: .25rem 0 0;
-      opacity: .9;
+      margin: .4rem 0 0;
+      opacity: .85;
+      font-size: .9rem;
     }
-    .profile-body { padding: 2rem; }
+    .profile-sub b {
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .profile-body { 
+      padding: 2rem; 
+    }
     .info-row {
       display:flex;
+      align-items: center;
       gap:1rem;
       padding: 1rem 0;
       border-bottom: 1px solid #f0f4f8;
     }
-    .info-row:last-child { border-bottom:none; }
+    .info-row:last-child { 
+      border-bottom:none;
+    }
     .info-ico {
       width: 44px;
       height: 44px;
@@ -76,33 +86,111 @@ block content
       color: #0095FF;
       flex-shrink:0;
     }
-    .info-title { font-weight: 800; color:#0B1F3F; margin:0; }
-    .info-val { margin:0; color:#5a6c7d; }
-    .action-grid { display:grid; gap:.75rem; grid-template-columns: 1fr; }
+    .info-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .info-title { 
+      font-weight: 600; 
+      color:#0B1F3F; 
+      margin:0 0 .2rem 0;
+      font-size: .85rem;
+    }
+    .info-val { 
+      margin:0; 
+      color:#5a6c7d;
+      font-size: .95rem;
+    }
+    .section-title {
+      font-weight: 700;
+      color: #0B1F3F;
+      margin: 0 0 1rem 0;
+      font-size: 1rem;
+    }
+    .action-grid { 
+      display:flex;
+      flex-direction: column;
+      gap:.75rem;
+    }
     .action-btn {
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:1rem;
-      padding: 1rem 1.1rem;
-      border-radius: 14px;
+      padding: .95rem 1.1rem;
+      border-radius: 12px;
       text-decoration:none;
-      border: 2px solid #e8edf2;
-      background:#f8f9fa;
+      border: 1px solid #e8edf2;
+      background:#fff;
       color:#5a6c7d;
-      font-weight:700;
-      transition: all .25s ease;
+      font-weight:600;
+      transition: all .2s ease;
+      font-size: .9rem;
     }
     .action-btn:hover {
-      background:#fff;
       border-color:#0095FF;
       color:#0095FF;
-      transform: translateX(4px);
+      transform: translateX(3px);
     }
-    .action-left { display:flex; align-items:center; gap:.75rem; }
-    .action-left i { font-size: 1.15rem; width: 22px; text-align:center; }
-    @media (min-width: 992px) {
-      .action-grid { grid-template-columns: 1fr; }
+    .action-left { 
+      display:flex; 
+      align-items:center; 
+      gap:.75rem; 
+    }
+    .action-left i { 
+      font-size: 1.1rem; 
+      width: 20px; 
+      text-align:center; 
+    }
+    .action-btn .bi-chevron-right {
+      font-size: .9rem;
+      opacity: .5;
+    }
+    .action-btn:hover .bi-chevron-right {
+      opacity: .8;
+    }
+    
+    .alert {
+      border-radius: 12px;
+      border: none;
+      padding: .9rem 1.1rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+      font-size: .9rem;
+    }
+    .alert-danger {
+      background: #fff5f5;
+      color: #c53030;
+      border-left: 3px solid #fc8181;
+    }
+    .alert-success {
+      background: #f0fff4;
+      color: #276749;
+      border-left: 3px solid #68d391;
+    }
+
+    @media (max-width: 991px) {
+      .profile-page {
+        padding: 2rem 0;
+      }
+    }
+    
+    @media (max-width: 575px) {
+      .profile-page {
+        padding: 1.5rem 0;
+      }
+      .profile-header,
+      .profile-body {
+        padding: 1.5rem;
+      }
+      .avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 1.6rem;
+      }
+      .profile-name {
+        font-size: 1.8rem;
+      }
     }
 
   .profile-page
@@ -130,31 +218,30 @@ block content
               .info-row
                 .info-ico
                   i.bi.bi-envelope-fill
-                div
+                .info-content
                   p.info-title Email
                   p.info-val= (user && user.email) ? user.email : '-'
 
               .info-row
                 .info-ico
                   i.bi.bi-shield-lock-fill
-                div
+                .info-content
                   p.info-title Status Login
                   p.info-val Aktif (session)
 
               .info-row
                 .info-ico
                   i.bi.bi-clock-history
-                div
+                .info-content
                   p.info-title Terakhir Update
                   p.info-val= (user && user.updated_at) ? user.updated_at : '—'
 
         .col-lg-4
           .profile-card
             .profile-body
-              h5.fw-bold.mb-3 Aksi Cepat
+              h5.section-title Aksi Cepat
 
               .action-grid
-                //- kalau lo udah punya halaman ganti password, arahin ke situ
                 a.action-btn(href="/profile/password")
                   span.action-left
                     i.bi.bi-key-fill
