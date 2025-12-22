@@ -1,43 +1,161 @@
 extends ../layout/main
 
 block content
-  .container.mt-4
-    h3 Detail Pesanan ##{order.id}
+  .container.py-5
+    // Header Section
+    .row.justify-content-center
+      .col-lg-8
+        // Breadcrumb
+        nav(aria-label="breadcrumb")
+          ol.breadcrumb
+            li.breadcrumb-item
+              a(href="/orders") Pesanan Saya
+            li.breadcrumb-item.active(aria-current="page") Detail Pesanan
 
-    form(method="POST" action=`/orders/${order.id}/holders`)
-      // ===== INPUT NAMA PEMEGANG (PER TIKET) =====
-      each t, i in tickets
-        .card.mb-3
-          .card-body
-            label.form-label
-              | Nama Pemegang Tiket #{i + 1}
+        // Page Title
+        .d-flex.align-items-center.justify-content-between.mb-4
+          div
+            h2.mb-1.fw-bold Detail Pesanan
+            p.text-muted.mb-0
+              | Order ID: 
+              span.badge.bg-light.text-dark.fs-6 ##{order.id}
+          .text-end
+            small.text-muted #{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
 
-            input.form-control(
-              type="text"
-              name=`names[${i}][name]`
-              value=t.holder_name || ''
-              required
-            )
+        // Main Form
+        form(method="POST" action=`/orders/${order.id}/holders`)
+          // Ticket Holders Section
+          .card.shadow-sm.border-0.mb-4
+            .card-header.bg-primary.text-white.py-3
+              h5.mb-0
+                i.bi.bi-person-badge.me-2
+                | Informasi Pemegang Tiket
 
-            input(
-              type="hidden"
-              name=`names[${i}][ticket_id]`
-              value=t.id
-            )
+            .card-body.p-4
+              .row.g-3
+                each t, i in tickets
+                  .col-12
+                    .ticket-holder-item.p-3.rounded(style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-left: 4px solid #0d6efd;")
+                      .d-flex.align-items-center.mb-3
+                        .ticket-number.me-3
+                          .bg-primary.text-white.rounded-circle.d-flex.align-items-center.justify-content-center(
+                            style="width: 40px; height: 40px; font-weight: bold;"
+                          ) #{i + 1}
+                        div
+                          label.form-label.mb-0.fw-semibold(for=`ticket-${i}`)
+                            | Tiket #{i + 1}
+                          small.d-block.text-muted ID: #{t.id}
 
-      // ===== QR CODE (SATU KALI, DI BAWAH) =====
-      .text-center.mt-4
-        hr
-        p.text-success.fw-bold.mb-2
-          i.bi.bi-check-circle-fill.me-1
-          | Tiket Valid
+                      input.form-control.form-control-lg.shadow-sm(
+                        type="text"
+                        id=`ticket-${i}`
+                        name=`names[${i}][name]`
+                        value=t.holder_name || ''
+                        placeholder="Masukkan nama lengkap pemegang tiket"
+                        required
+                        style="border: 2px solid #dee2e6;"
+                      )
 
-        img(
-          src=qrDemo
-          width="180"
-          alt="QR Ticket"
-        )
+                      input(
+                        type="hidden"
+                        name=`names[${i}][ticket_id]`
+                        value=t.id
+                      )
 
-      button.btn.btn-primary.mt-4.w-100(type="submit")
-        i.bi.bi-ticket-perforated.me-2
-        | Simpan & Konfirmasi Tiket
+          // QR Code Section
+          .card.shadow-sm.border-0.mb-4
+            .card-body.p-5.text-center
+              .qr-container.d-inline-block
+                // Status Badge
+                .alert.alert-success.d-inline-flex.align-items-center.mb-4.shadow-sm(
+                  style="border-radius: 50px; padding: 12px 24px;"
+                )
+                  i.bi.bi-check-circle-fill.me-2.fs-5
+                  span.fw-semibold Tiket Valid & Aktif
+
+                // QR Code
+                .qr-box.p-4.bg-white.rounded.shadow-sm.d-inline-block.mb-3(
+                  style="border: 3px dashed #0d6efd;"
+                )
+                  img(
+                    src=qrDemo
+                    width="200"
+                    height="200"
+                    alt="QR Code Tiket"
+                    class="img-fluid"
+                  )
+
+                // QR Info
+                .mt-3
+                  p.text-muted.mb-0.small
+                    i.bi.bi-info-circle.me-1
+                    | Tunjukkan QR code ini saat memasuki venue
+                  p.text-muted.mb-0.small Satu QR code untuk semua tiket dalam pesanan ini
+
+          // Action Buttons
+          .row.g-3
+            .col-md-6
+              button.btn.btn-outline-secondary.btn-lg.w-100(
+                type="button"
+                onclick="window.history.back()"
+              )
+                i.bi.bi-arrow-left.me-2
+                | Kembali
+
+            .col-md-6
+              button.btn.btn-primary.btn-lg.w-100.shadow-sm(
+                type="submit"
+                style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);"
+              )
+                i.bi.bi-check-circle.me-2
+                | Simpan & Konfirmasi Tiket
+
+          // Help Text
+          .alert.alert-info.mt-4.border-0.shadow-sm(style="background: #e7f3ff;")
+            .d-flex.align-items-start
+              i.bi.bi-lightbulb.me-3.fs-4.text-info
+              div
+                h6.mb-2.fw-semibold Tips:
+                ul.mb-0.ps-3
+                  li.mb-1 Pastikan nama pemegang tiket sesuai dengan identitas
+                  li.mb-1 QR code akan dikirim ke email Anda setelah konfirmasi
+                  li Screenshot atau simpan QR code untuk akses cepat
+
+    // Additional CSS
+    style.
+      .ticket-holder-item {
+        transition: all 0.3s ease;
+      }
+      .ticket-holder-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+      .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+      }
+      .qr-box {
+        transition: all 0.3s ease;
+      }
+      .qr-box:hover {
+        transform: scale(1.05);
+      }
+      .btn-primary {
+        transition: all 0.3s ease;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4) !important;
+      }
+      .card {
+        transition: all 0.3s ease;
+      }
+      @media (max-width: 768px) {
+        .container {
+          padding-left: 15px;
+          padding-right: 15px;
+        }
+        .card-body {
+          padding: 1.5rem !important;
+        }
+      }
