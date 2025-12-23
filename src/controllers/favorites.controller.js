@@ -13,40 +13,45 @@ function getCurrentUser(req, res) {
 exports.toggleFavorite = async (req, res) => {
   try {
     const currentUser = getCurrentUser(req, res);
-    if (!currentUser) {
-      return res.status(401).json({ ok: false });
-    }
+    if (!currentUser) return res.status(401).json({ ok: false });
 
     const userId = currentUser.id;
     const { entityType, entityId } = req.body;
 
-    if (!entityType || !entityId) {
+    const id = Number(entityId);
+    if (!entityType || !Number.isFinite(id) || id <= 0) {
       return res.status(400).json({ ok: false, message: 'Invalid payload' });
     }
 
     const [exist] = await db.query(
       'SELECT id FROM user_favorites WHERE user_id=? AND entity_type=? AND entity_id=? LIMIT 1',
-      [userId, entityType, entityId]
+      [userId, entityType, id]
     );
 
     if (exist.length) {
       await db.query(
         'DELETE FROM user_favorites WHERE user_id=? AND entity_type=? AND entity_id=?',
-        [userId, entityType, entityId]
+        [userId, entityType, id]
       );
       return res.json({ ok: true, favorited: false });
-    } else {
-      await db.query(
-        'INSERT INTO user_favorites (user_id, entity_type, entity_id) VALUES (?, ?, ?)',
-        [userId, entityType, entityId]
-      );
-      return res.json({ ok: true, favorited: true });
     }
+
+    // ✅ tambahin timestamp biar aman
+    await db.query(
+      `INSERT INTO user_favorites (user_id, entity_type, entity_id)
+      VALUES (?, ?, ?)`,
+      [userId, entityType, id]
+    );
+
+
+
+    return res.json({ ok: true, favorited: true });
   } catch (err) {
-    console.error('toggleFavorite error:', err);
-    return res.status(500).json({ ok: false });
+    console.error('toggleFavorite error:', err.message, err.sqlMessage);
+    return res.status(500).json({ ok: false, message: err.sqlMessage || 'Server error' });
   }
 };
+
 
 // ✅ HALAMAN FAVORITES
 exports.myFavoritesPage = async (req, res) => {
@@ -91,11 +96,14 @@ exports.myFavoritesPage = async (req, res) => {
 
     return res.render('favorites/index', {
       title: 'Disimpan (Favorites)',
-      items: formatted
+      events: formatted
     });
   } catch (err) {
-    console.error('myFavoritesPage error:', err); // <— ini bakal ngasih detail kalau masih error
-    return res.status(500).send('Server error');
+  console.error('myFavoritesPage error:', err);
+  return res.render('favorites/index', {
+    title: 'Disimpan (Favorites)',
+    events: []
+  });
   }
 };
 
