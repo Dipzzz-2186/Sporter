@@ -535,7 +535,12 @@ block content
                     .d-flex.align-items-center.gap-3
                       .member-avatar
                         = m.name.charAt(0).toUpperCase()
-                      .member-name= m.name
+                      a.member-name.text-decoration-none(
+                        href=`/athletes/${m.slug}`
+                        style="color: inherit;"
+                      )
+                        = m.name
+                        i.bi.bi-box-arrow-up-right.text-muted.ms-2(style="font-size:.85rem;")
                   td(data-label="Posisi")
                     if m.position
                       span.member-position= m.position

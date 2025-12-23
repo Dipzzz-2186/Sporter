@@ -1677,21 +1677,20 @@ exports.renderTeamMembers = async (req, res) => {
 
     const team = await assertCanAccessTeam(req, teamId);
 
-    const [members] = await db.query(
-      `SELECT
-          tm.id,
-          tm.athlete_id,
-          a.name,
-          tm.position,
-          tm.number,
-          tm.birth_date,
-          tm.created_at
+    const [members] = await db.query(`
+      SELECT
+        tm.athlete_id,
+        a.name,
+        a.slug,
+        tm.position,
+        tm.number,
+        tm.created_at
       FROM team_members tm
       JOIN athletes a ON a.id = tm.athlete_id
       WHERE tm.team_id = ?
-      ORDER BY tm.created_at DESC`,
-      [teamId]
-    );
+      ORDER BY tm.created_at DESC
+    `, [teamId]);
+
 
 
     return res.render('subadmin/team_members', {

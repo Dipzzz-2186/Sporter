@@ -40,7 +40,7 @@ exports.updateAthlete = async (req, res) => {
 
     // redirect balik ke halaman athlete show (pakai slug lama / baru)
     const slug = old.slug; // kalau kamu punya field slug
-    if (slug) return res.redirect(`/athletes/${slug}`);
+    if (slug) return res.redirect(`/athletes/${slug}?edit=1`);
     return res.redirect('back');
   } catch (err) {
     console.error(err);

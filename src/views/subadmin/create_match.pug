@@ -500,6 +500,9 @@ block content
                                 data-is-individual=(ind ? '1' : '0')
                               )= t.name
 
+                        button.btn.btn-outline-primary(type="button" id="btnAddTeamHome" title="Tambah Tim")
+                          i.bi.bi-plus-lg
+
                       small.form-text
                         i.bi.bi-info-circle
                         | Tim yang bermain di kandang
@@ -522,6 +525,9 @@ block content
                                 data-sport=t.sport_id
                                 data-is-individual=(ind ? '1' : '0')
                               )= t.name
+
+                        button.btn.btn-outline-primary(type="button" id="btnAddTeamAway" title="Tambah Tim")
+                          i.bi.bi-plus-lg
 
                       small.form-text
                         i.bi.bi-info-circle
@@ -748,6 +754,9 @@ block content
       var sellNo = document.getElementById('sellTicketNo');
       var ticketBox = document.getElementById('ticketOptions');
 
+      var btnAddTeamHome = document.getElementById('btnAddTeamHome');
+      var btnAddTeamAway = document.getElementById('btnAddTeamAway');
+
       // ========================================
       // INITIALIZE ATHLETES DATA
       // ========================================
@@ -778,6 +787,24 @@ block content
         if (!select || !select.value) return '';
         return select.options[select.selectedIndex].textContent.trim();
       }
+      function goCreateTeam() {
+        // biar enak: bawa sport_id + mode biar form create team bisa auto kepilih
+        var sportId = sportSelect && sportSelect.value ? sportSelect.value : '';
+        var mode = (modeInd && modeInd.checked) ? 'individual' : 'team';
+
+        var url = '/subadmin/teams/create';
+        var qs = [];
+
+        if (sportId) qs.push('sport_id=' + encodeURIComponent(sportId));
+        qs.push('mode=' + encodeURIComponent(mode));
+
+        if (qs.length) url += '?' + qs.join('&');
+
+        window.location.href = url;
+      }
+
+      if (btnAddTeamHome) btnAddTeamHome.addEventListener('click', goCreateTeam);
+      if (btnAddTeamAway) btnAddTeamAway.addEventListener('click', goCreateTeam);
 
       // ========================================
       // ALERT AUTO DISMISS
