@@ -8,6 +8,7 @@ block content
   - const mw = (stats && stats.match_won) ? stats.match_won : 0;
   - const ml = (stats && stats.match_lost) ? stats.match_lost : 0;
   - const winRate = stats && stats.match_played > 0 ? ((stats.match_won / stats.match_played) * 100).toFixed(1) : 0;
+  
   style.
     .athlete-page { 
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
@@ -21,6 +22,7 @@ block content
       position: relative;
       overflow: hidden;
       padding: 3rem 0 4rem;
+      margin-bottom: -3rem;
     }
     .hero-wrapper::before {
       content: '';
@@ -148,7 +150,7 @@ block content
       font-size: 1.1rem;
     }
     
-    /* Quick Stats Cards */
+    /* Quick Stats Cards - FIXED LAYOUT */
     .quick-stats {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -182,10 +184,13 @@ block content
       font-size: 0.85rem;
       opacity: 0.85;
       font-weight: 500;
+      white-space: nowrap;
     }
     .quick-stat-value {
       font-weight: 700;
       font-size: 1rem;
+      text-align: right;
+      min-width: 60px;
     }
     
     /* Edit Button */
@@ -205,10 +210,10 @@ block content
       transform: translateY(-2px);
     }
     
-    /* Stats Grid */
+    /* Stats Grid - FIXED ALIGNMENT */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 1.5rem;
       margin-top: -3rem;
       position: relative;
@@ -225,6 +230,10 @@ block content
       text-align: center;
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     .stat-card::before {
       content: '';
@@ -258,29 +267,41 @@ block content
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 0.5rem;
+      text-align: center;
+      width: 100%;
     }
     .stat-value {
       font-weight: 900;
       font-size: 2.2rem;
       color: #0B1F3F;
       line-height: 1;
+      margin-bottom: 0.25rem;
+      text-align: center;
     }
     .stat-subtext {
       font-size: 0.75rem;
       color: #6c757d;
       margin-top: 0.5rem;
       font-weight: 500;
+      text-align: center;
+      width: 100%;
     }
     
-    /* Content Cards */
+    /* Content Cards - FIXED GRID */
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-top: 4rem;
+    }
     .content-card {
       background: #fff;
       border-radius: 20px;
       padding: 2rem;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
       border: 1px solid #f0f0f0;
-      margin-bottom: 2rem;
       transition: all 0.3s ease;
+      height: 100%;
     }
     .content-card:hover {
       box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
@@ -326,6 +347,10 @@ block content
       letter-spacing: 0.5px;
       font-weight: 700;
       white-space: nowrap;
+      text-align: left;
+    }
+    .custom-table thead th.text-center {
+      text-align: center;
     }
     .custom-table thead th:first-child {
       border-top-left-radius: 12px;
@@ -339,6 +364,9 @@ block content
       vertical-align: middle;
       color: #495057;
       font-size: 0.9rem;
+    }
+    .custom-table tbody td.text-center {
+      text-align: center;
     }
     .custom-table tbody tr:hover {
       background: #f8f9fa;
@@ -372,6 +400,11 @@ block content
       margin-bottom: 0;
     }
     
+    /* Points History Card */
+    .points-history-card {
+      grid-column: span 2;
+    }
+    
     /* Modal Fixes */
     .modal-content-fixed {
       border-radius: 20px;
@@ -398,24 +431,96 @@ block content
     }
     
     /* Responsive */
+    @media (max-width: 1200px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+    }
+    
     @media (max-width: 991px) {
-      .hero-wrapper { padding: 2rem 0 3rem; }
-      .athlete-name { font-size: 2rem; }
-      .athlete-avatar, .avatar-placeholder { width: 160px; height: 160px; }
-      .rank-badge { width: 80px; height: 80px; }
-      .rank-number { font-size: 2.2rem; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); margin-top: -2rem; }
-      .stat-value { font-size: 1.8rem; }
-      .quick-stats { grid-template-columns: 1fr; }
+      .hero-wrapper { 
+        padding: 2rem 0 3rem; 
+        margin-bottom: -2rem;
+      }
+      .athlete-name { 
+        font-size: 2rem; 
+      }
+      .athlete-avatar, .avatar-placeholder { 
+        width: 160px; 
+        height: 160px; 
+      }
+      .rank-badge { 
+        width: 80px; 
+        height: 80px; 
+      }
+      .rank-number { 
+        font-size: 2.2rem; 
+      }
+      .stats-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+        margin-top: -2rem; 
+        padding: 0 1rem;
+      }
+      .stat-value { 
+        font-size: 1.8rem; 
+      }
+      .quick-stats { 
+        grid-template-columns: 1fr; 
+      }
+      .content-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+      .points-history-card {
+        grid-column: span 1;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .athlete-name { 
+        font-size: 1.6rem; 
+      }
+      .hero-content .row {
+        flex-direction: column;
+      }
+      .hero-content .col-lg-4 {
+        margin-top: 2rem;
+        text-align: center !important;
+      }
+      .stats-grid { 
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+      .stat-card {
+        padding: 1.5rem 1rem;
+      }
+      .stat-value {
+        font-size: 1.5rem;
+      }
     }
     
     @media (max-width: 575px) {
-      .athlete-name { font-size: 1.6rem; }
-      .stats-grid { grid-template-columns: 1fr; padding: 0 1rem; }
-      .content-card { padding: 1.5rem; }
-      .card-title { font-size: 1.25rem; }
-      .modal-body-scrollable { padding: 1.5rem; }
-      .modal-footer-sticky { padding: 1rem 1.5rem; }
+      .stats-grid { 
+        grid-template-columns: 1fr; 
+      }
+      .content-card { 
+        padding: 1.5rem; 
+      }
+      .card-title { 
+        font-size: 1.25rem; 
+      }
+      .modal-body-scrollable { 
+        padding: 1.5rem; 
+      }
+      .modal-footer-sticky { 
+        padding: 1rem 1.5rem; 
+      }
+      .quick-stat-label,
+      .quick-stat-value {
+        font-size: 0.9rem;
+      }
     }
 
   .athlete-page
@@ -488,14 +593,14 @@ block content
                       | Best Rank
                     span.quick-stat-value= athlete.best_rank || '-'
             
-            .col-lg-4.text-lg-end.text-center
+            .col-lg-4.text-center.text-lg-end
               if photo
                 img.athlete-avatar(src=photo, alt=athlete.name)
               else
-                .avatar-placeholder.mx-auto.mx-lg-0.ms-lg-auto
+                .avatar-placeholder.mx-auto
                   i.bi.bi-person-circle(style='font-size: 6rem; opacity: 0.5; color: rgba(255,255,255,0.6);')
     
-    //- Stats Grid
+    //- Stats Grid - FIXED ALIGNMENT
     .container
       .stats-grid
         .stat-card
@@ -523,63 +628,63 @@ block content
           .stat-label Effectiveness
           .stat-value #{eff}%
     
-    //- Content Section
+    //- Content Section - FIXED GRID LAYOUT
     .container.mt-5.pb-5
-      .row.g-4
-        .col-lg-6
-          .content-card
-            .card-header-custom
-              .card-icon
-                i.bi.bi-person-lines-fill
-              h2.card-title Player Profile
-            
-            if athlete.bio
-              p.bio-text= athlete.bio
-            else
-              p.bio-text.text-muted.fst-italic No biography available yet.
-            
-            hr.my-4
-            
-            .d-flex.flex-wrap.gap-2
-              .info-badge
-                i.bi.bi-trophy
-                span #{athlete.titles || 0} Titles
-              .info-badge
-                i.bi.bi-award
-                span #{athlete.race || 'N/A'}
+      .content-grid
+        //- Player Profile Card
+        .content-card
+          .card-header-custom
+            .card-icon
+              i.bi.bi-person-lines-fill
+            h2.card-title Player Profile
+          
+          if athlete.bio
+            p.bio-text= athlete.bio
+          else
+            p.bio-text.text-muted.fst-italic No biography available yet.
+          
+          hr.my-4
+          
+          .d-flex.flex-wrap.gap-2
+            .info-badge
+              i.bi.bi-trophy
+              span #{athlete.titles || 0} Titles
+            .info-badge
+              i.bi.bi-award
+              span #{athlete.race || 'N/A'}
         
-        .col-lg-6
-          .content-card
-            .card-header-custom
-              .card-icon
-                i.bi.bi-bar-chart-fill
-              h2.card-title Points Breakdown
-            
-            if pointsByTournament && pointsByTournament.length
-              .table-responsive
-                table.custom-table
-                  thead
+        //- Points Breakdown Card
+        .content-card
+          .card-header-custom
+            .card-icon
+              i.bi.bi-bar-chart-fill
+            h2.card-title Points Breakdown
+          
+          if pointsByTournament && pointsByTournament.length
+            .table-responsive
+              table.custom-table
+                thead
+                  tr
+                    th Tournament
+                    th Category
+                    th.text-center Total Points
+                    th.text-center Last Event
+                tbody
+                  each r in pointsByTournament
                     tr
-                      th Tournament
-                      th Category
-                      th.text-center Total Points
-                      th.text-center Last Event
-                  tbody
-                    each r in pointsByTournament
-                      tr
-                        td
-                          strong= r.tournament
-                        td
-                          span.badge.bg-light.text-dark= r.category || '-'
-                        td.text-center
-                          span.fw-bold.text-primary= r.total_points
-                        td.text-center.text-muted.small
-                          = r.last_event ? new Date(r.last_event).toLocaleDateString('id-ID') : '-'
-            else
-              p.text-muted.mb-0.fst-italic No tournament points data available.
+                      td
+                        strong= r.tournament
+                      td
+                        span.badge.bg-light.text-dark= r.category || '-'
+                      td.text-center
+                        span.fw-bold.text-primary= r.total_points
+                      td.text-center.text-muted.small
+                        = r.last_event ? new Date(r.last_event).toLocaleDateString('id-ID') : '-'
+          else
+            p.text-muted.mb-0.fst-italic No tournament points data available.
       
-      //- Points History
-      .content-card.mt-4
+      //- Points History Card - FULL WIDTH
+      .content-card.points-history-card.mt-4
         .card-header-custom
           .card-icon
             i.bi.bi-clock-history
@@ -611,7 +716,7 @@ block content
         else
           p.text-muted.mb-0.fst-italic No points history available.
 
-    //- Edit Modal - FIXED VERSION
+    //- Edit Modal
     if isSubadmin
       .modal.fade#editAthleteModal(tabindex="-1" aria-hidden="true")
         .modal-dialog.modal-lg
