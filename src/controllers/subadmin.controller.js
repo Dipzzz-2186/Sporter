@@ -848,7 +848,6 @@ exports.createMatch = async (req, res) => {
   }
 };
 
-
 exports.renderEditMatch = async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -857,46 +856,46 @@ exports.renderEditMatch = async (req, res) => {
       return res.redirect("/subadmin/matches");
     }
 
-    const [[match]] = await db.query(`SELECT * FROM matches WHERE id = ? LIMIT 1`, [id]);
+    const [[match]] = await db.query(
+      'SELECT * FROM matches WHERE id = ? LIMIT 1',
+      [id]
+    );
     if (!match) {
       req.flash("error", "Pertandingan tidak ditemukan.");
       return res.redirect("/subadmin/matches");
     }
 
-    // cek akses sport
-    if (req.session.user.role === "subadmin") {
-      const [rows] = await db.query(
-        "SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1",
-        [req.session.user.id, match.sport_id]
-      );
-      if (!rows.length) {
-        req.flash("error", "Akses ditolak untuk pertandingan ini.");
-        return res.redirect("/subadmin/matches");
-      }
+    // 🔑 FORMAT DATETIME DI CONTROLLER (BENER)
+    function toDatetimeLocal(dt) {
+      if (!dt) return '';
+      const d = new Date(dt);
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
     }
 
+    match.start_local = toDatetimeLocal(match.start_time);
+    match.end_local = toDatetimeLocal(match.end_time);
+
     const sports = await loadSportsList(req.session.user);
+    const [teams] = await db.query(
+      'SELECT id, name FROM teams WHERE sport_id = ? ORDER BY name',
+      [match.sport_id]
+    );
+    const [venues] = await db.query(
+      'SELECT id, name FROM venues ORDER BY name'
+    );
 
-    const hasIsIndividual = await columnExists("teams", "is_individual");
-    const sqlTeams = hasIsIndividual
-      ? "SELECT id, name, sport_id, is_individual FROM teams WHERE sport_id = ? ORDER BY name"
-      : "SELECT id, name, sport_id FROM teams WHERE sport_id = ? ORDER BY name";
-    const [teams] = await db.query(sqlTeams, [match.sport_id]);
-
-    const [venues] = await db.query("SELECT id, name FROM venues ORDER BY name");
-
-    return res.render("subadmin/edit_match", {
-      title: "Edit Pertandingan",
+    return res.render('subadmin/edit_match', {
+      title: 'Edit Pertandingan',
       match,
       sports,
       teams,
-      venues,
-      hasIsIndividual,
+      venues
     });
   } catch (err) {
-    console.error("renderEditMatch error", err);
-    req.flash("error", "Gagal memuat form edit pertandingan.");
-    return res.redirect("/subadmin/matches");
+    console.error('renderEditMatch error', err);
+    req.flash('error', 'Gagal memuat form edit pertandingan.');
+    return res.redirect('/subadmin/matches');
   }
 };
 

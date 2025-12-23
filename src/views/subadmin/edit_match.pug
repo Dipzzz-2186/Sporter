@@ -528,13 +528,6 @@ block content
                 i.bi.bi-info-circle
                 | Buat judul yang jelas dan informatif
             
-            - let startVal = '';
-            - let endVal = '';
-            - try {
-            -   if (m.start_time) startVal = new Date(m.start_time).toISOString().slice(0,16);
-            -   if (m.end_time) endVal = new Date(m.end_time).toISOString().slice(0,16);
-            - } catch (e) {}
-            
             .row.g-3
               .col-md-6
                 .mb-3
@@ -546,7 +539,7 @@ block content
                     type="datetime-local"
                     name="start_time"
                     required
-                    value=startVal
+                    value=m.start_local
                   )
                   small.form-text
                     i.bi.bi-info-circle
@@ -561,7 +554,7 @@ block content
                   input.form-control#end_time(
                     type="datetime-local"
                     name="end_time"
-                    value=endVal
+                    value=m.end_local
                   )
                   small.form-text
                     i.bi.bi-info-circle
