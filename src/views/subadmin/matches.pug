@@ -834,7 +834,6 @@ block content
                           else
                             span.text-muted -
 
-
                       
                       td
                         - const startStr = m.start_time ? new Date(m.start_time).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
@@ -885,11 +884,13 @@ block content
                                   | BO3 Selesai
 
                               else if Number(m.is_started) === 1
+                                //- FIX: Participants data should be formatted as "Nama1 vs Nama2"
+                                - const participantNames = m.participants_names ? m.participants_names.split(',').join(' vs ') : '';
                                 button.btn.btn-sm.btn-primary(
                                   type="button"
                                   data-match-id=m.id
                                   data-mode=(m.match_mode || '').toLowerCase()
-                                  data-participants=(m.participants_names || '')
+                                  data-participants=participantNames
                                   data-home=(m.home_team_name || '')
                                   data-away=(m.away_team_name || '')
                                   onclick="openScoreModal(this)"
@@ -940,36 +941,29 @@ block content
           .modal-header
             h5.modal-title Input Set Padel
             button.btn-close(type='button', data-bs-dismiss='modal')
-
           .modal-body
-            small.text-muted
-              | Bingung cara isi?
-              a.ms-1(
-                href="#"
-                data-bs-dismiss="modal"
-                data-bs-toggle="modal"
-                data-bs-target="#guideModal"
-              ) Lihat panduan
             input(type="hidden" id="matchId")
-
+            
             .mb-3
-              label.form-label#homeLabel
+              label.form-label(for="homeScore")#homeLabel Home
               input.form-control(
                 type="number"
                 id="homeScore"
                 min="0"
                 max="7"
+                value="0"
               )
-
+            
             .mb-3
-              label.form-label#awayLabel
+              label.form-label(for="awayScore")#awayLabel Away
               input.form-control(
                 type="number"
                 id="awayScore"
                 min="0"
                 max="7"
+                value="0"
               )
-
+          
           .modal-footer
             button.btn.btn-secondary(data-bs-dismiss='modal') Batal
             button.btn.btn-primary(type="button" onclick="submitPadelScore()") Simpan
@@ -984,34 +978,34 @@ block content
             button.btn-close(type='button', data-bs-dismiss='modal')
 
           .modal-body
-          h6.text-primary.mb-2 1. Apa yang Diinput?
-          p.mb-3
-            | Yang diinput adalah <b>skor SET</b>, yaitu jumlah <b>game</b> yang dimenangkan dalam satu set.
-            | Sistem ini <b>TIDAK menggunakan poin 0–15–30–40</b>.
+            h6.text-primary.mb-2 1. Apa yang Diinput?
+            p.mb-3
+              | Yang diinput adalah <b>skor SET</b>, yaitu jumlah <b>game</b> yang dimenangkan dalam satu set.
+              | Sistem ini <b>TIDAK menggunakan poin 0–15–30–40</b>.
 
-          h6.text-primary.mb-2 2. Contoh Input yang Benar
-          ul
-            li Tim A menang set 6–4
-              ul
-                li Skor Tim A: <b>6</b>
-                li Skor Tim B: <b>4</b>
-            li Tim A menang set 7–5
-              ul
-                li Skor Tim A: <b>7</b>
-                li Skor Tim B: <b>5</b>
+            h6.text-primary.mb-2 2. Contoh Input yang Benar
+            ul
+              li Tim A menang set 6–4
+                ul
+                  li Skor Tim A: <b>6</b>
+                  li Skor Tim B: <b>4</b>
+              li Tim A menang set 7–5
+                ul
+                  li Skor Tim A: <b>7</b>
+                  li Skor Tim B: <b>5</b>
 
-          h6.text-danger.mb-2 3. Aturan Skor Set
-          ul
-            li ❌ Skor tidak boleh sama (tidak ada seri)
-            li ✅ Menang set minimal <b>6 game</b> dengan selisih <b>2 game</b>
-            li ✅ Skor <b>7–6</b> diperbolehkan (tie-break)
-            li ❌ Skor seperti 6–6 atau 5–5 tidak valid
+            h6.text-danger.mb-2 3. Aturan Skor Set
+            ul
+              li ❌ Skor tidak boleh sama (tidak ada seri)
+              li ✅ Menang set minimal <b>6 game</b> dengan selisih <b>2 game</b>
+              li ✅ Skor <b>7–6</b> diperbolehkan (tie-break)
+              li ❌ Skor seperti 6–6 atau 5–5 tidak valid
 
-          h6.text-primary.mb-2 4. Cara Kerja Sistem
-          ul
-            li Set disimpan satu per satu (Best of 3)
-            li Tim yang menang <b>2 set</b> otomatis menang match
-            li Klasemen dihitung dari <b>match & set</b>, bukan poin reli
+            h6.text-primary.mb-2 4. Cara Kerja Sistem
+            ul
+              li Set disimpan satu per satu (Best of 3)
+              li Tim yang menang <b>2 set</b> otomatis menang match
+              li Klasemen dihitung dari <b>match & set</b>, bukan poin reli
             
           .modal-footer
             button.btn.btn-secondary(data-bs-dismiss='modal') Tutup
@@ -1068,112 +1062,163 @@ block content
           document.querySelectorAll('.matches-table tbody tr').forEach(function(row) {
             row.style.opacity = '0';
             row.style.transform = 'translateX(-20px)';
-                        row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
             observer.observe(row);
           });
         }
         
-        // Padel Score Modal Functions
-        window.openScoreModal = function(button) {
+        // Padel Score Modal Functions - DIPERBAIKI
+        function openScoreModal(button) {
           const matchId = button.getAttribute('data-match-id');
           const mode = button.getAttribute('data-mode');
           const participants = button.getAttribute('data-participants');
           const homeTeam = button.getAttribute('data-home');
           const awayTeam = button.getAttribute('data-away');
           
+          console.log('Modal data:', { matchId, mode, participants, homeTeam, awayTeam });
+          
           document.getElementById('matchId').value = matchId;
+          
+          // Set the mode as data attribute on modal
+          const modalElement = document.getElementById('padelScoreModal');
+          modalElement.setAttribute('data-mode', mode);
           
           // Set labels based on match mode
           const homeLabel = document.getElementById('homeLabel');
           const awayLabel = document.getElementById('awayLabel');
           
           if (mode === 'individual') {
-            const names = participants.split(',').map(name => name.trim());
-            homeLabel.innerHTML = `<strong>${names[0] || 'Peserta 1'}:</strong> Jumlah game yang dimenangkan (0-7)`;
-            awayLabel.innerHTML = `<strong>${names[1] || 'Peserta 2'}:</strong> Jumlah game yang dimenangkan (0-7)`;
+            // Participants are already formatted as "Nama1 vs Nama2"
+            const names = participants.split(' vs ');
+            homeLabel.textContent = names[0] || 'Peserta 1';
+            awayLabel.textContent = names[1] || 'Peserta 2';
           } else {
-            homeLabel.innerHTML = `<strong>${homeTeam || 'Tim Home'}:</strong> Jumlah game yang dimenangkan (0-7)`;
-            awayLabel.innerHTML = `<strong>${awayTeam || 'Tim Away'}:</strong> Jumlah game yang dimenangkan (0-7)`;
+            homeLabel.textContent = homeTeam || 'Tim Home';
+            awayLabel.textContent = awayTeam || 'Tim Away';
           }
-          
+
           // Reset inputs
-          document.getElementById('homeScore').value = '';
-          document.getElementById('awayScore').value = '';
+          document.getElementById('homeScore').value = '0';
+          document.getElementById('awayScore').value = '0';
           
           // Show modal
           const modal = new bootstrap.Modal(document.getElementById('padelScoreModal'));
           modal.show();
-        };
+        }
         
-        window.submitPadelScore = async function() {
+        async function submitPadelScore() {
+          const modal = document.getElementById('padelScoreModal');
+          const mode = modal.getAttribute('data-mode');
           const matchId = document.getElementById('matchId').value;
-          const homeScore = parseInt(document.getElementById('homeScore').value);
-          const awayScore = parseInt(document.getElementById('awayScore').value);
-          
-          // Validation
-          if (isNaN(homeScore) || isNaN(awayScore)) {
-            alert('Mohon isi kedua skor dengan angka 0-7');
-            return;
+
+          const home = Number(document.getElementById('homeScore').value);
+          const away = Number(document.getElementById('awayScore').value);
+
+          console.log('Submitting score:', { matchId, mode, home, away });
+
+          // Validasi dasar
+          if (Number.isNaN(home) || Number.isNaN(away)) { 
+            alert('Isi skor yang valid'); 
+            return; 
           }
           
-          if (homeScore < 0 || homeScore > 7 || awayScore < 0 || awayScore > 7) {
-            alert('Skor harus antara 0-7');
-            return;
+          if (home === away) { 
+            alert('Skor tidak boleh seri'); 
+            return; 
           }
           
-          if (homeScore === awayScore) {
-            alert('Skor tidak boleh seri! Set harus ada pemenangnya.');
+          // Batas maksimal
+          if (home > 7 || away > 7) {
+            alert('Skor maksimal adalah 7');
             return;
           }
-          
-          // Validate Padel scoring rules
-          if (homeScore < 6 && awayScore < 6) {
-            alert('Setidaknya satu tim harus mencapai minimal 6 game untuk memenangkan set');
+
+          const max = Math.max(home, away);
+          const min = Math.min(home, away);
+          const diff = max - min;
+
+          // Menang di 6 harus selisih 2
+          if (max === 6 && diff !== 2) {
+            alert('Skor 6 harus selisih 2 (contoh: 6–4)');
             return;
           }
-          
-          if (Math.abs(homeScore - awayScore) < 2 && !(homeScore === 7 || awayScore === 7)) {
-            alert('Selisih skor minimal 2 game, kecuali skor 7-6 (tie-break)');
+
+          // Menang di 7: 7–5 (diff 2) atau 7–6 (tie-break)
+          if (max === 7 && !(diff === 1 || diff === 2)) {
+            alert('Skor 7 hanya boleh 7–5 atau 7–6');
             return;
           }
-          
-          if (homeScore === 7 && awayScore > 5) {
-            alert('Skor 7 hanya diperbolehkan jika lawan memiliki skor 5 atau 6 (tie-break)');
+
+          // Tidak boleh skor aneh di bawah 6
+          if (max < 6) {
+            alert('Set belum selesai');
             return;
           }
-          
-          if (awayScore === 7 && homeScore > 5) {
-            alert('Skor 7 hanya diperbolehkan jika lawan memiliki skor 5 atau 6 (tie-break)');
-            return;
+
+          // Gunakan endpoint yang benar berdasarkan mode
+          let url;
+          if (mode === 'individual') {
+            url = `/subadmin/matches/${matchId}/submit-individual-score`;
+          } else {
+            url = `/subadmin/matches/${matchId}/submit-score`;
           }
-          
-          try {
-            const submitBtn = document.querySelector('#padelScoreModal .btn-primary');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
-            submitBtn.disabled = true;
+
+          const btnSave = document.querySelector('#padelScoreModal .btn-primary');
+          if (btnSave) {
+            btnSave.disabled = true;
+            const originalHTML = btnSave.innerHTML;
+            btnSave.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Simpan';
             
-            const response = await fetch('/subadmin/matches/padel-score', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                match_id: matchId,
-                home_score: homeScore,
-                away_score: awayScore
-              })
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
+            try {
+              const res = await fetch(url, {
+                method: 'POST',
+                headers: { 
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                },
+                body: JSON.stringify({ 
+                  home_score: home, 
+                  away_score: away 
+                })
+              });
+
+              let data;
+              try { 
+                data = await res.json(); 
+              } catch (e) { 
+                console.error('JSON parse error:', e);
+                data = null; 
+              }
+
+              console.log('Response:', data);
+
+              if (!res.ok) {
+                const msg = (data && (data.message || data.error)) || 'Gagal menyimpan skor';
+                alert(msg);
+                btnSave.disabled = false;
+                btnSave.innerHTML = originalHTML;
+                return;
+              }
+
+              if (!data || data.success === false) {
+                alert(data?.message || 'Gagal menyimpan skor');
+                btnSave.disabled = false;
+                btnSave.innerHTML = originalHTML;
+                return;
+              }
+
+              const finished = !!data.finished;
+
+              // Close modal
+              const bsModal = bootstrap.Modal.getInstance(modal);
+              if (bsModal) bsModal.hide();
+
               // Show success message
               const alertDiv = document.createElement('div');
               alertDiv.className = 'alert alert-success alert-dismissible fade show';
               alertDiv.innerHTML = `
                 <i class="bi bi-check-circle-fill"></i>
-                <strong>Berhasil!</strong> Skor set telah disimpan.
+                <strong>Berhasil!</strong> ${finished ? 'Match selesai (BO3)' : 'Skor tersimpan — lanjut set berikutnya'}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
               `;
               
@@ -1184,27 +1229,23 @@ block content
                 alertDiv.remove();
               }, 3000);
               
-              // Close modal and reload page after 1.5 seconds
-              const modal = bootstrap.Modal.getInstance(document.getElementById('padelScoreModal'));
-              modal.hide();
-              
+              // Reload page after 1.5 seconds
               setTimeout(() => {
                 window.location.reload();
               }, 1500);
               
-            } else {
-              alert(result.message || 'Gagal menyimpan skor. Silakan coba lagi.');
-              submitBtn.innerHTML = originalText;
-              submitBtn.disabled = false;
+            } catch (err) {
+              console.error('Fetch error:', err);
+              alert('Terjadi kesalahan jaringan. Silakan coba lagi.');
+              btnSave.disabled = false;
+              btnSave.innerHTML = originalHTML;
             }
-            
-          } catch (error) {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan. Silakan coba lagi.');
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
           }
-        };
+        }
+        
+        // Make functions available globally
+        window.openScoreModal = openScoreModal;
+        window.submitPadelScore = submitPadelScore;
         
         // Form validation for score inputs
         const homeScoreInput = document.getElementById('homeScore');

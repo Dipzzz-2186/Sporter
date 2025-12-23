@@ -451,7 +451,7 @@ block content
           | #{mode === 'edit' ? 'Edit Video' : 'Tambah Video'}
         p
           i.bi.bi-info-circle.me-2
-          | Upload video VOD, Highlight, atau Livestream untuk pertandingan
+          | Upload video Full Match, Highlight, atau Livestream untuk pertandingan
 
       //- Form Card
       .video-form-card
@@ -552,17 +552,17 @@ block content
                 span.badge.badge-required Wajib
               .type-radio-group
                 .type-radio-card
-                  input#type-vod(
+                  input#type-full_match(
                     type="radio"
                     name="type"
                     value="full_match"
                     checked=(mode !== 'edit' || video.type === 'full_match')
                   )
-                  label.type-radio-label(for="type-vod")
+                  label.type-radio-label(for="type-full_match")
                     .type-radio-icon
                       i.bi.bi-play-circle-fill
-                    .type-radio-title VOD
-                    .type-radio-desc Video on Demand - Rekaman lengkap
+                    .type-radio-title Full Match
+                    .type-radio-desc Rekaman lengkap
                 
                 .type-radio-card
                   input#type-highlight(
@@ -631,6 +631,43 @@ block content
                   i.bi.bi-check-circle-fill
                   | URL Terdeteksi
                 .url-preview-content
+
+          //- Section 4: Schedule
+          .video-form-section
+            .section-title
+              i.bi.bi-clock
+              | Jadwal (Opsional)
+            .section-description
+              | Atur waktu mulai dan berakhir untuk livestream atau jadwal tayang.
+            
+            .row.g-3
+              .col-md-6
+                .mb-3
+                  label.form-label(for="start_time")
+                    i.bi.bi-clock
+                    | Waktu Mulai
+                    span.badge Opsional
+                  input.form-control#start_time(
+                    type="datetime-local"
+                    name="start_time"
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Untuk livestream atau jadwal tayang
+              
+              .col-md-6
+                .mb-3
+                  label.form-label(for="end_time")
+                    i.bi.bi-clock-history
+                    | Waktu Berakhir
+                    span.badge Opsional
+                  input.form-control#end_time(
+                    type="datetime-local"
+                    name="end_time"
+                  )
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Estimasi waktu selesai
 
           //- Action Buttons
           .form-actions
