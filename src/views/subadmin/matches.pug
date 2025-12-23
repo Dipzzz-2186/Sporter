@@ -2,709 +2,940 @@ extends ../layout/main
 
 block content
   style.
-    /* Matches Management Page Styles */
+    /* ========== GLOBAL STYLES ========== */
     .matches-page {
-      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
       min-height: 100vh;
-      padding: 2rem 0;
+      padding: 2.5rem 0;
     }
-    
-    /* ===== HEADER SECTION - DIUBAH SESUAI REFERENSI TEAMS ===== */
+
+    /* ========== HEADER SECTION ========== */
     .matches-header {
-      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
-      border-radius: 24px;
+      background: linear-gradient(135deg, #0B1F3F 0%, #1a365d 100%);
+      border-radius: 20px;
       padding: 2.5rem;
       margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 20px 50px rgba(11, 31, 63, 0.25);
       position: relative;
       overflow: hidden;
-      animation: fadeInDown 0.6s ease-out;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      color: white;
+      animation: fadeInDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
+
     .matches-header::before {
       content: '';
       position: absolute;
       top: -50%;
-      right: -20%;
-      width: 300px;
-      height: 300px;
+      right: -10%;
+      width: 500px;
+      height: 500px;
       background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
       border-radius: 50%;
+      pointer-events: none;
     }
-    
-    .matches-header-content {
-      position: relative;
-      z-index: 2;
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    
-    .matches-title {
-      color: white;
+
+    .matches-header h1 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
-      letter-spacing: 1px;
-      margin: 0 0 0.5rem 0;
-      position: relative;
-      z-index: 2;
-    }
-    
-    .matches-title i {
+      font-size: 2.8rem;
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-right: 0.5rem;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 10px rgba(0, 149, 255, 0.3);
     }
-    
-    .matches-subtitle {
-      color: rgba(255, 255, 255, 0.9);
+
+    .matches-header h1 i {
+      display: inline-block;
+      animation: trophy-bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes trophy-bounce {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-5px) rotate(-5deg); }
+      75% { transform: translateY(-3px) rotate(5deg); }
+    }
+
+    .matches-header p {
+      color: rgba(255, 255, 255, 0.8);
       font-size: 1.05rem;
-      margin-bottom: 1.5rem;
-      max-width: 600px;
-      line-height: 1.6;
+      margin: 0;
+      position: relative;
+      z-index: 1;
     }
-    
-    /* ===== BACK BUTTON (FROM TEAMS REFERENCE) ===== */
-    .btn-back-modern {
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.7rem 1.3rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
-      margin-top: 1rem;
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 12px;
-      padding: 0.45rem 0.9rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: all 0.25s ease;
-      text-decoration: none;
+      gap: 0.5rem;
     }
-    
-    .btn-back-modern:hover {
-      background: rgba(255, 255, 255, 0.28);
-      transform: translateX(-3px);
-      color: #fff;
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      color: white;
     }
-    
-    /* ===== TAMBAH MATCH BUTTON (SAMA DENGAN HALAMAN LAIN) ===== */
+
     .btn-add-match {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       border: none;
       color: white;
       padding: 0.9rem 1.8rem;
-      border-radius: 12px;
+      border-radius: 14px;
       font-weight: 600;
       font-size: 1rem;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 6px 20px rgba(0, 149, 255, 0.4);
+      text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      text-decoration: none;
-      animation: fadeInUp 0.6s ease-out 0.4s backwards;
+      gap: 0.6rem;
+      position: relative;
+      overflow: hidden;
     }
-    
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    .btn-add-match::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
     }
-    
+
+    .btn-add-match:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
     .btn-add-match:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(0, 149, 255, 0.5);
       color: white;
     }
-    
-    /* HEADER TOP LAYOUT (Like in Teams) */
-    .header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
+
+    .btn-add-match i {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
     }
-    
-    /* HEADER ACTIONS (From Teams) */
-    .header-actions {
+
+    .btn-add-match:hover i {
+      transform: rotate(90deg);
+    }
+
+    /* ========== ALERTS ========== */
+    .alert {
+      border-radius: 14px;
+      border: none;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.5rem;
+      animation: slideInDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
       gap: 1rem;
-      margin-top: 1.5rem;
-    }
-    
-    .mode-chip{
-      font-size:.7rem;
-      font-weight:700;
-      padding:.2rem .5rem;
-      border-radius:999px;
-      border:1px solid #e5e7eb;
-      color:#374151;  
-      background:#f9fafb;
+      backdrop-filter: blur(10px);
     }
 
-    
-    /* Alerts */
-    .alert {
-      border-radius: 12px;
-      border: none;
-      padding: 1rem 1.25rem;
-      margin-bottom: 1.5rem;
-      animation: slideInDown 0.4s ease-out;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    
     @keyframes slideInDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
-    
+
     .alert-danger {
       background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
       color: #991b1b;
-      border-left: 4px solid #dc2626;
+      border-left: 5px solid #dc2626;
+      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.2);
     }
-    
+
     .alert-success {
       background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
       color: #065f46;
-      border-left: 4px solid #059669;
+      border-left: 5px solid #059669;
+      box-shadow: 0 4px 15px rgba(5, 150, 105, 0.2);
     }
-    
+
     .alert i {
-      font-size: 1.2rem;
+      font-size: 1.4rem;
+      animation: pulse-icon 2s ease-in-out infinite;
     }
-    
-    /* ========== FILTER SECTION STYLES ========== */
+
+    @keyframes pulse-icon {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* ========== FILTER SECTION ========== */
     .filter-card {
       background: white;
-      border-radius: 18px;
-      border: 2px solid #e8edf2;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
       margin-bottom: 2rem;
-      animation: fadeInUp 0.6s ease-out 0.2s backwards;
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s backwards;
       overflow: hidden;
+      transition: all 0.3s ease;
     }
-    
+
+    .filter-card:hover {
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .filter-card .card-header {
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-      border-bottom: 2px solid #e8edf2;
-      padding: 1.25rem 1.5rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #e8edf2 100%);
+      border-bottom: 2px solid #e2e8f0;
+      padding: 1.5rem 2rem;
     }
-    
+
     .filter-title {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.8rem;
       color: #0B1F3F;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       margin: 0;
     }
-    
+
     .filter-title i {
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-size: 1.3rem;
+      font-size: 1.4rem;
+      color: #0095FF;
+      animation: filter-rotate 3s ease-in-out infinite;
     }
-    
+
+    @keyframes filter-rotate {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(180deg); }
+    }
+
     .filter-card .card-body {
-      padding: 1.5rem;
+      padding: 2rem;
     }
-    
+
     .filter-form label {
       color: #0B1F3F;
       font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      margin-bottom: 0.6rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      transition: color 0.3s ease;
     }
-    
+
     .filter-form label i {
       color: #0095FF;
-      font-size: 0.9rem;
+      font-size: 1rem;
+      transition: transform 0.3s ease;
     }
-    
+
+    .filter-form label:hover i {
+      transform: scale(1.2);
+    }
+
     .filter-form .form-select,
     .filter-form .form-control {
-      border-radius: 10px;
-      border: 2px solid #e8edf2;
-      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      padding: 0.85rem 1.1rem;
       font-size: 0.95rem;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background-color: #f8fafc;
+    }
+
+    .filter-form .form-select:hover,
+    .filter-form .form-control:hover {
+      border-color: #cbd5e1;
       background-color: white;
     }
-    
+
     .filter-form .form-select:focus,
     .filter-form .form-control:focus {
       border-color: #0095FF;
-      box-shadow: 0 0 0 0.2rem rgba(0, 149, 255, 0.15);
+      box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.15);
       outline: none;
+      background-color: white;
+      transform: translateY(-1px);
     }
-    
+
     .filter-form .form-select {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%230B1F3F' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%230095FF' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
       background-repeat: no-repeat;
       background-position: right 1rem center;
-      background-size: 16px 12px;
+      background-size: 18px 14px;
+      cursor: pointer;
     }
-    
+
     .btn-filter {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       border: none;
       color: white;
-      border-radius: 10px;
-      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      padding: 0.85rem 1.5rem;
       font-weight: 600;
       font-size: 0.95rem;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.25);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
       width: 100%;
+      position: relative;
+      overflow: hidden;
     }
-    
+
+    .btn-filter::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-filter:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
     .btn-filter:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(0, 149, 255, 0.35);
-      background: linear-gradient(135deg, #34C7FF 0%, #0095FF 100%);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
       color: white;
     }
-    
+
     .btn-filter:active {
-      transform: translateY(0);
+      transform: translateY(0) scale(0.98);
     }
-    
-    /* Table Card */
+
+    .btn-filter i {
+      transition: transform 0.3s ease;
+    }
+
+    .btn-filter:hover i {
+      transform: rotate(180deg);
+    }
+
+    /* ========== TABLE STYLES ========== */
     .matches-table-card {
       background: white;
       border-radius: 20px;
-      border: 2px solid #e8edf2;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s backwards;
       overflow: hidden;
-      animation: fadeInUp 0.6s ease-out;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
     }
-    
+
+    .matches-table-card:hover {
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+    }
+
     .matches-table-card .card-body {
       padding: 0;
     }
-    
-    /* Table Styles */
+
+    .table-responsive {
+      border-radius: 20px;
+    }
+
     .matches-table {
-      margin: 0;
-      font-size: 0.95rem;
+      table-layout: fixed;
+      width: 100%;
     }
-    
+
+    /* ID */
+    .matches-table th:nth-child(1),
+    .matches-table td:nth-child(1) {
+      width: 70px;
+      text-align: center;
+    }
+
+    /* Cabang */
+    .matches-table th:nth-child(2),
+    .matches-table td:nth-child(2) {
+      width: 140px;
+    }
+
+    /* Waktu */
+    .matches-table th:nth-child(5),
+    .matches-table td:nth-child(5) {
+      width: 180px;
+    }
+
+    /* Status */
+    .matches-table th:nth-child(7),
+    .matches-table td:nth-child(7) {
+      width: 160px;
+    }
+
+    /* Aksi */
+    .matches-table th:nth-child(8),
+    .matches-table td:nth-child(8) {
+      width: 180px;
+    }
+
+
     .matches-table thead {
-      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      background: linear-gradient(135deg, #0B1F3F 0%, #1a365d 100%);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    
+
     .matches-table thead th {
       background: transparent !important; /* ikut parent */
       color: white !important;
-      font-weight: 700;
-      font-size: 0.85rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 1.3rem 1.2rem;
+      border: none;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      padding: 1.25rem 1rem;
-      border: none;
+    }
+
+    .match-title,
+    .match-event,
+    .match-teams {
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .vs-badge,
+    .mode-chip,
+    .status-badge {
       white-space: nowrap;
     }
-    
+
+    .matches-table thead th:first-child {
+      border-top-left-radius: 20px;
+    }
+
+    .matches-table thead th:last-child {
+      border-top-right-radius: 20px;
+    }
+
+    .matches-table thead th i {
+      color: #34C7FF;
+      margin-right: 0.3rem;
+      font-size: 1rem;
+    }
+
     .matches-table tbody tr {
-      border-bottom: 1px solid #e8edf2;
-      transition: all 0.3s ease;
+      background: white;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-bottom: 1px solid #f1f5f9;
     }
-    
+
     .matches-table tbody tr:hover {
-      background: linear-gradient(135deg, rgba(0, 149, 255, 0.05) 0%, rgba(52, 199, 255, 0.05) 100%);
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
       transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
-    
+
     .matches-table tbody td {
-      padding: 1.25rem 1rem;
+      padding: 1.2rem 1.2rem;
       vertical-align: middle;
       border: none;
+      color: #334155;
+      font-size: 0.9rem;
     }
-    
+
     .match-id {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 1.5rem;
-      color: #0095FF;
-      letter-spacing: 0.5px;
-    }
-    
-    .match-title {
-      color: #0B1F3F;
       font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 0.25rem;
-    }
-    
-    .match-event {
-      color: #5a6c7d;
+      color: #0095FF;
+      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      display: inline-block;
       font-size: 0.85rem;
+      border: 2px solid #7dd3fc;
     }
-    
-    .match-teams {
-      color: #0B1F3F;
+
+    .sport-badge {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      color: #1e40af;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
       font-weight: 600;
-      font-size: 0.95rem;
-      display: flex;
+      font-size: 0.85rem;
+      display: inline-flex;
       align-items: center;
       gap: 0.5rem;
+      border: 2px solid #93c5fd;
+      transition: all 0.3s ease;
     }
-    
-    .match-teams .vs-badge {
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+
+    .sport-badge:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
+    }
+
+    .sport-badge i {
+      font-size: 1rem;
+      color: #2563eb;
+      flex-shrink: 0;
+    }
+
+    .match-title {
+      font-weight: 700;
+      color: #0B1F3F;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .match-event {
+      color: #64748b;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 0.3rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .match-event i {
+      color: #0095FF;
+      font-size: 0.9rem;
+    }
+
+    .match-teams {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .match-teams span {
+      display: inline-block;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .vs-badge {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
       color: white;
-      padding: 0.2rem 0.5rem;
-      border-radius: 8px;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+      animation: vs-pulse 2s ease-in-out infinite;
+      flex-shrink: 0;
     }
-    
-    .match-time {
-      color: #0B1F3F;
-      font-size: 0.9rem;
-      line-height: 1.5;
+
+    @keyframes vs-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
-    
-    .match-time small {
-      color: #5a6c7d;
-      display: block;
-      margin-top: 0.25rem;
-    }
-    
-    .sport-badge {
-      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
-      color: #0095FF;
-      padding: 0.4rem 0.8rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      border: 1px solid #d6edff;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    
-    .sport-badge i {
-      font-size: 0.9rem;
-    }
-    
-    /* Status Badges */
-    .status-badge {
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.8rem;
+
+    .mode-chip {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+      border: 2px solid #e5e7eb;
+      color: #374151;
+      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+      display: inline-block;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+    }
+
+    .match-time {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .match-time strong {
+      color: #0B1F3F;
+      font-size: 0.9rem;
+    }
+
+    .match-time small {
+      color: #64748b;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .match-time small i {
+      color: #0095FF;
+    }
+
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
     }
-    
-    .status-badge i {
-      font-size: 1rem;
+
+    .status-badge:hover {
+      transform: translateY(-2px);
     }
-    
+
     .status-scheduled {
       background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
       color: #92400e;
-      border: 1px solid #fde68a;
+      border: 2px solid #fbbf24;
     }
-    
+
+    .status-scheduled i {
+      color: #f59e0b;
+      animation: calendar-shake 2s ease-in-out infinite;
+    }
+
+    @keyframes calendar-shake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+
     .status-ongoing {
+      background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+      color: #166534;
+      border: 2px solid #4ade80;
+    }
+
+    .status-ongoing i {
+      color: #22c55e;
+      animation: broadcast-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes broadcast-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    .status-finished {
       background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
       color: #1e40af;
-      border: 1px solid #bfdbfe;
+      border: 2px solid #60a5fa;
     }
-    
-    .status-finished {
-      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-      color: #065f46;
-      border: 1px solid #a7f3d0;
+
+    .status-finished i {
+      color: #3b82f6;
     }
-    
-    /* Action Buttons */
+
+    /* ========== ACTION BUTTONS ========== */
     .action-buttons {
       display: flex;
-      gap: 0.5rem;
-      justify-content: flex-end;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
     }
-    
+
+    .action-buttons .action-main {
+      display: flex;
+      gap: 6px;
+    }
+
+    .action-buttons .action-icons {
+      display: flex;
+      gap: 6px;
+    }
+
     .btn-action {
-      width: 36px;
-      height: 36px;
-      padding: 0;
+      width: 38px;
+      height: 38px;
       border-radius: 10px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
       border: 2px solid;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
     }
-    
+
+    .btn-action::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.4s, height 0.4s;
+    }
+
+    .btn-action:hover::before {
+      width: 100px;
+      height: 100px;
+    }
+
+    .btn-action i {
+      position: relative;
+      z-index: 1;
+      font-size: 1rem;
+    }
+
     .btn-action-edit {
       background: white;
       border-color: #0095FF;
       color: #0095FF;
     }
-    
-    .btn-action-edit:hover {
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.3);
+
+    .btn-action-edit::before {
+      background: rgba(0, 149, 255, 0.1);
     }
-    
+
+    .btn-action-edit:hover {
+      background: #0095FF;
+      color: white;
+      transform: translateY(-3px) rotate(5deg);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.3);
+    }
+
     .btn-action-delete {
       background: white;
-      border-color: #dc2626;
-      color: #dc2626;
+      border-color: #ef4444;
+      color: #ef4444;
     }
-    
+
+    .btn-action-delete::before {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
     .btn-action-delete:hover {
-      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      background: #ef4444;
       color: white;
+      transform: translateY(-3px) rotate(-5deg);
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-sm.btn-primary {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      border-color: #0095FF;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.25);
+    }
+
+    .btn-sm.btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+      box-shadow: 0 6px 18px rgba(0, 149, 255, 0.35);
     }
-    
-    /* Empty State */
+
+    .btn-sm.btn-secondary {
+      background: #e2e8f0;
+      border-color: #cbd5e1;
+      color: #64748b;
+    }
+
+    /* ========== EMPTY STATE ========== */
     .empty-state {
-      background: white;
-      border: 2px dashed #e8edf2;
-      border-radius: 24px;
-      padding: 5rem 2rem;
       text-align: center;
-      animation: fadeInUp 0.6s ease-out;
+      padding: 4rem 2rem;
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .empty-state-icon {
       width: 120px;
       height: 120px;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      margin: 0 auto 2rem;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 2rem;
-      animation: float 3s ease-in-out infinite;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      animation: empty-float 3s ease-in-out infinite;
     }
-    
-    @keyframes float {
+
+    @keyframes empty-float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
+      50% { transform: translateY(-10px); }
     }
-    
+
     .empty-state-icon i {
       font-size: 4rem;
-      color: #adb5bd;
+      color: #94a3b8;
     }
-    
+
     .empty-state h4 {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
       color: #0B1F3F;
-      letter-spacing: 1px;
+      font-weight: 700;
+      font-size: 1.8rem;
       margin-bottom: 1rem;
     }
-    
+
     .empty-state p {
-      color: #5a6c7d;
+      color: #64748b;
       font-size: 1.05rem;
+      line-height: 1.6;
       margin-bottom: 2rem;
     }
-    
-    /* Responsive */
-    @media (max-width: 991px) {
-      .matches-header {
-        padding: 2rem;
-      }
-      
-      .matches-title {
+
+    /* ========== MODALS ========== */
+    .modal-content {
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #0B1F3F 0%, #1a365d 100%);
+      color: white;
+      padding: 1.5rem 2rem;
+      border: none;
+    }
+
+    .modal-title {
+      font-weight: 700;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .modal-title i {
+      color: #34C7FF;
+      font-size: 1.4rem;
+    }
+
+    .modal-body {
+      padding: 2rem;
+    }
+
+    .modal-footer {
+      padding: 1.5rem 2rem;
+      border-top: 2px solid #f1f5f9;
+    }
+
+    .btn-close {
+      filter: brightness(0) invert(1);
+      opacity: 0.8;
+    }
+
+    .btn-close:hover {
+      opacity: 1;
+    }
+
+    /* ========== SPINNER ========== */
+    .spinner-border-sm {
+      width: 1rem;
+      height: 1rem;
+      border-width: 0.15rem;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      .matches-header h1 {
         font-size: 2rem;
       }
-      
-      .header-top {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      .filter-card {
-        border-radius: 16px;
-      }
-      
-      .filter-card .card-body {
-        padding: 1.25rem;
-      }
-      
+
       .matches-table {
         font-size: 0.85rem;
       }
-      
+
       .matches-table thead th,
       .matches-table tbody td {
-        padding: 1rem 0.75rem;
+        padding: 0.8rem 0.6rem;
       }
-      
-      .header-actions {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .btn-add-match {
-        width: 100%;
-        justify-content: center;
-      }
-    }
-    
-    @media (max-width: 767px) {
-      .matches-page {
-        padding: 1.5rem 0;
-      }
-      
-      .matches-header {
-        padding: 1.5rem;
-        border-radius: 16px;
-      }
-      
-      .matches-title {
-        font-size: 1.75rem;
-      }
-      
-      .matches-subtitle {
-        font-size: 1rem;
-      }
-      
-      .filter-card {
-        margin-bottom: 1.5rem;
-      }
-      
-      .filter-card .card-header {
-        padding: 1rem 1.25rem;
-      }
-      
-      .filter-title {
-        font-size: 1rem;
-      }
-      
-      .filter-card .card-body {
-        padding: 1rem;
-      }
-      
-      .filter-form .form-select,
-      .filter-form .form-control {
-        padding: 0.65rem 0.9rem;
-        font-size: 0.9rem;
-      }
-      
-      .btn-filter {
-        padding: 0.65rem 1.25rem;
-        font-size: 0.9rem;
-      }
-      
-      .matches-table {
-        font-size: 0.8rem;
-      }
-      
-      .matches-table thead th,
-      .matches-table tbody td {
-        padding: 0.75rem 0.5rem;
-      }
-      
-      .match-id {
-        font-size: 1.2rem;
-      }
-      
+
       .action-buttons {
         flex-direction: column;
-      }
-      
-      .btn-action {
-        width: 100%;
-      }
-      
-      .empty-state {
-        padding: 3rem 1.5rem;
-      }
-      
-      .empty-state-icon {
-        width: 100px;
-        height: 100px;
-      }
-      
-      .empty-state-icon i {
-        font-size: 3rem;
-      }
-      
-      .empty-state h4 {
-        font-size: 1.6rem;
-      }
-      
-      .btn-back-modern {
-        align-self: flex-start;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .filter-form .row {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      .filter-form .col-md-4,
-      .filter-form .col-md-3,
-      .filter-form .col-md-2 {
-        width: 100%;
-        max-width: 100%;
       }
     }
 
   .matches-page
     .container
-      //- ===== IMPROVED HEADER SECTION (FROM TEAMS REFERENCE) =====
+      //- Header
       .matches-header
-        .matches-header-content
-          //- Header Top with Back Button (Like in Teams)
-          .header-top
-            h1.matches-title
-              i.bi.bi-trophy-fill
-              | #{isReadOnly ? 'Daftar Pertandingan' : 'Kelola Pertandingan'}
-            
-            //- Back Button from Teams Reference
-            - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin' : '/subadmin'
-            a.btn-back-modern(href=backUrl)
-              i.bi.bi-arrow-left.me-1
-              | Kembali ke Dashboard
-          
-          //- Subtitle
-          p.matches-subtitle
-            | Kelola jadwal pertandingan, atur skor, dan pantau progres untuk cabang olahraga yang Anda pegang.
-          
-          //- Header Actions with Add Match Button
-          if !isReadOnly
-            .header-actions
-              a.btn-add-match(href="/subadmin/matches/create")
-                i.bi.bi-plus-circle
-                span Tambah Pertandingan Baru
+        .d-flex.justify-content-between.align-items-start.mb-3
+          h1.mb-0
+            i.bi.bi-trophy-fill.me-2
+            | #{isReadOnly ? 'Daftar Pertandingan' : 'Kelola Pertandingan'}
+
+          - const backUrl = (currentUser && currentUser.role === 'admin') ? '/admin' : '/subadmin'
+          a.btn.btn-secondary(href=backUrl)
+            i.bi.bi-arrow-left.me-1
+            | Kembali
+
+        if !isReadOnly
+          .mt-3
+            a.btn-add-match(href="/subadmin/matches/create")
+              i.bi.bi-plus-circle
+              span Tambah Pertandingan
 
       //- Flash Messages
       if flash && flash.error && flash.error.length
@@ -712,20 +943,20 @@ block content
           .alert.alert-danger(role="alert")
             i.bi.bi-exclamation-triangle-fill
             span= msg
-      
+
       if flash && flash.success && flash.success.length
         each msg in flash.success
           .alert.alert-success(role="alert")
             i.bi.bi-check-circle-fill
             span= msg
-      
-      //- Filter Section - DIPERBAIKI
+
+      //- Filter Section
       .filter-card
         .card-header
           h5.filter-title
             i.bi.bi-funnel-fill
             | Filter Pertandingan
-        
+
         .card-body
           form.filter-form(method="get")
             .row.g-3.align-items-end
@@ -741,7 +972,7 @@ block content
                         value=s.id
                         selected=(query && query.sport_id == s.id)
                       )= s.name
-              
+
               .col-md-3
                 .mb-2
                   label.form-label
@@ -756,7 +987,7 @@ block content
                       value="oldest"
                       selected=(query && query.order === 'oldest')
                     ) Terlama
-            
+
               .col-md-2
                 button.btn-filter(type="submit")
                   i.bi.bi-funnel-fill.me-1
@@ -772,13 +1003,13 @@ block content
                   tr
                     th
                       i.bi.bi-hash.me-1
-                      | ID
+                      | NO
                     th
                       i.bi.bi-dribbble.me-1
                       | Cabang
                     th
                       i.bi.bi-card-heading.me-1
-                      | Detail Pertandingan
+                      | Judul Pertandingan
                     th
                       i.bi.bi-people-fill.me-1
                       | Peserta / Tim
@@ -795,12 +1026,15 @@ block content
                       th.text-end
                         i.bi.bi-gear.me-1
                         | Aksi
+
                 tbody
-                  each m in matches
+                  each m, i in matches
                     tr
                       td
-                        .match-id= m.id
-                      
+                        - const total = matches.length;
+                        - const isOldest = query && query.order === 'oldest';
+                        .match-id= isOldest ? (i + 1) : (total - i)
+
                       td
                         if m.sport_name
                           .sport-badge
@@ -808,33 +1042,29 @@ block content
                             span= m.sport_name
                         else
                           span.text-muted -
-                      
+
                       td
                         .match-title= m.title || 'Tanpa judul'
                         if m.event_title
                           .match-event
                             i.bi.bi-calendar-event.me-1
                             = m.event_title
-                      
+
                       td
                         - const isIndividual = (m.match_mode || '').toLowerCase() === 'individual';
                         - const fallbackNames = [m.home_team_name, m.away_team_name].filter(Boolean).join(', ');
-
                         if isIndividual
                           .match-teams
                             i.bi.bi-person-fill.me-2.text-muted
                             span= m.participants_names || fallbackNames || '-'
-                            span.mode-chip.ms-2 INDIVIDUAL
+                        else if m.home_team_name || m.away_team_name
+                          .match-teams
+                            span= m.home_team_name || '-'
+                            .vs-badge VS
+                            span= m.away_team_name || '-'
                         else
-                          if m.home_team_name || m.away_team_name
-                            .match-teams
-                              span= m.home_team_name || '-'
-                              .vs-badge VS
-                              span= m.away_team_name || '-'
-                          else
-                            span.text-muted -
+                          span.text-muted -
 
-                      
                       td
                         - const startStr = m.start_time ? new Date(m.start_time).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
                         - const endStr = m.end_time ? new Date(m.end_time).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
@@ -847,7 +1077,7 @@ block content
                                 = endStr
                         else
                           span.text-muted Belum diatur
-                      
+
                       td
                         if m.venue_name
                           span
@@ -855,7 +1085,7 @@ block content
                             = m.venue_name
                         else
                           span.text-muted -
-                      
+
                       td
                         if m.status === 'scheduled'
                           .status-badge.status-scheduled
@@ -864,7 +1094,7 @@ block content
                         else if m.status === 'live'
                           .status-badge.status-ongoing
                             i.bi.bi-broadcast
-                            | Berlangsung
+                            | Mulai
                         else if m.status === 'finished'
                           .status-badge.status-finished
                             i.bi.bi-check-circle
@@ -872,53 +1102,39 @@ block content
                         else
                           .status-badge= m.status || 'N/A'
 
-                      
                       if !isReadOnly
                         td
                           .action-buttons
-                            if m.sport_name && m.sport_name.toLowerCase() === 'padel'
+                            .action-main
+                              if m.sport_name && m.sport_name.toLowerCase() === 'padel'
+                                if Number(m.is_finished) === 1
+                                  span.status-badge.status-finished
+                                    i.bi.bi-check-circle
+                                    | BO3 Selesai
+                                else if Number(m.is_started) === 1
+                                  button.btn.btn-sm.btn-primary(
+                                    type="button"
+                                    data-match-id=m.id
+                                    data-mode=(m.match_mode || '').toLowerCase()
+                                    data-participants=(m.participants_names || '')
+                                    data-home=(m.home_team_name || '')
+                                    data-away=(m.away_team_name || '')
+                                    onclick="openScoreModal(this)"
+                                  )
+                                    i.bi.bi-pencil-square.me-1
+                                    | Input Set
+                                else
+                                  button.btn.btn-sm.btn-secondary(disabled)
+                                    i.bi.bi-clock-fill.me-1
+                                    | Belum Mulai
 
-                              if Number(m.is_finished) === 1
-                                span.status-badge.status-finished
-                                  i.bi.bi-check-circle
-                                  | BO3 Selesai
+                            .action-icons
+                              a.btn.btn-action.btn-action-edit(href=`/subadmin/matches/${m.id}/edit`)
+                                i.bi.bi-pencil-fill
+                              form.d-inline(method="post" action=`/subadmin/matches/${m.id}/delete`)
+                                button.btn.btn-action.btn-action-delete(type="submit")
+                                  i.bi.bi-trash-fill
 
-                              else if Number(m.is_started) === 1
-                                //- FIX: Participants data should be formatted as "Nama1 vs Nama2"
-                                - const participantNames = m.participants_names ? m.participants_names.split(',').join(' vs ') : '';
-                                button.btn.btn-sm.btn-primary(
-                                  type="button"
-                                  data-match-id=m.id
-                                  data-mode=(m.match_mode || '').toLowerCase()
-                                  data-participants=participantNames
-                                  data-home=(m.home_team_name || '')
-                                  data-away=(m.away_team_name || '')
-                                  onclick="openScoreModal(this)"
-                                )
-                                  i.bi.bi-pencil-square.me-1
-                                  | Input Set
-
-                              else
-                                button.btn.btn-sm.btn-secondary(disabled)
-                                  i.bi.bi-clock-fill.me-1
-                                  | Belum Mulai
-
-                            a.btn.btn-action.btn-action-edit(
-                              href=`/subadmin/matches/${m.id}/edit`
-                              title="Edit Pertandingan"
-                            )
-                              i.bi.bi-pencil-fill
-                            
-                            form.d-inline(
-                              method="post" 
-                              action=`/subadmin/matches/${m.id}/delete`
-                              onsubmit="return confirm('Yakin ingin menghapus pertandingan ini?');"
-                            )
-                              button.btn.btn-action.btn-action-delete(
-                                type="submit"
-                                title="Hapus Pertandingan"
-                              )
-                                i.bi.bi-trash-fill
       else
         //- Empty State
         .empty-state
@@ -932,429 +1148,294 @@ block content
           a.btn-add-match(href="/subadmin/matches/create")
             i.bi.bi-plus-circle
             span Tambah Pertandingan Pertama
-  
-  //- Modals
-  if !isReadOnly
-    #padelScoreModal.modal.fade(tabindex='-1')
-      .modal-dialog
-        .modal-content
-          .modal-header
-            h5.modal-title Input Set Padel
-            button.btn-close(type='button', data-bs-dismiss='modal')
-          .modal-body
-            input(type="hidden" id="matchId")
-            
-            .mb-3
-              label.form-label(for="homeScore")#homeLabel Home
-              input.form-control(
-                type="number"
-                id="homeScore"
-                min="0"
-                max="7"
-                value="0"
-              )
-            
-            .mb-3
-              label.form-label(for="awayScore")#awayLabel Away
-              input.form-control(
-                type="number"
-                id="awayScore"
-                min="0"
-                max="7"
-                value="0"
-              )
-          
-          .modal-footer
-            button.btn.btn-secondary(data-bs-dismiss='modal') Batal
-            button.btn.btn-primary(type="button" onclick="submitPadelScore()") Simpan
 
-    #guideModal.modal.fade(tabindex='-1')
-      .modal-dialog.modal-lg.modal-dialog-centered
-        .modal-content
-          .modal-header
-            h5.modal-title
-              i.bi.bi-question-circle-fill.me-2
-              | Panduan Input Set Padel
-            button.btn-close(type='button', data-bs-dismiss='modal')
+      //- Modals
+      if !isReadOnly
+        #padelScoreModal.modal.fade(tabindex='-1')
+          .modal-dialog
+            .modal-content
+              .modal-header
+                h5.modal-title
+                  i.bi.bi-pencil-square
+                  | Input Set Padel
+                button.btn-close(type='button', data-bs-dismiss='modal')
+              .modal-body
+                small.text-muted
+                  | Bingung cara isi?
+                  a.ms-1(
+                    href="#"
+                    data-bs-dismiss="modal"
+                    data-bs-toggle="modal"
+                    data-bs-target="#guideModal"
+                  ) Lihat panduan
+                input(type="hidden" id="matchId")
+                .mb-3
+                  label.form-label#homeLabel
+                  input.form-control(type="number" id="homeScore" min="0" max="7")
+                .mb-3
+                  label.form-label#awayLabel
+                  input.form-control(type="number" id="awayScore" min="0" max="7")
+              .modal-footer
+                button.btn.btn-secondary(data-bs-dismiss='modal') Batal
+                button.btn.btn-primary(type="button" onclick="submitPadelScore()") Simpan
 
-          .modal-body
-            h6.text-primary.mb-2 1. Apa yang Diinput?
-            p.mb-3
-              | Yang diinput adalah <b>skor SET</b>, yaitu jumlah <b>game</b> yang dimenangkan dalam satu set.
-              | Sistem ini <b>TIDAK menggunakan poin 0–15–30–40</b>.
+        #guideModal.modal.fade(tabindex='-1')
+          .modal-dialog.modal-lg.modal-dialog-centered
+            .modal-content
+              .modal-header
+                h5.modal-title
+                  i.bi.bi-question-circle-fill
+                  | Panduan Input Set Padel
+                button.btn-close(type='button', data-bs-dismiss='modal')
+              .modal-body
+                h6.text-primary.mb-2 1. Apa yang Diinput?
+                p.mb-3
+                  | Yang diinput adalah <b>skor SET</b>, yaitu jumlah <b>game</b> yang dimenangkan dalam satu set.
+                  | Sistem ini <b>TIDAK menggunakan poin 0–15–30–40</b>.
 
-            h6.text-primary.mb-2 2. Contoh Input yang Benar
-            ul
-              li Tim A menang set 6–4
+                h6.text-primary.mb-2 2. Contoh Input yang Benar
                 ul
+                  li Tim A menang set 6–4
                   li Skor Tim A: <b>6</b>
                   li Skor Tim B: <b>4</b>
-              li Tim A menang set 7–5
-                ul
+                  li Tim A menang set 7–5
                   li Skor Tim A: <b>7</b>
                   li Skor Tim B: <b>5</b>
 
-            h6.text-danger.mb-2 3. Aturan Skor Set
-            ul
-              li ❌ Skor tidak boleh sama (tidak ada seri)
-              li ✅ Menang set minimal <b>6 game</b> dengan selisih <b>2 game</b>
-              li ✅ Skor <b>7–6</b> diperbolehkan (tie-break)
-              li ❌ Skor seperti 6–6 atau 5–5 tidak valid
+                h6.text-danger.mb-2 3. Aturan Skor Set
+                ul
+                  li ❌ Skor tidak boleh sama (tidak ada seri)
+                  li ✅ Menang set minimal <b>6 game</b> dengan selisih <b>2 game</b>
+                  li ✅ Skor <b>7–6</b> diperbolehkan (tie-break)
+                  li ❌ Skor seperti 6–6 atau 5–5 tidak valid
 
-            h6.text-primary.mb-2 4. Cara Kerja Sistem
-            ul
-              li Set disimpan satu per satu (Best of 3)
-              li Tim yang menang <b>2 set</b> otomatis menang match
-              li Klasemen dihitung dari <b>match & set</b>, bukan poin reli
-            
-          .modal-footer
-            button.btn.btn-secondary(data-bs-dismiss='modal') Tutup
+                h6.text-primary.mb-2 4. Cara Kerja Sistem
+                ul
+                  li Set disimpan satu per satu (Best of 3)
+                  li Tim yang menang <b>2 set</b> otomatis menang match
+                  li Klasemen dihitung dari <b>match & set</b>, bukan poin reli
 
-  if !isReadOnly
-    script.
-      (function() {
-        // Auto dismiss alerts after 5 seconds
-        var alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function(alert) {
-          setTimeout(function() {
-            alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            alert.style.opacity = '0';
-            alert.style.transform = 'translateY(-20px)';
-            setTimeout(function() {
-              alert.remove();
-            }, 500);
-          }, 5000);
-        });
-        
-        // Confirm delete with better UX
-        var deleteForms = document.querySelectorAll('form[action*="/delete"]');
-        deleteForms.forEach(function(form) {
-          form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            var btn = form.querySelector('button[type="submit"]');
-            var confirmed = confirm('⚠️ Yakin ingin menghapus pertandingan ini?\n\nData yang sudah dihapus tidak dapat dikembalikan.');
-            
-            if (confirmed) {
-              btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-              btn.disabled = true;
-              form.submit();
-            }
-          });
-        });
-        
-        // Intersection Observer for table rows
-        if ('IntersectionObserver' in window) {
-          var observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry, index) {
-              if (entry.isIntersecting) {
-                setTimeout(function() {
-                  entry.target.style.opacity = '1';
-                  entry.target.style.transform = 'translateX(0)';
-                }, index * 50);
-              }
+              .modal-footer
+                button.btn.btn-secondary(data-bs-dismiss='modal') Tutup
+
+      if !isReadOnly
+        script.
+          (function () {
+            // Auto dismiss alerts after 5 seconds
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function (alert) {
+              setTimeout(function () {
+                alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+                setTimeout(function () {
+                  alert.remove();
+                }, 500);
+              }, 5000);
             });
-          }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-          });
-          
-          document.querySelectorAll('.matches-table tbody tr').forEach(function(row) {
-            row.style.opacity = '0';
-            row.style.transform = 'translateX(-20px)';
-            row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-            observer.observe(row);
-          });
-        }
-        
-        // Padel Score Modal Functions - DIPERBAIKI
-        function openScoreModal(button) {
-          const matchId = button.getAttribute('data-match-id');
-          const mode = button.getAttribute('data-mode');
-          const participants = button.getAttribute('data-participants');
-          const homeTeam = button.getAttribute('data-home');
-          const awayTeam = button.getAttribute('data-away');
-          
-          console.log('Modal data:', { matchId, mode, participants, homeTeam, awayTeam });
-          
-          document.getElementById('matchId').value = matchId;
-          
-          // Set the mode as data attribute on modal
-          const modalElement = document.getElementById('padelScoreModal');
-          modalElement.setAttribute('data-mode', mode);
-          
-          // Set labels based on match mode
-          const homeLabel = document.getElementById('homeLabel');
-          const awayLabel = document.getElementById('awayLabel');
-          
-          if (mode === 'individual') {
-            // Participants are already formatted as "Nama1 vs Nama2"
-            const names = participants.split(' vs ');
-            homeLabel.textContent = names[0] || 'Peserta 1';
-            awayLabel.textContent = names[1] || 'Peserta 2';
-          } else {
-            homeLabel.textContent = homeTeam || 'Tim Home';
-            awayLabel.textContent = awayTeam || 'Tim Away';
+
+            // Confirm delete with better UX
+            var deleteForms = document.querySelectorAll('form[action*="/delete"]');
+            deleteForms.forEach(function (form) {
+              form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var btn = form.querySelector('button[type="submit"]');
+                var confirmed = confirm(
+                  '⚠️ Yakin ingin menghapus pertandingan ini?\n\nData yang sudah dihapus tidak dapat dikembalikan.'
+                );
+                if (confirmed) {
+                  btn.innerHTML =
+                    '<span class="spinner-border spinner-border-sm"></span>';
+                  btn.disabled = true;
+                  form.submit();
+                }
+              });
+            });
+
+            // Intersection Observer for table rows
+            if ('IntersectionObserver' in window) {
+              var observer = new IntersectionObserver(
+                function (entries) {
+                  entries.forEach(function (entry, index) {
+                    if (entry.isIntersecting) {
+                      setTimeout(function () {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateX(0)';
+                      }, index * 50);
+                    }
+                  });
+                },
+                {
+                  threshold: 0.1,
+                  rootMargin: '0px 0px -50px 0px',
+                }
+              );
+
+              document
+                .querySelectorAll('.matches-table tbody tr')
+                .forEach(function (row) {
+                  row.style.opacity = '0';
+                  row.style.transform = 'translateX(-20px)';
+                  row.style.transition = 'all 0.4s ease';
+                  observer.observe(row);
+                });
+            }
+          })();
+
+        script.
+          // helper toast function
+          function showToast(msg, type = 'success') {
+            const el = document.createElement('div');
+            el.className = `alert alert-${type}`;
+            el.style.position = 'fixed';
+            el.style.top = '20px';
+            el.style.right = '20px';
+            el.style.zIndex = 9999;
+            el.innerText = msg;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 2200);
           }
 
-          // Reset inputs
-          document.getElementById('homeScore').value = '0';
-          document.getElementById('awayScore').value = '0';
-          
-          // Show modal
-          const modal = new bootstrap.Modal(document.getElementById('padelScoreModal'));
-          modal.show();
-        }
-        
-        async function submitPadelScore() {
-          const modal = document.getElementById('padelScoreModal');
-          const mode = modal.getAttribute('data-mode');
-          const matchId = document.getElementById('matchId').value;
+          function openScoreModal(btn) {
+            const mode = btn.dataset.mode;
+            document.getElementById('matchId').value = btn.dataset.matchId;
 
-          const home = Number(document.getElementById('homeScore').value);
-          const away = Number(document.getElementById('awayScore').value);
+            if (mode === 'individual') {
+              const names = (btn.dataset.participants || '').split(' vs ');
+              document.getElementById('homeLabel').innerText =
+                names[0] || 'Peserta 1';
+              document.getElementById('awayLabel').innerText =
+                names[1] || 'Peserta 2';
+              document.getElementById('padelScoreModal').dataset.mode =
+                'individual';
+            } else {
+              document.getElementById('homeLabel').innerText =
+                btn.dataset.home || 'Home';
+              document.getElementById('awayLabel').innerText =
+                btn.dataset.away || 'Away';
+              document.getElementById('padelScoreModal').dataset.mode = 'team';
+            }
 
-          console.log('Submitting score:', { matchId, mode, home, away });
-
-          // Validasi dasar
-          if (Number.isNaN(home) || Number.isNaN(away)) { 
-            alert('Isi skor yang valid'); 
-            return; 
-          }
-          
-          if (home === away) { 
-            alert('Skor tidak boleh seri'); 
-            return; 
-          }
-          
-          // Batas maksimal
-          if (home > 7 || away > 7) {
-            alert('Skor maksimal adalah 7');
-            return;
+            document.getElementById('homeScore').value = 0;
+            document.getElementById('awayScore').value = 0;
+            new bootstrap.Modal(
+              document.getElementById('padelScoreModal')
+            ).show();
           }
 
-          const max = Math.max(home, away);
-          const min = Math.min(home, away);
-          const diff = max - min;
+          async function submitPadelScore() {
+            const modal = document.getElementById('padelScoreModal');
+            const mode = modal.dataset.mode;
+            const matchId = document.getElementById('matchId').value;
+            const home = Number(document.getElementById('homeScore').value);
+            const away = Number(document.getElementById('awayScore').value);
 
-          // Menang di 6 harus selisih 2
-          if (max === 6 && diff !== 2) {
-            alert('Skor 6 harus selisih 2 (contoh: 6–4)');
-            return;
-          }
+            if (Number.isNaN(home) || Number.isNaN(away)) {
+              alert('Isi skor yang valid');
+              return;
+            }
 
-          // Menang di 7: 7–5 (diff 2) atau 7–6 (tie-break)
-          if (max === 7 && !(diff === 1 || diff === 2)) {
-            alert('Skor 7 hanya boleh 7–5 atau 7–6');
-            return;
-          }
+            if (home === away) {
+              alert('Skor tidak boleh seri');
+              return;
+            }
 
-          // Tidak boleh skor aneh di bawah 6
-          if (max < 6) {
-            alert('Set belum selesai');
-            return;
-          }
+            if (home > 7 || away > 7) {
+              alert('Skor maksimal adalah 7');
+              return;
+            }
 
-          // Gunakan endpoint yang benar berdasarkan mode
-          let url;
-          if (mode === 'individual') {
-            url = `/subadmin/matches/${matchId}/submit-individual-score`;
-          } else {
-            url = `/subadmin/matches/${matchId}/submit-score`;
-          }
+            const max = Math.max(home, away);
+            const min = Math.min(home, away);
+            const diff = max - min;
 
-          const btnSave = document.querySelector('#padelScoreModal .btn-primary');
-          if (btnSave) {
-            btnSave.disabled = true;
-            const originalHTML = btnSave.innerHTML;
-            btnSave.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Simpan';
-            
+            if (max === 6 && diff !== 2) {
+              alert('Skor 6 harus selisih 2 (contoh: 6–4)');
+              return;
+            }
+
+            if (max === 7 && !(diff === 1 || diff === 2)) {
+              alert('Skor 7 hanya boleh 7–5 atau 7–6');
+              return;
+            }
+
+            if (max < 6) {
+              alert('Set belum selesai');
+              return;
+            }
+
+            const url =
+              mode === 'individual'
+                ? `/subadmin/matches/${matchId}/submit-individual-score`
+                : `/subadmin/matches/${matchId}/submit-score`;
+
+            const btnSave = document.querySelector(
+              '#padelScoreModal .btn-primary'
+            );
+            if (btnSave) {
+              btnSave.disabled = true;
+              btnSave.dataset.orig = btnSave.innerHTML;
+              btnSave.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2"></span>Simpan';
+            }
+
             try {
               const res = await fetch(url, {
                 method: 'POST',
-                headers: { 
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json'
-                },
-                body: JSON.stringify({ 
-                  home_score: home, 
-                  away_score: away 
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  home_score: home,
+                  away_score: away,
+                }),
               });
 
               let data;
-              try { 
-                data = await res.json(); 
-              } catch (e) { 
-                console.error('JSON parse error:', e);
-                data = null; 
+              try {
+                data = await res.json();
+              } catch (e) {
+                data = null;
               }
 
-              console.log('Response:', data);
-
-              if (!res.ok) {
-                const msg = (data && (data.message || data.error)) || 'Gagal menyimpan skor';
-                alert(msg);
+              if (btnSave) {
                 btnSave.disabled = false;
-                btnSave.innerHTML = originalHTML;
-                return;
+                btnSave.innerHTML = btnSave.dataset.orig || 'Simpan';
               }
 
-              if (!data || data.success === false) {
-                alert(data?.message || 'Gagal menyimpan skor');
-                btnSave.disabled = false;
-                btnSave.innerHTML = originalHTML;
+              if (!res.ok || !data || data.success === false) {
+                alert((data && data.message) || 'Gagal menyimpan skor');
                 return;
               }
 
               const finished = !!data.finished;
-
-              // Close modal
               const bsModal = bootstrap.Modal.getInstance(modal);
               if (bsModal) bsModal.hide();
 
-              // Show success message
-              const alertDiv = document.createElement('div');
-              alertDiv.className = 'alert alert-success alert-dismissible fade show';
-              alertDiv.innerHTML = `
-                <i class="bi bi-check-circle-fill"></i>
-                <strong>Berhasil!</strong> ${finished ? 'Match selesai (BO3)' : 'Skor tersimpan — lanjut set berikutnya'}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-              `;
-              
-              document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.matches-header'));
-              
-              // Auto dismiss after 3 seconds
-              setTimeout(() => {
-                alertDiv.remove();
-              }, 3000);
-              
-              // Reload page after 1.5 seconds
-              setTimeout(() => {
-                window.location.reload();
-              }, 1500);
-              
+              const actionBtn = document.querySelector(
+                `button[data-match-id="${matchId}"]`
+              );
+
+              if (finished) {
+                if (actionBtn) {
+                  const parent = actionBtn.parentElement;
+                  const finishedSpan = document.createElement('span');
+                  finishedSpan.className = 'status-badge status-finished';
+                  finishedSpan.innerHTML =
+                    '<i class="bi bi-check-circle me-1"></i> BO3 Selesai';
+                  parent.replaceChild(finishedSpan, actionBtn);
+                }
+                showToast('Match selesai (BO3)', 'success');
+              } else {
+                showToast(
+                  'Skor tersimpan — lanjut set berikutnya',
+                  'success'
+                );
+              }
             } catch (err) {
-              console.error('Fetch error:', err);
-              alert('Terjadi kesalahan jaringan. Silakan coba lagi.');
-              btnSave.disabled = false;
-              btnSave.innerHTML = originalHTML;
+              console.error(err);
+              if (btnSave) {
+                btnSave.disabled = false;
+                btnSave.innerHTML = btnSave.dataset.orig || 'Simpan';
+              }
+              alert('Terjadi kesalahan, coba lagi.');
             }
           }
-        }
-        
-        // Make functions available globally
-        window.openScoreModal = openScoreModal;
-        window.submitPadelScore = submitPadelScore;
-        
-        // Form validation for score inputs
-        const homeScoreInput = document.getElementById('homeScore');
-        const awayScoreInput = document.getElementById('awayScore');
-        
-        if (homeScoreInput && awayScoreInput) {
-          [homeScoreInput, awayScoreInput].forEach(input => {
-            input.addEventListener('input', function() {
-              let value = parseInt(this.value);
-              if (isNaN(value)) value = '';
-              
-              if (value !== '' && (value < 0 || value > 7)) {
-                this.classList.add('is-invalid');
-              } else {
-                this.classList.remove('is-invalid');
-              }
-              
-              // Validate tie condition
-              const otherValue = input === homeScoreInput 
-                ? parseInt(awayScoreInput.value) 
-                : parseInt(homeScoreInput.value);
-              
-              if (!isNaN(value) && !isNaN(otherValue) && value === otherValue) {
-                homeScoreInput.classList.add('is-invalid');
-                awayScoreInput.classList.add('is-invalid');
-              } else {
-                homeScoreInput.classList.remove('is-invalid');
-                awayScoreInput.classList.remove('is-invalid');
-              }
-            });
-          });
-        }
-        
-        // Initialize tooltips
-        if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
-          const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-          tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-          });
-        }
-        
-        // Smooth scroll to top when clicking back button
-        document.querySelectorAll('.btn-back-modern').forEach(btn => {
-          btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            setTimeout(() => {
-              window.location.href = this.href;
-            }, 300);
-          });
-        });
-        
-        // Add visual feedback on filter form submission
-        const filterForm = document.querySelector('.filter-form');
-        if (filterForm) {
-          filterForm.addEventListener('submit', function() {
-            const submitBtn = this.querySelector('.btn-filter');
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menerapkan...';
-            submitBtn.disabled = true;
-          });
-        }
-        
-        // Highlight active filter options
-        const urlParams = new URLSearchParams(window.location.search);
-        const sportId = urlParams.get('sport_id');
-        const order = urlParams.get('order');
-        
-        if (sportId) {
-          const sportSelect = document.querySelector('select[name="sport_id"]');
-          if (sportSelect) {
-            sportSelect.style.borderColor = '#0095FF';
-            sportSelect.style.backgroundColor = '#f0f8ff';
-          }
-        }
-        
-        if (order === 'oldest') {
-          const orderSelect = document.querySelector('select[name="order"]');
-          if (orderSelect) {
-            orderSelect.style.borderColor = '#0095FF';
-            orderSelect.style.backgroundColor = '#f0f8ff';
-          }
-        }
-        
-        // Add keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-          // Ctrl/Cmd + N to add new match
-          if ((e.ctrlKey || e.metaKey) && e.key === 'n' && !isReadOnly) {
-            e.preventDefault();
-            window.location.href = '/subadmin/matches/create';
-          }
-          
-          // Ctrl/Cmd + F to focus on filter
-          if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-            e.preventDefault();
-            const filterInput = document.querySelector('.filter-form select');
-            if (filterInput) filterInput.focus();
-          }
-          
-          // Escape to close modals
-          if (e.key === 'Escape') {
-            const openModal = document.querySelector('.modal.show');
-            if (openModal) {
-              const modalInstance = bootstrap.Modal.getInstance(openModal);
-              if (modalInstance) modalInstance.hide();
-            }
-          }
-        });
-        
-        // Print current date in console (for debugging)
-        console.log('Matches page loaded at:', new Date().toLocaleString('id-ID'));
-        
-      })();
