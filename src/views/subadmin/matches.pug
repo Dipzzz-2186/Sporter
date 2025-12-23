@@ -390,7 +390,7 @@ block content
     }
 
     .matches-table {
-      table-layout: fixed;
+      table-layout: auto;
       width: 100%;
     }
 
@@ -914,6 +914,25 @@ block content
 
       .action-buttons {
         flex-direction: column;
+      }
+    }
+
+    /* ================= MOBILE OPTIMIZATION ================= */
+    @media (max-width: 768px) {
+      .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .matches-table {
+        min-width: 1100px; /* biar scroll, bukan wrap */
+        table-layout: auto;
+      }
+
+      .matches-table th,
+      .matches-table td {
+        white-space: nowrap;
+        vertical-align: middle;
       }
     }
 
