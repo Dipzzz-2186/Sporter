@@ -1,5 +1,6 @@
 // src/controllers/subadmin.controller.js
 const db = require('../config/db');
+const slugify = require('slugify'); 
 const { parseYouTubeEmbed } = require('../utils/media.util'); // helper below
 
 // helper yang menerima user (req.session.user)
