@@ -1131,9 +1131,9 @@ block content
           button.btn-stream-filter(type="button" data-sport="golf")
             i.bi.bi-flag-fill
             span Golf
-          button.btn-stream-filter(type="button" data-sport="running")
+          button.btn-stream-filter(type="button" data-sport="run")
             i.bi.bi-person-running
-            span Lari
+            span Run
           button.btn-stream-filter(type="button" data-sport="padel")
             i.bi.bi-brightness-high-fill
             span Padel
@@ -1269,7 +1269,7 @@ block content
           'Padel': 'bi-brightness-high-fill',
           'Bulu Tangkis': 'bi-brightness-alt-high-fill',
           'Golf': 'bi-flag-fill',
-          'Lari': 'bi-person-running',
+          'Run': 'bi-person-running',
           'Triathlon': 'bi-bicycle',
           'Tenis': 'bi-circle-half',
           'Renang': 'bi-water',
@@ -1397,8 +1397,8 @@ block content
               visibleBySport = sportName.includes('bulu') || sportName.includes('badminton');
             } else if (sport === 'golf') {
               visibleBySport = sportName.includes('golf');
-            } else if (sport === 'running') {
-              visibleBySport = sportName.includes('lari') || sportName.includes('running') || 
+            } else if (sport === 'run') {
+              visibleBySport = sportName.includes('run') || sportName.includes('run') || 
                               sportName.includes('marathon') || sportName.includes('sprint');
             } else if (sport === 'padel') {
               visibleBySport = sportName.includes('padel');

@@ -1080,9 +1080,9 @@ block content
           button.btn-filter(type="button" data-sport="golf")
             i.bi.bi-flag-fill
             span Golf
-          button.btn-filter(type="button" data-sport="running")
+          button.btn-filter(type="button" data-sport="run")
             i.bi.bi-person-running
-            span Lari
+            span Run
           button.btn-filter(type="button" data-sport="padel")
             i.bi.bi-diamond-half
             span Padel
@@ -1217,19 +1217,12 @@ block content
       function getSportIcon(sportName) {
         const icons = {
           'Golf': 'bi-flag-fill',
-          'Lari': 'bi-person-running',
+          'Run': 'bi-person-running',
           'Padel': 'bi-diamond-half',
           'Tenis': 'bi-circle-half',
           'Renang': 'bi-water',
           'Triathlon': 'bi-heart-pulse-fill',
-          'Sepak Bola': 'bi-emoji-angry-fill',
-          'Basket': 'bi-basket2-fill',
           'Bulu Tangkis': 'bi-brightness-alt-high-fill',
-          'Bola Voli': 'bi-circle-fill',
-          'Atletik': 'bi-person-running',
-          'Sepeda': 'bi-bicycle',
-          'Panahan': 'bi-bullseye',
-          'Futsal': 'bi-dribbble'
         };
         
         // Cari icon berdasarkan kata kunci
@@ -1344,8 +1337,8 @@ block content
               shouldShow = true;
             } else if (sport === 'golf') {
               shouldShow = sportName.includes('golf');
-            } else if (sport === 'running') {
-              shouldShow = sportName.includes('lari') || sportName.includes('running') || 
+            } else if (sport === 'run') {
+              shouldShow = sportName.includes('run') || sportName.includes('run') || 
                           sportName.includes('marathon') || sportName.includes('sprint');
             } else if (sport === 'padel') {
               shouldShow = sportName.includes('padel');
