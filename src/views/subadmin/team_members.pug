@@ -413,6 +413,31 @@ block content
       .empty-state-card {
         padding: 2rem 1.5rem;
       }
+
+      .modal-content-fixed {
+        border-radius: 20px;
+        border: none;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .modal-body-scrollable {
+        padding: 2rem;
+        overflow-y: auto;
+        flex: 1 1 auto;
+        max-height: calc(85vh - 180px);
+      }
+      .modal-footer-sticky {
+        padding: 1.5rem 2rem;
+        background: #f8f9fa;
+        border-top: 2px solid #dee2e6;
+        flex-shrink: 0;
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      }
+
     }
 
   // Hero Section
@@ -535,12 +560,15 @@ block content
                     .d-flex.align-items-center.gap-3
                       .member-avatar
                         = m.name.charAt(0).toUpperCase()
-                      a.member-name.text-decoration-none(
-                        href=`/athletes/${m.slug}`
-                        style="color: inherit;"
+                      button.member-name.btn.btn-link.p-0.text-decoration-none(
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editAthleteModal"
+                        data-athlete-id=`${m.athlete_id}`
+                        style="color: inherit; font-weight: 600;"
                       )
                         = m.name
-                        i.bi.bi-box-arrow-up-right.text-muted.ms-2(style="font-size:.85rem;")
+                        i.bi.bi-pencil-square.text-muted.ms-2(style="font-size:.85rem;")
                   td(data-label="Posisi")
                     if m.position
                       span.member-position= m.position
@@ -561,12 +589,73 @@ block content
                         i.bi.bi-trash3
                         span.d-none.d-md-inline Hapus
 
+  //- Edit Athlete Modal (Reusable) - taruh di LUAR if/else
+  .modal.fade#editAthleteModal(tabindex="-1" aria-hidden="true")
+    .modal-dialog.modal-lg
+      .modal-content.modal-content-fixed
+        form#editAthleteForm(method="POST" action="" enctype="multipart/form-data" style="display:flex; flex-direction:column; height:100%;")
+          .modal-header(style="background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%); color:#fff; border-radius:20px 20px 0 0; flex-shrink:0;")
+            h5.modal-title
+              i.bi.bi-pencil-square.me-2
+              | Edit Athlete Profile
+            button.btn-close.btn-close-white(type="button" data-bs-dismiss="modal" aria-label="Close")
+
+          .modal-body.modal-body-scrollable
+            input(type="hidden" name="athlete_id" id="edit_athlete_id")
+
+            .row.g-3
+              .col-md-6
+                label.form-label.fw-semibold Name *
+                input.form-control(type="text" name="name" id="edit_name" required)
+
+              .col-md-6
+                label.form-label.fw-semibold Country Code
+                input.form-control(type="text" name="country_code" id="edit_country_code" placeholder="ID / US / ...")
+
+              .col-md-6
+                label.form-label.fw-semibold Position
+                input.form-control(type="text" name="playing_position" id="edit_playing_position")
+
+              .col-md-6
+                label.form-label.fw-semibold Coach
+                input.form-control(type="text" name="coach" id="edit_coach")
+
+              .col-md-6
+                label.form-label.fw-semibold Born in
+                input.form-control(type="text" name="born_in" id="edit_born_in")
+
+              .col-md-6
+                label.form-label.fw-semibold Height (cm)
+                input.form-control(type="number" min="0" name="height_cm" id="edit_height_cm")
+
+              .col-md-12
+                label.form-label.fw-semibold Biography
+                textarea.form-control(name="bio" id="edit_bio" rows="4")
+
+              .col-md-6
+                label.form-label.fw-semibold Titles
+                input.form-control(type="number" min="0" name="titles" id="edit_titles")
+
+              .col-md-6
+                label.form-label.fw-semibold Race
+                input.form-control(type="text" name="race" id="edit_race")
+
+              .col-md-12
+                label.form-label.fw-semibold Athlete Photo
+                input.form-control(type="file" name="photo" accept="image/*")
+                small.text-muted.d-block.mt-2#edit_current_photo
+
+          .modal-footer.modal-footer-sticky
+            button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Cancel
+            button.btn.btn-primary(type="submit" style="background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%); border:none;")
+              i.bi.bi-check-circle.me-2
+              | Save Changes
   script.
     (function() {
       // Form validation
-      const form = document.querySelector('form');
-      if (form) {
-        form.addEventListener('submit', function(e) {
+      const addMemberForm = document.querySelector('form[action^="/subadmin/teams/"][action$="/members"]');
+      if (addMemberForm) {
+        addMemberForm.addEventListener('submit', function(e) {
           const nameInput = document.getElementById('memberName');
           if (!nameInput.value.trim()) {
             e.preventDefault();
@@ -628,4 +717,59 @@ block content
           }
         }
       });
+
+            // ====== EDIT ATHLETE MODAL (FETCH DATA) ======
+      const editModalEl = document.getElementById('editAthleteModal');
+      const editForm = document.getElementById('editAthleteForm');
+
+      if (editModalEl && editForm) {
+        editModalEl.addEventListener('show.bs.modal', async function (event) {
+          const btn = event.relatedTarget;
+          const athleteId = btn && btn.getAttribute('data-athlete-id');
+          if (!athleteId) return;
+
+          // set action form (submit ke route update)
+          editForm.action = `/subadmin/athletes/${athleteId}`;
+
+          // reset dulu biar gak nyisa data sebelumnya
+          document.getElementById('edit_athlete_id').value = athleteId;
+          document.getElementById('edit_current_photo').textContent = '';
+
+          try {
+            const res = await fetch(`/subadmin/athletes/${athleteId}/json`, {
+              headers: { 'Accept': 'application/json' }
+            });
+            if (!res.ok) throw new Error('Failed fetch athlete');
+
+            const payload = await res.json();
+
+            // support beberapa format: { athlete: {...} } / { data: {...} } / langsung object
+            const a = payload.athlete || payload.data || payload;
+
+            document.getElementById('edit_name').value = a.name ?? '';
+            document.getElementById('edit_country_code').value = a.country_code ?? '';
+            document.getElementById('edit_playing_position').value = a.playing_position ?? '';
+            document.getElementById('edit_coach').value = a.coach ?? '';
+            document.getElementById('edit_born_in').value = a.born_in ?? '';
+            document.getElementById('edit_height_cm').value = a.height_cm ?? '';
+            document.getElementById('edit_bio').value = a.bio ?? '';
+            document.getElementById('edit_titles').value = a.titles ?? '';
+            document.getElementById('edit_race').value = a.race ?? '';
+
+            if (a.photo_url) {
+              document.getElementById('edit_current_photo').innerHTML =
+                `<i class="bi bi-image me-1"></i> Current photo: ${a.photo_url}`;
+            } else {
+              document.getElementById('edit_current_photo').innerHTML =
+                `<i class="bi bi-image me-1"></i> No current photo`;
+            }
+          } catch (err) {
+            console.error(err);
+            // minimal: kasih fallback biar user tau
+            document.getElementById('edit_current_photo').innerHTML =
+              `<span class="text-danger">Gagal load data athlete</span>`;
+          }
+        });
+      }
+
     })();

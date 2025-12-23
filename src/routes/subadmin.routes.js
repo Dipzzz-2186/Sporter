@@ -155,4 +155,7 @@ router.get('/livestreams/:id/edit', subadminCtrl.renderEditLivestream);
 router.post('/livestreams/:id/edit', subadminCtrl.updateLivestream);
 router.post('/livestreams/:id/delete', subadminCtrl.deleteLivestream);
 
+router.get('/athletes/:id/json', subadminCtrl.getAthleteJson);
+
+
 module.exports = router;

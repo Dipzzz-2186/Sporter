@@ -2278,3 +2278,49 @@ exports.deleteLivestream = async (req, res) => {
   req.flash('success', 'Livestream berhasil dihapus');
   res.redirect('/subadmin/livestreams');
 };
+
+// GET /subadmin/athletes/:id/json
+// GET /subadmin/athletes/:id/json
+exports.getAthleteJson = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id) return res.status(400).json({ ok: false, message: 'Invalid id' });
+
+    // Optional: permission sport (kalau subadmin)
+    const allowed = Array.isArray(req.allowedSports) ? req.allowedSports.map(Number) : [];
+
+    const [[a]] = await db.query(
+      `
+      SELECT
+        a.id,
+        a.sport_id,
+        a.name,
+        a.country_code,
+        a.playing_position,
+        a.coach,
+        a.born_in,
+        a.height_cm,
+        a.bio,
+        a.titles,
+        a.race,
+        a.photo_url
+      FROM athletes a
+      WHERE a.id = ?
+      LIMIT 1
+      `,
+      [id]
+    );
+
+    if (!a) return res.status(404).json({ ok: false, message: 'Not found' });
+
+    // kalau subadmin: cek akses sport
+    if (req.session.user.role === 'subadmin' && allowed.length && !allowed.includes(Number(a.sport_id))) {
+      return res.status(403).json({ ok: false, message: 'Forbidden' });
+    }
+
+    return res.json({ ok: true, athlete: a });
+  } catch (err) {
+    console.error('getAthleteJson error:', err);
+    return res.status(500).json({ ok: false, message: 'Server error' });
+  }
+};
