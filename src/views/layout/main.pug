@@ -754,22 +754,21 @@ html(lang="id")
           .col-lg-3.col-md-6
             h5.text-white.fw-bold.mb-3 Cabang Populer
             ul.footer-links
-              li
-                a(href="/sports/sepakbola")
-                  i.bi.bi-dribbble
-                  | Sepak Bola
-              li
-                a(href="/sports/basket")
-                  i.bi.bi-basketball
-                  | Basket
-              li
-                a(href="/sports/badminton")
-                  i.bi.bi-lightning-fill
-                  | Badminton
-              li
-                a(href="/sports/voli")
-                  i.bi.bi-circle-fill
-                  | Voli
+              - const list = (allowedSports && allowedSports.length) ? allowedSports : (allSports || []);
+              - const top = list.slice(0, 4);
+
+              if !top.length
+                li
+                  a(href="/sports")
+                    i.bi.bi-chevron-right
+                    | Lihat semua cabang
+              else
+                each s in top
+                  li
+                    a(href=`/sports/${s.slug || s.id}`)
+                      i.bi.bi-dribbble
+                      | #{s.name}
+
           
           .col-lg-3.col-md-6
             h5.text-white.fw-bold.mb-3 Kontak
