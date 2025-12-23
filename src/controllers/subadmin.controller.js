@@ -549,7 +549,10 @@ exports.createNews = async (req, res) => {
 
 exports.renderCreateMatch = async (req, res) => {
   try {
+    
     const sports = await loadSportsList(req.session.user);
+    const defaultSportId = (sports && sports.length) ? Number(sports[0].id) : null;
+    const isSingleSport = (req.session.user.role === 'subadmin' && (sports || []).length === 1);
     const allowedSportIds = (sports || []).map(s => Number(s.id)).filter(Boolean);
 
     const hasIsIndividual = await columnExists('teams', 'is_individual');
@@ -603,6 +606,8 @@ exports.renderCreateMatch = async (req, res) => {
       venues,
       match_mode,
       hasIsIndividual,
+      defaultSportId,     // ✅ tambah
+      isSingleSport 
     });
   } catch (err) {
     console.error('renderCreateMatch error', err);

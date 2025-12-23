@@ -417,10 +417,11 @@ block content
                     | Cabang Olahraga
                     span.required-indicator *
                   select.form-select#sport_id(name="sport_id" required)
-                    option(value="" selected disabled) -- Pilih cabang olahraga --
+                    option(value="" disabled selected=!defaultSportId) -- Pilih cabang olahraga --
                     if sports && sports.length
                       each s in sports
-                        option(value=s.id)= s.name
+                        option(value=s.id selected=(Number(defaultSportId)===Number(s.id)))= s.name
+
                   small.form-text
                     i.bi.bi-info-circle
                     | Pilih cabang olahraga yang sesuai
@@ -723,6 +724,9 @@ block content
 
   //- Main JavaScript
   script.
+    window.__DEFAULT_SPORT_ID__ = "#{defaultSportId || ''}";
+    window.__IS_SINGLE_SPORT__ = #{isSingleSport ? 'true' : 'false'};
+  
     (function() {
       'use strict';
       
