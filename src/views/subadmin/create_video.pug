@@ -632,43 +632,6 @@ block content
                   | URL Terdeteksi
                 .url-preview-content
 
-          //- Section 4: Schedule
-          .video-form-section
-            .section-title
-              i.bi.bi-clock
-              | Jadwal (Opsional)
-            .section-description
-              | Atur waktu mulai dan berakhir untuk livestream atau jadwal tayang.
-            
-            .row.g-3
-              .col-md-6
-                .mb-3
-                  label.form-label(for="start_time")
-                    i.bi.bi-clock
-                    | Waktu Mulai
-                    span.badge Opsional
-                  input.form-control#start_time(
-                    type="datetime-local"
-                    name="start_time"
-                  )
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Untuk livestream atau jadwal tayang
-              
-              .col-md-6
-                .mb-3
-                  label.form-label(for="end_time")
-                    i.bi.bi-clock-history
-                    | Waktu Berakhir
-                    span.badge Opsional
-                  input.form-control#end_time(
-                    type="datetime-local"
-                    name="end_time"
-                  )
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Estimasi waktu selesai
-
           //- Action Buttons
           .form-actions
             button.btn.btn-submit(type="submit")
