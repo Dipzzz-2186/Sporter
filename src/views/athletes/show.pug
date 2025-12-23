@@ -16,15 +16,14 @@ block content
       padding: 0; 
     }
     
-    /* Hero Section - Enhanced */
-    .hero-wrapper {
-      background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 50%, #0B1F3F 100%);
+    /* Header Section - SEJAJAR */
+    .header-section {
+      background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%);
+      padding: 3rem 0;
       position: relative;
       overflow: hidden;
-      padding: 3rem 0 4rem;
-      margin-bottom: -3rem;
     }
-    .hero-wrapper::before {
+    .header-section::before {
       content: '';
       position: absolute;
       top: -50%;
@@ -33,31 +32,21 @@ block content
       height: 600px;
       background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
       border-radius: 50%;
-      animation: pulse 8s ease-in-out infinite;
-    }
-    .hero-wrapper::after {
-      content: '';
-      position: absolute;
-      bottom: -30%;
-      left: -5%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.15; }
-      50% { transform: scale(1.1); opacity: 0.25; }
     }
     
-    .hero-content {
+    /* Header Content Grid - SEJAJAR */
+    .header-grid {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 2rem;
+      align-items: center;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
     
     /* Rank Badge */
     .rank-badge {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       width: 100px;
@@ -86,36 +75,35 @@ block content
       margin-top: 15px;
     }
     
-    /* Avatar */
+    /* Avatar - SEJAJAR */
     .athlete-avatar {
-      width: 220px;
-      height: 220px;
-      border-radius: 24px;
+      width: 200px;
+      height: 200px;
+      border-radius: 20px;
       object-fit: cover;
-      border: 4px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
       background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-      transition: transform 0.3s ease;
-    }
-    .athlete-avatar:hover {
-      transform: scale(1.05);
     }
     .avatar-placeholder {
-      width: 220px;
-      height: 220px;
-      border-radius: 24px;
+      width: 200px;
+      height: 200px;
+      border-radius: 20px;
       background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-      border: 4px solid rgba(255, 255, 255, 0.2);
+      border: 4px solid rgba(255, 255, 255, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
     }
     
-    /* Name & Title */
+    /* Center Content - SEJAJAR */
+    .center-content {
+      padding: 0 1.5rem;
+    }
     .athlete-name {
       font-weight: 900;
-      font-size: 2.8rem;
-      margin: 0;
+      font-size: 2.5rem;
+      margin: 0 0 1rem 0;
       color: #fff;
       text-shadow: 0 2px 10px rgba(0,0,0,0.2);
       line-height: 1.2;
@@ -126,7 +114,7 @@ block content
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
-      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
     }
     .meta-badge {
       display: inline-flex;
@@ -150,12 +138,12 @@ block content
       font-size: 1.1rem;
     }
     
-    /* Quick Stats Cards - FIXED LAYOUT */
-    .quick-stats {
+    /* Quick Stats - SEJAJAR */
+    .quick-stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
-      margin-top: 2rem;
+      margin-top: 1rem;
     }
     .quick-stat-card {
       background: rgba(255, 255, 255, 0.12);
@@ -190,7 +178,7 @@ block content
       font-weight: 700;
       font-size: 1rem;
       text-align: right;
-      min-width: 60px;
+      min-width: 80px;
     }
     
     /* Edit Button */
@@ -202,6 +190,7 @@ block content
       padding: 0.5rem 1.25rem;
       border-radius: 10px;
       transition: all 0.3s ease;
+      margin-top: 1rem;
     }
     .btn-edit-athlete:hover {
       background: rgba(255, 255, 255, 0.3);
@@ -210,26 +199,23 @@ block content
       transform: translateY(-2px);
     }
     
-    /* Stats Grid - FIXED ALIGNMENT */
+    /* Stats Grid - SEJAJAR */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1.5rem;
-      margin-top: -3rem;
-      position: relative;
-      z-index: 2;
+      margin: 2rem auto 0;
+      max-width: 1200px;
       padding: 0 1.5rem;
     }
     .stat-card {
       background: #fff;
       border-radius: 20px;
-      padding: 1.75rem 1.5rem;
+      padding: 2rem 1.5rem;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
       border: 1px solid #f0f0f0;
       transition: all 0.3s ease;
       text-align: center;
-      position: relative;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -267,8 +253,6 @@ block content
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 0.5rem;
-      text-align: center;
-      width: 100%;
     }
     .stat-value {
       font-weight: 900;
@@ -276,23 +260,24 @@ block content
       color: #0B1F3F;
       line-height: 1;
       margin-bottom: 0.25rem;
-      text-align: center;
     }
     .stat-subtext {
       font-size: 0.75rem;
       color: #6c757d;
       margin-top: 0.5rem;
       font-weight: 500;
-      text-align: center;
-      width: 100%;
     }
     
-    /* Content Cards - FIXED GRID */
+    /* Content Grid - SEJAJAR */
+    .content-container {
+      max-width: 1200px;
+      margin: 3rem auto 5rem;
+      padding: 0 1.5rem;
+    }
     .content-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 2rem;
-      margin-top: 4rem;
     }
     .content-card {
       background: #fff;
@@ -332,50 +317,15 @@ block content
       margin: 0;
     }
     
-    /* Table Styling */
-    .custom-table {
-      width: 100%;
-      margin: 0;
-    }
-    .custom-table thead th {
-      background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%);
-      color: #fff;
-      border: none;
-      padding: 1rem 1rem;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 700;
-      white-space: nowrap;
-      text-align: left;
-    }
-    .custom-table thead th.text-center {
-      text-align: center;
-    }
-    .custom-table thead th:first-child {
-      border-top-left-radius: 12px;
-    }
-    .custom-table thead th:last-child {
-      border-top-right-radius: 12px;
-    }
-    .custom-table tbody td {
-      padding: 1rem 1rem;
-      border-bottom: 1px solid #f0f0f0;
-      vertical-align: middle;
+    /* Bio Section */
+    .bio-text {
+      font-size: 1rem;
+      line-height: 1.8;
       color: #495057;
-      font-size: 0.9rem;
-    }
-    .custom-table tbody td.text-center {
-      text-align: center;
-    }
-    .custom-table tbody tr:hover {
-      background: #f8f9fa;
-    }
-    .custom-table tbody tr:last-child td {
-      border-bottom: none;
+      margin-bottom: 0;
     }
     
-    /* Badges */
+    /* Info Badges */
     .info-badge {
       display: inline-flex;
       align-items: center;
@@ -392,20 +342,52 @@ block content
       color: #0B1F3F;
     }
     
-    /* Bio Section */
-    .bio-text {
-      font-size: 1rem;
-      line-height: 1.8;
-      color: #495057;
-      margin-bottom: 0;
-    }
-    
     /* Points History Card */
     .points-history-card {
       grid-column: span 2;
+      margin-top: 1rem;
     }
     
-    /* Modal Fixes */
+    /* Table Styling */
+    .custom-table {
+      width: 100%;
+      margin: 0;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .custom-table thead th {
+      background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%);
+      color: #fff;
+      border: none;
+      padding: 1rem 1rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-align: left;
+    }
+    .custom-table thead th:first-child {
+      border-top-left-radius: 12px;
+    }
+    .custom-table thead th:last-child {
+      border-top-right-radius: 12px;
+    }
+    .custom-table tbody td {
+      padding: 1rem 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: middle;
+      color: #495057;
+      font-size: 0.9rem;
+    }
+    .custom-table tbody tr:hover {
+      background: #f8f9fa;
+    }
+    .custom-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    /* Modal */
     .modal-content-fixed {
       border-radius: 20px;
       border: none;
@@ -432,46 +414,45 @@ block content
     
     /* Responsive */
     @media (max-width: 1200px) {
+      .header-grid {
+        grid-template-columns: auto 1fr;
+      }
+      .header-grid .avatar-container {
+        grid-column: span 2;
+        justify-self: center;
+        margin-top: 2rem;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .header-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .rank-badge {
+        margin: 0 auto;
+      }
+      .center-content {
+        text-align: center;
+        padding: 0;
+      }
+      .meta-badges {
+        justify-content: center;
+      }
+      .header-grid .avatar-container {
+        grid-column: auto;
+        margin-top: 0;
+      }
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
       }
-    }
-    
-    @media (max-width: 991px) {
-      .hero-wrapper { 
-        padding: 2rem 0 3rem; 
-        margin-bottom: -2rem;
-      }
-      .athlete-name { 
-        font-size: 2rem; 
-      }
-      .athlete-avatar, .avatar-placeholder { 
-        width: 160px; 
-        height: 160px; 
-      }
-      .rank-badge { 
-        width: 80px; 
-        height: 80px; 
-      }
-      .rank-number { 
-        font-size: 2.2rem; 
-      }
-      .stats-grid { 
-        grid-template-columns: repeat(2, 1fr); 
-        margin-top: -2rem; 
-        padding: 0 1rem;
-      }
-      .stat-value { 
-        font-size: 1.8rem; 
-      }
-      .quick-stats { 
-        grid-template-columns: 1fr; 
-      }
       .content-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
-        margin-top: 2rem;
       }
       .points-history-card {
         grid-column: span 1;
@@ -479,128 +460,132 @@ block content
     }
     
     @media (max-width: 768px) {
-      .athlete-name { 
-        font-size: 1.6rem; 
+      .header-section {
+        padding: 2rem 0;
       }
-      .hero-content .row {
-        flex-direction: column;
+      .athlete-name {
+        font-size: 2rem;
       }
-      .hero-content .col-lg-4 {
-        margin-top: 2rem;
-        text-align: center !important;
+      .athlete-avatar, .avatar-placeholder {
+        width: 150px;
+        height: 150px;
       }
-      .stats-grid { 
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
+      .rank-badge {
+        width: 80px;
+        height: 80px;
+      }
+      .rank-number {
+        font-size: 2.2rem;
+      }
+      .quick-stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
       }
       .stat-card {
-        padding: 1.5rem 1rem;
+        padding: 1.5rem;
       }
       .stat-value {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
       }
     }
     
-    @media (max-width: 575px) {
-      .stats-grid { 
-        grid-template-columns: 1fr; 
+    @media (max-width: 576px) {
+      .athlete-name {
+        font-size: 1.8rem;
       }
-      .content-card { 
-        padding: 1.5rem; 
+      .content-card {
+        padding: 1.5rem;
       }
-      .card-title { 
-        font-size: 1.25rem; 
+      .card-title {
+        font-size: 1.3rem;
       }
-      .modal-body-scrollable { 
-        padding: 1.5rem; 
-      }
-      .modal-footer-sticky { 
-        padding: 1rem 1.5rem; 
-      }
-      .quick-stat-label,
-      .quick-stat-value {
-        font-size: 0.9rem;
+      .meta-badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
       }
     }
 
   .athlete-page
-    //- Hero Section
-    .hero-wrapper
+    //- Header Section - SEJAJAR
+    .header-section
       .container
-        .hero-content
-          .row.g-4.align-items-center
-            .col-lg-8
-              .d-flex.align-items-start.gap-3.gap-md-4
-                .rank-badge
-                  .rank-number #{rank || '-'}
-                
-                .flex-grow-1
-                  h1.athlete-name= athlete.name
-                  
-                  if isSubadmin
-                    .mt-3
-                      button.btn.btn-edit-athlete(
-                        type="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editAthleteModal"
-                      )
-                        i.bi.bi-pencil-square.me-2
-                        | Edit Profile
-                  
-                  .meta-badges
-                    .meta-badge
-                      i.bi.bi-flag-fill
-                      span= athlete.country_code || 'N/A'
-                    .meta-badge
-                      i.bi.bi-trophy-fill
-                      span #{athlete.points || 0} Points
-                    if athlete.playing_position
-                      .meta-badge
-                        i.bi.bi-diagram-3-fill
-                        span= athlete.playing_position
-                    if athlete.paired_with_name
-                      .meta-badge
-                        i.bi.bi-people-fill
-                        span
-                          | Partner: 
-                          if athlete.paired_with_slug
-                            a.text-white.text-decoration-underline(href=`/athletes/${athlete.paired_with_slug}`)= athlete.paired_with_name
-                          else
-                            | #{athlete.paired_with_name}
-              
-              .quick-stats
-                .quick-stat-card
-                  .quick-stat-row
-                    span.quick-stat-label
-                      i.bi.bi-calendar3.me-2
-                      | Born
-                    span.quick-stat-value= athlete.born_in || '-'
-                  .quick-stat-row
-                    span.quick-stat-label
-                      i.bi.bi-person-badge.me-2
-                      | Coach
-                    span.quick-stat-value= athlete.coach || '-'
-                
-                .quick-stat-card
-                  .quick-stat-row
-                    span.quick-stat-label
-                      i.bi.bi-rulers.me-2
-                      | Height
-                    span.quick-stat-value= athlete.height_cm ? `${athlete.height_cm} cm` : '-'
-                  .quick-stat-row
-                    span.quick-stat-label
-                      i.bi.bi-star-fill.me-2
-                      | Best Rank
-                    span.quick-stat-value= athlete.best_rank || '-'
+        .header-grid
+          //- Rank Badge (Kiri)
+          .rank-container
+            .rank-badge
+              .rank-number #{rank || '-'}
+          
+          //- Center Content (Tengah)
+          .center-content
+            h1.athlete-name= athlete.name
             
-            .col-lg-4.text-center.text-lg-end
-              if photo
-                img.athlete-avatar(src=photo, alt=athlete.name)
-              else
-                .avatar-placeholder.mx-auto
-                  i.bi.bi-person-circle(style='font-size: 6rem; opacity: 0.5; color: rgba(255,255,255,0.6);')
+            .meta-badges
+              .meta-badge
+                i.bi.bi-flag-fill
+                span= athlete.country_code || 'N/A'
+              .meta-badge
+                i.bi.bi-trophy-fill
+                span #{athlete.points || 0} Points
+              if athlete.playing_position
+                .meta-badge
+                  i.bi.bi-diagram-3-fill
+                  span= athlete.playing_position
+              if athlete.paired_with_name
+                .meta-badge
+                  i.bi.bi-people-fill
+                  span
+                    | Partner: 
+                    if athlete.paired_with_slug
+                      a.text-white.text-decoration-underline(href=`/athletes/${athlete.paired_with_slug}`)= athlete.paired_with_name
+                    else
+                      | #{athlete.paired_with_name}
+            
+            .quick-stats-grid
+              .quick-stat-card
+                .quick-stat-row
+                  span.quick-stat-label
+                    i.bi.bi-calendar3.me-2
+                    | Born
+                  span.quick-stat-value= athlete.born_in || '-'
+                .quick-stat-row
+                  span.quick-stat-label
+                    i.bi.bi-person-badge.me-2
+                    | Coach
+                  span.quick-stat-value= athlete.coach || '-'
+              
+              .quick-stat-card
+                .quick-stat-row
+                  span.quick-stat-label
+                    i.bi.bi-rulers.me-2
+                    | Height
+                  span.quick-stat-value= athlete.height_cm ? `${athlete.height_cm} cm` : '-'
+                .quick-stat-row
+                  span.quick-stat-label
+                    i.bi.bi-star-fill.me-2
+                    | Best Rank
+                  span.quick-stat-value= athlete.best_rank || '-'
+            
+            if isSubadmin
+              button.btn.btn-edit-athlete(
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#editAthleteModal"
+              )
+                i.bi.bi-pencil-square.me-2
+                | Edit Profile
+          
+          //- Avatar (Kanan)
+          .avatar-container
+            if photo
+              img.athlete-avatar(src=photo, alt=athlete.name)
+            else
+              .avatar-placeholder
+                i.bi.bi-person-circle(style='font-size: 5rem; opacity: 0.5; color: rgba(255,255,255,0.6);')
     
-    //- Stats Grid - FIXED ALIGNMENT
+    //- Stats Grid - SEJAJAR
     .container
       .stats-grid
         .stat-card
@@ -628,8 +613,8 @@ block content
           .stat-label Effectiveness
           .stat-value #{eff}%
     
-    //- Content Section - FIXED GRID LAYOUT
-    .container.mt-5.pb-5
+    //- Content Section - SEJAJAR
+    .content-container
       .content-grid
         //- Player Profile Card
         .content-card
@@ -683,8 +668,8 @@ block content
           else
             p.text-muted.mb-0.fst-italic No tournament points data available.
       
-      //- Points History Card - FULL WIDTH
-      .content-card.points-history-card.mt-4
+      //- Points History Card
+      .content-card.points-history-card
         .card-header-custom
           .card-icon
             i.bi.bi-clock-history
