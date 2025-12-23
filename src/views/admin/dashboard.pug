@@ -464,6 +464,15 @@ block content
       flex-shrink: 0;
     }
 
+    /* Icon di card header TANPA animasi */
+    .admin-content-card .card-header h5 i {
+      color: var(--primary);
+      font-size: 1.3rem;
+      /* Non-aktifkan animasi */
+      animation: none !important;
+      transition: none !important;
+    }
+
     .admin-content-card .card-header h5 {
       color: var(--secondary);
       font-weight: 700;
@@ -473,11 +482,8 @@ block content
       gap: 0.75rem;
       margin: 0;
       letter-spacing: 0.5px;
-    }
-
-    .admin-content-card .card-header i {
-      color: var(--primary);
-      font-size: 1.3rem;
+      /* Non-aktifkan animasi */
+      animation: none;
     }
 
     .admin-content-card .card-header a {
@@ -613,7 +619,6 @@ block content
       border: none;
       border-bottom: 1px solid var(--gray-200);
       padding: 1.25rem;
-      transition: all 0.3s;
       text-decoration: none;
       display: flex;
       justify-content: space-between;
@@ -621,26 +626,15 @@ block content
       position: relative;
     }
 
+    /* Hapus animasi hover dari news list */
     .news-list-item::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 3px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      transform: scaleY(0);
-      transition: transform 0.3s ease;
-    }
-
-    .news-list-item:hover::before {
-      transform: scaleY(1);
+      display: none; /* Hapus animasi garis kiri */
     }
 
     .news-list-item:hover {
-      background: linear-gradient(90deg, rgba(0, 149, 255, 0.03) 0%, transparent 100%);
-      transform: translateX(5px);
-      border-radius: 8px;
+      background: none; /* Hapus background hover */
+      transform: none; /* Hapus transform hover */
+      border-radius: 0; /* Hapus border radius hover */
     }
 
     .news-list-item:last-child {
@@ -652,7 +646,6 @@ block content
       font-weight: 600;
       font-size: 0.95rem;
       margin-bottom: 0.5rem;
-      transition: color 0.3s;
       line-height: 1.4;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -660,8 +653,9 @@ block content
       overflow: hidden;
     }
 
+    /* Hapus efek hover pada judul berita */
     .news-list-item:hover h6 {
-      color: var(--primary);
+      color: var(--secondary); /* Tetap warna asli */
     }
 
     .news-list-item .badge {
@@ -674,6 +668,15 @@ block content
       font-size: 0.7rem;
       margin-bottom: 0.5rem;
       display: inline-block;
+    }
+
+    /* Icon di news list TANPA animasi */
+    .news-list-item small i {
+      color: var(--gray-500);
+      font-size: 0.8rem;
+      /* Non-aktifkan animasi */
+      animation: none !important;
+      transition: none !important;
     }
 
     .news-list-item small {
@@ -691,14 +694,14 @@ block content
       object-fit: cover;
       border-radius: 10px;
       border: 2px solid var(--gray-200);
-      transition: all 0.3s ease;
       flex-shrink: 0;
     }
 
+    /* Hapus animasi hover pada video thumb */
     .list-group-item:hover .video-thumb {
-      border-color: var(--primary);
-      transform: scale(1.08);
-      box-shadow: var(--shadow-sm);
+      border-color: var(--gray-200); /* Tetap warna asli */
+      transform: none; /* Hapus scale */
+      box-shadow: none; /* Hapus shadow */
     }
 
     /* ========== IMPROVED TICKET BADGE ========== */
@@ -735,7 +738,7 @@ block content
       align-items: center;
       justify-content: center;
       margin: 0 auto 1.25rem;
-      animation: float 3s ease-in-out infinite;
+      animation: none;
       border: 2px solid var(--gray-200);
     }
 
@@ -788,12 +791,12 @@ block content
       border: none;
       border-bottom: 1px solid var(--gray-200);
       padding: 1.25rem;
-      transition: all 0.3s ease;
     }
 
+    /* Hapus animasi hover dari list group items */
     .list-group-item:hover {
-      background: linear-gradient(90deg, rgba(0, 149, 255, 0.03) 0%, transparent 100%);
-      transform: translateX(3px);
+      background: none;
+      transform: none;
     }
 
     .list-group-item:last-child {
@@ -1419,40 +1422,7 @@ block content
         });
       }
 
-      // Add card hover animations
-      const cards = document.querySelectorAll('.admin-content-card');
-      cards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
-        
-        // Add ripple effect on click
-        card.addEventListener('click', function(e) {
-          if(e.target.tagName === 'A' || e.target.closest('a')) return;
-          
-          const ripple = document.createElement('div');
-          const rect = this.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          
-          ripple.style.cssText = `
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: rgba(0, 149, 255, 0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: ripple 0.6s linear;
-            pointer-events: none;
-            top: ${y}px;
-            left: ${x}px;
-            z-index: 1;
-          `;
-          
-          this.appendChild(ripple);
-          setTimeout(() => ripple.remove(), 600);
-        });
-      });
-
-      // Add CSS for ripple animation
+      // Add CSS for ripple animation (dihapus karena tidak diperlukan)
       const style = document.createElement('style');
       style.textContent = `
         @keyframes ripple {
@@ -1476,19 +1446,6 @@ block content
             }
           }, 300);
         }, 5000);
-      });
-
-      // Add table row animations
-      const tableRows = document.querySelectorAll('.admin-table tbody tr');
-      tableRows.forEach((row, index) => {
-        row.style.opacity = '0';
-        row.style.transform = 'translateX(-10px)';
-        row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-        
-        setTimeout(() => {
-          row.style.opacity = '1';
-          row.style.transform = 'translateX(0)';
-        }, index * 50);
       });
 
     })();

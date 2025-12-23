@@ -1125,18 +1125,6 @@ block content
           button.btn-stream-filter.active(type="button" data-filter="all")
             i.bi.bi-grid-fill
             span Semua Siaran
-          button.btn-stream-filter(type="button" data-filter="live")
-            i.bi.bi-broadcast
-            span Sedang Tayang
-          button.btn-stream-filter(type="button" data-filter="upcoming")
-            i.bi.bi-clock
-            span Akan Datang
-          button.btn-stream-filter(type="button" data-sport="football")
-            i.bi.bi-emoji-angry-fill
-            span Sepak Bola
-          button.btn-stream-filter(type="button" data-sport="basketball")
-            i.bi.bi-basket2-fill
-            span Basket
           button.btn-stream-filter(type="button" data-sport="badminton")
             i.bi.bi-brightness-alt-high-fill
             span Bulu Tangkis
@@ -1278,16 +1266,13 @@ block content
       // Helper function untuk icon olahraga
       function getSportIcon(sportName) {
         const icons = {
-          'Sepak Bola': 'bi-emoji-angry-fill',
-          'Basket': 'bi-basket2-fill',
+          'Padel': 'bi-brightness-high-fill',
           'Bulu Tangkis': 'bi-brightness-alt-high-fill',
+          'Golf': 'bi-flag-fill',
+          'Lari': 'bi-person-running',
+          'Triathlon': 'bi-bicycle',
           'Tenis': 'bi-circle-half',
-          'Bola Voli': 'bi-circle-fill',
           'Renang': 'bi-water',
-          'Atletik': 'bi-person-running',
-          'Sepeda': 'bi-bicycle',
-          'Panahan': 'bi-bullseye',
-          'Futsal': 'bi-dribbble'
         };
         return icons[sportName] || 'bi-trophy-fill';
       }
@@ -1387,6 +1372,7 @@ block content
           const sport = activeButton ? activeButton.getAttribute('data-sport') : null;
           
           streamCards.forEach(function(card) {
+            const col = card.closest('.col-md-6.col-lg-4');
             const isLive = card.classList.contains('live-now');
             const sportBadge = card.querySelector('.stream-sport-badge');
             const sportName = sportBadge ? sportBadge.textContent.toLowerCase() : '';
@@ -1425,16 +1411,14 @@ block content
             }
             
             if (visibleByStatus && visibleBySport) {
-              card.style.display = 'block';
-              setTimeout(() => {
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-              }, 50);
+              if (col) col.style.display = '';
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
             } else {
               card.style.opacity = '0';
               card.style.transform = 'translateY(20px)';
               setTimeout(() => {
-                card.style.display = 'none';
+                if (col) col.style.display = 'none';
               }, 300);
             }
           });

@@ -1283,26 +1283,27 @@ block content
         const videoCountElement = document.getElementById('video-count');
         
         function updateVideoCount() {
-          const visibleCards = document.querySelectorAll('.sporter-video-card:not([style*="display: none"])');
+          // Count visible columns (cards' column wrappers) so layout collapses correctly
+          const visibleCols = document.querySelectorAll('.row.g-4 .col-md-6.col-lg-4:not([style*="display: none"])');
           
           if (videoCountElement) {
             const countSpan = videoCountElement.querySelector('span');
             if (countSpan) {
-              countSpan.textContent = `${visibleCards.length} Video`;
+              countSpan.textContent = `${visibleCols.length} Video`;
             }
           }
           
           // Update stats cards
-          animateCounter('.stats-card:nth-child(1) .stats-value', visibleCards.length);
+          animateCounter('.stats-card:nth-child(1) .stats-value', visibleCols.length);
           
-          const totalDuration = visibleCards.length > 0 ? 
-            Math.floor(visibleCards.length * 30) : 0;
+          const totalDuration = visibleCols.length > 0 ? 
+            Math.floor(visibleCols.length * 30) : 0;
           animateCounter('.stats-card:nth-child(2) .stats-value', totalDuration);
           
-          const totalViews = visibleCards.length * 1250;
+          const totalViews = visibleCols.length * 1250;
           animateCounter('.stats-card:nth-child(3) .stats-value', totalViews);
           
-          const tournaments = Math.max(1, Math.floor(visibleCards.length / 3));
+          const tournaments = Math.max(1, Math.floor(visibleCols.length / 3));
           animateCounter('.stats-card:nth-child(4) .stats-value', tournaments);
         }
         
@@ -1333,6 +1334,7 @@ block content
           const sport = activeButton ? activeButton.getAttribute('data-sport') : 'all';
           
           videoCards.forEach(function(card) {
+            const col = card.closest('.col-md-6.col-lg-4');
             const sportBadge = card.querySelector('.video-sport-badge');
             const sportName = sportBadge ? sportBadge.textContent.toLowerCase() : '';
             
@@ -1357,16 +1359,14 @@ block content
             }
             
             if (shouldShow) {
-              card.style.display = 'block';
-              setTimeout(() => {
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-              }, 50);
+              if (col) col.style.display = '';
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
             } else {
               card.style.opacity = '0';
               card.style.transform = 'translateY(20px)';
               setTimeout(() => {
-                card.style.display = 'none';
+                if (col) col.style.display = 'none';
               }, 300);
             }
           });
