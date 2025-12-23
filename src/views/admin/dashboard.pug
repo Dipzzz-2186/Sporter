@@ -37,7 +37,7 @@ block content
       position: relative;
     }
 
-    /* ========== HEADER IMPROVED (Subadmin Reference Style) ========== */
+    /* ========== IMPROVED HEADER ========== */
     .admin-header-wrapper {
       position: relative;
       margin-bottom: 2.5rem;
@@ -329,10 +329,10 @@ block content
       line-height: 1.2;
     }
 
-    /* ========== STATS CARDS (Tetap sama) ========== */
+    /* ========== IMPROVED STATS CARDS ========== */
     .admin-stat-card {
       background: white;
-      border-radius: 24px;
+      border-radius: 22px;
       border: 2px solid var(--gray-200);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       overflow: hidden;
@@ -340,6 +340,9 @@ block content
       position: relative;
       height: 100%;
       box-shadow: var(--shadow-md);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
     }
 
     .admin-stat-card::before {
@@ -348,10 +351,11 @@ block content
       top: 0;
       left: 0;
       right: 0;
-      height: 5px;
+      height: 4px;
       background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
       transform: scaleX(0);
       transition: transform 0.4s;
+      transform-origin: left;
     }
 
     .admin-stat-card:hover::before {
@@ -359,38 +363,55 @@ block content
     }
 
     .admin-stat-card:hover {
-      transform: translateY(-10px);
+      transform: translateY(-8px);
       box-shadow: var(--shadow-xl);
       border-color: var(--primary);
     }
 
-    .admin-stat-card .card-body {
-      padding: 2.5rem 2rem;
-    }
-
     .stat-icon-wrapper {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(0, 149, 255, 0.2) 100%);
-      border-radius: 20px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(0, 149, 255, 0.15) 100%);
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 1.5rem;
       transition: all 0.4s;
       border: 2px solid rgba(0, 149, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-icon-wrapper::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transform: rotate(45deg);
+      animation: shine 3s ease-in-out infinite;
+    }
+
+    @keyframes shine {
+      0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
     }
 
     .admin-stat-card:hover .stat-icon-wrapper {
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      transform: rotate(15deg) scale(1.1);
+      transform: rotate(10deg) scale(1.1);
       border-color: var(--primary);
     }
 
     .stat-icon {
-      font-size: 2rem;
+      font-size: 1.8rem;
       color: var(--primary);
       transition: color 0.4s;
+      position: relative;
+      z-index: 1;
     }
 
     .admin-stat-card:hover .stat-icon {
@@ -399,15 +420,16 @@ block content
 
     .stat-label {
       color: var(--gray-600);
-      font-size: 0.95rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
       display: block;
+      letter-spacing: 0.3px;
     }
 
     .stat-number {
       font-family: 'Bebas Neue', cursive;
-      font-size: 3rem;
+      font-size: 2.5rem;
       color: var(--secondary);
       letter-spacing: 1px;
       margin: 0;
@@ -415,43 +437,47 @@ block content
       line-height: 1;
     }
 
-    /* ========== CONTENT CARDS (Tetap sama) ========== */
+    /* ========== IMPROVED CONTENT CARDS ========== */
     .admin-content-card {
       background: white;
-      border-radius: 24px;
+      border-radius: 22px;
       border: 2px solid var(--gray-200);
       overflow: hidden;
       animation: fadeInUp 0.6s ease-out backwards;
       height: 100%;
       box-shadow: var(--shadow-md);
       transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
     }
 
     .admin-content-card:hover {
       box-shadow: var(--shadow-lg);
-      border-color: var(--gray-300);
-      transform: translateY(-3px);
+      border-color: var(--primary);
+      transform: translateY(-5px);
     }
 
     .admin-content-card .card-header {
       background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
       border-bottom: 2px solid var(--gray-200);
-      padding: 1.75rem 2rem;
+      padding: 1.5rem 1.75rem;
+      flex-shrink: 0;
     }
 
     .admin-content-card .card-header h5 {
       color: var(--secondary);
       font-weight: 700;
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       display: flex;
       align-items: center;
       gap: 0.75rem;
       margin: 0;
+      letter-spacing: 0.5px;
     }
 
     .admin-content-card .card-header i {
       color: var(--primary);
-      font-size: 1.4rem;
+      font-size: 1.3rem;
     }
 
     .admin-content-card .card-header a {
@@ -461,59 +487,83 @@ block content
       transition: all 0.3s;
       padding: 0.5rem 1rem;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      background: rgba(0, 149, 255, 0.08);
+      border: 1px solid rgba(0, 149, 255, 0.15);
     }
 
     .admin-content-card .card-header a:hover {
       color: var(--primary);
-      background: rgba(0, 149, 255, 0.1);
+      background: rgba(0, 149, 255, 0.15);
+      border-color: rgba(0, 149, 255, 0.25);
       transform: translateX(3px);
     }
 
-    /* ========== TABLES (Tetap sama) ========== */
+    .admin-content-card .card-body {
+      flex: 1;
+      padding: 1.5rem 1.75rem;
+      overflow: hidden;
+    }
+
+    /* ========== IMPROVED TABLES ========== */
     .admin-table {
-      margin: 0;
+      width: 100%;
       border-collapse: separate;
       border-spacing: 0;
+      margin: 0;
     }
 
     .admin-table thead {
       background: var(--gray-50);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .admin-table thead th {
       color: var(--gray-600);
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      padding: 1.25rem 1rem;
+      padding: 1rem 0.75rem;
       border: none;
       border-bottom: 2px solid var(--gray-200);
+      white-space: nowrap;
     }
 
     .admin-table tbody tr {
       border-bottom: 1px solid var(--gray-200);
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
+    }
+
+    .admin-table tbody tr:last-child {
+      border-bottom: none;
     }
 
     .admin-table tbody tr:hover {
-      background: linear-gradient(90deg, rgba(0, 149, 255, 0.05) 0%, rgba(52, 199, 255, 0.02) 100%);
-      transform: translateX(5px);
+      background: linear-gradient(90deg, rgba(0, 149, 255, 0.04) 0%, rgba(52, 199, 255, 0.02) 100%);
+      transform: translateX(3px);
     }
 
     .admin-table tbody td {
-      padding: 1.25rem 1rem;
+      padding: 1rem 0.75rem;
       vertical-align: middle;
       border: none;
       color: var(--gray-700);
+      font-size: 0.9rem;
+      line-height: 1.4;
     }
 
     .admin-table tbody td a {
       color: var(--secondary);
       font-weight: 600;
       text-decoration: none;
-      transition: color 0.3s;
+      transition: color 0.2s ease;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .admin-table tbody td a:hover {
@@ -521,61 +571,93 @@ block content
     }
 
     .admin-table .badge {
-      padding: 0.5rem 1rem;
+      padding: 0.4rem 0.8rem;
       border-radius: 20px;
       font-weight: 700;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       border: 1px solid;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      white-space: nowrap;
     }
 
     .badge.bg-warning {
-      background: linear-gradient(135deg, rgba(255, 170, 0, 0.1) 0%, rgba(255, 170, 0, 0.05) 100%) !important;
+      background: linear-gradient(135deg, rgba(255, 170, 0, 0.12) 0%, rgba(255, 170, 0, 0.08) 100%) !important;
       color: var(--warning) !important;
-      border-color: rgba(255, 170, 0, 0.2) !important;
+      border-color: rgba(255, 170, 0, 0.25) !important;
     }
 
     .badge.bg-success {
-      background: linear-gradient(135deg, rgba(0, 204, 136, 0.1) 0%, rgba(0, 204, 136, 0.05) 100%) !important;
+      background: linear-gradient(135deg, rgba(0, 204, 136, 0.12) 0%, rgba(0, 204, 136, 0.08) 100%) !important;
       color: var(--success) !important;
-      border-color: rgba(0, 204, 136, 0.2) !important;
+      border-color: rgba(0, 204, 136, 0.25) !important;
     }
 
     .badge.bg-secondary {
-      background: linear-gradient(135deg, rgba(100, 116, 139, 0.1) 0%, rgba(100, 116, 139, 0.05) 100%) !important;
+      background: linear-gradient(135deg, rgba(100, 116, 139, 0.12) 0%, rgba(100, 116, 139, 0.08) 100%) !important;
       color: var(--gray-500) !important;
-      border-color: rgba(100, 116, 139, 0.2) !important;
+      border-color: rgba(100, 116, 139, 0.25) !important;
     }
 
     .badge.bg-danger {
-      background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, rgba(255, 107, 122, 0.05) 100%) !important;
+      background: linear-gradient(135deg, rgba(255, 71, 87, 0.12) 0%, rgba(255, 107, 122, 0.08) 100%) !important;
       color: var(--danger) !important;
-      border-color: rgba(255, 71, 87, 0.2) !important;
+      border-color: rgba(255, 71, 87, 0.25) !important;
     }
 
-    /* ========== NEWS LIST (Tetap sama) ========== */
+    /* ========== IMPROVED NEWS LIST ========== */
     .news-list-item {
       border: none;
       border-bottom: 1px solid var(--gray-200);
-      padding: 1.5rem;
+      padding: 1.25rem;
       transition: all 0.3s;
       text-decoration: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .news-list-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .news-list-item:hover::before {
+      transform: scaleY(1);
     }
 
     .news-list-item:hover {
-      background: var(--gray-50);
-      transform: translateX(8px);
-      border-radius: 12px;
+      background: linear-gradient(90deg, rgba(0, 149, 255, 0.03) 0%, transparent 100%);
+      transform: translateX(5px);
+      border-radius: 8px;
+    }
+
+    .news-list-item:last-child {
+      border-bottom: none;
     }
 
     .news-list-item h6 {
       color: var(--secondary);
-      font-weight: 700;
-      font-size: 1.05rem;
+      font-weight: 600;
+      font-size: 0.95rem;
       margin-bottom: 0.5rem;
       transition: color 0.3s;
       line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .news-list-item:hover h6 {
@@ -583,79 +665,94 @@ block content
     }
 
     .news-list-item .badge {
-      background: rgba(0, 149, 255, 0.1) !important;
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.12) 0%, rgba(0, 149, 255, 0.08) 100%) !important;
       color: var(--primary) !important;
       border: 1px solid rgba(0, 149, 255, 0.2) !important;
       font-weight: 600;
-      padding: 0.3rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      margin-bottom: 0.5rem;
+      display: inline-block;
     }
 
     .news-list-item small {
       color: var(--gray-500);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    /* ========== VIDEO THUMB (Tetap sama) ========== */
+    /* ========== IMPROVED VIDEO THUMB ========== */
     .video-thumb {
-      width: 90px;
-      height: 60px;
+      width: 80px;
+      height: 56px;
       object-fit: cover;
-      border-radius: 12px;
+      border-radius: 10px;
       border: 2px solid var(--gray-200);
       transition: all 0.3s ease;
+      flex-shrink: 0;
     }
 
     .list-group-item:hover .video-thumb {
       border-color: var(--primary);
-      transform: scale(1.05);
+      transform: scale(1.08);
+      box-shadow: var(--shadow-sm);
     }
 
-    /* ========== TICKET BADGE (Tetap sama) ========== */
+    /* ========== IMPROVED TICKET BADGE ========== */
     .ticket-badge {
-      border-radius: 20px;
-      padding: 0.4rem 1rem;
+      border-radius: 16px;
+      padding: 0.35rem 0.75rem;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
       border: 1px solid;
+      min-width: 70px;
+      justify-content: center;
     }
 
-    /* ========== EMPTY STATE (Tetap sama) ========== */
+    /* ========== IMPROVED EMPTY STATE ========== */
     .empty-state {
-      padding: 4rem 2rem;
+      padding: 3rem 1.5rem;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
     }
 
     .empty-state-icon {
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem;
+      margin: 0 auto 1.25rem;
       animation: float 3s ease-in-out infinite;
       border: 2px solid var(--gray-200);
     }
 
     .empty-state-icon i {
-      font-size: 3rem;
+      font-size: 2.5rem;
       color: var(--gray-400);
     }
 
     .empty-state p {
       color: var(--gray-500);
-      font-size: 1rem;
+      font-size: 0.95rem;
       margin: 0;
       font-weight: 500;
+      line-height: 1.5;
     }
 
-    /* ========== ALERTS (Tetap sama) ========== */
+    /* ========== IMPROVED ALERTS ========== */
     .alert {
       border-radius: 16px;
       border: none;
@@ -664,6 +761,9 @@ block content
       box-shadow: var(--shadow-sm);
       border-left: 4px solid;
       animation: slideInDown 0.4s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
 
     .alert-success {
@@ -678,23 +778,100 @@ block content
       border-left-color: var(--danger);
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
+    .alert i {
+      font-size: 1.2rem;
+      flex-shrink: 0;
     }
 
-    /* ========== RESPONSIVE ========== */
+    /* ========== LIST GROUP ITEMS ========== */
+    .list-group-item {
+      border: none;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .list-group-item:hover {
+      background: linear-gradient(90deg, rgba(0, 149, 255, 0.03) 0%, transparent 100%);
+      transform: translateX(3px);
+    }
+
+    .list-group-item:last-child {
+      border-bottom: none;
+    }
+
+    /* ========== BUTTON IMPROVEMENTS ========== */
+    .btn-outline-secondary {
+      border: 2px solid var(--gray-300);
+      color: var(--gray-600);
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 0.6rem 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+      background: var(--gray-100);
+      border-color: var(--gray-400);
+      color: var(--gray-700);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-primary {
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 0.4rem 0.8rem;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .btn-outline-primary:hover {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      border-color: transparent;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-outline-danger {
+      border: 2px solid var(--danger);
+      color: var(--danger);
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 0.6rem 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-danger:hover {
+      background: linear-gradient(135deg, var(--danger) 0%, #FF6B7A 100%);
+      color: white;
+      border-color: transparent;
+      transform: translateY(-2px);
+    }
+
+    /* ========== RESPONSIVE IMPROVEMENTS ========== */
     @media (max-width: 1200px) {
       .hero-greeting {
         font-size: 2.5rem;
       }
       
       .stat-number {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
       }
       
-      .admin-stat-card .card-body {
-        padding: 2rem 1.5rem;
+      .admin-stat-card {
+        padding: 1.75rem;
+      }
+      
+      .stat-icon-wrapper {
+        width: 55px;
+        height: 55px;
+      }
+      
+      .stat-icon {
+        font-size: 1.6rem;
       }
     }
 
@@ -723,16 +900,33 @@ block content
       }
       
       .stat-number {
-        font-size: 2.2rem;
+        font-size: 2rem;
+      }
+      
+      .admin-stat-card {
+        padding: 1.5rem;
       }
       
       .stat-icon-wrapper {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
+        margin-bottom: 1.25rem;
       }
       
       .stat-icon {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
+      }
+      
+      .admin-content-card .card-header {
+        padding: 1.25rem 1.5rem;
+      }
+      
+      .admin-content-card .card-header h5 {
+        font-size: 1.15rem;
+      }
+      
+      .admin-content-card .card-body {
+        padding: 1.25rem 1.5rem;
       }
     }
 
@@ -753,7 +947,7 @@ block content
       
       .hero-actions {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
       }
       
       .hero-btn {
@@ -761,25 +955,36 @@ block content
         justify-content: center;
       }
       
-      .admin-stat-card .card-body {
-        padding: 1.75rem 1.25rem;
-      }
-      
       .stat-number {
-        font-size: 2rem;
+        font-size: 1.8rem;
       }
       
-      .admin-content-card .card-header {
-        padding: 1.5rem;
-      }
-      
-      .admin-content-card .card-header h5 {
-        font-size: 1.1rem;
+      .admin-table thead th,
+      .admin-table tbody td {
+        padding: 0.875rem 0.625rem;
+        font-size: 0.85rem;
       }
       
       .video-thumb {
         width: 70px;
         height: 50px;
+      }
+      
+      .news-list-item {
+        padding: 1rem;
+      }
+      
+      .empty-state {
+        padding: 2.5rem 1.25rem;
+      }
+      
+      .empty-state-icon {
+        width: 70px;
+        height: 70px;
+      }
+      
+      .empty-state-icon i {
+        font-size: 2rem;
       }
     }
 
@@ -803,44 +1008,46 @@ block content
         font-size: 0.9rem;
       }
       
-      .admin-stat-card .card-body {
-        padding: 1.5rem;
+      .admin-stat-card {
+        padding: 1.25rem;
       }
       
       .stat-icon-wrapper {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
         margin-bottom: 1rem;
       }
       
       .stat-icon {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
       }
       
       .stat-number {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+      }
+      
+      .admin-content-card .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .admin-content-card .card-header a {
+        align-self: flex-start;
+      }
+      
+      .admin-table {
+        font-size: 0.8rem;
       }
       
       .admin-table thead th,
       .admin-table tbody td {
-        padding: 1rem 0.75rem;
+        padding: 0.75rem 0.5rem;
       }
       
-      .news-list-item {
-        padding: 1.25rem;
-      }
-      
-      .empty-state {
-        padding: 3rem 1.5rem;
-      }
-      
-      .empty-state-icon {
-        width: 80px;
-        height: 80px;
-      }
-      
-      .empty-state-icon i {
-        font-size: 2.5rem;
+      .badge {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.6rem;
       }
     }
 
@@ -889,9 +1096,14 @@ block content
 
       // ========== FLASH MESSAGES ==========
       if flash && flash.success && flash.success.length
-        .alert.alert-success(role="alert")= flash.success[0]
+        .alert.alert-success(role="alert")
+          i.bi.bi-check-circle-fill
+          span= flash.success[0]
+      
       if flash && flash.error && flash.error.length
-        .alert.alert-danger(role="alert")= flash.error[0]
+        .alert.alert-danger(role="alert")
+          i.bi.bi-exclamation-triangle-fill
+          span= flash.error[0]
 
       // ========== STATS CARDS ==========
       .row.g-3.g-lg-4.mb-4
@@ -934,40 +1146,42 @@ block content
                 i.bi.bi-calendar-event
                 | Event Terbaru
               a(href=(currentUser && currentUser.role === 'admin') ? '/admin/events' : '/subadmin/events') Kelola Event
-            if recentEvents && recentEvents.length
-              .table-responsive
-                table.table.admin-table.mb-0
-                  thead
-                    tr
-                      th Judul Event
-                      th Cabang
-                      th Status
-                      th Tanggal
-                  tbody
-                    each e in recentEvents
+            
+            .card-body
+              if recentEvents && recentEvents.length
+                .table-responsive
+                  table.table.admin-table.mb-0
+                    thead
                       tr
-                        td
-                          a(href=`/events/${e.slug || e.id}`)= e.title
-                        td
-                          span.text-muted= e.sport_name || '-'
-                        td
-                          if e.status === 'upcoming'
-                            span.badge.bg-warning.text-dark Upcoming
-                          else if e.status === 'ongoing'
-                            span.badge.bg-success Ongoing
-                          else
-                            span.badge.bg-secondary Finished
-                        td
-                          - const d = e.start_date ? new Date(e.start_date) : null
-                          if d
-                            span.small.text-muted= d.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
-                          else
-                            span.small.text-muted -
-            else
-              .empty-state
-                .empty-state-icon
-                  i.bi.bi-calendar-x
-                p Belum ada event tercatat.
+                        th(style="width: 40%") Judul Event
+                        th(style="width: 20%") Cabang
+                        th(style="width: 20%") Status
+                        th(style="width: 20%") Tanggal
+                    tbody
+                      each e in recentEvents
+                        tr
+                          td
+                            a(href=`/events/${e.slug || e.id}`)= e.title
+                          td
+                            span.text-muted= e.sport_name || '-'
+                          td
+                            if e.status === 'upcoming'
+                              span.badge.bg-warning.text-dark Upcoming
+                            else if e.status === 'ongoing'
+                              span.badge.bg-success Ongoing
+                            else
+                              span.badge.bg-secondary Finished
+                          td
+                            - const d = e.start_date ? new Date(e.start_date) : null
+                            if d
+                              span.small.text-muted= d.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+                            else
+                              span.small.text-muted -
+              else
+                .empty-state
+                  .empty-state-icon
+                    i.bi.bi-calendar-x
+                  p Belum ada event tercatat.
 
         .col-lg-6
           .card.border-0.admin-content-card
@@ -976,28 +1190,30 @@ block content
                 i.bi.bi-newspaper
                 | Berita Terbaru
               a(href=(currentUser && currentUser.role === 'admin') ? '/admin/news' : '/subadmin/news') Lihat Semua
-            if recentNews && recentNews.length
-              ul.list-group.list-group-flush
-                each n in recentNews
-                  a.list-group-item.news-list-item.d-flex.justify-content-between.align-items-start(href=`/news/${n.slug}`)
-                    .flex-grow-1
-                      if n.sport_name
-                        span.badge.bg-light.text-primary.border.mb-2(style="color: var(--primary) !important; border-color: var(--primary) !important;")= n.sport_name
-                      h6= n.title
-                      if n.published_at
-                        - const dn = new Date(n.published_at)
-                        small.text-muted
-                          i.bi.bi-clock.me-1
-                          = dn.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
-                    i.bi.bi-chevron-right.text-muted.ms-3
-            else
-              .empty-state
-                .empty-state-icon
-                  i.bi.bi-newspaper
-                p Belum ada berita terpublikasi.
+            
+            .card-body
+              if recentNews && recentNews.length
+                .list-group.list-group-flush
+                  each n in recentNews
+                    a.list-group-item.news-list-item.d-flex.justify-content-between.align-items-start(href=`/news/${n.slug}`)
+                      .flex-grow-1
+                        if n.sport_name
+                          span.badge.mb-2= n.sport_name
+                        h6.mb-1= n.title
+                        if n.published_at
+                          - const dn = new Date(n.published_at)
+                          small.text-muted
+                            i.bi.bi-clock.me-1
+                            = dn.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+                      i.bi.bi-chevron-right.text-muted
+              else
+                .empty-state
+                  .empty-state-icon
+                    i.bi.bi-newspaper
+                  p Belum ada berita terpublikasi.
 
       // Second row: Jadwal, Klasemen
-      .row.g-4.mt-1
+      .row.g-4.mt-3
         .col-lg-6
           .card.border-0.admin-content-card
             .card-header.d-flex.justify-content-between.align-items-center
@@ -1005,38 +1221,42 @@ block content
                 i.bi.bi-clock.me-2
                 | Jadwal
               a(href='/admin/matches') Kelola Jadwal
-
-            if upcomingMatches && upcomingMatches.length
-              .table-responsive
-                table.table.admin-table.mb-0
-                  thead
-                    tr
-                      th Match / Event
-                      th Cabang
-                      th Tanggal
-                      th Venue
-                      th Ticket
-                  tbody
-                    each m in upcomingMatches
-                      - const st = m.start_time ? new Date(m.start_time) : (m.start_date ? new Date(m.start_date) : null)
+            
+            .card-body
+              if upcomingMatches && upcomingMatches.length
+                .table-responsive
+                  table.table.admin-table.mb-0
+                    thead
                       tr
-                        td
-                          b= m.title || (m.home_team_name ? (m.home_team_name + ' vs ' + (m.away_team_name||'-')) : 'Match')
-                        td= m.sport_name || '-'
-                        td= st ? st.toLocaleString('id-ID') : '-'
-                        td= m.venue_name || '-'
-                        td
-                          - const av = (typeof m.ticket_available !== 'undefined') ? Number(m.ticket_available) : null
-                          if av === 0
-                            span.badge.bg-danger.ticket-badge Sold out
-                          else if av > 0
-                            span.badge.bg-success.ticket-badge= av + ' left'
-                          else
-                            span.badge.bg-secondary.ticket-badge -
-
-            else
-              .empty-state
-                p.text-muted Tidak ada jadwal.
+                        th(style="width: 35%") Match / Event
+                        th(style="width: 20%") Cabang
+                        th(style="width: 25%") Tanggal
+                        th(style="width: 20%") Ticket
+                    tbody
+                      each m in upcomingMatches
+                        - const st = m.start_time ? new Date(m.start_time) : (m.start_date ? new Date(m.start_date) : null)
+                        tr
+                          td
+                            b= m.title || (m.home_team_name ? (m.home_team_name + ' vs ' + (m.away_team_name||'-')) : 'Match')
+                          td= m.sport_name || '-'
+                          td
+                            if st
+                              span.small= st.toLocaleString('id-ID')
+                            else
+                              span.text-muted -
+                          td
+                            - const av = (typeof m.ticket_available !== 'undefined') ? Number(m.ticket_available) : null
+                            if av === 0
+                              span.badge.bg-danger.ticket-badge Sold out
+                            else if av > 0
+                              span.badge.bg-success.ticket-badge= av + ' left'
+                            else
+                              span.badge.bg-secondary.ticket-badge -
+              else
+                .empty-state
+                  .empty-state-icon
+                    i.bi.bi-calendar-x
+                  p Tidak ada jadwal.
 
         .col-lg-6
           .card.border-0.admin-content-card
@@ -1045,37 +1265,40 @@ block content
                 i.bi.bi-list-ol.me-2
                 | Klasemen
               a(href='/admin/standings') Kelola Klasemen
-              
-            if standings && standings.length
-              .table-responsive
-                table.table.admin-table.mb-0
-                  thead
-                    tr
-                      th Tim
-                      th.text-center PJ
-                      th.text-center W
-                      th.text-center D
-                      th.text-center L
-                      th.text-end PTS
-                  tbody
-                    each r in standings
+            
+            .card-body
+              if standings && standings.length
+                .table-responsive
+                  table.table.admin-table.mb-0
+                    thead
                       tr
-                        td
-                          strong= r.team
-                          if r.sport_name
-                            br
-                            small.text-muted= r.sport_name
-                        td.text-center= r.played || 0
-                        td.text-center= r.win || 0
-                        td.text-center= r.draw || 0
-                        td.text-center= r.loss || 0
-                        td.text-end= r.pts || 0
-            else
-              .empty-state
-                p.text-muted Klasemen belum tersedia.
+                        th(style="width: 40%") Tim
+                        th.text-center(style="width: 12%") PJ
+                        th.text-center(style="width: 12%") W
+                        th.text-center(style="width: 12%") D
+                        th.text-center(style="width: 12%") L
+                        th.text-end(style="width: 12%") PTS
+                    tbody
+                      each r in standings
+                        tr
+                          td
+                            strong= r.team
+                            if r.sport_name
+                              br
+                              small.text-muted= r.sport_name
+                          td.text-center= r.played || 0
+                          td.text-center= r.win || 0
+                          td.text-center= r.draw || 0
+                          td.text-center= r.loss || 0
+                          td.text-end= r.pts || 0
+              else
+                .empty-state
+                  .empty-state-icon
+                    i.bi.bi-bar-chart
+                  p Klasemen belum tersedia.
 
       // Third row: Video & Livestream
-      .row.g-4.mt-1
+      .row.g-4.mt-3
         .col-lg-6
           .card.border-0.admin-content-card
             .card-header.d-flex.justify-content-between.align-items-center
@@ -1083,24 +1306,29 @@ block content
                 i.bi.bi-camera-reels.me-2
                 | Video
               a(href=(currentUser && currentUser.role === 'admin') ? '/admin/videos' : '/subadmin/videos') Kelola Video
-            if recentVideos && recentVideos.length
-              ul.list-group.list-group-flush
-                each v in recentVideos
-                  li.list-group-item.d-flex.justify-content-between.align-items-center
-                    .d-flex.align-items-center
-                      if v.thumbnail_url
-                        img.video-thumb(src=v.thumbnail_url alt=v.title)
-                      else
-                        i.bi.bi-film.fs-3.me-2
-                      .ms-3
-                        a(href=`/videos/${v.id}`)= v.title
-                        if v.sport_name
-                          br
-                          small.text-muted= v.sport_name
-                    a.btn.btn-sm.btn-outline-primary(href=`/videos/${v.id}`) Tonton
-            else
-              .empty-state
-                p.text-muted Belum ada video.
+            
+            .card-body
+              if recentVideos && recentVideos.length
+                .list-group.list-group-flush
+                  each v in recentVideos
+                    li.list-group-item.d-flex.justify-content-between.align-items-center
+                      .d-flex.align-items-center
+                        if v.thumbnail_url
+                          img.video-thumb.me-3(src=v.thumbnail_url alt=v.title)
+                        else
+                          .video-thumb.me-3.d-flex.align-items-center.justify-content-center.bg-light
+                            i.bi.bi-film.text-muted
+                        .flex-grow-1
+                          a.d-block.fw-semibold.text-decoration-none.text-dark(href=`/videos/${v.id}`)= v.title
+                          if v.sport_name
+                            small.text-muted= v.sport_name
+                      a.btn.btn-sm.btn-outline-primary(href=`/videos/${v.id}`)
+                        i.bi.bi-play-fill
+              else
+                .empty-state
+                  .empty-state-icon
+                    i.bi.bi-film
+                  p Belum ada video.
 
         .col-lg-6
           .card.border-0.admin-content-card
@@ -1109,27 +1337,54 @@ block content
                 i.bi.bi-broadcast.me-2
                 | Livestream
               a(href=(currentUser && currentUser.role === 'admin') ? '/admin/livestreams' : '/subadmin/livestreams') Kelola Livestream
-            if upcomingLivestreams && upcomingLivestreams.length
-              ul.list-group.list-group-flush
-                each l in upcomingLivestreams
-                  li.list-group-item
-                    b= l.title
-                    br
-                    small.text-muted= (l.sport_name || '-') + ' • ' + (l.start_time ? new Date(l.start_time).toLocaleString('id-ID') : (l.created_at ? new Date(l.created_at).toLocaleString('id-ID') : '-'))
-                    br
-                    a.btn.btn-sm.btn-outline-primary.mt-2(href=`/livestreams/${l.id}`) Lihat
-            else
-              .empty-state
-                p.text-muted Belum ada livestream.
+            
+            .card-body
+              if upcomingLivestreams && upcomingLivestreams.length
+                .list-group.list-group-flush
+                  each l in upcomingLivestreams
+                    li.list-group-item
+                      .d-flex.justify-content-between.align-items-start
+                        .flex-grow-1
+                          strong.d-block.mb-1= l.title
+                          small.text-muted.d-block.mb-2
+                            i.bi.bi-dribbble.me-1
+                            = l.sport_name || '-'
+                          small.text-muted
+                            i.bi.bi-clock.me-1
+                            = l.start_time ? new Date(l.start_time).toLocaleString('id-ID') : (l.created_at ? new Date(l.created_at).toLocaleString('id-ID') : '-')
+                        .ms-3
+                          a.btn.btn-sm.btn-outline-primary(href=`/livestreams/${l.id}`)
+                            i.bi.bi-eye-fill.me-1
+                            | Lihat
+              else
+                .empty-state
+                  .empty-state-icon
+                    i.bi.bi-broadcast
+                  p Belum ada livestream.
 
       // bottom quick links (no create)
       .mt-4
-        a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/events' : '/subadmin/events') Kelola Event
-        a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/news' : '/subadmin/news') Kelola Berita
-        a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/videos' : '/subadmin/videos') Kelola Video
-        a.btn.btn-outline-secondary.me-2(href=(currentUser && currentUser.role === 'admin') ? '/admin/livestreams' : '/subadmin/livestreams') Kelola Livestream
-        if currentUser && currentUser.role === 'admin'
-          a.btn.btn-outline-danger.ms-2(href="/admin/subadmins") Manage Subadmins
+        .d-flex.flex-wrap.gap-2
+          a.btn.btn-outline-secondary(href=(currentUser && currentUser.role === 'admin') ? '/admin/events' : '/subadmin/events')
+            i.bi.bi-calendar-event.me-2
+            | Kelola Event
+          
+          a.btn.btn-outline-secondary(href=(currentUser && currentUser.role === 'admin') ? '/admin/news' : '/subadmin/news')
+            i.bi.bi-newspaper.me-2
+            | Kelola Berita
+          
+          a.btn.btn-outline-secondary(href=(currentUser && currentUser.role === 'admin') ? '/admin/videos' : '/subadmin/videos')
+            i.bi.bi-play-btn.me-2
+            | Kelola Video
+          
+          a.btn.btn-outline-secondary(href=(currentUser && currentUser.role === 'admin') ? '/admin/livestreams' : '/subadmin/livestreams')
+            i.bi.bi-broadcast.me-2
+            | Kelola Livestream
+          
+          if currentUser && currentUser.role === 'admin'
+            a.btn.btn-outline-danger(href="/admin/subadmins")
+              i.bi.bi-people-fill.me-2
+              | Manage Subadmins
 
   // small JS for stat animate
   script.
@@ -1139,7 +1394,7 @@ block content
         var target = parseInt(el.textContent) || 0;
         if(target <= 0) return;
         el.textContent = '0';
-        var step = Math.max(1, Math.floor(target / 25));
+        var step = Math.max(1, Math.floor(target / 20));
         var cur = 0;
         var t = setInterval(function(){
           cur += step;
@@ -1149,55 +1404,65 @@ block content
           } else {
             el.textContent = cur;
           }
-        }, 30);
+        }, 40);
       });
 
       // Add glow effect to role badge
       const roleBadge = document.querySelector('.admin-role-badge');
       if (roleBadge) {
-        setInterval(() => {
+        roleBadge.addEventListener('mouseenter', () => {
           roleBadge.style.boxShadow = '0 8px 32px rgba(0, 149, 255, 0.3)';
-          setTimeout(() => {
-            roleBadge.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2)';
-          }, 1000);
-        }, 3000);
-      }
-
-      // Add parallax effect to background circles
-      const hero = document.querySelector('.admin-hero');
-      if (hero) {
-        hero.addEventListener('mousemove', (e) => {
-          const { left, top, width, height } = hero.getBoundingClientRect();
-          const x = (e.clientX - left) / width;
-          const y = (e.clientY - top) / height;
-          
-          const circles = hero.querySelectorAll('.admin-hero::before, .admin-hero::after');
-          circles.forEach((circle, index) => {
-            const moveX = (x - 0.5) * 20;
-            const moveY = (y - 0.5) * 20;
-            circle.style.transform = `translate(${moveX}px, ${moveY}px)`;
-          });
+        });
+        
+        roleBadge.addEventListener('mouseleave', () => {
+          roleBadge.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2)';
         });
       }
 
-      // Add typing effect to greeting
-      const greeting = document.querySelector('.hero-greeting');
-      if (greeting) {
-        const text = greeting.textContent;
-        greeting.textContent = '';
-        let i = 0;
+      // Add card hover animations
+      const cards = document.querySelectorAll('.admin-content-card');
+      cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
         
-        function typeWriter() {
-          if (i < text.length) {
-            greeting.textContent += text.charAt(i);
-            i++;
-            setTimeout(typeWriter, 50);
+        // Add ripple effect on click
+        card.addEventListener('click', function(e) {
+          if(e.target.tagName === 'A' || e.target.closest('a')) return;
+          
+          const ripple = document.createElement('div');
+          const rect = this.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          ripple.style.cssText = `
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 149, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+            top: ${y}px;
+            left: ${x}px;
+            z-index: 1;
+          `;
+          
+          this.appendChild(ripple);
+          setTimeout(() => ripple.remove(), 600);
+        });
+      });
+
+      // Add CSS for ripple animation
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes ripple {
+          to {
+            transform: translate(-50%, -50%) scale(15);
+            opacity: 0;
           }
         }
-        
-        // Start typing after a delay
-        setTimeout(typeWriter, 500);
-      }
+      `;
+      document.head.appendChild(style);
 
       // Auto-dismiss alerts
       const alerts = document.querySelectorAll('.alert');
@@ -1205,8 +1470,25 @@ block content
         setTimeout(() => {
           alert.style.opacity = '0';
           alert.style.transform = 'translateY(-10px)';
-          setTimeout(() => alert.remove(), 300);
+          setTimeout(() => {
+            if (alert.parentNode) {
+              alert.parentNode.removeChild(alert);
+            }
+          }, 300);
         }, 5000);
       });
 
-    })(); 
+      // Add table row animations
+      const tableRows = document.querySelectorAll('.admin-table tbody tr');
+      tableRows.forEach((row, index) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(-10px)';
+        row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        
+        setTimeout(() => {
+          row.style.opacity = '1';
+          row.style.transform = 'translateX(0)';
+        }, index * 50);
+      });
+
+    })();
