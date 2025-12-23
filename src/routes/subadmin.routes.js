@@ -105,7 +105,7 @@ router.get('/tickets/create', requireLogin, requireAdminOrSubadmin, subadminCtrl
 router.post('/tickets/create', requireLogin, requireAdminOrSubadmin, subadminCtrl.createTicketType);
 router.get('/ticket-orders', subadminCtrl.renderTicketOrders);
 router.get(
-  '/ticket-orders/:userId/:sportId',
+  '/ticket-orders/:userId',
   subadminCtrl.renderTicketOrderDetail
 );
 

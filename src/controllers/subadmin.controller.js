@@ -1789,14 +1789,14 @@ exports.renderTicketOrders = async (req, res) => {
   try {
     const user = req.session.user;
     const allowedSports = Array.isArray(req.allowedSports) ? req.allowedSports : [];
-    const { sport_id } = req.query;
+    const { sport_id, match_id } = req.query;
 
-    let whereSport = '';
+    let where = '';
     let params = [];
 
     if (user.role === 'admin') {
       if (sport_id) {
-        whereSport = 'AND s.id = ?';
+        where += ' AND s.id = ?';
         params.push(sport_id);
       }
     } else {
@@ -1804,33 +1804,73 @@ exports.renderTicketOrders = async (req, res) => {
         return res.render('subadmin/ticket_orders', {
           orders: [],
           sports: [],
-          selectedSport: null
+          matches: [],
+          selectedSport: null,
+          selectedMatch: null
         });
       }
+
       const placeholders = allowedSports.map(() => '?').join(',');
-      whereSport = `AND s.id IN (${placeholders})`;
+      where += ` AND s.id IN (${placeholders})`;
       params.push(...allowedSports);
 
       if (sport_id) {
-        whereSport += ' AND s.id = ?';
+        where += ' AND s.id = ?';
         params.push(sport_id);
       }
+    }
+    if (match_id) {
+      where += ' AND m.id = ?';
+      params.push(match_id);
     }
 
     const [sports] = await db.query(
       `SELECT id, name FROM sports ORDER BY name`
     );
+    let matchWhere = `WHERE t.holder_name IS NOT NULL`;
+    let matchParams = [];
 
-    // 🔥 QUERY PER USER + SPORT
+    if (sport_id) {
+      matchWhere += ` AND m.sport_id = ?`;
+      matchParams.push(sport_id);
+    }
+
+    const [matches] = await db.query(
+      `
+      SELECT DISTINCT
+        m.id,
+        m.title,
+        m.start_time
+      FROM matches m
+      JOIN ticket_types tt ON tt.match_id = m.id
+      JOIN order_items oi ON oi.ticket_type_id = tt.id
+      JOIN tickets t ON t.order_item_id = oi.id
+      ${matchWhere}
+      ORDER BY m.start_time DESC
+      `,
+      matchParams
+    );
+
+    if (match_id && sport_id) {
+      const [[chk]] = await db.query(
+        `SELECT 1 FROM matches WHERE id = ? AND sport_id = ? LIMIT 1`,
+        [match_id, sport_id]
+      );
+      if (!chk) {
+        return res.redirect(`/subadmin/ticket-orders?sport_id=${sport_id}`);
+      }
+    }
     const [orders] = await db.query(
       `
       SELECT
-        u.id AS user_id,
+        u.id   AS user_id,
         u.name AS user_name,
-        s.id AS sport_id,
-        s.name AS sport_name,
+
+        GROUP_CONCAT(DISTINCT s.name ORDER BY s.name SEPARATOR ', ') AS sport_name,
+
         COUNT(t.id) AS total_qty,
         SUM(tt.price) AS total_price
+
       FROM orders o
       JOIN users u ON u.id = o.user_id
       JOIN order_items oi ON oi.order_id = o.id
@@ -1841,9 +1881,11 @@ exports.renderTicketOrders = async (req, res) => {
       LEFT JOIN matches m ON m.id = tt.match_id
       LEFT JOIN events e ON e.id = tt.event_id
       JOIN sports s ON s.id = COALESCE(m.sport_id, e.sport_id)
+
       WHERE 1=1
-      ${whereSport}
-      GROUP BY u.id, s.id
+      ${where}
+
+      GROUP BY u.id
       ORDER BY MAX(o.created_at) DESC
       `,
       params
@@ -1852,7 +1894,9 @@ exports.renderTicketOrders = async (req, res) => {
     res.render('subadmin/ticket_orders', {
       orders,
       sports,
-      selectedSport: sport_id || ''
+      matches,
+      selectedSport: sport_id || '',
+      selectedMatch: match_id || ''
     });
   } catch (err) {
     console.error('renderTicketOrders error', err);
@@ -1860,43 +1904,76 @@ exports.renderTicketOrders = async (req, res) => {
     res.redirect('/subadmin');
   }
 };
+
 // ===============================
 // SUBADMIN – DETAIL ORDER TIKET PER USER + SPORT
 // ===============================
 exports.renderTicketOrderDetail = async (req, res) => {
-  try {
-    const userId = Number(req.params.userId);
-    const sportId = Number(req.params.sportId);
+  const userId = Number(req.params.userId);
+  const matchId = Number(req.query.match_id || 0);
+  let sportId = Number(req.query.sport_id || 0);
 
-    const [rows] = await db.query(
-      `
-      SELECT
-        m.id AS match_id,
-        m.title AS match_title,
-        m.start_time,
-        t.holder_name,
-        tt.price
-      FROM orders o
-      JOIN order_items oi ON oi.order_id = o.id
-      JOIN tickets t
-        ON t.order_item_id = oi.id
-      AND t.holder_name IS NOT NULL
-      JOIN ticket_types tt ON tt.id = oi.ticket_type_id
-      JOIN matches m ON m.id = tt.match_id
-      WHERE o.user_id = ?
-        AND m.sport_id = ?
-      ORDER BY m.start_time ASC
-      `,
-      [userId, sportId]
-    );
-
-    res.render('subadmin/ticket_order_detail', { rows });
-  } catch (err) {
-    console.error('renderTicketOrderDetail error', err);
-    req.flash('error', 'Gagal memuat detail order');
-    res.redirect('/subadmin/ticket-orders');
+  if (!userId) {
+    req.flash('error', 'User tidak valid.');
+    return res.redirect('/subadmin/ticket-orders');
   }
+
+  // ✅ kalau match dipilih, AUTO ambil sport dari match
+  if (matchId && !sportId) {
+    const [[m]] = await db.query(
+      'SELECT sport_id FROM matches WHERE id = ? LIMIT 1',
+      [matchId]
+    );
+    if (!m) {
+      req.flash('error', 'Jadwal tidak ditemukan.');
+      return res.redirect('/subadmin/ticket-orders');
+    }
+    sportId = m.sport_id;
+  }
+
+  if (!sportId) {
+    req.flash('error', 'Filter cabang atau jadwal wajib dipilih.');
+    return res.redirect('/subadmin/ticket-orders');
+  }
+
+  let where = `
+    o.user_id = ?
+    AND m.sport_id = ?
+    AND t.holder_name IS NOT NULL
+  `;
+  let params = [userId, sportId];
+
+  if (matchId) {
+    where += ' AND m.id = ?';
+    params.push(matchId);
+  }
+
+  const [rows] = await db.query(
+    `
+    SELECT
+      m.id AS match_id,
+      m.title AS match_title,
+      m.start_time,
+      t.holder_name,
+      tt.price
+    FROM orders o
+    JOIN order_items oi ON oi.order_id = o.id
+    JOIN tickets t ON t.order_item_id = oi.id
+    JOIN ticket_types tt ON tt.id = oi.ticket_type_id
+    JOIN matches m ON m.id = tt.match_id
+    WHERE ${where}
+    ORDER BY m.start_time ASC
+    `,
+    params
+  );
+
+  return res.render('subadmin/ticket_order_detail', {
+    rows,
+    selectedMatch: matchId || null
+  });
 };
+
+
 exports.renderCreateTeam = async (req, res) => {
   try {
     const sports = await loadSportsList(req.session.user);

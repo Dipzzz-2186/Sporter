@@ -603,43 +603,19 @@ block content
                         value=s.id
                         selected=(String(selectedSport) === String(s.id))
                       )= s.name
-              
               .col-md-4
                 .mb-2
                   label.form-label
-                    i.bi.bi-search.me-1
-                    | Cari Pesanan
-                  .input-group
-                    span.input-group-text.bg-white
-                      i.bi.bi-search.text-primary
-                    input.form-control(
-                      type="search" 
-                      placeholder="Cari nama pengguna..."
-                      name="search"
-                      value=searchQuery || ''
-                    )
-            
-              .col-md-2
-                .mb-2
-                  label.form-label
-                    i.bi.bi-calendar.me-1
-                    | Dari Tanggal
-                  input.form-control(
-                    type="date"
-                    name="start_date"
-                    value=startDate || ''
-                  )
-              
-              .col-md-2
-                .mb-2
-                  label.form-label
-                    i.bi.bi-calendar.me-1
-                    | Sampai Tanggal
-                  input.form-control(
-                    type="date"
-                    name="end_date"
-                    value=endDate || ''
-                  )
+                    i.bi.bi-calendar-event.me-1
+                    | Jadwal Pertandingan
+                  select.form-select(name="match_id" onchange="this.form.submit()")
+                    option(value="") Semua Jadwal
+                    each m in matches
+                      option(
+                        value=m.id
+                        selected=(String(selectedMatch) === String(m.id))
+                      )
+                        | #{m.title}
             
             .row.mt-2
               .col-md-12.d-flex.gap-2.justify-content-end
@@ -692,11 +668,21 @@ block content
                     
                     td.text-center
                       .action-buttons
-                        a.btn-action-compact.btn-view(
-                          href=`/subadmin/ticket-orders/${order.user_id}/${order.sport_id}`
-                        )
-                          i.bi.bi-eye
-                          span Detail
+                        if selectedMatch
+                          a.btn-action-compact.btn-view(
+                            href=`/subadmin/ticket-orders/${order.user_id}?match_id=${selectedMatch}`
+                          )
+                            i.bi.bi-eye
+                            span Detail
+                        else if selectedSport
+                          a.btn-action-compact.btn-view(
+                            href=`/subadmin/ticket-orders/${order.user_id}?sport_id=${selectedSport}`
+                          )
+                            i.bi.bi-eye
+                            span Detail
+                        else
+                          span.text-muted Pilih jadwal / cabang
+
       else
         //- Empty State
         .empty-state
