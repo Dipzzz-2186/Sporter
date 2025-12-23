@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
+const crypto = require("crypto");
 const fs = require("fs");
 
 const uploadDir = path.join(__dirname, "..", "public", "uploads", "merchandise");
@@ -12,12 +13,23 @@ if (!fs.existsSync(uploadDir)) {
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDir),
     filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        cb(null, "merch-" + Date.now() + ext);
+        const ext = path.extname(file.originalname).toLowerCase();
+        const uniqueName = `merch-${crypto.randomUUID()}${ext}`;
+        cb(null, uniqueName);
     }
 });
 
-const upload = multer({ storage });
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        if (!file.mimetype.startsWith("image/")) {
+            return cb(new Error("Hanya file gambar yang diperbolehkan"));
+        }
+        cb(null, true);
+    }
+});
+
 const sellerController = require("../controllers/seller.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
@@ -55,7 +67,7 @@ router.get(
 router.post(
     "/merchandise/create",
     authMiddleware.requireSeller,
-    upload.single("image"), // ⬅️ INI WAJIB
+    upload.array("images", 10),
     sellerController.createMerchandise
 );
 
@@ -68,7 +80,7 @@ router.get(
 router.post(
     "/merchandise/:id/edit",
     authMiddleware.requireSeller,
-    upload.single("image"),
+    upload.array("images", 10),
     sellerController.updateMerchandise
 );
 

@@ -164,33 +164,41 @@ exports.createMerchandise = async (req, res) => {
             sport_id
         } = req.body;
 
+        if (!req.files || req.files.length === 0) {
+            req.flash("error", "Minimal 1 foto wajib diunggah");
+            return res.redirect("/seller/merchandise/create");
+        }
+
         if (!name || !price || stock === undefined) {
             req.flash("error", "Nama, harga, dan stok wajib diisi");
             return res.redirect("/seller/merchandise/create");
         }
 
-        let imageUrl = null;
-        if (req.file) {
-            imageUrl = "/uploads/merchandise/" + req.file.filename;
-        }
+        const [result] = await db.query(`
+            INSERT INTO merchandises
+            (seller_id, sport_id, name, description, price, stock, status, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+            `, [
+            sellerId,
+            sport_id || null,
+            name,
+            description || null,
+            price,
+            stock,
+            status || "active"
+        ]);
 
-        await db.query(
-            `
-      INSERT INTO merchandises
-      (seller_id, sport_id, name, description, price, stock, status, image_url, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
-      `,
-            [
-                sellerId,
-                sport_id || null,
-                name,
-                description || null,
-                price,
-                stock,
-                status || "active",
-                imageUrl
-            ]
-        );
+        const merchandiseId = result.insertId;
+
+        for (const file of req.files) {
+            await db.query(`
+      INSERT INTO merchandise_images (merchandise_id, image_url)
+      VALUES (?, ?)
+    `, [
+                merchandiseId,
+                "/uploads/merchandise/" + file.filename
+            ]);
+        }
 
         req.flash("success", "Merchandise berhasil ditambahkan");
         res.redirect("/seller/merchandise");
@@ -225,6 +233,11 @@ exports.renderEditMerchandise = async (req, res) => {
             return res.redirect("/seller/merchandise");
         }
 
+        const [images] = await db.query(
+            "SELECT * FROM merchandise_images WHERE merchandise_id = ?",
+            [id]
+        );
+
         const [sports] = await db.query(
             "SELECT id, name FROM sports ORDER BY name"
         );
@@ -233,9 +246,9 @@ exports.renderEditMerchandise = async (req, res) => {
             title: "Edit Merchandise",
             mode: "edit",
             merchandise: merch,
+            merchandiseImages: images,
             sports
         });
-
     } catch (err) {
         console.error("ERROR render edit merchandise:", err);
         req.flash("error", "Gagal memuat form edit");
@@ -261,41 +274,43 @@ exports.updateMerchandise = async (req, res) => {
             sport_id
         } = req.body;
 
-        const [[current]] = await db.query(
-            `SELECT image_url FROM merchandises WHERE id = ? AND seller_id = ?`,
+        const [[exists]] = await db.query(
+            `SELECT id FROM merchandises WHERE id = ? AND seller_id = ?`,
             [id, sellerId]
         );
 
-        if (!current) {
+        if (!exists) {
             req.flash("error", "Merchandise tidak ditemukan");
             return res.redirect("/seller/merchandise");
         }
 
-        let imageUrl = current.image_url;
-        if (req.file) {
-            imageUrl = "/uploads/merchandise/" + req.file.filename;
+        await db.query(`
+            UPDATE merchandises
+            SET sport_id=?, name=?, description=?, price=?, stock=?, status=?, updated_at=NOW()
+            WHERE id=? AND seller_id=?
+            `, [
+            sport_id || null,
+            name,
+            description || null,
+            price,
+            stock,
+            status || "active",
+            id,
+            sellerId
+        ]);
+
+        if (req.files && req.files.length) {
+            for (const file of req.files) {
+                await db.query(`
+          INSERT INTO merchandise_images (merchandise_id, image_url)
+          VALUES (?, ?)
+        `, [
+                    id,
+                    "/uploads/merchandise/" + file.filename
+                ]);
+            }
         }
-
-        await db.query(
-            `
-      UPDATE merchandises
-      SET sport_id = ?, name = ?, description = ?, price = ?, stock = ?,
-          status = ?, image_url = ?, updated_at = NOW()
-      WHERE id = ? AND seller_id = ?
-      `,
-            [
-                sport_id || null,
-                name,
-                description || null,
-                price,
-                stock,
-                status || "active",
-                imageUrl,
-                id,
-                sellerId
-            ]
-        );
-
+        
         req.flash("success", "Merchandise berhasil diperbarui");
         res.redirect("/seller/merchandise");
 

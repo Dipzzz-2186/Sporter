@@ -55,6 +55,11 @@ block content
       transition: color 0.3s ease;
     }
 
+    .thumbnail.active {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(0,149,255,.3);
+    }
+
     .breadcrumb-item a:hover {
       color: var(--primary-dark);
     }
@@ -739,16 +744,28 @@ block content
             .image-badge
               i.bi.bi-trophy
               span= product.sport_name || 'SPORTER'
-            if product.image_url
-              img.main-image(src=product.image_url alt=product.name)
+
+            if images && images.length
+              img.main-image(
+                src=images[0].image_url
+                alt=product.name
+                id="mainProductImage"
+              )
             else
-              .main-image(style="display: flex; align-items: center; justify-content: center;")
-                i.bi.bi-t-shirt-fill(style="font-size: 8rem; color: var(--gray-300);")
-          
-          // Thumbnail Gallery (Optional)
-          //- .thumbnail-gallery
-          //-   .thumbnail
-          //-     img(src=product.image_url alt=product.name)
+              .main-image(style="display:flex;align-items:center;justify-content:center;")
+                i.bi.bi-image(style="font-size:6rem;color:var(--gray-300);")
+
+          // Thumbnail Gallery
+          if images && images.length > 1
+            .thumbnail-gallery(style="display:flex;gap:10px;flex-wrap:wrap;")
+              each img in images
+                img.thumbnail(
+                  src=img.image_url
+                  alt=product.name
+                  class=img.image_url === images[0].image_url ? 'active' : ''
+                  style="width:80px;height:80px;object-fit:cover;border-radius:10px;cursor:pointer;border:2px solid var(--gray-200);"
+                  onclick=`setMainImage('${img.image_url}', this)`
+                )
 
         // Product Info
         .product-info
@@ -1190,3 +1207,18 @@ block content
         }
       });
     });
+    function setMainImage(url, thumbEl) {
+      const main = document.getElementById('mainProductImage');
+      if (!main) return;
+
+      // ganti gambar utama
+      main.src = url;
+
+      // reset active thumbnail
+      document.querySelectorAll('.thumbnail').forEach(t => {
+        t.classList.remove('active');
+      });
+
+      // set active thumbnail
+      thumbEl.classList.add('active');
+    }

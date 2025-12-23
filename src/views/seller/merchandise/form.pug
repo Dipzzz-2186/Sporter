@@ -486,10 +486,181 @@ block content
       animation: spin 0.8s linear infinite;
     }
 
+    .image-remove.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+      background: #ff9aa5;
+    }
+
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
 
+    .image-input {
+      margin-bottom: 1rem;
+    }
+
+    .image-input input[type="file"] {
+      position: static;
+      opacity: 1;
+    }
+
+    .image-preview-thumb {
+      margin-top: .5rem;
+      max-width: 150px;
+      border-radius: 12px;
+      border: 2px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* ===============================
+      IMAGE UPLOAD LAYOUT (NEW)
+    ================================ */
+    .image-upload-box {
+      border: 2px dashed var(--gray-300);
+      border-radius: 18px;
+      padding: 1.5rem;
+      background: linear-gradient(
+        135deg,
+        var(--gray-50) 0%,
+        var(--gray-100) 100%
+      );
+    }
+
+    /* grid container */
+    #imageInputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+
+    /* each image block */
+    .image-input {
+      background: white;
+      border: 2px solid var(--gray-200);
+      border-radius: 16px;
+      padding: 0.75rem;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* file input */
+    .image-input input[type="file"] {
+      width: 100%;
+      font-size: 0.85rem;
+    }
+
+    /* preview */
+    .image-preview-thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      margin-top: 0.5rem;
+      border-radius: 12px;
+      border: 2px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* add button */
+    .btn-add-photo {
+      margin-top: 1rem;
+      width: 100%;
+      border: 2px dashed var(--primary-color);
+      background: transparent;
+      color: var(--primary-color);
+      font-weight: 700;
+      padding: 0.75rem;
+      border-radius: 14px;
+      transition: all 0.25s ease;
+    }
+
+    .btn-add-photo:hover {
+      background: rgba(0, 149, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
+    /* ===============================
+      MOBILE ADJUSTMENT
+    ================================ */
+    @media (max-width: 576px) {
+      #imageInputs {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ===============================
+      IMAGE CARD
+    ================================ */
+    .image-card {
+      position: relative;
+      background: white;
+      border-radius: 18px;
+      border: 2px dashed var(--gray-300);
+      padding: 1.25rem;
+      text-align: center;
+      transition: all 0.25s ease;
+    }
+
+    .image-card:hover {
+      border-color: var(--primary-color);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* remove button */
+    .image-remove {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: var(--danger-color);
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(255, 71, 87, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .image-remove:hover {
+      transform: scale(1.1);
+      background: #ff2f44;
+    }
+
+    /* hide native file input */
+    .file-upload-label input[type="file"] {
+      display: none;
+    }
+
+    .file-upload-label {
+      min-height: 150px;
+    }
+
+    .file-upload-label i {
+      font-size: 2.2rem;
+    }
+
+    .file-upload-label div {
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .image-preview-thumb {
+      margin-top: 0.75rem;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 2px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+    }
   // FORM HERO
   .form-hero
     .container
@@ -667,41 +838,34 @@ block content
               
               .col-md-6
                 .form-group
-                  label.form-label(for="productImage")
+                  label.form-label
                     i.bi.bi-camera-fill
                     | Foto Produk
-                  .file-upload-container
-                    input.file-upload-input(
-                      type="file"
-                      id="productImage"
-                      name="image"
-                      accept="image/*"
-                      onchange="previewImage(this)"
+
+                  .image-upload-box
+                    #imageInputs
+
+                    button.btn-add-photo(
+                      type="button"
+                      onclick="addImageInput()"
                     )
-                    label.file-upload-label(for="productImage")
-                      i.bi.bi-cloud-arrow-up
-                      div
-                        | Klik untuk mengunggah gambar
-                        br
-                        small.text-muted Format: JPG, PNG, WebP (maks. 5MB)
-                  
+                      i.bi.bi-plus-lg
+                      | Tambah Foto
+
+                  small.text-muted.mt-1
+                    | Minimal 1 foto. Tidak ada batas maksimal.
                   .image-preview-container(id="imagePreviewContainer")
                     .preview-title
                       i.bi.bi-image-fill
                       | Preview Gambar
-                    if mode === 'edit' && merchandise.image_url
-                      img.image-preview(
-                        src=merchandise.image_url
-                        alt="Preview"
-                        id="imagePreview"
-                      )
+                    if mode === 'edit' && merchandiseImages.length
+                      each img in merchandiseImages
+                        img.image-preview(src=img.image_url)
                     else
                       img.image-preview(
                         style="display:none"
                         id="imagePreview"
                       )
-                    .form-text.text-muted.mt-1
-                      | Rekomendasi: Rasio 1:1, resolusi minimal 800x800px
 
         // FORM ACTIONS
         .form-actions
@@ -828,6 +992,9 @@ block content
       
       return true;
     }
+    document.addEventListener("DOMContentLoaded", () => {
+      addImageInput();
+    });
     
     // Initialize form
     document.addEventListener('DOMContentLoaded', function() {
@@ -899,3 +1066,102 @@ block content
         }
       }
     });
+
+    function addImageInput() {
+      const container = document.getElementById("imageInputs");
+
+      const card = document.createElement("div");
+      card.className = "image-card";
+
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "image-remove";
+      remove.textContent = "×";
+
+      remove.onclick = () => {
+        if (container.children.length <= 1) return;
+        card.remove();
+        updateRemoveButtons();
+      };
+
+      const label = document.createElement("label");
+      label.className = "file-upload-label";
+
+      const icon = document.createElement("i");
+      icon.className = "bi bi-cloud-arrow-up";
+
+      const text = document.createElement("div");
+      text.innerHTML = `Klik untuk mengunggah gambar<br>
+        <small class="text-muted">JPG, PNG, WebP (maks. 5MB)</small>`;
+
+      const input = document.createElement("input");
+      input.type = "file";
+      input.name = "images";
+      input.accept = "image/*";
+      input.required = container.children.length === 0;
+      input.onchange = () => handlePreview(input, preview);
+
+      const preview = document.createElement("img");
+      preview.className = "image-preview-thumb";
+      preview.style.display = "none";
+
+      label.append(icon, text, input);
+      card.append(remove, label, preview);
+      container.appendChild(card);
+
+      updateRemoveButtons();
+    }
+
+    function handlePreview(input, img) {
+      const file = input.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        alert("Harus gambar");
+        input.value = "";
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Maksimal 5MB");
+        input.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        img.src = e.target.result;
+        img.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateRemoveButtons() {
+      const cards = document.querySelectorAll(".image-card");
+
+      cards.forEach(card => {
+        const btn = card.querySelector(".image-remove");
+
+        if (cards.length <= 1) {
+          btn.classList.add("disabled");
+        } else {
+          btn.classList.remove("disabled");
+        }
+      });
+    }
+    
+    function previewMultiple(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Maksimal 5MB");
+        input.value = "";
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        alert("Harus gambar");
+        input.value = "";
+      }
+    }
