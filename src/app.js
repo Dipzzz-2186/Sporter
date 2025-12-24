@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 require("dotenv").config();
 const syncYoutubeLive = require('./jobs/syncYoutubeLive');
+require('./jobs/autoPublishNews.job');
 
 // tiap 2 menit
 setInterval(syncYoutubeLive, 2 * 60 * 1000);
@@ -27,6 +28,8 @@ const profileRoutes = require('./routes/profile.routes');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 
 
 // ====== SESSION & FLASH ======

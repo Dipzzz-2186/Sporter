@@ -411,25 +411,54 @@ exports.renderCreateNews = async (req, res) => {
 
 exports.createNews = async (req, res) => {
   try {
-    const { sport_id, event_id, title, slug, excerpt, content, status, published_at } = req.body;
-    // assigned check
-    if (req.session.user.role === 'subadmin') {
-      const [rows] = await db.query('SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1', [req.session.user.id, sport_id]);
-      if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin'); }
+    let {
+      sport_id,
+      event_id,
+      title,
+      slug,
+      excerpt,
+      content,
+      status,
+      published_at
+    } = req.body;
+
+    // ✅ AUTO GENERATE SLUG JIKA KOSONG
+    if (!slug || !slug.trim()) {
+      slug = makeSlug(title);
     }
+
+    // ✅ handle thumbnail
+    const thumbnailUrl = req.file
+      ? `/uploads/news/${req.file.filename}`
+      : null;
+
     await db.query(
-      `INSERT INTO news_articles (sport_id, event_id, author_id, title, slug, excerpt, content, status, published_at, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
-      [sport_id || null, event_id || null, req.session.user.id, title, slug, excerpt || null, content || '', status || 'draft', published_at || null]
+      `INSERT INTO news_articles
+        (sport_id, event_id, author_id, title, slug, excerpt, content, status, published_at, thumbnail_url, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+      [
+        sport_id,
+        event_id || null,
+        req.session.user.id,
+        title,
+        slug,
+        excerpt || null,
+        content,
+        status || 'draft',
+        published_at || null,
+        thumbnailUrl
+      ]
     );
+
     req.flash('success', 'Berita berhasil dibuat.');
-    return res.redirect('/subadmin');
+    res.redirect('/subadmin/news');
   } catch (err) {
-    console.error('createNews', err);
+    console.error('createNews Error:', err);
     req.flash('error', 'Gagal membuat berita.');
-    return safeRedirectBack(req, res, '/subadmin');
+    res.redirect('/subadmin/news/create');
   }
 };
+
 
 /* -------------------------
    MATCHES (schedule)
@@ -441,6 +470,16 @@ function normalizeDateTime(value) {
   v = v.replace("T", " "); // dari datetime-local → "YYYY-MM-DD HH:MM"
   if (v.length === 16) v = v + ":00";
   return v;
+}
+
+function makeSlug(text) {
+  return String(text || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
 exports.listMatches = async (req, res) => {

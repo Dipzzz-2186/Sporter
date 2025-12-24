@@ -609,10 +609,10 @@ block content
                       option(
                         value=s.id
                         selected=(
-                          (mode === 'edit' && video && Number(video.sport_id) === Number(s.id)) ||
-                          (!video && defaultSportId && Number(defaultSportId) === Number(s.id))
+                          (isEdit && Number(articleSafe.sport_id) === Number(s.id)) ||
+                          (!isEdit && defaultSportId && Number(defaultSportId) === Number(s.id))
                         )
-                      )= s.name
+                      )= s.name 
                   if defaultSportId
                     input(type="hidden" name="sport_id" value=defaultSportId)
 

@@ -13,7 +13,7 @@ function formatDate(date) {
 // List berita (layout ala portal)
 exports.renderNewsList = async (req, res) => {
   try {
-    // Ambil 12 berita terbaru
+    // Ambil 12 berita terbaru  
     const news = await News.getLatestNews(12);
 
     const items = news.map((n) => ({
