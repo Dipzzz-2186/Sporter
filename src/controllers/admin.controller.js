@@ -80,12 +80,22 @@ exports.renderDashboard = async (req, res) => {
 
     // Recent Events
     const [recentEvents] = await db.query(`
-      SELECT e.id, e.title, e.slug, e.start_date, e.status, s.name AS sport_name
+      SELECT 
+        e.id, e.title, e.slug, e.start_date, e.end_date,
+        s.name AS sport_name,
+        CASE
+          WHEN e.start_date IS NULL THEN 'upcoming'
+          WHEN CURDATE() < DATE(e.start_date) THEN 'upcoming'
+          WHEN e.end_date IS NOT NULL AND CURDATE() > DATE(e.end_date) THEN 'completed'
+          WHEN e.end_date IS NULL AND CURDATE() > DATE(e.start_date) THEN 'completed'
+          ELSE 'ongoing'
+        END AS status
       FROM events e
       LEFT JOIN sports s ON s.id = e.sport_id
       ORDER BY e.start_date DESC
       LIMIT 6
     `);
+
 
     // Recent News
     const [recentNews] = await db.query(`
@@ -389,15 +399,23 @@ exports.deleteSubadmin = async (req, res) => {
 // List semua event untuk halaman admin
 exports.listEvents = async (req, res) => {
   try {
-    const [events] = await db.query(
-      `SELECT e.id, e.title, e.slug, e.start_date, e.end_date, e.status,
-              s.name AS sport_name,
-              v.name AS venue_name
-       FROM events e
-       LEFT JOIN sports s ON s.id = e.sport_id
-       LEFT JOIN venues v ON v.id = e.venue_id
-       ORDER BY e.start_date DESC`
-    );
+    const [events] = await db.query(`
+      SELECT 
+        e.id, e.title, e.slug, e.start_date, e.end_date,
+        s.name AS sport_name,
+        v.name AS venue_name,
+        CASE
+          WHEN e.start_date IS NULL THEN 'upcoming'
+          WHEN CURDATE() < DATE(e.start_date) THEN 'upcoming'
+          WHEN e.end_date IS NOT NULL AND CURDATE() > DATE(e.end_date) THEN 'completed'
+          WHEN e.end_date IS NULL AND CURDATE() > DATE(e.start_date) THEN 'completed'
+          ELSE 'ongoing'
+        END AS status
+      FROM events e
+      LEFT JOIN sports s ON s.id = e.sport_id
+      LEFT JOIN venues v ON v.id = e.venue_id
+      ORDER BY e.start_date DESC
+    `);
 
     return res.render("admin/events", {
       title: "Kelola Event - SPORTER",
@@ -409,6 +427,7 @@ exports.listEvents = async (req, res) => {
     return res.redirect("/admin");
   }
 };
+
 
 // Render form CREATE event
 exports.renderCreateEvent = async (req, res) => {
@@ -442,7 +461,7 @@ function makeSlug(str = "") {
 // Handle CREATE event (POST)
 exports.createEvent = async (req, res) => {
   try {
-    let { sport_id, title, slug, description, start_date, end_date, venue_id, status } = req.body;
+    let { sport_id, title, slug, description, start_date, end_date, venue_id } = req.body;
 
     if (!title || !start_date) {
       req.flash("error", "Judul dan tanggal mulai wajib diisi.");
@@ -450,12 +469,11 @@ exports.createEvent = async (req, res) => {
     }
 
     if (!slug || !slug.trim()) slug = makeSlug(title);
-    if (!status) status = "upcoming";
 
     await db.query(
       `INSERT INTO events
        (sport_id, title, slug, description, start_date, end_date, venue_id, organizer_id, status, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'upcoming', NOW(), NOW())`,
       [
         sport_id || null,
         title,
@@ -465,7 +483,6 @@ exports.createEvent = async (req, res) => {
         end_date || null,
         venue_id || null,
         req.session.user ? req.session.user.id : null,
-        status,
       ]
     );
 
@@ -477,6 +494,7 @@ exports.createEvent = async (req, res) => {
     return res.redirect("/admin/events/create");
   }
 };
+
 
 // Render form EDIT event
 exports.renderEditEvent = async (req, res) => {
@@ -523,7 +541,7 @@ exports.updateEvent = async (req, res) => {
       return res.redirect("/admin/events");
     }
 
-    let { sport_id, title, slug, description, start_date, end_date, venue_id, status } = req.body;
+    let { sport_id, title, slug, description, start_date, end_date, venue_id } = req.body;
 
     if (!title || !start_date) {
       req.flash("error", "Judul dan tanggal mulai wajib diisi.");
@@ -531,12 +549,11 @@ exports.updateEvent = async (req, res) => {
     }
 
     if (!slug || !slug.trim()) slug = makeSlug(title);
-    if (!status) status = "upcoming";
 
     await db.query(
       `UPDATE events
        SET sport_id = ?, title = ?, slug = ?, description = ?, start_date = ?, end_date = ?,
-           venue_id = ?, status = ?, updated_at = NOW()
+           venue_id = ?, updated_at = NOW()
        WHERE id = ?`,
       [
         sport_id || null,
@@ -546,7 +563,6 @@ exports.updateEvent = async (req, res) => {
         start_date,
         end_date || null,
         venue_id || null,
-        status,
         id,
       ]
     );
@@ -559,6 +575,7 @@ exports.updateEvent = async (req, res) => {
     return res.redirect("/admin/events");
   }
 };
+
 
 // Handle DELETE event
 exports.deleteEvent = async (req, res) => {

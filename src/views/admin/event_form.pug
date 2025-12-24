@@ -469,22 +469,6 @@ block content
                   small.form-text
                     i.bi.bi-info-circle
                     | Tempat penyelenggaraan event
-              
-              .col-md-4
-                .mb-3
-                  label.form-label(for="status")
-                    i.bi.bi-hourglass-split
-                    | Status Event
-                    span.badge.badge-required Wajib
-                  select.form-select#status(name="status" required)
-                    - const currentStatus = event.status || 'upcoming';
-                    option(value="upcoming" selected=(currentStatus === 'upcoming')) Akan Datang
-                    option(value="ongoing" selected=(currentStatus === 'ongoing')) Berlangsung
-                    option(value="finished" selected=(currentStatus === 'finished')) Selesai
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Tentukan status saat ini dari event
-
           //- Section 3: Schedule
           .event-form-section
             .section-title

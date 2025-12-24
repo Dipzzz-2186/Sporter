@@ -529,7 +529,6 @@ block content
                   th Cabang
                   th Venue
                   th Tanggal
-                  th Status
                   th.text-end Aksi
               tbody
                 each e in events
@@ -554,14 +553,6 @@ block content
                           .event-row-info #{start}
                       else
                         span.text-muted -
-                    td
-                      if e.status === 'upcoming'
-                        span.badge.bg-success-subtle.text-success Akan Datang
-                      else if e.status === 'ongoing'
-                        span.badge.bg-primary-subtle.text-primary Berlangsung
-                      else
-                        span.badge.bg-secondary-subtle.text-secondary Selesai
-                    td.text-end
                       .action-buttons
                         a.btn.btn-sm.btn-outline-secondary(href=`/events/${e.slug || e.id}` target="_self" title="Lihat di Frontend")
                           i.bi.bi-box-arrow-up-right
