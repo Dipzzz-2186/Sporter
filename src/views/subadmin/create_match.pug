@@ -648,13 +648,17 @@ block content
                   .col-md-4
                     .mb-3
                       label.form-label Harga per Tiket
-                      input.form-control(
-                        type="number"
-                        name="ticket_price"
-                        min="0"
-                        step="1000"
-                        placeholder="50000"
+                      input.form-control#ticket_price_display(
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        placeholder="50.000"
                       )
+
+                      input(type="hidden" name="ticket_price" id="ticket_price")
+                      small.form-text
+                        i.bi.bi-info-circle
+                        | Bisa pakai titik/koma. Contoh: 50.000 atau 50,000
 
                   .col-md-4
                     .mb-3
@@ -1455,6 +1459,64 @@ block content
           }
         });
       }
+
+      // ========================================
+      // TICKET PRICE FORMAT (DOT/COMMA SUPPORT)
+      // ========================================
+      (function initTicketPriceMask() {
+        var priceDisplay = document.getElementById('ticket_price_display');
+        var priceHidden = document.getElementById('ticket_price');
+
+        if (!priceDisplay || !priceHidden) return;
+
+        function toNumberRaw(str) {
+          str = String(str || '').trim();
+          if (!str) return 0;
+
+          // keep only digits, dots, commas
+          str = str.replace(/[^\d.,]/g, '');
+
+          // case: "50.000,50" (ID style) -> remove dots, treat comma as decimal
+          // but we store integer, so take only before decimals
+          var hasComma = str.includes(',');
+          var hasDot = str.includes('.');
+
+          if (hasComma && hasDot) {
+            // assume dot thousands, comma decimals
+            str = str.replace(/\./g, '');
+            str = str.split(',')[0];
+            return parseInt(str || '0', 10) || 0;
+          }
+
+          // case: "50.000" (ID thousands) OR "50,000" (US thousands)
+          // if only one separator, treat as thousands -> remove all separators
+          str = str.replace(/[.,]/g, '');
+          return parseInt(str || '0', 10) || 0;
+        }
+
+        function formatIDR(num) {
+          num = Number(num || 0);
+          if (!num) return '';
+          return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // format on input
+        priceDisplay.addEventListener('input', function() {
+          var raw = toNumberRaw(priceDisplay.value);
+          priceHidden.value = raw;              // value yang dikirim ke server
+          priceDisplay.value = formatIDR(raw);  // tampilan pakai titik
+        });
+
+        // handle paste (biar rapi)
+        priceDisplay.addEventListener('paste', function() {
+          setTimeout(function() {
+            var raw = toNumberRaw(priceDisplay.value);
+            priceHidden.value = raw;
+            priceDisplay.value = formatIDR(raw);
+          }, 0);
+        });
+      })();
+
 
       console.log('=== MATCH FORM SCRIPT READY ===');
 
