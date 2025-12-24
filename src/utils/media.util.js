@@ -63,4 +63,23 @@ function parseYouTubeEmbed(input) {
     return null;
 }
 
-module.exports = { parseYouTubeEmbed };
+// extract video ID dari URL / iframe / embed
+function extractYouTubeId(input) {
+    const embed = parseYouTubeEmbed(input);
+    if (!embed) return null;
+
+    const m = embed.match(/\/embed\/([A-Za-z0-9_-]{6,})/);
+    return m ? m[1] : null;
+}
+
+// generate thumbnail
+function getYouTubeThumbnail(input) {
+    const id = extractYouTubeId(input);
+    return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+}
+
+module.exports = {
+    parseYouTubeEmbed,
+    extractYouTubeId,
+    getYouTubeThumbnail
+};

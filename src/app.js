@@ -1,6 +1,13 @@
 const express = require("express");
 const path = require("path");
 require("dotenv").config();
+const syncYoutubeLive = require('./jobs/syncYoutubeLive');
+
+// tiap 2 menit
+setInterval(syncYoutubeLive, 2 * 60 * 1000);
+
+// jalanin sekali pas server start
+syncYoutubeLive();
 
 const session = require("express-session");
 const flash = require("connect-flash");

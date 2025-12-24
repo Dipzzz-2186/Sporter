@@ -1,54 +1,10 @@
 // src/controllers/media.controller.js
 const db = require("../config/db");
-
-// helper untuk parse YouTube embed
-function parseYouTubeEmbed(input) {
-    if (!input) return null;
-
-    input = input.trim();
-
-    // make sure URL parsable
-    if (!/^https?:\/\//i.test(input)) {
-        input = 'https://' + input;
-    }
-
-    let u;
-    try {
-        u = new URL(input);
-    } catch (e) {
-        return null;
-    }
-
-    const host = u.hostname;
-
-    // youtu.be short link
-    if (host.includes('youtu.be')) {
-        const id = u.pathname.replace('/', '');
-        return id ? `https://www.youtube.com/embed/${id}` : null;
-    }
-
-    // youtube.com/* variants
-    if (host.includes('youtube.com') || host.includes('youtube-nocookie.com')) {
-
-        // NEW: support /live/VIDEO_ID
-        if (u.pathname.startsWith('/live/')) {
-            const id = u.pathname.split('/')[2];
-            return id ? `https://www.youtube.com/embed/${id}` : null;
-        }
-
-        // /watch?v=ID
-        const v = u.searchParams.get('v');
-        if (v) return `https://www.youtube.com/embed/${v}`;
-
-        // /embed/ID
-        if (u.pathname.startsWith('/embed/')) {
-            const id = u.pathname.split('/')[2];
-            return id ? `https://www.youtube.com/embed/${id}` : null;
-        }
-    }
-
-    return null;
-}
+const {
+    parseYouTubeEmbed,
+    extractYouTubeId,
+    getYouTubeThumbnail
+} = require('../utils/media.util');
 
 function getSportIconClass(sportName) {
     const icons = {
@@ -69,51 +25,24 @@ function getSportIconClass(sportName) {
     return 'bi bi-trophy-fill';
 }
 
-function getYouTubeId(url) {
-    if (!url) return null;
-
-    let m =
-        url.match(/youtube\.com\/watch\?v=([^&]+)/) ||
-        url.match(/youtu\.be\/([^?]+)/) ||
-        url.match(/youtube\.com\/embed\/([^?]+)/) ||
-        url.match(/youtube\.com\/live\/([^?]+)/);
-
-    return m ? m[1] : null;
-}
-
-function getYouTubeThumbnail(url) {
-    const id = getYouTubeId(url);
-    return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
-}
-
 // =====================
 // LIST VIDEOS
 // =====================
 exports.listVideos = async (req, res) => {
     const [rows] = await db.query(`
-        SELECT v.id, v.title, v.type, v.url, v.thumbnail_url,
-               s.name AS sport_name, e.title AS event_title
-        FROM videos v
-        LEFT JOIN sports s ON s.id = v.sport_id
-        LEFT JOIN events e ON e.id = v.event_id
-        WHERE v.type IN ('full_match','highlight')
-        ORDER BY v.created_at DESC
-    `);
+    SELECT v.*, s.name AS sport_name
+    FROM videos v
+    LEFT JOIN sports s ON s.id = v.sport_id
+    WHERE v.type IN ('highlight', 'full_match')
+      AND v.is_live = 0
+    ORDER BY v.created_at DESC
+  `);
 
-    const videos = rows.map(v => {
-        const embed_url = parseYouTubeEmbed(v.url);
-
-        // ⬇️ INI YANG KAMU LUPA
-        const thumbnail_url =
-            v.thumbnail_url ||
-            getYouTubeThumbnail(v.url);
-
-        return {
-            ...v,
-            embed_url,
-            thumbnail_url
-        };
-    });
+    const videos = rows.map(v => ({
+        ...v,
+        embed_url: parseYouTubeEmbed(v.url),
+        thumbnail_url: v.thumbnail_url || getYouTubeThumbnail(v.url)
+    }));
 
     res.render("videos/list", {
         title: "Video Pertandingan - SPORTER",
@@ -126,38 +55,56 @@ exports.listVideos = async (req, res) => {
 // LIST LIVESTREAMS
 // =====================
 exports.listLivestreams = async (req, res) => {
+    const { checkYouTubeLive } = require('../utils/youtube.util');
+
     const [rows] = await db.query(`
-  SELECT v.id, v.title, v.is_live, v.start_time, v.thumbnail_url, v.url, v.description,
-         s.name AS sport_name, e.title AS event_title
-  FROM videos v
-  LEFT JOIN sports s ON s.id = v.sport_id
-  LEFT JOIN events e ON e.id = v.event_id
-  WHERE v.type = 'livestream'
-  ORDER BY COALESCE(v.start_time, v.created_at) DESC
-`);
+    SELECT v.id, v.title, v.is_live, v.start_time, v.thumbnail_url, v.url, v.description,
+            s.name AS sport_name, e.title AS event_title
+    FROM videos v
+    LEFT JOIN sports s ON s.id = v.sport_id
+    LEFT JOIN events e ON e.id = v.event_id
+    WHERE v.type = 'livestream'
+    ORDER BY COALESCE(v.start_time, v.created_at) DESC
+    `);
 
-    const livestreams = rows.map(r => {
-        const embedUrl = parseYouTubeEmbed(r.url);
-        // try to derive id from multiple patterns
-        let ytId = null;
-        if (r.url) {
-            let m = r.url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
-            if (!m) m = r.url.match(/youtube\.com\/embed\/([A-Za-z0-9_-]{6,})/);
-            if (!m) m = r.url.match(/youtube\.com\/live\/([A-Za-z0-9_-]{6,})/);
-            if (m && m[1]) ytId = m[1];
+    const livestreams = [];
+
+    for (const r of rows) {
+        const ytId = extractYouTubeId(r.url);
+        if (!ytId) continue;
+
+        let liveStatus = false;
+
+        try {
+            const yt = await checkYouTubeLive(ytId);
+            liveStatus = yt.isLive;
+
+            // sync ke DB
+            if (!liveStatus) {
+                await db.query(`
+                    UPDATE videos
+                    SET is_live = 0,
+                        type = 'full_match'
+                    WHERE id = ?
+                `, [r.id]);
+                continue;
+            }
+
+        } catch (e) {
+            console.error('YT check failed', e);
         }
-        const thumbnail_url = r.thumbnail_url || (ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : null);
 
-        // server-side icon class
-        const icon_class = getSportIconClass(r.sport_name);
+        // OPTIONAL: tampilkan hanya LIVE
+        if (!liveStatus) continue;
 
-        return {
+        livestreams.push({
             ...r,
-            embedUrl,
-            thumbnail_url,
-            icon_class
-        };
-    });
+            is_live: liveStatus,
+            embedUrl: parseYouTubeEmbed(r.url),
+            thumbnail_url: r.thumbnail_url || getYouTubeThumbnail(r.url),
+            icon_class: getSportIconClass(r.sport_name)
+        });
+    }
 
     res.render("livestreams/list", {
         title: "Livestream - SPORTER",
@@ -222,6 +169,9 @@ exports.viewLivestream = async (req, res) => {
 
     const livestream = rows[0];
     const embedUrl = parseYouTubeEmbed(livestream.url);
-
+    
+    if (livestream.is_live !== 1) {
+        return res.redirect(`/videos/${livestream.id}`);
+    }
     res.render("livestreams/view", { livestream, embedUrl });
 };

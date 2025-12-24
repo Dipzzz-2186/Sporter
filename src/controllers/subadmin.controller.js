@@ -1,7 +1,11 @@
 // src/controllers/subadmin.controller.js
 const db = require('../config/db');
 const slugify = require('slugify');
-const { parseYouTubeEmbed } = require('../utils/media.util'); // helper below
+const {
+  parseYouTubeEmbed,
+  extractYouTubeId,
+  getYouTubeThumbnail
+} = require('../utils/media.util');
 
 // helper yang menerima user (req.session.user)
 async function loadSportsList(user) {
@@ -1231,11 +1235,6 @@ exports.createVideo = async (req, res) => {
 /* -------------------------
    LIVESTREAMS (separate)
    ------------------------- */
-function getYouTubeId(url) {
-  if (!url) return null;
-  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-  return m ? m[1] : null;
-}
 
 exports.renderCreateLivestream = async (req, res) => {
   const sports = await loadSportsList(req.session.user);
@@ -1266,32 +1265,54 @@ exports.createLivestream = async (req, res) => {
     }
 
     // parse embed URL (use let so we can reassign)
-    let embedUrl = parseYouTubeEmbed(url);
-
+    const embedUrl = parseYouTubeEmbed(url);
     if (!embedUrl) {
-      // try clean input (strip tags, quotes)
-      const cleaned = String(url).replace(/<[^>]*>/g, '').replace(/['"`\u2018\u2019\u201C\u201D]/g, '').trim();
-      embedUrl = parseYouTubeEmbed(cleaned);
-      if (!embedUrl) {
-        req.flash('error', 'URL tidak dikenali atau belum didukung. Gunakan link YouTube atau paste iframe embed.');
-        return res.redirect('/subadmin/livestreams/create');
-      }
+      req.flash('error', 'URL YouTube tidak valid.');
+      return res.redirect('/subadmin/livestreams/create');
     }
 
+    const ytId = extractYouTubeId(url);
+    if (!ytId) {
+      req.flash('error', 'Video ID YouTube tidak ditemukan.');
+      return res.redirect('/subadmin/livestreams/create');
+    }
+
+    const thumbnail_url = getYouTubeThumbnail(url);
+
     // extract id for thumbnail
-    const idMatch = embedUrl.match(/\/embed\/([A-Za-z0-9_-]{6,})/);
-    const ytId = idMatch ? idMatch[1] : null;
-    const thumbnail_url = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : null;
     const platform = ytId ? 'youtube' : null;
+    const { checkYouTubeLive } = require('../utils/youtube.util');
+    if (!ytId) {
+      req.flash('error', 'URL YouTube tidak valid.');
+      return res.redirect('/subadmin/livestreams/create');
+    }
+
+    let ytStatus;
+    try {
+      ytStatus = await checkYouTubeLive(ytId);
+    } catch (e) {
+      console.error('YT API error', e);
+      req.flash('error', 'Gagal cek status YouTube.');
+      return res.redirect('/subadmin/livestreams/create');
+    }
+
+    if (!ytStatus.exists) {
+      req.flash('error', 'Video YouTube tidak ditemukan.');
+      return res.redirect('/subadmin/livestreams/create');
+    }
+
+    if (!ytStatus.isLive) {
+      req.flash('error', 'Video ini TIDAK sedang LIVE.');
+      return res.redirect('/subadmin/livestreams/create');
+    }
 
     // Insert into videos table as 'livestream'
     await db.query(
       `INSERT INTO videos
-            (sport_id, event_id, match_id, title, type, platform, url, thumbnail_url, description, start_time, end_time, is_live, created_at, updated_at)
-            VALUES (?, NULL, NULL, ?, 'livestream', ?, ?, ?, ?, NULL, NULL, 0, NOW(), NOW())`,
-      [sport_id || null, title, platform, url, thumbnail_url, description || null]
+   (sport_id, title, type, platform, url, thumbnail_url, description, is_live, created_at, updated_at)
+   VALUES (?, ?, 'livestream', 'youtube', ?, ?, ?, 1, NOW(), NOW())`,
+      [sport_id, title, url, thumbnail_url, description || null]
     );
-
 
     req.flash('success', 'Livestream berhasil dibuat.');
     return res.redirect('/subadmin/livestreams');
@@ -2258,11 +2279,34 @@ exports.renderEditLivestream = async (req, res) => {
 };
 
 // POST /subadmin/livestreams/:id/edit
+// POST /subadmin/livestreams/:id/edit
 exports.updateLivestream = async (req, res) => {
   const id = Number(req.params.id);
 
   try {
-    const { sport_id, title, url, description, is_live } = req.body;
+    const { sport_id, title, url, description } = req.body;
+
+    const ytId = extractYouTubeId(url);
+    if (!ytId) {
+      req.flash('error', 'URL YouTube tidak valid.');
+      return res.redirect(`/subadmin/livestreams/${id}/edit`);
+    }
+
+    const { checkYouTubeLive } = require('../utils/youtube.util');
+
+    const ytStatus = await checkYouTubeLive(ytId);
+
+    if (!ytStatus.exists) {
+      req.flash('error', 'Video YouTube tidak ditemukan.');
+      return res.redirect(`/subadmin/livestreams/${id}/edit`);
+    }
+
+    if (!ytStatus.isLive) {
+      req.flash('error', 'Video ini TIDAK sedang LIVE.');
+      return res.redirect(`/subadmin/livestreams/${id}/edit`);
+    }
+
+    const is_live = 1; // karena SUDAH lolos cek API
 
     await db.query(
       `
@@ -2270,15 +2314,16 @@ exports.updateLivestream = async (req, res) => {
       SET sport_id = ?, title = ?, url = ?, description = ?, is_live = ?, updated_at = NOW()
       WHERE id = ? AND type = 'livestream'
       `,
-      [sport_id || null, title, url, description || null, Number(is_live) ? 1 : 0, id]
+      [sport_id || null, title, url, description || null, is_live, id]
     );
 
     req.flash('success', 'Livestream berhasil diperbarui');
-    res.redirect('/subadmin/livestreams');
+    return res.redirect('/subadmin/livestreams');
+
   } catch (err) {
     console.error('updateLivestream error', err);
     req.flash('error', 'Gagal update livestream');
-    res.redirect('/subadmin/livestreams');
+    return res.redirect('/subadmin/livestreams');
   }
 };
 
