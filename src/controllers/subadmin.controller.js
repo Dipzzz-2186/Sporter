@@ -1990,19 +1990,18 @@ exports.renderTicketOrderDetail = async (req, res) => {
   });
 };
 
-
 exports.renderCreateTeam = async (req, res) => {
-  try {
-    const sports = await loadSportsList(req.session.user);
-    return res.render('subadmin/create_team', {
-      title: 'Buat Tim',
-      sports
-    });
-  } catch (err) {
-    console.error('renderCreateTeam error', err);
-    req.flash('error', 'Gagal memuat form tim.');
-    return res.redirect('/subadmin/teams');
-  }
+  const sports = await loadSportsList(req.session.user);
+  const defaultSportId = resolveDefaultSport(req.session.user, sports);
+  const isSingleSport =
+    req.session.user.role === 'subadmin' && sports.length === 1;
+
+  return res.render('subadmin/create_team', {
+    title: 'Buat Tim',
+    sports,
+    defaultSportId,
+    isSingleSport
+  });
 };
 
 exports.createTeam = async (req, res) => {

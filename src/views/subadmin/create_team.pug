@@ -614,10 +614,23 @@ block content
                 i.bi.bi-trophy
                 | Cabang Olahraga
                 span.required-indicator *
-              select.form-select#sportSelect(name="sport_id" required)
-                option(value="" selected disabled) -- Pilih cabang olahraga --
+              select.form-select#sport_id(
+                name="sport_id"
+                required
+                disabled=isSingleSport
+              )
+                option(value="" disabled selected=!defaultSportId)
+                  | -- Pilih Cabang --
                 each s in sports
-                  option(value=s.id)= s.name
+                  option(
+                    value=s.id
+                    selected=(
+                      (mode === 'edit' && video && Number(video.sport_id) === Number(s.id)) ||
+                      (!video && defaultSportId && Number(defaultSportId) === Number(s.id))
+                    )
+                  )= s.name
+              if isSingleSport
+                input(type="hidden" name="sport_id" value=defaultSportId)
               .form-text
                 i.bi.bi-info-circle
                 | Pilih cabang olahraga untuk menentukan aturan jumlah anggota tim
@@ -709,7 +722,7 @@ block content
       // GLOBAL VARIABLES & ELEMENT REFERENCES
       // ========================================
       const form = document.getElementById('createTeamForm');
-      const sportSelect = document.getElementById('sportSelect');
+      const sportSelect = document.getElementById('sport_id');
       const teamFormFields = document.getElementById('teamFormFields');
       const teamNameInput = document.getElementById('teamName');
       const membersContainer = document.getElementById('membersContainer');
@@ -904,12 +917,7 @@ block content
             emptyDiv.innerHTML = '<i class="bi bi-people"></i><p>Tambahkan anggota pertama Anda</p>';
             membersContainer.appendChild(emptyDiv);
           }
-          
-          // Update sport info
-          updateSportInfo();
-          updateEmptyMembersVisibility();
-          updateSubmitButton();
-          
+
           // Auto-focus team name
           if (hasValue && teamNameInput) {
             setTimeout(() => {
@@ -919,6 +927,16 @@ block content
         });
       }
 
+      // ========================================
+      // AUTO INIT JIKA SPORT SUDAH TERPILIH
+      // ========================================
+      if (sportSelect && sportSelect.value) {
+        teamFormFields.style.display = 'block';
+        updateSportInfo();
+        updateEmptyMembersVisibility();
+        updateSubmitButton();
+      }
+      
       if (btnAddMember) {
         btnAddMember.addEventListener('click', addMember);
       }
