@@ -599,14 +599,23 @@ block content
                     i.bi.bi-trophy
                     | Cabang Olahraga
                     span.badge.badge-required Wajib
-                  select.form-select#sport_id(name="sport_id" required)
-                    option(value="" selected disabled) -- Pilih Cabang Olahraga --
-                    if sports && sports.length
-                      each s in sports
-                        option(
-                          value=s.id
-                          selected=(articleSafe.sport_id && articleSafe.sport_id == s.id)
-                        )= s.name
+                  select.form-select#sport_id(
+                    name="sport_id"
+                    required
+                    disabled=(defaultSportId)
+                  )
+                    option(value="" disabled selected) -- Pilih Cabang --
+                    each s in sports
+                      option(
+                        value=s.id
+                        selected=(
+                          (mode === 'edit' && video && Number(video.sport_id) === Number(s.id)) ||
+                          (!video && defaultSportId && Number(defaultSportId) === Number(s.id))
+                        )
+                      )= s.name
+                  if defaultSportId
+                    input(type="hidden" name="sport_id" value=defaultSportId)
+
                   small.form-text
                     i.bi.bi-info-circle
                     | Pilih cabang olahraga yang terkait dengan berita ini

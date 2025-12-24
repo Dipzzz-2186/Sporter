@@ -1,38 +1,38 @@
 // src/controllers/subadmin.controller.js
 const db = require('../config/db');
-const slugify = require('slugify'); 
+const slugify = require('slugify');
 const { parseYouTubeEmbed } = require('../utils/media.util'); // helper below
 
 // helper yang menerima user (req.session.user)
 async function loadSportsList(user) {
-    if (!user) {
-        const [sports] = await db.query('SELECT id, name FROM sports ORDER BY name');
-        return sports;
-    }
+  if (!user) {
+    const [sports] = await db.query('SELECT id, name FROM sports ORDER BY name');
+    return sports;
+  }
 
-    if (user.role === 'admin') {
-        const [sports] = await db.query('SELECT id, name FROM sports ORDER BY name');
-        return sports;
-    }
+  if (user.role === 'admin') {
+    const [sports] = await db.query('SELECT id, name FROM sports ORDER BY name');
+    return sports;
+  }
 
-    // subadmin -> hanya sports yang ter-assign
-    const [rows] = await db.query(
-        `SELECT s.id, s.name
+  // subadmin -> hanya sports yang ter-assign
+  const [rows] = await db.query(
+    `SELECT s.id, s.name
      FROM sports s
      JOIN user_sports us ON us.sport_id = s.id
      WHERE us.user_id = ?
      ORDER BY s.name`,
-        [user.id]
-    );
-    return rows;
+    [user.id]
+  );
+  return rows;
 }
 
 function safeRedirectBack(req, res, fallback = '/subadmin') {
-    const ref = req.get('Referrer') || req.get('Referer') || '';
-    if (ref && typeof ref === 'string' && ref.trim() !== '') {
-        return res.redirect(ref);
-    }
-    return res.redirect(fallback);
+  const ref = req.get('Referrer') || req.get('Referer') || '';
+  if (ref && typeof ref === 'string' && ref.trim() !== '') {
+    return res.redirect(ref);
+  }
+  return res.redirect(fallback);
 }
 
 // ---- DB schema helpers (biar code aman walau kolom/tabel baru belum ada)
@@ -138,80 +138,80 @@ async function validateCompetitorForMode({ sportId, competitorTeamId, matchMode 
 
 // render dashboard untuk subadmin
 exports.renderDashboard = async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+
+    // 1) ambil sports yang di-assign ke subadmin (admin akan di-handle: jika admin, ambil semua sports)
+    let sportFilterSql = '';
+    const sportIds = Array.isArray(req.allowedSports) ? req.allowedSports : [];
+    let assignedSports = [];
     try {
-        const userId = req.session.user.id;
-
-        // 1) ambil sports yang di-assign ke subadmin (admin akan di-handle: jika admin, ambil semua sports)
-      let sportFilterSql = '';
-      const sportIds = Array.isArray(req.allowedSports) ? req.allowedSports : [];
-      let assignedSports = [];
-      try {
-        if (req.session.user.role === 'admin') {
-          // admin -> semua cabang
-          const [allSports] = await db.query('SELECT id, name FROM sports ORDER BY name');
-          assignedSports = allSports;
-        } else if (sportIds.length) {
-          const placeholdersForNames = sportIds.map(() => '?').join(',');
-          const [rows] = await db.query(
-            `SELECT id, name FROM sports WHERE id IN (${placeholdersForNames}) ORDER BY name`,
-            sportIds
-          );
-          assignedSports = rows;
-        } else {
-          assignedSports = []; // tidak ada cabang
-        }
-      } catch (e) {
-        console.error('failed to load assignedSports', e);
-        assignedSports = [];
+      if (req.session.user.role === 'admin') {
+        // admin -> semua cabang
+        const [allSports] = await db.query('SELECT id, name FROM sports ORDER BY name');
+        assignedSports = allSports;
+      } else if (sportIds.length) {
+        const placeholdersForNames = sportIds.map(() => '?').join(',');
+        const [rows] = await db.query(
+          `SELECT id, name FROM sports WHERE id IN (${placeholdersForNames}) ORDER BY name`,
+          sportIds
+        );
+        assignedSports = rows;
+      } else {
+        assignedSports = []; // tidak ada cabang
       }
+    } catch (e) {
+      console.error('failed to load assignedSports', e);
+      assignedSports = [];
+    }
 
-      if (!sportIds || sportIds.length === 0) {
-        // no assigned sports (subadmin tanpa sport) -> tampilkan dashboard kosong
-        return res.render('subadmin/dashboard', {
-          title: 'SubAdmin Dashboard - SPORTER',
-          stats: { sports: 0, events: 0, matches: 0, videos: 0, livestreams: 0, ticketTypes: 0 },
-          upcomingMatches: [],
-          recentNews: [],
-          recentVideos: [],
-          upcomingLivestreams: [],
-          assignedSports
-        });
-      }
-        if (!sportIds || sportIds.length === 0) {
-            // no assigned sports
-            return res.render('subadmin/dashboard', {
-                title: 'SubAdmin Dashboard - SPORTER',
-                stats: { sports: 0, events: 0, matches: 0, videos: 0, livestreams: 0, ticketTypes: 0 },
-                upcomingMatches: [],
-                recentNews: [],
-                recentVideos: [],
-                upcomingLivestreams: []
-            });
-        }
+    if (!sportIds || sportIds.length === 0) {
+      // no assigned sports (subadmin tanpa sport) -> tampilkan dashboard kosong
+      return res.render('subadmin/dashboard', {
+        title: 'SubAdmin Dashboard - SPORTER',
+        stats: { sports: 0, events: 0, matches: 0, videos: 0, livestreams: 0, ticketTypes: 0 },
+        upcomingMatches: [],
+        recentNews: [],
+        recentVideos: [],
+        upcomingLivestreams: [],
+        assignedSports
+      });
+    }
+    if (!sportIds || sportIds.length === 0) {
+      // no assigned sports
+      return res.render('subadmin/dashboard', {
+        title: 'SubAdmin Dashboard - SPORTER',
+        stats: { sports: 0, events: 0, matches: 0, videos: 0, livestreams: 0, ticketTypes: 0 },
+        upcomingMatches: [],
+        recentNews: [],
+        recentVideos: [],
+        upcomingLivestreams: []
+      });
+    }
 
-        // prepare SQL IN clause safe
-        const placeholders = sportIds.map(() => '?').join(',');
-        sportFilterSql = `AND s.id IN (${placeholders})`;
+    // prepare SQL IN clause safe
+    const placeholders = sportIds.map(() => '?').join(',');
+    sportFilterSql = `AND s.id IN (${placeholders})`;
 
-        // 2) counts
-        const [[cEvents]] = await db.query(
-            `SELECT COUNT(DISTINCT e.id) AS total FROM events e LEFT JOIN sports s ON s.id = e.sport_id WHERE 1=1 ${sportFilterSql}`,
-            sportIds
-        );
-        const [[cMatches]] = await db.query(
-            `SELECT COUNT(*) AS total FROM matches m LEFT JOIN sports s ON s.id = m.sport_id WHERE 1=1 ${sportFilterSql}`,
-            sportIds
-        );
-        const [[cVideos]] = await db.query(
-            `SELECT COUNT(*) AS total FROM videos v LEFT JOIN sports s ON s.id = v.sport_id WHERE v.type <> 'livestream' ${sportFilterSql}`,
-            sportIds
-        );
-        const [[cLivestreams]] = await db.query(
-            `SELECT COUNT(*) AS total FROM videos v LEFT JOIN sports s ON s.id = v.sport_id WHERE v.type = 'livestream' ${sportFilterSql}`,
-            sportIds
-        );
-      const [[cTicketsSold]] = await db.query(
-        `
+    // 2) counts
+    const [[cEvents]] = await db.query(
+      `SELECT COUNT(DISTINCT e.id) AS total FROM events e LEFT JOIN sports s ON s.id = e.sport_id WHERE 1=1 ${sportFilterSql}`,
+      sportIds
+    );
+    const [[cMatches]] = await db.query(
+      `SELECT COUNT(*) AS total FROM matches m LEFT JOIN sports s ON s.id = m.sport_id WHERE 1=1 ${sportFilterSql}`,
+      sportIds
+    );
+    const [[cVideos]] = await db.query(
+      `SELECT COUNT(*) AS total FROM videos v LEFT JOIN sports s ON s.id = v.sport_id WHERE v.type <> 'livestream' ${sportFilterSql}`,
+      sportIds
+    );
+    const [[cLivestreams]] = await db.query(
+      `SELECT COUNT(*) AS total FROM videos v LEFT JOIN sports s ON s.id = v.sport_id WHERE v.type = 'livestream' ${sportFilterSql}`,
+      sportIds
+    );
+    const [[cTicketsSold]] = await db.query(
+      `
         SELECT COUNT(t.id) AS total
         FROM tickets t
         JOIN order_items oi ON oi.id = t.order_item_id
@@ -223,19 +223,19 @@ exports.renderDashboard = async (req, res) => {
         WHERE t.holder_name IS NOT NULL
         ${sportFilterSql}
         `,
-        sportIds
-      );
-        const stats = {
-            sports: sportIds.length,
-            events: cEvents.total || 0,
-            matches: cMatches.total || 0,
-            videos: cVideos.total || 0,
-            livestreams: cLivestreams.total || 0,
-            ticketsSold: cTicketsSold.total || 0
-        };
+      sportIds
+    );
+    const stats = {
+      sports: sportIds.length,
+      events: cEvents.total || 0,
+      matches: cMatches.total || 0,
+      videos: cVideos.total || 0,
+      livestreams: cLivestreams.total || 0,
+      ticketsSold: cTicketsSold.total || 0
+    };
 
-      const [upcomingMatches] = await db.query(
-        `
+    const [upcomingMatches] = await db.query(
+      `
         SELECT
           m.id,
           m.sport_id,
@@ -263,23 +263,23 @@ exports.renderDashboard = async (req, res) => {
         ORDER BY m.start_time ASC
         LIMIT 20
         `,
-        sportIds
-      );
+      sportIds
+    );
 
-        // map can_buy flag per match (if match has ticket type) and ensure start_time > now
-        const mappedMatches = upcomingMatches.map(m => {
-          const ticket_available = Number(m.ticket_available || 0);
-          return {
-            ...m,
-            ticket_available: Number(m.ticket_available || 0),
-            buyer_user_id: m.buyer_user_id || null,
-            can_buy: ticket_available > 0 && new Date(m.start_time) > new Date()
-          };
-        });
+    // map can_buy flag per match (if match has ticket type) and ensure start_time > now
+    const mappedMatches = upcomingMatches.map(m => {
+      const ticket_available = Number(m.ticket_available || 0);
+      return {
+        ...m,
+        ticket_available: Number(m.ticket_available || 0),
+        buyer_user_id: m.buyer_user_id || null,
+        can_buy: ticket_available > 0 && new Date(m.start_time) > new Date()
+      };
+    });
 
-        // 4) recent news, videos, upcoming livestreams
-        const [recentNews] = await db.query(
-            `
+    // 4) recent news, videos, upcoming livestreams
+    const [recentNews] = await db.query(
+      `
       SELECT n.id, n.title, n.slug, n.published_at
       FROM news_articles n
       LEFT JOIN sports s ON s.id = n.sport_id
@@ -287,11 +287,11 @@ exports.renderDashboard = async (req, res) => {
       ORDER BY n.published_at DESC
       LIMIT 6
       `,
-            [...sportIds]
-        );
+      [...sportIds]
+    );
 
-        const [recentVideos] = await db.query(
-            `
+    const [recentVideos] = await db.query(
+      `
       SELECT v.id, v.title, v.thumbnail_url
       FROM videos v
       LEFT JOIN sports s ON s.id = v.sport_id
@@ -299,15 +299,15 @@ exports.renderDashboard = async (req, res) => {
       ORDER BY v.created_at DESC
       LIMIT 6
       `,
-            [...sportIds]
-        );
+      [...sportIds]
+    );
 
-      // --- show ALL livestreams for allowed sports (admin = all) ---
-      let upcomingLivestreams = [];
-      try {
-        if (req.session.user.role === 'admin') {
-          const [rows] = await db.query(
-            `
+    // --- show ALL livestreams for allowed sports (admin = all) ---
+    let upcomingLivestreams = [];
+    try {
+      if (req.session.user.role === 'admin') {
+        const [rows] = await db.query(
+          `
       SELECT v.id, v.title, v.start_time, v.is_live, v.created_at, s.name AS sport_name
       FROM videos v
       LEFT JOIN sports s ON s.id = v.sport_id
@@ -315,13 +315,13 @@ exports.renderDashboard = async (req, res) => {
       ORDER BY COALESCE(v.start_time, v.created_at) DESC
       LIMIT 12
       `
-          );
-          upcomingLivestreams = rows;
-        } else {
-          // subadmin: only livestreams for assigned sports
-          const placeholders = sportIds.map(() => '?').join(',');
-          const [rows] = await db.query(
-            `
+        );
+        upcomingLivestreams = rows;
+      } else {
+        // subadmin: only livestreams for assigned sports
+        const placeholders = sportIds.map(() => '?').join(',');
+        const [rows] = await db.query(
+          `
       SELECT v.id, v.title, v.start_time, v.is_live, v.created_at, s.name AS sport_name
       FROM videos v
       LEFT JOIN sports s ON s.id = v.sport_id
@@ -330,102 +330,107 @@ exports.renderDashboard = async (req, res) => {
       ORDER BY COALESCE(v.start_time, v.created_at) DESC
       LIMIT 12
       `,
-            [...sportIds]
-          );
-          upcomingLivestreams = rows;
-        }
-      } catch (e) {
-        console.error('failed to load livestreams for dashboard', e);
-        upcomingLivestreams = [];
+          [...sportIds]
+        );
+        upcomingLivestreams = rows;
       }
-
-      return res.render('subadmin/dashboard', {
-        title: 'SubAdmin Dashboard - SPORTER',
-        stats,
-        upcomingMatches: mappedMatches,
-        recentNews,
-        recentVideos,
-        upcomingLivestreams,
-        assignedSports
-      });
-    } catch (err) {
-        console.error('renderDashboard subadmin error', err);
-        req.flash('error', 'Gagal memuat dashboard.');
-        return res.redirect('/subadmin');
+    } catch (e) {
+      console.error('failed to load livestreams for dashboard', e);
+      upcomingLivestreams = [];
     }
+
+    return res.render('subadmin/dashboard', {
+      title: 'SubAdmin Dashboard - SPORTER',
+      stats,
+      upcomingMatches: mappedMatches,
+      recentNews,
+      recentVideos,
+      upcomingLivestreams,
+      assignedSports
+    });
+  } catch (err) {
+    console.error('renderDashboard subadmin error', err);
+    req.flash('error', 'Gagal memuat dashboard.');
+    return res.redirect('/subadmin');
+  }
 };
 
 /* -------------------------
    EVENTS
    ------------------------- */
 exports.renderCreateEvent = async (req, res) => {
-    try {
-        const sports = await loadSportsList(req.session.user);
-        const [venues] = await db.query('SELECT id, name FROM venues ORDER BY name');
-        res.render('subadmin/create_event', { sports, venues });
-    } catch (err) {
-        console.error(err);
-        req.flash('error', 'Gagal memuat form event.');
-        return safeRedirectBack(req, res, '/subadmin');
-    }
+  const sports = await loadSportsList(req.session.user);
+  const defaultSportId = resolveDefaultSport(req.session.user, sports);
+  const [venues] = await db.query('SELECT id, name FROM venues ORDER BY name');
+
+  res.render('subadmin/create_event', {
+    sports,
+    venues,
+    defaultSportId
+  });
 };
 
 exports.createEvent = async (req, res) => {
-    try {
-        const { sport_id, title, slug, description, start_date, end_date, venue_id } = req.body;
-        // check assigned sport if subadmin
-        if (req.session.user.role === 'subadmin') {
-            const [rows] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, sport_id]);
-            if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin'); }
-        }
-        await db.query(
-            `INSERT INTO events (sport_id, title, slug, description, start_date, end_date, venue_id, organizer_id, status, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'upcoming', NOW(), NOW())`,
-            [sport_id, title, slug, description, start_date, end_date || null, venue_id || null, req.session.user.id]
-        );
-        req.flash('success', 'Event berhasil dibuat.');
-        return res.redirect('/subadmin'); // or /subadmin/events
-    } catch (err) {
-        console.error('createEvent', err);
-        req.flash('error', 'Gagal membuat event.');
-        return safeRedirectBack(req, res, '/subadmin');
+  try {
+    const { sport_id, title, slug, description, start_date, end_date, venue_id } = req.body;
+    // check assigned sport if subadmin
+    if (req.session.user.role === 'subadmin') {
+      const [rows] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, sport_id]);
+      if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin'); }
     }
+    await db.query(
+      `INSERT INTO events (sport_id, title, slug, description, start_date, end_date, venue_id, organizer_id, status, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'upcoming', NOW(), NOW())`,
+      [sport_id, title, slug, description, start_date, end_date || null, venue_id || null, req.session.user.id]
+    );
+    req.flash('success', 'Event berhasil dibuat.');
+    return res.redirect('/subadmin'); // or /subadmin/events
+  } catch (err) {
+    console.error('createEvent', err);
+    req.flash('error', 'Gagal membuat event.');
+    return safeRedirectBack(req, res, '/subadmin');
+  }
 };
 
 /* -------------------------
    NEWS / ARTICLES
    ------------------------- */
 exports.renderCreateNews = async (req, res) => {
-    const sports = await loadSportsList(req.session.user);
-    res.render('subadmin/create_news', { sports });
+  const sports = await loadSportsList(req.session.user);
+  const defaultSportId = resolveDefaultSport(req.session.user, sports);
+
+  res.render('subadmin/create_news', {
+    sports,
+    defaultSportId
+  });
 };
 
 exports.createNews = async (req, res) => {
-    try {
-        const { sport_id, event_id, title, slug, excerpt, content, status, published_at } = req.body;
-        // assigned check
-        if (req.session.user.role === 'subadmin') {
-            const [rows] = await db.query('SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1', [req.session.user.id, sport_id]);
-            if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin'); }
-        }
-        await db.query(
-            `INSERT INTO news_articles (sport_id, event_id, author_id, title, slug, excerpt, content, status, published_at, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
-            [sport_id || null, event_id || null, req.session.user.id, title, slug, excerpt || null, content || '', status || 'draft', published_at || null]
-        );
-        req.flash('success', 'Berita berhasil dibuat.');
-        return res.redirect('/subadmin');
-    } catch (err) {
-        console.error('createNews', err);
-        req.flash('error', 'Gagal membuat berita.');
-        return safeRedirectBack(req, res, '/subadmin');
+  try {
+    const { sport_id, event_id, title, slug, excerpt, content, status, published_at } = req.body;
+    // assigned check
+    if (req.session.user.role === 'subadmin') {
+      const [rows] = await db.query('SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1', [req.session.user.id, sport_id]);
+      if (rows.length === 0) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin'); }
     }
+    await db.query(
+      `INSERT INTO news_articles (sport_id, event_id, author_id, title, slug, excerpt, content, status, published_at, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+      [sport_id || null, event_id || null, req.session.user.id, title, slug, excerpt || null, content || '', status || 'draft', published_at || null]
+    );
+    req.flash('success', 'Berita berhasil dibuat.');
+    return res.redirect('/subadmin');
+  } catch (err) {
+    console.error('createNews', err);
+    req.flash('error', 'Gagal membuat berita.');
+    return safeRedirectBack(req, res, '/subadmin');
+  }
 };
 
 /* -------------------------
    MATCHES (schedule)
    ------------------------- */
-   function normalizeDateTime(value) {
+function normalizeDateTime(value) {
   if (!value) return null;
   let v = String(value).trim();
   if (!v) return null;
@@ -434,33 +439,33 @@ exports.createNews = async (req, res) => {
   return v;
 }
 
-  exports.listMatches = async (req, res) => {
-    try {
-      const sportIds = Array.isArray(req.allowedSports) ? req.allowedSports : [];
-      const { sport_id, order } = req.query;
+exports.listMatches = async (req, res) => {
+  try {
+    const sportIds = Array.isArray(req.allowedSports) ? req.allowedSports : [];
+    const { sport_id, order } = req.query;
 
-      // 🔑 AMBIL SPORT LIST UNTUK FILTER (WAJIB)
-      let sports = [];
-      if (sportIds.length) {
-        const placeholders = sportIds.map(() => "?").join(",");
-        [sports] = await db.query(
-          `SELECT id, name FROM sports WHERE id IN (${placeholders}) ORDER BY name`,
-          sportIds
-        );
-      }
+    // 🔑 AMBIL SPORT LIST UNTUK FILTER (WAJIB)
+    let sports = [];
+    if (sportIds.length) {
+      const placeholders = sportIds.map(() => "?").join(",");
+      [sports] = await db.query(
+        `SELECT id, name FROM sports WHERE id IN (${placeholders}) ORDER BY name`,
+        sportIds
+      );
+    }
 
-      // ❗ JANGAN RETURN TANPA sports
-      if (!sportIds.length) {
-        return res.render("subadmin/matches", {
-          title: "Kelola Pertandingan - Subadmin",
-          matches: [],
-          sports: [],
-          query: req.query
-        });
-      }
+    // ❗ JANGAN RETURN TANPA sports
+    if (!sportIds.length) {
+      return res.render("subadmin/matches", {
+        title: "Kelola Pertandingan - Subadmin",
+        matches: [],
+        sports: [],
+        query: req.query
+      });
+    }
 
-      await db.query(
-        `
+    await db.query(
+      `
         UPDATE matches
         SET status = 'live'
         WHERE status = 'scheduled'
@@ -468,11 +473,11 @@ exports.createNews = async (req, res) => {
           AND start_time <= NOW()
           AND sport_id IN (${sportIds.map(() => "?").join(",")})
         `,
-        sportIds
-      );
+      sportIds
+    );
 
-      await db.query(
-        `
+    await db.query(
+      `
         UPDATE matches
         SET status = 'finished'
         WHERE status IN ('scheduled', 'live')
@@ -480,26 +485,26 @@ exports.createNews = async (req, res) => {
           AND end_time <= NOW()
           AND sport_id IN (${sportIds.map(() => "?").join(",")})
         `,
-        sportIds
-      );
-      // ==== FILTER & SORT ====
-      let where = [`m.sport_id IN (${sportIds.map(() => "?").join(",")})`];
-      let params = [...sportIds];
+      sportIds
+    );
+    // ==== FILTER & SORT ====
+    let where = [`m.sport_id IN (${sportIds.map(() => "?").join(",")})`];
+    let params = [...sportIds];
 
-      if (sport_id) {
-        where.push("m.sport_id = ?");
-        params.push(sport_id);
-      }
+    if (sport_id) {
+      where.push("m.sport_id = ?");
+      params.push(sport_id);
+    }
 
-      const orderSql =
-            order === "oldest"
-              ? "ORDER BY m.created_at ASC"
-              : "ORDER BY m.created_at DESC";
+    const orderSql =
+      order === "oldest"
+        ? "ORDER BY m.created_at ASC"
+        : "ORDER BY m.created_at DESC";
 
-      const whereSql = `WHERE ${where.join(" AND ")}`;
+    const whereSql = `WHERE ${where.join(" AND ")}`;
 
-      const [matches] = await db.query(
-  `
+    const [matches] = await db.query(
+      `
         SELECT
           m.id,
           m.title,
@@ -532,25 +537,25 @@ exports.createNews = async (req, res) => {
         ${whereSql}
         ${orderSql}
         `,
-        params
-      );
-      return res.render("subadmin/matches", {
-        title: "Kelola Pertandingan - Subadmin",
-        matches,
-        sports,
-        query: req.query
-      });
+      params
+    );
+    return res.render("subadmin/matches", {
+      title: "Kelola Pertandingan - Subadmin",
+      matches,
+      sports,
+      query: req.query
+    });
 
-    } catch (err) {
-      console.error("listMatches error", err);
-      req.flash("error", "Gagal memuat daftar pertandingan.");
-      return res.redirect("/subadmin");
-    }
-  };
+  } catch (err) {
+    console.error("listMatches error", err);
+    req.flash("error", "Gagal memuat daftar pertandingan.");
+    return res.redirect("/subadmin");
+  }
+};
 
 exports.renderCreateMatch = async (req, res) => {
   try {
-    
+
     const sports = await loadSportsList(req.session.user);
     const defaultSportId = (sports && sports.length) ? Number(sports[0].id) : null;
     const isSingleSport = (req.session.user.role === 'subadmin' && (sports || []).length === 1);
@@ -608,7 +613,7 @@ exports.renderCreateMatch = async (req, res) => {
       match_mode,
       hasIsIndividual,
       defaultSportId,     // ✅ tambah
-      isSingleSport 
+      isSingleSport
     });
   } catch (err) {
     console.error('renderCreateMatch error', err);
@@ -734,15 +739,15 @@ exports.createMatch = async (req, res) => {
 
     // ✅ MODE TEAM tetap jalan seperti biasa (pakai home_team_id & away_team_id)
     if (matchMode === "team") {
-    if (!homeId || !awayId) {
-      req.flash("error", "Pilih tim Home dan Away.");
-      return res.redirect("/subadmin/matches/create");
+      if (!homeId || !awayId) {
+        req.flash("error", "Pilih tim Home dan Away.");
+        return res.redirect("/subadmin/matches/create");
+      }
+      if (homeId === awayId) {
+        req.flash("error", "Home dan Away tidak boleh sama.");
+        return res.redirect("/subadmin/matches/create");
+      }
     }
-    if (homeId === awayId) {
-      req.flash("error", "Home dan Away tidak boleh sama.");
-      return res.redirect("/subadmin/matches/create");
-    }
-  }
     // validasi competitor sesuai mode (kalau kolom/tabel barunya sudah ada)
     // ✅ bener: cuma TEAM
     if (matchMode === "team") {
@@ -1127,24 +1132,26 @@ exports.addMatchScore = async (req, res) => {
   }
 };
 
+function resolveDefaultSport(user, sports) {
+  if (!user) return null;
+  if (user.role !== 'subadmin') return null;
+  if (!Array.isArray(sports)) return null;
+  return sports.length === 1 ? Number(sports[0].id) : null;
+}
 
 /* -------------------------
    VIDEOS (VOD/highlight) - NOT livestream
    ------------------------- */
 exports.renderCreateVideo = async (req, res) => {
-  try {
-    const sports = await loadSportsList(req.session.user);
-    return res.render("subadmin/create_video", {
-      title: "Tambah Video - Subadmin",
-      sports,
-    });
-  } catch (err) {
-    console.error("renderCreateVideo error", err);
-    req.flash("error", "Gagal memuat form video.");
-    return res.redirect("/subadmin");
-  }
-};
+  const sports = await loadSportsList(req.session.user);
+  const defaultSportId = resolveDefaultSport(req.session.user, sports);
 
+  return res.render("subadmin/create_video", {
+    title: "Tambah Video - Subadmin",
+    sports,
+    defaultSportId
+  });
+};
 
 exports.createVideo = async (req, res) => {
   try {
@@ -1225,95 +1232,101 @@ exports.createVideo = async (req, res) => {
    LIVESTREAMS (separate)
    ------------------------- */
 function getYouTubeId(url) {
-    if (!url) return null;
-    const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-    return m ? m[1] : null;
+  if (!url) return null;
+  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
 }
+
 exports.renderCreateLivestream = async (req, res) => {
-    const sports = await loadSportsList(req.session.user);
-    res.render('subadmin/create_livestream', { sports });
+  const sports = await loadSportsList(req.session.user);
+  const defaultSportId = resolveDefaultSport(req.session.user, sports);
+
+  res.render('subadmin/create_livestream', {
+    sports,
+    defaultSportId
+  });
 };
 
 exports.createLivestream = async (req, res) => {
-    try {
-        const { sport_id, title, url, description } = req.body;
+  try {
+    const { sport_id, title, url, description } = req.body;
 
-        if (!title || !url) {
-            req.flash('error', 'Title dan URL wajib diisi.');
-            return res.redirect('/subadmin/livestreams/create');
-        }
+    if (!title || !url) {
+      req.flash('error', 'Title dan URL wajib diisi.');
+      return res.redirect('/subadmin/livestreams/create');
+    }
 
-        // permission check for subadmin
-        if (req.session.user.role === 'subadmin') {
-            const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1', [req.session.user.id, sport_id]);
-            if (ok.length === 0) {
-                req.flash('error', 'Akses ditolak untuk cabang olahraga ini.');
-                return res.redirect('/subadmin/livestreams/create');
-            }
-        }
+    // permission check for subadmin
+    if (req.session.user.role === 'subadmin') {
+      const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1', [req.session.user.id, sport_id]);
+      if (ok.length === 0) {
+        req.flash('error', 'Akses ditolak untuk cabang olahraga ini.');
+        return res.redirect('/subadmin/livestreams/create');
+      }
+    }
 
-        // parse embed URL (use let so we can reassign)
-        let embedUrl = parseYouTubeEmbed(url);
+    // parse embed URL (use let so we can reassign)
+    let embedUrl = parseYouTubeEmbed(url);
 
-        if (!embedUrl) {
-            // try clean input (strip tags, quotes)
-            const cleaned = String(url).replace(/<[^>]*>/g, '').replace(/['"`\u2018\u2019\u201C\u201D]/g, '').trim();
-            embedUrl = parseYouTubeEmbed(cleaned);
-            if (!embedUrl) {
-                req.flash('error', 'URL tidak dikenali atau belum didukung. Gunakan link YouTube atau paste iframe embed.');
-                return res.redirect('/subadmin/livestreams/create');
-            }
-        }
+    if (!embedUrl) {
+      // try clean input (strip tags, quotes)
+      const cleaned = String(url).replace(/<[^>]*>/g, '').replace(/['"`\u2018\u2019\u201C\u201D]/g, '').trim();
+      embedUrl = parseYouTubeEmbed(cleaned);
+      if (!embedUrl) {
+        req.flash('error', 'URL tidak dikenali atau belum didukung. Gunakan link YouTube atau paste iframe embed.');
+        return res.redirect('/subadmin/livestreams/create');
+      }
+    }
 
-        // extract id for thumbnail
-        const idMatch = embedUrl.match(/\/embed\/([A-Za-z0-9_-]{6,})/);
-        const ytId = idMatch ? idMatch[1] : null;
-        const thumbnail_url = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : null;
-        const platform = ytId ? 'youtube' : null;
+    // extract id for thumbnail
+    const idMatch = embedUrl.match(/\/embed\/([A-Za-z0-9_-]{6,})/);
+    const ytId = idMatch ? idMatch[1] : null;
+    const thumbnail_url = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : null;
+    const platform = ytId ? 'youtube' : null;
 
-        // Insert into videos table as 'livestream'
-        await db.query(
-            `INSERT INTO videos
+    // Insert into videos table as 'livestream'
+    await db.query(
+      `INSERT INTO videos
             (sport_id, event_id, match_id, title, type, platform, url, thumbnail_url, description, start_time, end_time, is_live, created_at, updated_at)
             VALUES (?, NULL, NULL, ?, 'livestream', ?, ?, ?, ?, NULL, NULL, 0, NOW(), NOW())`,
-            [sport_id || null, title, platform, url, thumbnail_url, description || null]
-          );
+      [sport_id || null, title, platform, url, thumbnail_url, description || null]
+    );
 
 
-        req.flash('success', 'Livestream berhasil dibuat.');
-        return res.redirect('/subadmin/livestreams');
-    } catch (err) {
-        console.error('createLivestream error', err);
-        req.flash('error', 'Gagal menambahkan livestream. Cek server log.');
-        return res.redirect('/subadmin/livestreams/create');
-    }
+    req.flash('success', 'Livestream berhasil dibuat.');
+    return res.redirect('/subadmin/livestreams');
+  } catch (err) {
+    console.error('createLivestream error', err);
+    req.flash('error', 'Gagal menambahkan livestream. Cek server log.');
+    return res.redirect('/subadmin/livestreams/create');
+  }
 };
 
 /* -------------------------
    TICKET TYPES (per event or per match)
    ------------------------- */
 exports.renderCreateTicketType = async (req, res) => {
-    const [events] = await db.query('SELECT id, title FROM events ORDER BY start_date DESC');
-    const [matches] = await db.query('SELECT id, title, start_time FROM matches ORDER BY start_time DESC');
-    res.render('subadmin/create_ticket_type', { events, matches });
+  const [events] = await db.query('SELECT id, title FROM events ORDER BY start_date DESC');
+  const [matches] = await db.query('SELECT id, title, start_time FROM matches ORDER BY start_time DESC');
+  res.render('subadmin/create_ticket_type', { events, matches });
 };
 
 exports.createTicketType = async (req, res) => {
-    try {
-        const { event_id, match_id, name, price, quota } = req.body;
-        // choose associated sport check if needed (simpler: assume event/match association already restricts)
-        await db.query(
-            `INSERT INTO ticket_types (event_id, match_id, name, price, quota, sold, created_at, updated_at)
+  try {
+    const { event_id, match_id, name, price, quota } = req.body;
+    // choose associated sport check if needed (simpler: assume event/match association already restricts)
+    await db.query(
+      `INSERT INTO ticket_types (event_id, match_id, name, price, quota, sold, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, 0, NOW(), NOW())`,
-            [event_id || null, match_id || null, name, parseFloat(price || 0), parseInt(quota || 0, 10)]
-        );
-        req.flash('success', 'Tipe tiket berhasil dibuat.');
-        return res.redirect('/subadmin');
-    } catch (err) {
-        console.error('createTicketType', err);
-        req.flash('error', 'Gagal membuat ticket type.');
-        return safeRedirectBack(req, res, '/subadmin');
-    }
+      [event_id || null, match_id || null, name, parseFloat(price || 0), parseInt(quota || 0, 10)]
+    );
+    req.flash('success', 'Tipe tiket berhasil dibuat.');
+    return res.redirect('/subadmin');
+  } catch (err) {
+    console.error('createTicketType', err);
+    req.flash('error', 'Gagal membuat ticket type.');
+    return safeRedirectBack(req, res, '/subadmin');
+  }
 };
 // Subadmin — listNews (tambahkan sebelum exports.renderCreateNews atau di bagian NEWS)
 exports.listNews = async (req, res) => {
@@ -1357,35 +1370,35 @@ exports.listNews = async (req, res) => {
 
 // render edit using the same create_news view (mode='edit')
 exports.renderEditNews = async (req, res) => {
-    try {
-        const id = Number(req.params.id);
-        if (!id) { req.flash('error', 'ID berita tidak valid'); return safeRedirectBack(req, res, '/subadmin/news'); }
+  try {
+    const id = Number(req.params.id);
+    if (!id) { req.flash('error', 'ID berita tidak valid'); return safeRedirectBack(req, res, '/subadmin/news'); }
 
-        const [[article]] = await db.query('SELECT * FROM news_articles WHERE id = ? LIMIT 1', [id]);
-        if (!article) { req.flash('error', 'Berita tidak ditemukan'); return safeRedirectBack(req, res, '/subadmin/news'); }
+    const [[article]] = await db.query('SELECT * FROM news_articles WHERE id = ? LIMIT 1', [id]);
+    if (!article) { req.flash('error', 'Berita tidak ditemukan'); return safeRedirectBack(req, res, '/subadmin/news'); }
 
-        // permission: if subadmin, ensure they own the sport (if article has sport_id)
-        if (req.session.user.role === 'subadmin' && article.sport_id) {
-            const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, article.sport_id]);
-            if (!ok.length) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin/news'); }
-        }
-
-        const sports = await loadSportsList(req.session.user);
-        const [events] = await db.query('SELECT id, title, sport_id FROM events ORDER BY start_date DESC');
-
-        // render the existing create_news view but with mode edit
-        return res.render('subadmin/create_news', {
-            title: 'Edit Berita',
-            mode: 'edit',
-            article,
-            sports,
-            events
-        });
-    } catch (err) {
-        console.error('renderEditNews', err);
-        req.flash('error', 'Gagal memuat form edit berita.');
-        return safeRedirectBack(req, res, '/subadmin/news');
+    // permission: if subadmin, ensure they own the sport (if article has sport_id)
+    if (req.session.user.role === 'subadmin' && article.sport_id) {
+      const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, article.sport_id]);
+      if (!ok.length) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin/news'); }
     }
+
+    const sports = await loadSportsList(req.session.user);
+    const [events] = await db.query('SELECT id, title, sport_id FROM events ORDER BY start_date DESC');
+
+    // render the existing create_news view but with mode edit
+    return res.render('subadmin/create_news', {
+      title: 'Edit Berita',
+      mode: 'edit',
+      article,
+      sports,
+      events
+    });
+  } catch (err) {
+    console.error('renderEditNews', err);
+    req.flash('error', 'Gagal memuat form edit berita.');
+    return safeRedirectBack(req, res, '/subadmin/news');
+  }
 };
 
 // helper: simple slugify
@@ -1400,93 +1413,93 @@ function generateSlug(name) {
     .replace(/^-+|-+$/g, '');  // hapus dash di awal/akhir
 }
 exports.updateNews = async (req, res) => {
-    try {
-        const id = Number(req.params.id);
-        if (!id) { req.flash('error', 'ID tidak valid'); return safeRedirectBack(req, res, '/subadmin/news'); }
+  try {
+    const id = Number(req.params.id);
+    if (!id) { req.flash('error', 'ID tidak valid'); return safeRedirectBack(req, res, '/subadmin/news'); }
 
-        const thumbnailFile = req.file;
-        const {
-            sport_id,
-            event_id,
-            title = '',
-            slug: incomingSlug,
-            excerpt,
-            content,
-            status = 'draft',
-            published_at
-        } = req.body || {};
+    const thumbnailFile = req.file;
+    const {
+      sport_id,
+      event_id,
+      title = '',
+      slug: incomingSlug,
+      excerpt,
+      content,
+      status = 'draft',
+      published_at
+    } = req.body || {};
 
-        // ensure title present
-        if (!title || !String(title).trim()) {
-            req.flash('error', 'Judul wajib diisi.');
-            return safeRedirectBack(req, res, '/subadmin/news');
-        }
+    // ensure title present
+    if (!title || !String(title).trim()) {
+      req.flash('error', 'Judul wajib diisi.');
+      return safeRedirectBack(req, res, '/subadmin/news');
+    }
 
-        // fetch article for permission/existing values
-        const [[article]] = await db.query('SELECT * FROM news_articles WHERE id = ? LIMIT 1', [id]);
-        if (!article) { req.flash('error', 'Berita tidak ditemukan'); return safeRedirectBack(req, res, '/subadmin/news'); }
+    // fetch article for permission/existing values
+    const [[article]] = await db.query('SELECT * FROM news_articles WHERE id = ? LIMIT 1', [id]);
+    if (!article) { req.flash('error', 'Berita tidak ditemukan'); return safeRedirectBack(req, res, '/subadmin/news'); }
 
-        // permission: subadmin must be assigned to sport
-        if (req.session.user.role === 'subadmin' && sport_id) {
-            const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, sport_id]);
-            if (!ok.length) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin/news'); }
-        }
+    // permission: subadmin must be assigned to sport
+    if (req.session.user.role === 'subadmin' && sport_id) {
+      const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, sport_id]);
+      if (!ok.length) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin/news'); }
+    }
 
-        // build slug: prefer incomingSlug, else from title, ensure not empty
-        let finalSlug = incomingSlug && String(incomingSlug).trim() ? slugify(incomingSlug) : slugify(title);
-        if (!finalSlug) finalSlug = 'article-' + Date.now();
+    // build slug: prefer incomingSlug, else from title, ensure not empty
+    let finalSlug = incomingSlug && String(incomingSlug).trim() ? slugify(incomingSlug) : slugify(title);
+    if (!finalSlug) finalSlug = 'article-' + Date.now();
 
-        // thumbnail path if uploaded, otherwise keep existing
-        const thumbnailPath = thumbnailFile ? `/uploads/news/${thumbnailFile.filename}` : (article.thumbnail_url || null);
+    // thumbnail path if uploaded, otherwise keep existing
+    const thumbnailPath = thumbnailFile ? `/uploads/news/${thumbnailFile.filename}` : (article.thumbnail_url || null);
 
-        await db.query(
-            `UPDATE news_articles
+    await db.query(
+      `UPDATE news_articles
        SET sport_id = ?, event_id = ?, title = ?, slug = ?, excerpt = ?, content = ?, status = ?, published_at = ?, thumbnail_url = ?, updated_at = NOW()
        WHERE id = ?`,
-            [
-                sport_id || null,
-                event_id || null,
-                title.trim(),
-                finalSlug,
-                excerpt || null,
-                content || '',
-                status || 'draft',
-                published_at || null,
-                thumbnailPath,
-                id
-            ]
-        );
+      [
+        sport_id || null,
+        event_id || null,
+        title.trim(),
+        finalSlug,
+        excerpt || null,
+        content || '',
+        status || 'draft',
+        published_at || null,
+        thumbnailPath,
+        id
+      ]
+    );
 
-        req.flash('success', 'Berita berhasil disimpan.');
-        return res.redirect('/subadmin/news');
-    } catch (err) {
-        console.error('updateNews Error:', err);
-        req.flash('error', 'Gagal mengupdate berita. Cek server log.');
-        return safeRedirectBack(req, res, '/subadmin/news');
-    }
+    req.flash('success', 'Berita berhasil disimpan.');
+    return res.redirect('/subadmin/news');
+  } catch (err) {
+    console.error('updateNews Error:', err);
+    req.flash('error', 'Gagal mengupdate berita. Cek server log.');
+    return safeRedirectBack(req, res, '/subadmin/news');
+  }
 };
 
 exports.deleteNews = async (req, res) => {
-    try {
-        const id = Number(req.params.id);
-        if (!id) { req.flash('error', 'ID tidak valid'); return safeRedirectBack(req, res, '/subadmin/news'); }
+  try {
+    const id = Number(req.params.id);
+    if (!id) { req.flash('error', 'ID tidak valid'); return safeRedirectBack(req, res, '/subadmin/news'); }
 
-        const [[article]] = await db.query('SELECT * FROM news_articles WHERE id = ? LIMIT 1', [id]);
-        if (!article) { req.flash('error', 'Berita tidak ditemukan'); return safeRedirectBack(req, res, '/subadmin/news'); }
+    const [[article]] = await db.query('SELECT * FROM news_articles WHERE id = ? LIMIT 1', [id]);
+    if (!article) { req.flash('error', 'Berita tidak ditemukan'); return safeRedirectBack(req, res, '/subadmin/news'); }
 
-        if (req.session.user.role === 'subadmin' && article.sport_id) {
-            const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, article.sport_id]);
-            if (!ok.length) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin/news'); }
-        }
-
-        await db.query('DELETE FROM news_articles WHERE id = ?', [id]);
-        req.flash('success', 'Berita berhasil dihapus.');
-        return safeRedirectBack(req, res, '/subadmin/news');
-    } catch (err) {
-        console.error('deleteNews', err);
-        req.flash('error', 'Gagal menghapus berita.');
-        return safeRedirectBack(req, res, '/subadmin/news');
+    if (req.session.user.role === 'subadmin' && article.sport_id) {
+      const [ok] = await db.query('SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1', [req.session.user.id, article.sport_id]);
+      if (!ok.length) { req.flash('error', 'Akses ditolak'); return safeRedirectBack(req, res, '/subadmin/news'); }
     }
+
+    await db.query('DELETE FROM news_articles WHERE id = ?', [id]);
+    req.flash('success', 'Berita berhasil dihapus.');
+    return safeRedirectBack(req, res, '/subadmin/news');
+  } catch (err) {
+    console.error('deleteNews', err);
+    req.flash('error', 'Gagal menghapus berita.');
+    return safeRedirectBack(req, res, '/subadmin/news');
+  }
 };
 exports.ajaxCreateTeam = async (req, res) => {
   try {
@@ -1533,7 +1546,7 @@ exports.ajaxCreateAthlete = async (req, res) => {
     const number = String(req.body.number || '').trim();
     const position = String(req.body.position || '').trim();
     const slug = generateSlug(name); // ✅ GENERATE SLUG
-    
+
     if (!sportId || !name) {
       return res.status(400).json({ ok: false, message: 'Sport & nama wajib' });
     }
@@ -1593,18 +1606,18 @@ exports.ajaxCreateAthlete = async (req, res) => {
     });
   } catch (e) {
     console.error('Error creating athlete:', e);
-    
+
     // Handle duplicate slug
     if (e.code === 'ER_DUP_ENTRY') {
-      return res.status(400).json({ 
-        ok: false, 
-        message: 'Nama pemain sudah ada, gunakan nama yang berbeda' 
+      return res.status(400).json({
+        ok: false,
+        message: 'Nama pemain sudah ada, gunakan nama yang berbeda'
       });
     }
-    
-    return res.status(500).json({ 
-      ok: false, 
-      message: 'Server error: ' + e.message 
+
+    return res.status(500).json({
+      ok: false,
+      message: 'Server error: ' + e.message
     });
   }
 };
@@ -1736,7 +1749,7 @@ exports.addTeamMember = async (req, res) => {
     }
 
     // 1️⃣ insert athlete
-   const [ins] = await db.query(
+    const [ins] = await db.query(
       `INSERT INTO athletes (sport_id, name, slug, member_type, created_at, updated_at)
       VALUES (?, ?, NULL, 'team', NOW(), NOW())`,
       [team.sport_id, name]
@@ -2020,7 +2033,7 @@ exports.createTeam = async (req, res) => {
       ? members.map(m => String(m).trim()).filter(Boolean)
       : [];
 
-   for (const memberName of memberNames) {
+    for (const memberName of memberNames) {
       const [athIns] = await conn.query(
         `INSERT INTO athletes (sport_id, name, slug, member_type, created_at, updated_at)
         VALUES (?, ?, NULL, 'team', NOW(), NOW())`,
