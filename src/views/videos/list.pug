@@ -169,7 +169,15 @@ block content
       position: relative;
       overflow: hidden;
     }
-    
+
+    .btn-filter span {
+      white-space: nowrap;
+    }
+
+    .filter-buttons-grid[data-filter="type"] {
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    }
+
     .btn-filter::before {
       content: '';
       position: absolute;
@@ -958,7 +966,9 @@ block content
     .video-type-badge.full {
       background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);
     }
-
+    .video-type-badge.replay {
+      background: linear-gradient(135deg, #16a34a 0%, #47d77cff 100%);
+    }
   // HERO SECTION
   .videos-hero
     .container
@@ -1100,6 +1110,23 @@ block content
             i.bi.bi-heart-pulse-fill
             span Triathlon
 
+      .filter-buttons-grid.mt-3(data-filter="type")
+        button.btn-filter.active(type="button" data-type="all")
+          i.bi.bi-grid-fill
+          span Semua
+
+        button.btn-filter(type="button" data-type="highlight")
+          i.bi.bi-lightning-fill
+          span Highlight
+
+        button.btn-filter(type="button" data-type="full_match")
+          i.bi.bi-camera-reels-fill
+          span Full Match
+
+        button.btn-filter(type="button" data-type="replay")
+          i.bi.bi-broadcast
+          span Replay Livestream
+
   // VIDEOS GRID
   .videos-section
     .container
@@ -1132,7 +1159,13 @@ block content
           each v in videos
             .col-md-6.col-lg-4
               a.text-decoration-none(href=`/videos/${v.id}`)
-                .sporter-video-card
+                .sporter-video-card(
+                  data-type=(
+                    v.type === 'livestream' && v.is_live === 0
+                      ? 'replay'
+                      : v.type
+                  )
+                )
                   .video-card-media
                     img(
                       src=(v.thumbnail_url && v.thumbnail_url.trim()) ? v.thumbnail_url : '/images/video-placeholder.jpg'
@@ -1146,10 +1179,16 @@ block content
                     span.video-type-badge.highlight
                       i.bi.bi-lightning-fill
                       | HIGHLIGHT
+
                   else if v.type === 'full_match'
                     span.video-type-badge.full
                       i.bi.bi-camera-reels-fill
                       | FULL MATCH
+
+                  else if v.type === 'livestream' && v.is_live === 0
+                    span.video-type-badge.replay
+                      i.bi.bi-broadcast
+                      | REPLAY LIVESTREAM
 
                   .video-card-content
                     .video-card-header
@@ -1329,61 +1368,61 @@ block content
         }
         
         function applyFilter() {
-          const activeButton = document.querySelector('.btn-filter.active');
-          const sport = activeButton ? activeButton.getAttribute('data-sport') : 'all';
-          
-          videoCards.forEach(function(card) {
+          const activeSportBtn = document.querySelector('.btn-filter.active[data-sport]');
+          const activeTypeBtn  = document.querySelector('.btn-filter.active[data-type]');
+
+          const sport = activeSportBtn ? activeSportBtn.dataset.sport : 'all';
+          const type  = activeTypeBtn  ? activeTypeBtn.dataset.type  : 'all';
+
+          videoCards.forEach(card => {
             const col = card.closest('.col-md-6.col-lg-4');
             const sportBadge = card.querySelector('.video-sport-badge');
             const sportName = sportBadge ? sportBadge.textContent.toLowerCase() : '';
-            
-            let shouldShow = false;
-            
-            if (sport === 'all') {
-              shouldShow = true;
-            } else if (sport === 'golf') {
-              shouldShow = sportName.includes('golf');
-            } else if (sport === 'run') {
-              shouldShow = sportName.includes('run') || sportName.includes('run') || 
-                          sportName.includes('marathon') || sportName.includes('sprint');
-            } else if (sport === 'padel') {
-              shouldShow = sportName.includes('padel');
-            } else if (sport === 'tennis') {
-              shouldShow = sportName.includes('tenis') || sportName.includes('tennis');
-            } else if (sport === 'swimming') {
-              shouldShow = sportName.includes('renang') || sportName.includes('swimming') || 
-                          sportName.includes('berenang');
-            } else if (sport === 'triathlon') {
-              shouldShow = sportName.includes('triathlon') || sportName.includes('triatlon');
+            const cardType = card.dataset.type;
+
+            let showBySport = true;
+            let showByType  = true;
+
+            // === FILTER SPORT ===
+            if (sport !== 'all') {
+              showBySport = sportName.includes(sport);
             }
-            
-            if (shouldShow) {
-              if (col) col.style.display = '';
+
+            // === FILTER TYPE ===
+            if (type !== 'all') {
+              showByType = cardType === type;
+            }
+
+            if (showBySport && showByType) {
+              col.style.display = '';
               card.style.opacity = '1';
               card.style.transform = 'translateY(0)';
             } else {
               card.style.opacity = '0';
               card.style.transform = 'translateY(20px)';
-              setTimeout(() => {
-                if (col) col.style.display = 'none';
-              }, 300);
+              setTimeout(() => col.style.display = 'none', 300);
             }
           });
-          
+
           setTimeout(updateVideoCount, 350);
         }
-        
-        // Event listeners untuk filter
-        filterButtons.forEach(function(button) {
-          button.addEventListener('click', function() {
-            filterButtons.forEach(function(btn) {
-              btn.classList.remove('active');
-            });
+        filterButtons.forEach(button => {
+          button.addEventListener('click', function () {
+            const isType = this.dataset.type;
+            const isSport = this.dataset.sport;
+
+            if (isType) {
+              document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
+            }
+            if (isSport) {
+              document.querySelectorAll('[data-sport]').forEach(b => b.classList.remove('active'));
+            }
+
             this.classList.add('active');
             applyFilter();
           });
         });
-        
+
         // Add smooth hover effects
         document.querySelectorAll('.btn-watch-video').forEach(button => {
           button.addEventListener('mouseenter', function() {

@@ -472,22 +472,22 @@ block content
                 .info-content-detail
                   h6 Jenis Video
                   p
-                    span.type-badge(
-                      class= video.type === 'vod' 
-                        ? 'type-vod' 
-                        : video.type === 'highlight' 
-                        ? 'type-highlight' 
-                        : 'type-livestream'
-                    )
-                      if video.type === 'vod'
-                        i.bi.bi-play-circle-fill
-                        span VOD
+                    span.type-badge
+                      if video.type === 'full_match'
+                        span.type-badge.type-vod
+                          i.bi.bi-play-circle-fill
+                          | Full Match
                       else if video.type === 'highlight'
-                        i.bi.bi-star-fill
-                        span Highlight
+                        span.type-badge.type-highlight
+                          i.bi.bi-star-fill
+                          | Highlight
+                      else if video.type === 'livestream'
+                        span.type-badge.type-livestream
+                          i.bi.bi-broadcast
+                          | Replay Livestream
                       else
-                        i.bi.bi-broadcast
-                        span Livestream
+                        span.type-badge
+                          | Unknown
               
               // Sport
               if video.sport_name
@@ -622,7 +622,7 @@ block content
       });
 
       // Auto play video if it's a livestream
-      if (#{video.type === 'livestream' ? true : false}) {
+      if #{isLiveNow}
         const liveVideo = document.querySelector('.video-player');
         if (liveVideo) {
           setTimeout(() => {
