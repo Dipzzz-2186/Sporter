@@ -264,9 +264,14 @@ block content
       color: var(--primary-color);
       font-weight: 700;
       font-size: 1rem;
+
+      z-index: 2;          /* PENTING */
+      pointer-events: none;
     }
 
     .price-input {
+      position: relative;
+      z-index: 1;
       padding-left: 3.5rem;
     }
 
@@ -772,14 +777,16 @@ block content
                   .price-container
                     span.price-prefix Rp
                     input.form-control.price-input(
-                      type="number"
+                      type="text"
                       id="productPrice"
                       name="price"
-                      min="0"
+                      inputmode="numeric"
+                      autocomplete="off"
                       required
-                      value=merchandise.price || ''
+                      value=merchandise.price
+                        ? merchandise.price.toLocaleString('id-ID')
+                        : ''
                       placeholder="0"
-                      oninput="formatPrice(this)"
                     )
                   .form-text.text-muted.mt-1
                     | Harga produk dalam Rupiah
@@ -789,16 +796,16 @@ block content
                   label.form-label.required(for="productStock")
                     i.bi.bi-box
                     | Stok Tersedia
-                  input.form-control(
-                    type="number"
-                    id="productStock"
-                    name="stock"
-                    min="0"
-                    required
-                    value=merchandise.stock || 0
-                    placeholder="0"
-                    oninput="updateStockStatus(this.value)"
-                  )
+                    input.form-control(
+                      type="number"
+                      id="productStock"
+                      name="stock"
+                      min="0"
+                      required
+                      value=merchandise.stock || 0
+                      placeholder="0"
+                      oninput="updateStockStatus(this.value)"
+                    )
                   .stock-status(id="stockStatus")
                     .stock-icon
                       i.bi.bi-check-lg
@@ -860,7 +867,18 @@ block content
                       | Preview Gambar
                     if mode === 'edit' && merchandiseImages.length
                       each img in merchandiseImages
-                        img.image-preview(src=img.image_url)
+                        .image-card
+                          button.image-remove(
+                            type="button"
+                            onclick="markDeleteImage(this)"
+                            data-id=img.id
+                          ) ×
+                          img.image-preview-thumb(src=img.image_url)
+                          input(
+                            type="hidden"
+                            name="existing_images[]"
+                            value=img.id
+                          )
                     else
                       img.image-preview(
                         style="display:none"
@@ -882,6 +900,8 @@ block content
               | Tambah Merchandise
 
   script.
+    window.formMode = "#{mode}";
+
     // Format price input
     function formatPrice(input) {
       const value = parseInt(input.value) || 0;
@@ -891,7 +911,34 @@ block content
       const formatted = new Intl.NumberFormat('id-ID').format(value);
       input.setAttribute('data-formatted', formatted);
     }
-    
+    const priceInput = document.getElementById("productPrice");
+
+    function formatRupiah(value) {
+      return value
+        .replace(/\D/g, "")            // buang selain angka
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    priceInput.addEventListener("input", function () {
+      const input = this;
+
+      // posisi caret dari kanan (jumlah digit)
+      const digitsRight =
+        input.value.length - input.selectionStart;
+
+      // ambil angka murni
+      let raw = input.value.replace(/\D/g, "");
+
+      // format
+      let formatted = raw.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+      input.value = formatted;
+
+      // set caret kembali dari kanan
+      const newPos = formatted.length - digitsRight;
+      input.setSelectionRange(newPos, newPos);
+    });
+
     // Update stock status message
     function updateStockStatus(stock) {
       const stockNum = parseInt(stock) || 0;
@@ -963,6 +1010,8 @@ block content
       const submitBtn = document.getElementById('submitBtn');
       const originalText = submitBtn.innerHTML;
       
+      const rawPrice = priceInput.value.replace(/\./g, "");
+      priceInput.value = rawPrice;
       // Basic validation
       const name = form.querySelector('#productName').value.trim();
       const price = parseInt(form.querySelector('#productPrice').value);
@@ -989,7 +1038,7 @@ block content
         <div class="loading-spinner"></div>
         ${mode === 'edit' ? 'Menyimpan...' : 'Menambahkan...'}
       `;
-      
+
       return true;
     }
     document.addEventListener("DOMContentLoaded", () => {
@@ -1032,16 +1081,6 @@ block content
         });
       }
       
-      // Add price formatting on load
-      priceInput.addEventListener('blur', function() {
-        const value = parseInt(this.value) || 0;
-        this.value = value.toLocaleString('id-ID');
-      });
-      
-      priceInput.addEventListener('focus', function() {
-        const value = this.value.replace(/\./g, '');
-        this.value = value;
-      });
     });
     
     // Keyboard shortcuts
@@ -1079,7 +1118,7 @@ block content
       remove.textContent = "×";
 
       remove.onclick = () => {
-        if (container.children.length <= 1) return;
+        if (container.children.length <= 1 && window.formMode === 'create') return;
         card.remove();
         updateRemoveButtons();
       };
@@ -1098,12 +1137,15 @@ block content
       input.type = "file";
       input.name = "images";
       input.accept = "image/*";
-      input.required = container.children.length === 0;
-      input.onchange = () => handlePreview(input, preview);
+
+      // ✅ WAJIB HANYA SAAT CREATE
+      input.required = window.formMode === 'create' && container.children.length === 0;
 
       const preview = document.createElement("img");
       preview.className = "image-preview-thumb";
       preview.style.display = "none";
+
+      input.onchange = () => handlePreview(input, preview);
 
       label.append(icon, text, input);
       card.append(remove, label, preview);
@@ -1164,4 +1206,19 @@ block content
         alert("Harus gambar");
         input.value = "";
       }
+    }
+    function markDeleteImage(btn) {
+      const card = btn.closest(".image-card");
+
+      let input = card.querySelector("input[name='delete_images[]']");
+      if (!input) {
+        input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "delete_images[]";
+        input.value = btn.dataset.id;
+        card.appendChild(input);
+      }
+
+      card.style.opacity = 0.4;
+      btn.disabled = true;
     }

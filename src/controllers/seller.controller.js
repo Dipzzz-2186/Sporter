@@ -284,6 +284,19 @@ exports.updateMerchandise = async (req, res) => {
             return res.redirect("/seller/merchandise");
         }
 
+        const { delete_images = [] } = req.body;
+
+        if (delete_images.length) {
+            const ids = Array.isArray(delete_images)
+                ? delete_images
+                : [delete_images];
+
+            await db.query(
+                `DELETE FROM merchandise_images WHERE id IN (?) AND merchandise_id = ?`,
+                [ids, id]
+            );
+        }
+
         await db.query(`
             UPDATE merchandises
             SET sport_id=?, name=?, description=?, price=?, stock=?, status=?, updated_at=NOW()
@@ -310,7 +323,6 @@ exports.updateMerchandise = async (req, res) => {
                 ]);
             }
         }
-        
         req.flash("success", "Merchandise berhasil diperbarui");
         res.redirect("/seller/merchandise");
 
