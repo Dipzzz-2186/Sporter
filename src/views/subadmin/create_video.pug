@@ -501,47 +501,7 @@ block content
                   small.form-text
                     i.bi.bi-info-circle
                     | Kategorisasi video berdasarkan cabang olahraga
-              
-              .col-md-6
-                .mb-3
-                  label.form-label(for="event_id")
-                    i.bi.bi-calendar-event
-                    | Event ID
-                    span.badge Opsional
-                  input.form-control#event_id(
-                    type="number"
-                    name="event_id"
-                    min="1"
-                    placeholder="Masukkan ID event (contoh: 123)"
-                    value=
-                      mode === 'edit'
-                        ? video.event_id
-                        : (formData && formData.event_id) || ''
-                  )
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Jika video terkait event tertentu
-              
-              .col-12
-                .mb-3
-                  label.form-label(for="match_id")
-                    i.bi.bi-flag-fill
-                    | Match ID
-                    span.badge Opsional
-                  input.form-control#match_id(
-                    type="number"
-                    name="match_id"
-                    min="1"
-                    placeholder="Masukkan ID pertandingan (contoh: 456)"
-                    value=
-                      mode === 'edit'
-                        ? video.match_id
-                        : (formData && formData.match_id) || ''
-                  )
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Jika video untuk pertandingan spesifik
-
+            
           //- Section 2: Video Details
           .video-form-section
             .section-title

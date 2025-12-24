@@ -441,21 +441,6 @@ block content
                     i.bi.bi-info-circle
                     | Lokasi pertandingan (boleh kosong)
               
-              .col-12
-                .mb-3
-                  label.form-label(for="event_id")
-                    i.bi.bi-calendar-event
-                    | Event ID
-                    span.badge Opsional
-                  input.form-control#event_id(
-                    type="number"
-                    name="event_id"
-                    min="1"
-                    placeholder="Masukkan ID event (contoh: 123)"
-                  )
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Jika pertandingan ini bagian dari event tertentu, masukkan ID event-nya
 
           #afterSportSection(style="display:none;")
             //- MODE MATCH (INDIVIDUAL / TEAM)
@@ -487,7 +472,7 @@ block content
                       label.form-label(for="home_team_id")
                         i.bi.bi-house-fill
                         | Tim Rumah
-                        span.badge Opsional
+                        span.badge Wajib
 
                       .d-flex.gap-2
                         select.form-select#home_team_id(name="home_team_id")
@@ -499,6 +484,7 @@ block content
                                 value=t.id
                                 data-sport=t.sport_id
                                 data-is-individual=(ind ? '1' : '0')
+                                required
                               )= t.name
 
                         button.btn.btn-outline-primary(type="button" id="btnAddTeamHome" title="Tambah Tim")
@@ -513,7 +499,7 @@ block content
                       label.form-label(for="away_team_id")
                         i.bi.bi-car-front-fill
                         | Tim Tamu
-                        span.badge Opsional
+                        span.badge Wajib
 
                       .d-flex.gap-2
                         select.form-select#away_team_id(name="away_team_id")
@@ -525,6 +511,7 @@ block content
                                 value=t.id
                                 data-sport=t.sport_id
                                 data-is-individual=(ind ? '1' : '0')
+                                required
                               )= t.name
 
                         button.btn.btn-outline-primary(type="button" id="btnAddTeamAway" title="Tambah Tim")

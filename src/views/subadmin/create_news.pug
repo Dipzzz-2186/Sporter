@@ -620,24 +620,6 @@ block content
                     i.bi.bi-info-circle
                     | Pilih cabang olahraga yang terkait dengan berita ini
               
-              .col-md-6
-                .mb-3
-                  label.form-label(for="event_id")
-                    i.bi.bi-calendar-event
-                    | Event Terkait
-                    span.badge Opsional
-                  select.form-select#event_id(name="event_id")
-                    option(value="" selected) -- Tanpa Event --
-                    if events && events.length
-                      each e in events
-                        option(
-                          value=e.id
-                          selected=(articleSafe.event_id && articleSafe.event_id == e.id)
-                        )= e.title
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Pilih event jika berita terkait dengan event tertentu
-
           //- Section 3: Thumbnail & Publishing
           .news-form-section
             .section-title
