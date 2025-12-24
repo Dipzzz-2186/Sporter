@@ -493,9 +493,11 @@ block content
               = team.sport_name
 
   .container.pb-5
-    //- Back Button
     .mb-4
-      a.btn-back(href="javascript:history.back()")
+      - const isSubadmin = currentUser && (currentUser.role === 'subadmin' || currentUser.role === 'admin')
+      - const mode = team.is_individual ? 'individual' : 'team'
+      - const backUrl = isSubadmin ? `/subadmin/standings?sport_id=${team.sport_id}&mode=${mode}` : `/standings?sport_id=${team.sport_id}`
+      a.btn-back(href=backUrl)
         i.bi.bi-arrow-left
         span Kembali
 
