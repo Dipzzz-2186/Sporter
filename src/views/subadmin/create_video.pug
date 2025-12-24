@@ -453,6 +453,10 @@ block content
           i.bi.bi-info-circle.me-2
           | Upload video Full Match, Highlight, atau Livestream untuk pertandingan
 
+      if alert
+        .alert(class=`alert-${alert.type}`)
+          | #{alert.message}
+
       //- Form Card
       .video-form-card
         form(
@@ -488,6 +492,7 @@ block content
                         value=s.id
                         selected=(
                           (mode === 'edit' && video && Number(video.sport_id) === Number(s.id)) ||
+                          (formData && formData.sport_id && Number(formData.sport_id) === Number(s.id)) ||
                           (!video && defaultSportId && Number(defaultSportId) === Number(s.id))
                         )
                       )= s.name
@@ -508,7 +513,10 @@ block content
                     name="event_id"
                     min="1"
                     placeholder="Masukkan ID event (contoh: 123)"
-                    value=mode === 'edit' ? video.event_id : ''
+                    value=
+                      mode === 'edit'
+                        ? video.event_id
+                        : (formData && formData.event_id) || ''
                   )
                   small.form-text
                     i.bi.bi-info-circle
@@ -525,7 +533,10 @@ block content
                     name="match_id"
                     min="1"
                     placeholder="Masukkan ID pertandingan (contoh: 456)"
-                    value=mode === 'edit' ? video.match_id : ''
+                    value=
+                      mode === 'edit'
+                        ? video.match_id
+                        : (formData && formData.match_id) || ''
                   )
                   small.form-text
                     i.bi.bi-info-circle
@@ -548,7 +559,10 @@ block content
                 type="text"
                 name="title"
                 required
-                value=mode === 'edit' ? video.title : ''
+                value=
+                  mode === 'edit'
+                    ? video.title
+                    : (formData && formData.title) || ''
               )
               small.form-text
                 i.bi.bi-info-circle
@@ -565,7 +579,10 @@ block content
                     type="radio"
                     name="type"
                     value="full_match"
-                    checked=(mode !== 'edit' || video.type === 'full_match')
+                    checked=(
+                      (mode === 'edit' && video.type === 'full_match') ||
+                      (!mode && (formData && formData.type ? formData.type : 'full_match') === 'full_match')
+                    )
                   )
                   label.type-radio-label(for="type-full_match")
                     .type-radio-icon
@@ -578,7 +595,10 @@ block content
                     type="radio"
                     name="type"
                     value="highlight"
-                    checked=(mode === 'edit' && video.type === 'highlight')
+                    checked=(
+                      (mode === 'edit' && video.type === 'highlight') ||
+                      (!mode && formData && formData.type === 'highlight')
+                    )
                   )
                   label.type-radio-label(for="type-highlight")
                     .type-radio-icon
@@ -603,7 +623,10 @@ block content
                 type="text"
                 name="platform"
                 placeholder="YouTube, Vimeo, Facebook, Instagram, dll"
-                value=mode === 'edit' ? video.platform : ''
+                value=
+                  mode === 'edit'
+                    ? video.platform
+                    : (formData && formData.platform) || ''
                 required
               )
               .platform-suggestions
@@ -633,7 +656,12 @@ block content
                 rows="3"
                 placeholder="https://youtube.com/watch?v=... atau <iframe>...</iframe>"
                 required
-              )=mode === 'edit' ? video.url : ''
+              )
+                if mode === 'edit' && video && video.url
+                  | #{video.url}
+                else if formData && formData.url
+                  | #{formData.url}
+
               small.form-text
                 i.bi.bi-info-circle
                 | Masukkan URL video atau embed code dari platform

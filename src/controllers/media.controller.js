@@ -29,6 +29,8 @@ function getSportIconClass(sportName) {
 // LIST VIDEOS
 // =====================
 exports.listVideos = async (req, res) => {
+    const { getYouTubeVideoStats } = require('../utils/youtube.util');
+
     const [rows] = await db.query(`
     SELECT v.*, s.name AS sport_name
     FROM videos v
@@ -38,11 +40,33 @@ exports.listVideos = async (req, res) => {
     ORDER BY v.created_at DESC
   `);
 
-    const videos = rows.map(v => ({
-        ...v,
-        embed_url: parseYouTubeEmbed(v.url),
-        thumbnail_url: v.thumbnail_url || getYouTubeThumbnail(v.url)
-    }));
+    const videos = [];
+
+    for (const v of rows) {
+        const ytId = extractYouTubeId(v.url);
+
+        let stats = {
+            views: 0,
+            likes: 0,
+            comments: 0,
+            duration: 0
+        };
+
+        if (ytId) {
+            const yt = await getYouTubeVideoStats(ytId);
+            if (yt) stats = yt;
+        }
+
+        videos.push({
+            ...v,
+            embed_url: parseYouTubeEmbed(v.url),
+            thumbnail_url: v.thumbnail_url || getYouTubeThumbnail(v.url),
+            views: stats.views,
+            likes: stats.likes,
+            comments: stats.comments,
+            duration: stats.duration // ← MENIT
+        });
+    }
 
     res.render("videos/list", {
         title: "Video Pertandingan - SPORTER",
@@ -58,14 +82,11 @@ exports.listLivestreams = async (req, res) => {
     const { checkYouTubeLive } = require('../utils/youtube.util');
 
     const [rows] = await db.query(`
-    SELECT v.id, v.title, v.is_live, v.start_time, v.thumbnail_url, v.url, v.description,
-            s.name AS sport_name, e.title AS event_title
-    FROM videos v
-    LEFT JOIN sports s ON s.id = v.sport_id
-    LEFT JOIN events e ON e.id = v.event_id
-    WHERE v.type = 'livestream'
-    ORDER BY COALESCE(v.start_time, v.created_at) DESC
-    `);
+    SELECT *
+    FROM videos
+    WHERE type = 'livestream'
+    ORDER BY created_at DESC
+  `);
 
     const livestreams = [];
 
@@ -73,45 +94,36 @@ exports.listLivestreams = async (req, res) => {
         const ytId = extractYouTubeId(r.url);
         if (!ytId) continue;
 
-        let liveStatus = false;
-
         try {
             const yt = await checkYouTubeLive(ytId);
-            liveStatus = yt.isLive;
 
-            // sync ke DB
-            if (!liveStatus) {
-                await db.query(`
-                    UPDATE videos
-                    SET is_live = 0,
-                        type = 'full_match'
-                    WHERE id = ?
-                `, [r.id]);
-                continue;
-            }
+            // tampilkan kalau:
+            // - DB bilang masih live
+            // - ATAU YouTube bilang live
+            if (!yt.isLive && r.is_live !== 1) continue;
 
-        } catch (e) {
-            console.error('YT check failed', e);
+            livestreams.push({
+                ...r,
+                is_live: yt.isLive ? 1 : r.is_live,
+                views: yt.views,
+                likes: yt.likes,
+                comments: yt.comments,
+                concurrent_viewers: yt.concurrentViewers,
+                embedUrl: parseYouTubeEmbed(r.url),
+                thumbnail_url: r.thumbnail_url || getYouTubeThumbnail(r.url),
+                icon_class: getSportIconClass(r.sport_name)
+            });
+
+        } catch (err) {
+            console.error('YT check failed', err);
         }
-
-        // OPTIONAL: tampilkan hanya LIVE
-        if (!liveStatus) continue;
-
-        livestreams.push({
-            ...r,
-            is_live: liveStatus,
-            embedUrl: parseYouTubeEmbed(r.url),
-            thumbnail_url: r.thumbnail_url || getYouTubeThumbnail(r.url),
-            icon_class: getSportIconClass(r.sport_name)
-        });
     }
 
-    res.render("livestreams/list", {
-        title: "Livestream - SPORTER",
+    res.render('livestreams/list', {
+        title: 'Livestream - SPORTER',
         livestreams
     });
 };
-
 
 // =====================
 // VIEW VIDEO
@@ -169,7 +181,7 @@ exports.viewLivestream = async (req, res) => {
 
     const livestream = rows[0];
     const embedUrl = parseYouTubeEmbed(livestream.url);
-    
+
     if (livestream.is_live !== 1) {
         return res.redirect(`/videos/${livestream.id}`);
     }

@@ -1192,7 +1192,7 @@ block content
                       = item.is_live ? 'LIVE' : 'UPCOMING'
                     span.viewer-count-badge
                       i.bi.bi-eye.me-1
-                      | #{Math.floor(Math.random() * 1000) + 100}
+                      | #{item.concurrent_viewers || item.views}
                 
                 .stream-card-content
                   .stream-card-header
@@ -1214,13 +1214,15 @@ block content
                   
                   .stream-card-stats
                     .stream-stat-item
-                      span.stream-stat-value #{Math.floor(Math.random() * 1000) + 100}
-                      span.stream-stat-label Viewers
+                      span.stream-stat-value #{item.views}
+                      span.stream-stat-label Total Views
+
                     .stream-stat-item
-                      span.stream-stat-value #{Math.floor(Math.random() * 500) + 50}
-                      span.stream-stat-label Chat
+                      span.stream-stat-value #{item.concurrent_viewers}
+                      span.stream-stat-label Views Saat Ini
+
                     .stream-stat-item
-                      span.stream-stat-value #{Math.floor(Math.random() * 100) + 10}
+                      span.stream-stat-value #{item.likes}
                       span.stream-stat-label Likes
                   
                   .stream-card-actions

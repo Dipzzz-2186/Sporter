@@ -1050,13 +1050,17 @@ block content
                 .featured-detail-item
                   span.featured-detail-label Cabang Olahraga
                   span.featured-detail-value= featuredVideo.sport_name || 'Olahraga'
+
                 .featured-detail-item
                   span.featured-detail-label Durasi
-                  - const duration = Math.floor(Math.random() * 120) + 1
-                  span.featured-detail-value #{duration} menit
+                  span.featured-detail-value
+                    | #{featuredVideo.duration || 0} menit
+
                 .featured-detail-item
                   span.featured-detail-label Views
-                  span.featured-detail-value #{Math.floor(Math.random() * 10000) + 1000}
+                  span.featured-detail-value
+                    | #{featuredVideo.views.toLocaleString('id-ID')}
+                    
                 .featured-detail-item
                   span.featured-detail-label Upload
                   span.featured-detail-value= new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
@@ -1160,18 +1164,20 @@ block content
                         span= new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
                       .video-meta-item
                         i.bi.bi-clock
-                        span #{Math.floor(Math.random() * 120) + 1} menit
-                    
-                    .video-card-stats
-                      .video-stat-item
-                        span.video-stat-value #{Math.floor(Math.random() * 1000) + 100}
-                        span.video-stat-label Views
-                      .video-stat-item
-                        span.video-stat-value #{Math.floor(Math.random() * 500) + 50}
-                        span.video-stat-label Likes
-                      .video-stat-item
-                        span.video-stat-value #{Math.floor(Math.random() * 100) + 10}
-                        span.video-stat-label Comments
+                        span #{v.duration} menit
+
+                      .video-card-stats
+                        .video-stat-item
+                          span.video-stat-value #{v.views}
+                          span.video-stat-label Views
+
+                        .video-stat-item
+                          span.video-stat-value #{v.likes}
+                          span.video-stat-label Likes
+
+                        .video-stat-item
+                          span.video-stat-value #{v.comments}
+                          span.video-stat-label Comments
                     
                     .video-card-actions
                       button.btn-watch-video(type="button")

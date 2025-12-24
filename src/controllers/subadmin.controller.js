@@ -1210,44 +1210,67 @@ exports.createVideo = async (req, res) => {
       end_time,
     } = req.body;
 
-    // Validasi basic
     if (!sport_id || !title || !type || !url) {
-      req.flash(
-        "error",
-        "Cabang olahraga, judul, tipe, dan URL wajib diisi."
-      );
+      req.flash("error", "Cabang olahraga, judul, tipe, dan URL wajib diisi.");
       return res.redirect("/subadmin/videos/create");
     }
 
-    // Form ini khusus VOD / Highlight, bukan livestream
+    // ================= YOUTUBE VALIDATION =================
+    const { checkYouTubeLive } = require('../utils/youtube.util');
+    const { extractYouTubeId } = require('../utils/media.util');
+    const { getYouTubeThumbnail } = require('../utils/media.util');
+
+    const ytId = extractYouTubeId(url);
+
+    if (ytId) {
+      const ytStatus = await checkYouTubeLive(ytId);
+      thumbnail_url = getYouTubeThumbnail(url);
+
+      // ❌ MASIH LIVE → BLOK, RESET URL SAJA
+      if (ytStatus.exists && ytStatus.isLive) {
+        return res.render('subadmin/create_video', {
+          title: 'Tambah Video - Subadmin',
+          mode: 'create',
+          sports: await loadSportsList(req.session.user),
+          defaultSportId: null,
+          alert: {
+            type: 'danger',
+            message: 'Video ini masih LIVE. Gunakan menu Livestream.'
+          },
+          formData: {
+            ...req.body,
+            url: ''
+          }
+        });
+      }
+
+      if (ytStatus.exists && ytStatus.wasLive && type !== 'full_match') {
+        return res.render('subadmin/create_video', {
+          title: 'Tambah Video - Subadmin',
+          mode: 'create',
+          sports: await loadSportsList(req.session.user),
+          defaultSportId: null,
+          forceFullMatch: true,
+          alert: {
+            type: 'warning',
+            message: 'Video bekas livestream hanya boleh disimpan sebagai Full Match.'
+          },
+          formData: req.body
+        });
+      }
+    }
+    // ======================================================
+
+    // ❌ Form ini bukan buat livestream
     if (type === "livestream") {
-      req.flash(
-        "error",
-        "Untuk livestream, gunakan form khusus livestream."
-      );
+      req.flash("error", "Gunakan menu Livestream untuk video LIVE.");
       return res.redirect("/subadmin/livestreams/create");
     }
 
-    // Cek hak akses subadmin ke sport_id
-    if (req.session.user && req.session.user.role === "subadmin") {
-      const [rows] = await db.query(
-        "SELECT 1 FROM user_sports WHERE user_id = ? AND sport_id = ? LIMIT 1",
-        [req.session.user.id, sport_id]
-      );
-      if (rows.length === 0) {
-        req.flash(
-          "error",
-          "Akses ditolak. Kamu tidak punya izin untuk cabang olahraga ini."
-        );
-        return res.redirect("/subadmin/videos/create");
-      }
-    }
-
-    // Insert ke tabel videos
     await db.query(
       `INSERT INTO videos 
-       (sport_id, event_id, match_id, title, type, platform, url, start_time, end_time, is_live, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`,
+      (sport_id, event_id, match_id, title, type, platform, url, thumbnail_url, start_time, end_time, is_live, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`,
       [
         sport_id || null,
         event_id || null,
@@ -1256,20 +1279,21 @@ exports.createVideo = async (req, res) => {
         type,
         platform || null,
         url,
+        thumbnail_url,
         start_time || null,
-        end_time || null,
+        end_time || null
       ]
     );
 
     req.flash("success", "Video berhasil ditambahkan.");
     return res.redirect("/subadmin/videos");
+
   } catch (err) {
     console.error("createVideo error", err);
-    req.flash("error", "Gagal menambahkan video. Cek input dan coba lagi.");
+    req.flash("error", err.message || "Gagal menambahkan video.");
     return res.redirect("/subadmin/videos/create");
   }
 };
-
 
 /* -------------------------
    LIVESTREAMS (separate)
