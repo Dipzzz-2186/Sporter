@@ -564,8 +564,9 @@ block content
     //- Header Section - SEJAJAR dengan Container yang sama
     .header-section
       .header-container
-        //- Tombol Kembali
-        a.btn-back-athlete(href="javascript:history.back()")
+        //- Tombol Kembali (arahin ke team berdasarkan team_members -> teamId dari controller)
+        - const backUrl = typeof teamId !== 'undefined' && teamId ? `/teams/${teamId}` : '/'
+        a.btn-back-athlete(href=backUrl)
           i.bi.bi-arrow-left
           | Kembali
         
