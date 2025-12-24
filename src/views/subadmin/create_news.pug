@@ -651,31 +651,26 @@ block content
                     i.bi.bi-image
                     | Thumbnail Berita
                     span.badge Opsional
-                  
-                  if articleSafe.thumbnail_url
-                    .thumbnail-preview-container
-                      img.thumbnail-preview(
-                        src=articleSafe.thumbnail_url,
-                        alt=articleSafe.title || 'Thumbnail',
-                        id="thumbnail-preview-img"
-                      )
-                      .thumbnail-actions
-                        button.thumbnail-btn(type="button" onclick="removeThumbnail()" title="Hapus thumbnail")
-                          i.bi.bi-trash
-                        a.thumbnail-btn(href=articleSafe.thumbnail_url target="_blank" title="Lihat full size")
-                          i.bi.bi-arrows-fullscreen
-                  
+
+                  // ✅ Preview container SELALU ADA (awal hidden kalau belum ada gambar)
+                  .thumbnail-preview-container#thumb-container(style= articleSafe.thumbnail_url ? '' : 'display:none;')
+                    img.thumbnail-preview#thumbnail-preview-img(
+                      src=articleSafe.thumbnail_url || ''
+                      alt=articleSafe.title || 'Thumbnail'
+                    )
+                    .thumbnail-actions
+                      button.thumbnail-btn(type="button" id="btn-remove-thumb" title="Hapus thumbnail")
+                        i.bi.bi-trash
+                      a.thumbnail-btn#btn-open-thumb(href=articleSafe.thumbnail_url || '#' target="_blank" title="Lihat full size" style=articleSafe.thumbnail_url ? '' : 'display:none;')
+                        i.bi.bi-arrows-fullscreen
+
                   .file-upload-area#file-upload-area(
                     onclick="document.getElementById('thumbnail').click()"
-                    ondragover="handleDragOver(event)"
-                    ondragleave="handleDragLeave(event)"
-                    ondrop="handleDrop(event)"
                   )
                     input.form-control#thumbnail.file-upload-input(
                       type="file"
                       name="thumbnail"
                       accept="image/*"
-                      onchange="handleFileSelect(event)"
                     )
                     i.bi.bi-cloud-arrow-up.file-upload-icon
                     h5.mb-2(style="color: #0B1F3F;") Upload Thumbnail
@@ -683,7 +678,8 @@ block content
                     small.form-text
                       i.bi.bi-info-circle
                       | Format: JPG, PNG, WebP (max 3MB). Rekomendasi: 1200×630px
-              
+
+                                
               .col-md-6
                 .mb-3
                   label.form-label
@@ -853,7 +849,69 @@ block content
       // File upload handling
       const fileUploadArea = document.getElementById('file-upload-area');
       const thumbnailInput = document.getElementById('thumbnail');
-      const thumbnailPreviewImg = document.getElementById('thumbnail-preview-img');
+      const thumbContainer = document.getElementById('thumb-container');
+      const thumbImg = document.getElementById('thumbnail-preview-img');
+      const btnRemove = document.getElementById('btn-remove-thumb');
+      const btnOpen = document.getElementById('btn-open-thumb');
+
+            // ✅ FIX PREVIEW THUMBNAIL (tanpa ubah yang lain)
+            function showThumb(src) {
+              if (thumbImg) thumbImg.src = src;
+              if (btnOpen) {
+                btnOpen.href = src;
+                btnOpen.style.display = '';
+              }
+              if (thumbContainer) thumbContainer.style.display = '';
+              if (fileUploadArea) fileUploadArea.style.display = 'none';
+            }
+
+            function hideThumb() {
+              if (thumbImg) thumbImg.src = '';
+              if (btnOpen) btnOpen.style.display = 'none';
+              if (thumbContainer) thumbContainer.style.display = 'none';
+              if (fileUploadArea) fileUploadArea.style.display = 'block';
+              if (thumbnailInput) thumbnailInput.value = '';
+            }
+
+            // klik tombol remove (kalau ada)
+            if (btnRemove) {
+              btnRemove.addEventListener('click', function() {
+                if (confirm('Hapus thumbnail ini?')) hideThumb();
+              });
+            }
+
+            // saat pilih file -> tampilkan preview
+            if (thumbnailInput) {
+              thumbnailInput.addEventListener('change', function(e) {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+
+                // Validate file size (3MB)
+                if (file.size > 3 * 1024 * 1024) {
+                  alert('Ukuran file terlalu besar! Maksimal 3MB.');
+                  hideThumb();
+                  return;
+                }
+
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+                if (!validTypes.includes(file.type)) {
+                  alert('Format file tidak didukung! Gunakan JPG, PNG, atau WebP.');
+                  hideThumb();
+                  return;
+                }
+
+                const src = URL.createObjectURL(file);
+                showThumb(src);
+              });
+            }
+
+            // init: kalau edit dan sudah ada thumbnail, sembunyikan upload area
+            if (thumbImg && thumbImg.src && thumbImg.src.trim() !== '' && thumbImg.src !== window.location.href) {
+              if (fileUploadArea) fileUploadArea.style.display = 'none';
+              if (thumbContainer) thumbContainer.style.display = '';
+            }
+
       
       function handleDragOver(e) {
         e.preventDefault();
