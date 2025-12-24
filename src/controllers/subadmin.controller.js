@@ -143,6 +143,7 @@ async function validateCompetitorForMode({ sportId, competitorTeamId, matchMode 
 // render dashboard untuk subadmin
 exports.renderDashboard = async (req, res) => {
   try {
+    const now = new Date();
     const userId = req.session.user.id;
 
     // 1) ambil sports yang di-assign ke subadmin (admin akan di-handle: jika admin, ambil semua sports)
@@ -260,14 +261,14 @@ exports.renderDashboard = async (req, res) => {
         LEFT JOIN order_items oi ON oi.ticket_type_id = tt.id
         LEFT JOIN orders o ON o.id = oi.order_id
 
-        WHERE m.start_time >= NOW()
+        WHERE m.start_time >= ?
           AND m.sport_id IN (${placeholders})
 
         GROUP BY m.id, m.sport_id, m.title, m.start_time, s.name
         ORDER BY m.start_time ASC
         LIMIT 20
         `,
-      sportIds
+      [now, ...sportIds]
     );
 
     // map can_buy flag per match (if match has ticket type) and ensure start_time > now
@@ -484,6 +485,7 @@ function makeSlug(text) {
 
 exports.listMatches = async (req, res) => {
   try {
+    const now = new Date();
     const sportIds = Array.isArray(req.allowedSports) ? req.allowedSports : [];
     const { sport_id, order } = req.query;
 
@@ -513,10 +515,10 @@ exports.listMatches = async (req, res) => {
         SET status = 'live'
         WHERE status = 'scheduled'
           AND start_time IS NOT NULL
-          AND start_time <= NOW()
+          AND start_time <= ?
           AND sport_id IN (${sportIds.map(() => "?").join(",")})
-        `,
-      sportIds
+      `,
+      [now, ...sportIds]
     );
 
     await db.query(
@@ -525,11 +527,12 @@ exports.listMatches = async (req, res) => {
         SET status = 'finished'
         WHERE status IN ('scheduled', 'live')
           AND end_time IS NOT NULL
-          AND end_time <= NOW()
+          AND end_time <= ?
           AND sport_id IN (${sportIds.map(() => "?").join(",")})
-        `,
-      sportIds
+      `,
+      [now, ...sportIds]
     );
+
     // ==== FILTER & SORT ====
     let where = [`m.sport_id IN (${sportIds.map(() => "?").join(",")})`];
     let params = [...sportIds];
@@ -567,10 +570,10 @@ exports.listMatches = async (req, res) => {
             JOIN athletes a ON a.id = mp.athlete_id
             WHERE mp.match_id = m.id
           ) AS participants_names,
-          CASE
-            WHEN m.start_time IS NOT NULL AND NOW() >= m.start_time THEN 1
-            ELSE 0
-          END AS is_started
+        CASE
+          WHEN m.start_time IS NOT NULL AND ? >= m.start_time THEN 1
+          ELSE 0
+        END AS is_started
         FROM matches m
         LEFT JOIN sports s ON s.id = m.sport_id
         LEFT JOIN venues v ON v.id = m.venue_id
@@ -580,7 +583,7 @@ exports.listMatches = async (req, res) => {
         ${whereSql}
         ${orderSql}
         `,
-      params
+      [now, ...params]
     );
     return res.render("subadmin/matches", {
       title: "Kelola Pertandingan - Subadmin",
@@ -998,7 +1001,12 @@ exports.updateMatch = async (req, res) => {
       return res.redirect(`/subadmin/matches/${id}/edit`);
     }
 
-    if (!status) status = "scheduled";
+    const [[old]] = await db.query(
+      'SELECT status FROM matches WHERE id = ? LIMIT 1',
+      [id]
+    );
+
+    if (!status) status = old.status;
 
     // cek akses sport
     if (req.session.user.role === "subadmin") {
