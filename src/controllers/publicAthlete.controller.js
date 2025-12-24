@@ -25,7 +25,7 @@ exports.show = async (req, res) => {
     if (!athlete) return res.redirect('/');
 
     // =========================
-    // ✅ A) CARI TEAM DARI team_members (TEAM MODE)
+    // A) CARI TEAM DARI team_members
     // =========================
     const [[teamRow]] = await db.query(`
       SELECT t.id, t.name, t.sport_id, t.is_individual
@@ -38,8 +38,7 @@ exports.show = async (req, res) => {
     let teamId = teamRow?.id || null;
 
     // =========================
-    // ✅ B) FALLBACK: kalau bukan member tim, baru cari "individual team"
-    // (ini logic lama kamu, tapi dibuat fallback)
+    // B) FALLBACK individual team
     // =========================
     if (!teamId) {
       const [[indTeam]] = await db.query(`
@@ -56,10 +55,20 @@ exports.show = async (req, res) => {
     }
 
     // =========================
-    // ✅ C) Ambil stats standings berdasarkan teamId (kalau ada)
+    // ✅ TENTUKAN MODE & BACK URL (DI SINI BARU BOLEH)
+    // =========================
+    const isIndividualAthlete =
+      !teamRow || teamRow.is_individual === 1;
+
+    const backUrl = isIndividualAthlete
+      ? `/standings?sport_id=${athlete.sport_id}&mode=individual`
+      : `/teams/${teamRow.id}`;
+
+    // =========================
+    // C) STATS
     // =========================
     let stats = { match_played: 0, match_won: 0, match_lost: 0 };
-    let rank = Number(athlete.rank_pos || 1); // fallback rank dari athlete points
+    let rank = Number(athlete.rank_pos || 1);
 
     if (teamId) {
       const [[stat]] = await db.query(`
@@ -79,7 +88,6 @@ exports.show = async (req, res) => {
         match_lost: Number(stat?.match_lost || 0),
       };
 
-      // rank berdasarkan pts standings (kalau ada)
       const [[rankRow]] = await db.query(`
         SELECT COUNT(*) + 1 AS rank_pos
         FROM standings s2
@@ -90,13 +98,11 @@ exports.show = async (req, res) => {
       rank = Number(rankRow?.rank_pos || 1);
     }
 
-    // effectiveness
     const effectiveness =
       (stats.match_won + stats.match_lost) > 0
         ? Number(((stats.match_won / (stats.match_won + stats.match_lost)) * 100).toFixed(1))
         : 0;
 
-    // points breakdown (tetap)
     const [pointsBreakdown] = await db.query(`
       SELECT tournament, category, event_date, round_name, points
       FROM athlete_points
@@ -114,17 +120,18 @@ exports.show = async (req, res) => {
       LIMIT 22
     `, [athlete.id]);
 
-    // render
     return res.render('athletes/show', {
       title: athlete.name || 'Athlete',
       athlete,
-      team: teamRow || null,    // ✅ biar bisa tampilkan "Tim: Kampung Kecil"
-      teamId,                   // optional debug
+      team: teamRow || null,
+      teamId,
       stats,
       rank,
       effectiveness,
       pointsBreakdown,
-      pointsByTournament
+      pointsByTournament,
+      backUrl,
+      isIndividualAthlete
     });
 
   } catch (err) {
