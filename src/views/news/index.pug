@@ -1101,11 +1101,19 @@ block content
       function initializeNewsFilter() {
         const filterButtons = document.querySelectorAll('.btn-news-filter');
         const newsItems = document.querySelectorAll('.news-item');
-        const heroItems = [
-          document.querySelector('.news-main-card')?.closest('.col-lg-7'),
-          document.querySelector('.news-side-top-card')?.closest('.col-lg-5'),
-          ...Array.from(document.querySelectorAll('.news-side-mini-card')).map(card => card.closest('.col-lg-5'))
-        ].filter(Boolean);
+        const heroItems = [];
+        const mainCol = document.querySelector('.news-main-card') ? document.querySelector('.news-main-card').closest('.col-lg-7') : null;
+        const topCol  = document.querySelector('.news-side-top-card') ? document.querySelector('.news-side-top-card').closest('.col-lg-5') : null;
+
+        if (mainCol) heroItems.push(mainCol);
+        if (topCol) heroItems.push(topCol);
+
+        document.querySelectorAll('.news-side-mini-card').forEach(card => {
+          const col = card.closest('.col-lg-5');
+          if (col) heroItems.push(col);
+        });
+
+
         
         function updateStats(filteredCount) {
           // Update total news count
@@ -1161,13 +1169,19 @@ block content
           const activeButton = document.querySelector('.btn-news-filter.active');
           const filter = activeButton ? activeButton.getAttribute('data-filter') : 'all';
           const sport = activeButton ? activeButton.getAttribute('data-sport') : null;
+          const heroSection = document.querySelector('.news-hero-section');
           
+          
+          if (heroSection) {
+            heroSection.style.display = (sport && sport !== 'all') ? 'none' : '';
+          }
           let visibleCount = 0;
           
           // Filter news items
           newsItems.forEach(function(item) {
             const itemSport = item.getAttribute('data-sport');
-            const parentCol = item.closest('.col-md-6.col-lg-3');
+            const parentCol = item; // karena .news-item itu udah kolomnya
+
             
             let shouldShow = true;
             

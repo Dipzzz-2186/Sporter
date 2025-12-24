@@ -24,7 +24,7 @@ exports.renderNewsList = async (req, res) => {
     const mainArticle = items[0] || null;
     const sideTopArticle = items[1] || null;
     const sideMiniArticles = items.slice(2, 6);   // 4 kecil
-    const otherArticles = items.slice(6);         // sisanya buat grid bawah
+    const otherArticles = items;         // sisanya buat grid bawah
 
     res.render("news/index", {
       title: "Berita Olahraga - SPORTER",
