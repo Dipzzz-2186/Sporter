@@ -16,10 +16,17 @@ block content
       padding: 0; 
     }
     
-    /* Header Section - SEJAJAR */
+    /* Header Container - FIXED SEJAJAR */
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    
+    /* Header Section */
     .header-section {
       background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%);
-      padding: 3rem 0;
+      padding: 2.5rem 0 3rem;
       position: relative;
       overflow: hidden;
     }
@@ -34,11 +41,33 @@ block content
       border-radius: 50%;
     }
     
+    /* Back Button */
+    .btn-back-athlete {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: white;
+      font-weight: 600;
+      padding: 0.6rem 1.5rem;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      text-decoration: none;
+    }
+    .btn-back-athlete:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+      color: white;
+      transform: translateY(-2px);
+    }
+    
     /* Header Content Grid - SEJAJAR */
     .header-grid {
       display: grid;
       grid-template-columns: auto 1fr auto;
-      gap: 2rem;
+      gap: 2.5rem;
       align-items: center;
       position: relative;
       z-index: 2;
@@ -75,7 +104,7 @@ block content
       margin-top: 15px;
     }
     
-    /* Avatar - SEJAJAR */
+    /* Avatar */
     .athlete-avatar {
       width: 200px;
       height: 200px;
@@ -98,7 +127,7 @@ block content
     
     /* Center Content - SEJAJAR */
     .center-content {
-      padding: 0 1.5rem;
+      padding: 0 1rem;
     }
     .athlete-name {
       font-weight: 900;
@@ -129,6 +158,7 @@ block content
       font-weight: 600;
       color: #fff;
       transition: all 0.3s ease;
+      white-space: nowrap;
     }
     .meta-badge:hover {
       background: rgba(255, 255, 255, 0.25);
@@ -191,6 +221,9 @@ block content
       border-radius: 10px;
       transition: all 0.3s ease;
       margin-top: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .btn-edit-athlete:hover {
       background: rgba(255, 255, 255, 0.3);
@@ -199,14 +232,21 @@ block content
       transform: translateY(-2px);
     }
     
-    /* Stats Grid - SEJAJAR */
+    /* Stats Grid - SEJAJAR dengan Header Container */
+    .stats-section {
+      background: transparent;
+      padding: 2.5rem 0;
+      position: relative;
+    }
+    .stats-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1.5rem;
-      margin: 2rem auto 0;
-      max-width: 1200px;
-      padding: 0 1.5rem;
     }
     .stat-card {
       background: #fff;
@@ -220,6 +260,8 @@ block content
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      position: relative;
+      overflow: hidden;
     }
     .stat-card::before {
       content: '';
@@ -268,10 +310,10 @@ block content
       font-weight: 500;
     }
     
-    /* Content Grid - SEJAJAR */
+    /* Content Container - SEJAJAR dengan Header */
     .content-container {
       max-width: 1200px;
-      margin: 3rem auto 5rem;
+      margin: 0 auto 5rem;
       padding: 0 1.5rem;
     }
     .content-grid {
@@ -287,6 +329,8 @@ block content
       border: 1px solid #f0f0f0;
       transition: all 0.3s ease;
       height: 100%;
+      position: relative;
+      overflow: hidden;
     }
     .content-card:hover {
       box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
@@ -416,11 +460,12 @@ block content
     @media (max-width: 1200px) {
       .header-grid {
         grid-template-columns: auto 1fr;
+        gap: 1.5rem;
       }
       .header-grid .avatar-container {
         grid-column: span 2;
         justify-self: center;
-        margin-top: 2rem;
+        margin-top: 1.5rem;
       }
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -431,6 +476,7 @@ block content
       .header-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        text-align: center;
       }
       .rank-badge {
         margin: 0 auto;
@@ -445,6 +491,7 @@ block content
       .header-grid .avatar-container {
         grid-column: auto;
         margin-top: 0;
+        order: 3;
       }
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -506,12 +553,23 @@ block content
         font-size: 0.85rem;
         padding: 0.4rem 0.8rem;
       }
+      .header-container,
+      .stats-container,
+      .content-container {
+        padding: 0 1rem;
+      }
     }
 
   .athlete-page
-    //- Header Section - SEJAJAR
+    //- Header Section - SEJAJAR dengan Container yang sama
     .header-section
-      .container
+      .header-container
+        //- Tombol Kembali
+        a.btn-back-athlete(href="javascript:history.back()")
+          i.bi.bi-arrow-left
+          | Kembali
+        
+        //- Header Grid SEJAJAR
         .header-grid
           //- Rank Badge (Kiri)
           .rank-container
@@ -585,35 +643,36 @@ block content
               .avatar-placeholder
                 i.bi.bi-person-circle(style='font-size: 5rem; opacity: 0.5; color: rgba(255,255,255,0.6);')
     
-    //- Stats Grid - SEJAJAR
-    .container
-      .stats-grid
-        .stat-card
-          .stat-icon
-            i.bi.bi-controller
-          .stat-label Matches Played
-          .stat-value= stats.match_played || 0
-        
-        .stat-card
-          .stat-icon
-            i.bi.bi-trophy-fill
-          .stat-label Matches Won
-          .stat-value= stats.match_won || 0
-          .stat-subtext Win Rate: #{winRate}%
-        
-        .stat-card
-          .stat-icon
-            i.bi.bi-x-circle
-          .stat-label Matches Lost
-          .stat-value= stats.match_lost || 0
-        
-        .stat-card
-          .stat-icon
-            i.bi.bi-graph-up-arrow
-          .stat-label Effectiveness
-          .stat-value #{eff}%
+    //- Stats Grid - SEJAJAR dengan Container yang sama
+    .stats-section
+      .stats-container
+        .stats-grid
+          .stat-card
+            .stat-icon
+              i.bi.bi-controller
+            .stat-label Matches Played
+            .stat-value= stats.match_played || 0
+          
+          .stat-card
+            .stat-icon
+              i.bi.bi-trophy-fill
+            .stat-label Matches Won
+            .stat-value= stats.match_won || 0
+            .stat-subtext Win Rate: #{winRate}%
+          
+          .stat-card
+            .stat-icon
+              i.bi.bi-x-circle
+            .stat-label Matches Lost
+            .stat-value= stats.match_lost || 0
+          
+          .stat-card
+            .stat-icon
+              i.bi.bi-graph-up-arrow
+            .stat-label Effectiveness
+            .stat-value #{eff}%
     
-    //- Content Section - SEJAJAR
+    //- Content Section - SEJAJAR dengan Container yang sama
     .content-container
       .content-grid
         //- Player Profile Card
