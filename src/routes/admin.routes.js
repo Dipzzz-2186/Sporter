@@ -8,6 +8,8 @@ const multer = require("multer");
 
 const adminController = require("../controllers/admin.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
+const standingsController = require('../controllers/standings.controller');
+const subadminController = require('../controllers/subadmin.controller');
 
 // sanity checks
 if (!authMiddleware || typeof authMiddleware !== "object") {
@@ -142,14 +144,10 @@ router.post("/sellers/:id/delete", authMiddleware.requireAdmin, adminController.
 router.get(
   '/matches',
   authMiddleware.requireAdmin,
-  adminController.listMatchesReadOnly
+  subadminController.listMatches // ✅ BENAR
 );
 
-router.get(
-  '/standings',
-  authMiddleware.requireAdmin,
-  adminController.listStandingsReadOnly
-);
+router.get('/standings', standingsController.listStandings);
 
 // ========== ADMIN: VIDEOS (REUSE SUBADMIN VIEW) ==========
 router.get(

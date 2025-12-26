@@ -27,8 +27,16 @@ block content
       --shadow-md: 0 8px 25px rgba(0, 149, 255, 0.1);
       --shadow-lg: 0 15px 35px rgba(0, 149, 255, 0.15);
       --shadow-xl: 0 25px 50px rgba(0, 149, 255, 0.2);
+      --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+      --gradient-success: linear-gradient(135deg, var(--success) 0%, #00E699 100%);
+      --gradient-warning: linear-gradient(135deg, var(--warning) 0%, #FFC850 100%);
+      --gradient-danger: linear-gradient(135deg, var(--danger) 0%, #FF6B7A 100%);
+      --gradient-purple: linear-gradient(135deg, var(--purple) 0%, #7C3AED 100%);
     }
-
+    html, body {
+      overflow-x: hidden;
+    }
     /* ========== ADMIN DASHBOARD ========== */
     .admin-dashboard {
       background: var(--gray-50);
@@ -37,725 +45,155 @@ block content
       position: relative;
     }
 
-    /* ========== IMPROVED HEADER ========== */
-    .admin-header-wrapper {
-      position: relative;
-      margin-bottom: 2.5rem;
-    }
-
-    .admin-hero {
-      background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
-      border-radius: 28px;
-      padding: 3.5rem 2.5rem;
+    /* ========== DASHBOARD HERO ========== */
+    .dashboard-hero {
+      background: var(--gradient-secondary);
+      padding: 3rem 0 2rem;
       position: relative;
       overflow: hidden;
       box-shadow: var(--shadow-xl);
-      animation: slideInDown 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-      min-height: 280px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      margin-bottom: 2rem;
+      animation: fadeIn 0.8s ease-out;
     }
 
-    @keyframes slideInDown {
-      from { 
-        opacity: 0; 
-        transform: translateY(-30px) scale(0.95); 
-      }
-      to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
-
-    /* Background effects */
-    .admin-hero::before {
+    
+    .dashboard-hero::before {
       content: '';
       position: absolute;
-      top: -100px;
-      right: -100px;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(0, 149, 255, 0.25) 0%, transparent 70%);
+      top: -30%;
+      right: -150px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
       border-radius: 50%;
-      animation: float 20s linear infinite;
-      z-index: 1;
-    }
-
-    .admin-hero::after {
-      content: '';
-      position: absolute;
-      bottom: -150px;
-      left: -100px;
-      width: 350px;
-      height: 350px;
-      background: radial-gradient(circle, rgba(52, 199, 255, 0.2) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: float 25s linear infinite reverse;
-      z-index: 1;
+      pointer-events: none;
+      animation: float 8s ease-in-out infinite;
     }
 
     @keyframes float {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      100% { transform: translate(100px, 100px) rotate(360deg); }
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-30px, -30px); }
     }
-
-    /* Hero content container */
+    .dashboard-hero .container {
+      position: relative;
+      max-width: 1320px;
+    }
+    .dashboard-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: -150px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(0, 204, 136, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    
     .hero-content {
       position: relative;
       z-index: 2;
-      max-width: 800px;
     }
-
-    /* Main greeting */
-    .hero-greeting {
-      font-size: 3rem;
+    
+    /* User Greeting */
+    .user-greeting {
+      font-size: 2.5rem;
       font-weight: 700;
       font-family: 'Bebas Neue', cursive;
       color: white;
-      margin-bottom: 0.5rem;
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      letter-spacing: 2px;
-      line-height: 1.1;
-      animation: fadeInUp 0.6s ease-out 0.2s backwards;
-      background: linear-gradient(135deg, #FFFFFF 0%, rgba(255, 255, 255, 0.9) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      margin-bottom: 0.75rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      animation: fadeInUp 0.6s ease-out;
+      letter-spacing: 1px;
     }
-
+    
     @keyframes fadeInUp {
-      from { 
-        opacity: 0; 
-        transform: translateY(20px); 
+      from {
+        opacity: 0;
+        transform: translateY(20px);
       }
-      to { 
-        opacity: 1; 
-        transform: translateY(0); 
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
-
-    /* Role badge */
-    .admin-role-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      padding: 0.8rem 1.8rem;
-      border-radius: 50px;
-      color: white;
-      font-weight: 700;
-      font-size: 1rem;
-      border: 2px solid rgba(255, 255, 255, 0.4);
-      margin-bottom: 1.5rem;
-      animation: fadeInUp 0.6s ease-out 0.4s backwards;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .admin-role-badge::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
-      z-index: 1;
-    }
-
-    .admin-role-badge:hover {
-      background: rgba(255, 255, 255, 0.35);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-      border-color: rgba(255, 255, 255, 0.6);
-    }
-
-    .admin-role-badge i {
-      font-size: 1.2rem;
-      color: var(--primary-light);
-      position: relative;
-      z-index: 2;
-    }
-
-    .admin-role-badge span {
-      position: relative;
-      z-index: 2;
-    }
-
-    /* Hero description */
-    .hero-description {
-      color: rgba(255, 255, 255, 0.95);
-      font-size: 1.15rem;
-      margin-bottom: 1.5rem;
-      line-height: 1.7;
-      animation: fadeInUp 0.6s ease-out 0.6s backwards;
-      font-weight: 500;
-      max-width: 600px;
-    }
-
-    /* Quick actions bar */
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-      animation: fadeInUp 0.6s ease-out 0.8s backwards;
-      flex-wrap: wrap;
-    }
-
-    .hero-btn {
+    
+    /* Role Badge */
+    .user-role-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      text-decoration: none;
-      position: relative;
-      overflow: hidden;
-      z-index: 2;
-    }
-
-    .hero-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.6s;
-    }
-
-    .hero-btn:hover::before {
-      left: 100%;
-    }
-
-    .hero-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
-      border-color: var(--primary-light);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.2);
-    }
-
-    .hero-btn-primary {
-      background: rgba(0, 149, 255, 0.25);
-      border-color: rgba(0, 149, 255, 0.4);
-    }
-
-    .hero-btn-primary:hover {
-      background: rgba(0, 149, 255, 0.35);
-    }
-
-    .hero-btn-warning {
-      background: rgba(255, 170, 0, 0.25);
-      border-color: rgba(255, 170, 0, 0.4);
-    }
-
-    .hero-btn-warning:hover {
-      background: rgba(255, 170, 0, 0.35);
-    }
-
-    /* User info in top right */
-    .user-info-panel {
-      position: absolute;
-      top: 2rem;
-      right: 2.5rem;
-      z-index: 3;
-      animation: slideInRight 0.6s ease-out 0.3s backwards;
-    }
-
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(20px);
-      padding: 0.8rem 1.5rem;
-      border-radius: 50px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s ease;
-    }
-
-    .user-info:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      border: 2px solid rgba(255, 255, 255, 0.5);
-    }
-
-    .user-details {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .user-name {
-      color: white;
-      font-weight: 700;
-      font-size: 1rem;
-      line-height: 1.2;
-    }
-
-    .user-email {
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 0.85rem;
-      line-height: 1.2;
-    }
-
-    /* ========== IMPROVED STATS CARDS ========== */
-    .admin-stat-card {
-      background: white;
-      border-radius: 22px;
-      border: 2px solid var(--gray-200);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
-      animation: fadeInUp 0.6s ease-out backwards;
-      position: relative;
-      height: 100%;
-      box-shadow: var(--shadow-md);
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .admin-stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
-      transform: scaleX(0);
-      transition: transform 0.4s;
-      transform-origin: left;
-    }
-
-    .admin-stat-card:hover::before {
-      transform: scaleX(1);
-    }
-
-    .admin-stat-card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-xl);
-      border-color: var(--primary);
-    }
-
-    .stat-icon-wrapper {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(0, 149, 255, 0.15) 100%);
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.5rem;
-      transition: all 0.4s;
-      border: 2px solid rgba(0, 149, 255, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat-icon-wrapper::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-      transform: rotate(45deg);
-      animation: shine 3s ease-in-out infinite;
-    }
-
-    @keyframes shine {
-      0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-      50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-    }
-
-    .admin-stat-card:hover .stat-icon-wrapper {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      transform: rotate(10deg) scale(1.1);
-      border-color: var(--primary);
-    }
-
-    .stat-icon {
-      font-size: 1.8rem;
-      color: var(--primary);
-      transition: color 0.4s;
-      position: relative;
-      z-index: 1;
-    }
-
-    .admin-stat-card:hover .stat-icon {
-      color: white;
-    }
-
-    .stat-label {
-      color: var(--gray-600);
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-      display: block;
-      letter-spacing: 0.3px;
-    }
-
-    .stat-number {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2.5rem;
-      color: var(--secondary);
-      letter-spacing: 1px;
-      margin: 0;
-      transition: color 0.3s;
-      line-height: 1;
-    }
-
-    /* ========== IMPROVED CONTENT CARDS ========== */
-    .admin-content-card {
-      background: white;
-      border-radius: 22px;
-      border: 2px solid var(--gray-200);
-      overflow: hidden;
-      animation: fadeInUp 0.6s ease-out backwards;
-      height: 100%;
-      box-shadow: var(--shadow-md);
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .admin-content-card:hover {
-      box-shadow: var(--shadow-lg);
-      border-color: var(--primary);
-      transform: translateY(-5px);
-    }
-
-    .admin-content-card .card-header {
-      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
-      border-bottom: 2px solid var(--gray-200);
-      padding: 1.5rem 1.75rem;
-      flex-shrink: 0;
-    }
-
-    /* Icon di card header TANPA animasi */
-    .admin-content-card .card-header h5 i {
-      color: var(--primary);
-      font-size: 1.3rem;
-      /* Non-aktifkan animasi */
-      animation: none !important;
-      transition: none !important;
-    }
-
-    .admin-content-card .card-header h5 {
-      color: var(--secondary);
-      font-weight: 700;
-      font-size: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin: 0;
-      letter-spacing: 0.5px;
-      /* Non-aktifkan animasi */
-      animation: none;
-    }
-
-    .admin-content-card .card-header a {
-      color: var(--gray-600);
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      background: rgba(0, 149, 255, 0.08);
-      border: 1px solid rgba(0, 149, 255, 0.15);
-    }
-
-    .admin-content-card .card-header a:hover {
-      color: var(--primary);
-      background: rgba(0, 149, 255, 0.15);
-      border-color: rgba(0, 149, 255, 0.25);
-      transform: translateX(3px);
-    }
-
-    .admin-content-card .card-body {
-      flex: 1;
-      padding: 1.5rem 1.75rem;
-      overflow: hidden;
-    }
-
-    /* ========== IMPROVED TABLES ========== */
-    .admin-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      margin: 0;
-    }
-
-    .admin-table thead {
-      background: var(--gray-50);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .admin-table thead th {
-      color: var(--gray-600);
-      font-weight: 700;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 1rem 0.75rem;
-      border: none;
-      border-bottom: 2px solid var(--gray-200);
-      white-space: nowrap;
-    }
-
-    .admin-table tbody tr {
-      border-bottom: 1px solid var(--gray-200);
-      transition: all 0.2s ease;
-    }
-
-    .admin-table tbody tr:last-child {
-      border-bottom: none;
-    }
-
-    .admin-table tbody tr:hover {
-      background: linear-gradient(90deg, rgba(0, 149, 255, 0.04) 0%, rgba(52, 199, 255, 0.02) 100%);
-      transform: translateX(3px);
-    }
-
-    .admin-table tbody td {
-      padding: 1rem 0.75rem;
-      vertical-align: middle;
-      border: none;
-      color: var(--gray-700);
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-
-    .admin-table tbody td a {
-      color: var(--secondary);
-      font-weight: 600;
-      text-decoration: none;
-      transition: color 0.2s ease;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .admin-table tbody td a:hover {
-      color: var(--primary);
-    }
-
-    .admin-table .badge {
-      padding: 0.4rem 0.8rem;
+      padding: 0.6rem 1.25rem;
       border-radius: 20px;
-      font-weight: 700;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border: 1px solid;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      white-space: nowrap;
-    }
-
-    .badge.bg-warning {
-      background: linear-gradient(135deg, rgba(255, 170, 0, 0.12) 0%, rgba(255, 170, 0, 0.08) 100%) !important;
-      color: var(--warning) !important;
-      border-color: rgba(255, 170, 0, 0.25) !important;
-    }
-
-    .badge.bg-success {
-      background: linear-gradient(135deg, rgba(0, 204, 136, 0.12) 0%, rgba(0, 204, 136, 0.08) 100%) !important;
-      color: var(--success) !important;
-      border-color: rgba(0, 204, 136, 0.25) !important;
-    }
-
-    .badge.bg-secondary {
-      background: linear-gradient(135deg, rgba(100, 116, 139, 0.12) 0%, rgba(100, 116, 139, 0.08) 100%) !important;
-      color: var(--gray-500) !important;
-      border-color: rgba(100, 116, 139, 0.25) !important;
-    }
-
-    .badge.bg-danger {
-      background: linear-gradient(135deg, rgba(255, 71, 87, 0.12) 0%, rgba(255, 107, 122, 0.08) 100%) !important;
-      color: var(--danger) !important;
-      border-color: rgba(255, 71, 87, 0.25) !important;
-    }
-
-    /* ========== IMPROVED NEWS LIST ========== */
-    .news-list-item {
-      border: none;
-      border-bottom: 1px solid var(--gray-200);
-      padding: 1.25rem;
-      text-decoration: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      position: relative;
-    }
-
-    /* Hapus animasi hover dari news list */
-    .news-list-item::before {
-      display: none; /* Hapus animasi garis kiri */
-    }
-
-    .news-list-item:hover {
-      background: none; /* Hapus background hover */
-      transform: none; /* Hapus transform hover */
-      border-radius: 0; /* Hapus border radius hover */
-    }
-
-    .news-list-item:last-child {
-      border-bottom: none;
-    }
-
-    .news-list-item h6 {
-      color: var(--secondary);
+      color: white;
       font-weight: 600;
       font-size: 0.95rem;
-      margin-bottom: 0.5rem;
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.8s ease-out;
+      transition: all 0.3s ease;
     }
 
-    /* Hapus efek hover pada judul berita */
-    .news-list-item:hover h6 {
-      color: var(--secondary); /* Tetap warna asli */
+    .user-role-badge:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .user-role-badge i {
+      font-size: 1.1rem;
     }
 
-    .news-list-item .badge {
-      background: linear-gradient(135deg, rgba(0, 149, 255, 0.12) 0%, rgba(0, 149, 255, 0.08) 100%) !important;
-      color: var(--primary) !important;
-      border: 1px solid rgba(0, 149, 255, 0.2) !important;
-      font-weight: 600;
+    .event-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
       padding: 0.25rem 0.6rem;
       border-radius: 12px;
-      font-size: 0.7rem;
-      margin-bottom: 0.5rem;
+      margin-left: 0.5rem;
       display: inline-block;
     }
 
-    /* Icon di news list TANPA animasi */
-    .news-list-item small i {
-      color: var(--gray-500);
-      font-size: 0.8rem;
-      /* Non-aktifkan animasi */
-      animation: none !important;
-      transition: none !important;
+    .event-upcoming {
+      background: rgba(0,149,255,0.1);
+      color: var(--primary);
+      border: 1px solid rgba(0,149,255,0.25);
     }
 
-    .news-list-item small {
-      color: var(--gray-500);
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .event-ongoing {
+      background: rgba(255,71,87,0.12);
+      color: var(--danger);
+      border: 1px solid rgba(255,71,87,0.3);
+      animation: pulse 1.5s infinite;
     }
 
-    /* ========== IMPROVED VIDEO THUMB ========== */
-    .video-thumb {
-      width: 80px;
-      height: 56px;
-      object-fit: cover;
-      border-radius: 10px;
-      border: 2px solid var(--gray-200);
-      flex-shrink: 0;
+    .event-ended {
+      background: rgba(148,163,184,0.15);
+      color: var(--gray-600);
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255,71,87,0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(255,71,87,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,71,87,0); }
     }
 
-    /* Hapus animasi hover pada video thumb */
-    .list-group-item:hover .video-thumb {
-      border-color: var(--gray-200); /* Tetap warna asli */
-      transform: none; /* Hapus scale */
-      box-shadow: none; /* Hapus shadow */
+    /* Hero Description */
+    .hero-description {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.05rem;
+      margin-top: 1rem;
+      margin-bottom: 0;
+      line-height: 1.6;
+      animation: fadeInUp 1.2s ease-out;
     }
 
-    /* ========== IMPROVED TICKET BADGE ========== */
-    .ticket-badge {
-      border-radius: 16px;
-      padding: 0.35rem 0.75rem;
-      font-weight: 700;
-      font-size: 0.75rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      border: 1px solid;
-      min-width: 70px;
-      justify-content: center;
-    }
-
-    /* ========== IMPROVED EMPTY STATE ========== */
-    .empty-state {
-      padding: 3rem 1.5rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-    }
-
-    .empty-state-icon {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.25rem;
-      animation: none;
-      border: 2px solid var(--gray-200);
-    }
-
-    .empty-state-icon i {
-      font-size: 2.5rem;
-      color: var(--gray-400);
-    }
-
-    .empty-state p {
-      color: var(--gray-500);
-      font-size: 0.95rem;
-      margin: 0;
-      font-weight: 500;
-      line-height: 1.5;
-    }
-
-    /* ========== IMPROVED ALERTS ========== */
+    /* ========== FLASH MESSAGES ========== */
     .alert {
       border-radius: 16px;
       border: none;
@@ -767,6 +205,17 @@ block content
       display: flex;
       align-items: center;
       gap: 0.75rem;
+    }
+
+    @keyframes slideInDown {
+      from { 
+        opacity: 0; 
+        transform: translateY(-20px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
     }
 
     .alert-success {
@@ -786,24 +235,590 @@ block content
       flex-shrink: 0;
     }
 
-    /* ========== LIST GROUP ITEMS ========== */
-    .list-group-item {
-      border: none;
-      border-bottom: 1px solid var(--gray-200);
+    /* ========== QUICK ACTIONS ========== */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .action-btn {
+      background: white;
+      border: 2px solid var(--gray-200);
+      border-radius: 18px;
+      padding: 1.25rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+      min-height: 110px;
+    }
+    
+    .action-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    
+    .action-btn:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: var(--shadow-xl);
+      text-decoration: none;
+      border-color: currentColor;
+    }
+    
+    .action-btn i {
+      font-size: 2rem;
+      color: currentColor;
+      transition: transform 0.3s ease;
+    }
+    
+    .action-btn:hover i {
+      transform: scale(1.15) rotate(5deg);
+    }
+    
+    .action-btn span {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--gray-900);
+      text-align: center;
+      line-height: 1.3;
+    }
+    
+    /* Action Button Colors */
+    .action-btn-success { color: var(--success); }
+    .action-btn-warning { color: var(--warning); }
+    .action-btn-info { color: var(--primary); }
+    .action-btn-danger { color: var(--danger); }
+
+    /* ========== STATS CARDS ========== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 20px;
+      border: 2px solid var(--gray-200);
+      padding: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out backwards;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--primary);
+    }
+    
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, currentColor 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .stat-card:hover::after {
+      opacity: 1;
+    }
+    
+    .stat-icon {
+      width: 55px;
+      height: 55px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.75rem;
+      color: white;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-icon::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transform: rotate(45deg);
+      animation: shine 3s ease-in-out infinite;
+    }
+
+    @keyframes shine {
+      0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .stat-card:hover .stat-icon {
+      transform: scale(1.1) rotate(-5deg);
+    }
+    
+    .stat-icon-sports { background: var(--gradient-purple); }
+    .stat-icon-events { background: var(--gradient-success); }
+    .stat-icon-matches { background: var(--gradient-primary); }
+    .stat-icon-videos { background: var(--gradient-danger); }
+    
+    .stat-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      font-family: 'Bebas Neue', cursive;
+      color: var(--secondary);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+    }
+    
+    .stat-label {
+      color: var(--gray-600);
+      font-size: 0.85rem;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    /* ========== DASHBOARD SECTION ========== */
+    .dashboard-section {
+      background: white;
+      overflow: hidden;
+      border-radius: 22px;
+      border: 2px solid var(--gray-200);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+      animation: slideInUp 0.6s ease-out backwards;
+    }
+
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .dashboard-section:hover {
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-3px);
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--gray-200);
+    }
+    
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: 'Bebas Neue', cursive;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0;
+      letter-spacing: 0.5px;
+    }
+    
+    .section-title i {
+      color: var(--primary);
+      font-size: 1.3rem;
+    }
+
+    .section-header a {
+      color: var(--gray-600);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      background: rgba(0, 149, 255, 0.08);
+      border: 1px solid rgba(0, 149, 255, 0.15);
+    }
+
+    .section-header a:hover {
+      color: var(--primary);
+      background: rgba(0, 149, 255, 0.15);
+      border-color: rgba(0, 149, 255, 0.25);
+      transform: translateX(3px);
+    }
+
+    /* ========== DUAL GRID LAYOUT ========== */
+    .dual-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ========== UPCOMING MATCHES GRID ========== */
+    .upcoming-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .match-card {
+      background: white;
+      border: 2px solid var(--gray-200);
+      border-radius: 18px;
       padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    /* Hapus animasi hover dari list group items */
-    .list-group-item:hover {
-      background: none;
-      transform: none;
+    .match-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--gradient-primary);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
     }
 
-    .list-group-item:last-child {
+    .match-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+
+    .match-card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .match-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .match-sport {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.05) 100%);
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 149, 255, 0.2);
+    }
+
+    .match-date {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .match-title {
+      font-weight: 700;
+      color: var(--secondary);
+      margin: 0.5rem 0;
+      font-size: 1.05rem;
+      line-height: 1.3;
+    }
+
+    .match-meta {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .ticket-status {
+      padding: 0.35rem 0.75rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .ticket-ok {
+      background: linear-gradient(135deg, rgba(0, 204, 136, 0.1) 0%, rgba(0, 204, 136, 0.05) 100%);
+      color: var(--success);
+      border: 1px solid rgba(0, 204, 136, 0.2);
+    }
+
+    .ticket-bad {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    /* ========== NEWS COMPACT LIST ========== */
+    .news-compact {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .news-compact li {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--gray-200);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .news-compact li::before {
+      content: '';
+      position: absolute;
+      left: -1.75rem;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: var(--gradient-primary);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .news-compact li:hover {
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.02) 0%, rgba(52, 199, 255, 0.02) 100%);
+      padding-left: 0.5rem;
+    }
+
+    .news-compact li:hover::before {
+      transform: scaleY(1);
+    }
+
+    .news-compact li:last-child {
       border-bottom: none;
     }
 
-    /* ========== BUTTON IMPROVEMENTS ========== */
+    .news-compact a {
+      font-weight: 600;
+      color: var(--secondary);
+      text-decoration: none;
+      display: block;
+      transition: color 0.3s ease;
+    }
+
+    .news-compact a:hover {
+      color: var(--primary);
+    }
+
+    .news-compact small {
+      color: var(--gray-500);
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ========== VIDEO SCROLL ========== */
+    .video-scroll {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto; 
+      padding-bottom: 0.75rem;
+      scroll-snap-type: x mandatory;
+    }
+
+    .video-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .video-scroll::-webkit-scrollbar-track {
+      background: var(--gray-100);
+      border-radius: 10px;
+    }
+
+    .video-scroll::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 10px;
+    }
+
+    .video-card {
+      min-width: 320px;
+      max-width: 320px;
+      height: 260px;
+      scroll-snap-align: start;
+    }
+
+    .video-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--gradient-danger);
+    }
+
+    .video-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+
+    .video-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .video-card-content {
+      padding: 0.75rem;
+    }
+
+    .video-card span {
+      display: block;
+      font-weight: 600;
+      color: var(--secondary);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    /* ========== LIVESTREAM CARDS ========== */
+    .livestream-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .live-card {
+      background: var(--gradient-secondary);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 18px;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .live-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .live-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .live-now {
+      border: 2px solid var(--danger);
+      box-shadow: 0 0 20px rgba(255, 71, 87, 0.4);
+      animation: pulse-border 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 71, 87, 0.4); }
+      50% { box-shadow: 0 0 30px rgba(255, 71, 87, 0.6); }
+    }
+
+    .live-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: var(--danger);
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      display: inline-block;
+      position: relative;
+      z-index: 1;
+    }
+
+    .live-card h5 {
+      margin: 1rem 0 0.5rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .live-sport {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      display: block;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ========== EMPTY STATE ========== */
+    .empty-state {
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--gray-500);
+    }
+
+    .empty-state-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: var(--gray-400);
+      font-size: 1.75rem;
+      border: 2px solid var(--gray-200);
+    }
+
+    .empty-state p {
+      margin: 0;
+      font-weight: 500;
+    }
+
+    /* ========== BUTTONS ========== */
     .btn-outline-secondary {
       border: 2px solid var(--gray-300);
       color: var(--gray-600);
@@ -820,283 +835,164 @@ block content
       transform: translateY(-2px);
     }
 
-    .btn-outline-primary {
-      border: 2px solid var(--primary);
-      color: var(--primary);
-      font-weight: 600;
-      border-radius: 10px;
-      padding: 0.4rem 0.8rem;
-      transition: all 0.3s ease;
-      font-size: 0.85rem;
-    }
-
-    .btn-outline-primary:hover {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      color: white;
-      border-color: transparent;
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .btn-outline-danger {
-      border: 2px solid var(--danger);
-      color: var(--danger);
-      font-weight: 600;
-      border-radius: 12px;
-      padding: 0.6rem 1.25rem;
-      transition: all 0.3s ease;
-    }
-
-    .btn-outline-danger:hover {
-      background: linear-gradient(135deg, var(--danger) 0%, #FF6B7A 100%);
-      color: white;
-      border-color: transparent;
-      transform: translateY(-2px);
-    }
-
-    /* ========== RESPONSIVE IMPROVEMENTS ========== */
+    /* ========== RESPONSIVE DESIGN ========== */
     @media (max-width: 1200px) {
-      .hero-greeting {
-        font-size: 2.5rem;
+      .dual-grid {
+        grid-template-columns: 1fr;
       }
-      
-      .stat-number {
-        font-size: 2.2rem;
-      }
-      
-      .admin-stat-card {
-        padding: 1.75rem;
-      }
-      
-      .stat-icon-wrapper {
-        width: 55px;
-        height: 55px;
-      }
-      
-      .stat-icon {
-        font-size: 1.6rem;
-      }
-    }
 
-    @media (max-width: 992px) {
-      .admin-hero {
-        padding: 3rem 2rem;
-        min-height: 240px;
-      }
-      
-      .hero-greeting {
-        font-size: 2.2rem;
-      }
-      
-      .hero-description {
-        font-size: 1.05rem;
-      }
-      
-      .user-info-panel {
-        position: static;
-        margin-top: 1.5rem;
-        animation: fadeInUp 0.6s ease-out 0.6s backwards;
-      }
-      
-      .user-info {
-        display: inline-flex;
-      }
-      
-      .stat-number {
-        font-size: 2rem;
-      }
-      
-      .admin-stat-card {
-        padding: 1.5rem;
-      }
-      
-      .stat-icon-wrapper {
-        width: 50px;
-        height: 50px;
-        margin-bottom: 1.25rem;
-      }
-      
-      .stat-icon {
-        font-size: 1.4rem;
-      }
-      
-      .admin-content-card .card-header {
-        padding: 1.25rem 1.5rem;
-      }
-      
-      .admin-content-card .card-header h5 {
-        font-size: 1.15rem;
-      }
-      
-      .admin-content-card .card-body {
-        padding: 1.25rem 1.5rem;
+      .upcoming-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       }
     }
 
     @media (max-width: 768px) {
-      .admin-dashboard {
-        padding: 1.5rem 0 2rem;
+      .dashboard-hero {
+        padding: 2rem 0 1.5rem;
       }
       
-      .admin-hero {
-        padding: 2.5rem 1.5rem;
-        border-radius: 20px;
-        margin-bottom: 2rem;
-      }
-      
-      .hero-greeting {
+      .user-greeting {
         font-size: 2rem;
       }
       
-      .hero-actions {
-        flex-direction: column;
-        align-items: stretch;
+      .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
       }
       
-      .hero-btn {
-        width: 100%;
-        justify-content: center;
+      .action-btn {
+        padding: 1rem 0.5rem;
+        min-height: 100px;
       }
       
-      .stat-number {
-        font-size: 1.8rem;
+      .action-btn i {
+        font-size: 1.75rem;
       }
       
-      .admin-table thead th,
-      .admin-table tbody td {
-        padding: 0.875rem 0.625rem;
-        font-size: 0.85rem;
+      .action-btn span {
+        font-size: 0.8rem;
       }
       
-      .video-thumb {
-        width: 70px;
-        height: 50px;
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
       }
-      
-      .news-list-item {
-        padding: 1rem;
-      }
-      
-      .empty-state {
-        padding: 2.5rem 1.25rem;
-      }
-      
-      .empty-state-icon {
-        width: 70px;
-        height: 70px;
-      }
-      
-      .empty-state-icon i {
-        font-size: 2rem;
-      }
-    }
 
-    @media (max-width: 576px) {
-      .admin-hero {
-        padding: 2rem 1.25rem;
-      }
-      
-      .hero-greeting {
-        font-size: 1.8rem;
-        letter-spacing: 1px;
-      }
-      
-      .admin-role-badge {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
-      }
-      
-      .hero-btn {
-        padding: 0.6rem 1.25rem;
-        font-size: 0.9rem;
-      }
-      
-      .admin-stat-card {
+      .stat-card {
         padding: 1.25rem;
       }
-      
-      .stat-icon-wrapper {
-        width: 45px;
-        height: 45px;
-        margin-bottom: 1rem;
-      }
-      
+
       .stat-icon {
-        font-size: 1.2rem;
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+      }
+
+      .stat-value {
+        font-size: 2rem;
       }
       
-      .stat-number {
-        font-size: 1.6rem;
+      .dashboard-section {
+        padding: 1.5rem;
       }
-      
-      .admin-content-card .card-header {
+
+      .section-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.75rem;
       }
-      
-      .admin-content-card .card-header a {
-        align-self: flex-start;
+
+      .upcoming-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .livestream-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .video-card {
+        min-width: 85%;
+        max-width: 85%;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
       }
       
-      .admin-table {
-        font-size: 0.8rem;
+      .stats-grid {
+        grid-template-columns: 1fr;
       }
       
-      .admin-table thead th,
-      .admin-table tbody td {
-        padding: 0.75rem 0.5rem;
+      .user-greeting {
+        font-size: 1.75rem;
       }
       
-      .badge {
-        font-size: 0.65rem;
-        padding: 0.3rem 0.6rem;
+      .dashboard-section {
+        padding: 1.25rem;
+      }
+
+      .match-card {
+        padding: 1rem;
+      }
+
+      .video-card {
+        min-width: 180px;
+        max-width: 180px;
       }
     }
 
   .admin-dashboard
-    .container-fluid
-      // ========== IMPROVED HEADER ==========
-      .admin-header-wrapper
-        .admin-hero
-          // User info panel (top right)
-          .user-info-panel
-            if currentUser
-              .user-info
-                .user-avatar
-                  - const initials = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'A'
-                  = initials
-                .user-details
-                  .user-name= currentUser.name || currentUser.email || 'Administrator'
-                  .user-email= currentUser.role ? currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1) : 'Admin'
+    // Dashboard Hero Section
+    .dashboard-hero
+      .container
+        .hero-content
+          h1.user-greeting= "Halo, " + ((currentUser && currentUser.name) || 'Admin')
+          
+          .user-role-badge
+            i.bi.bi-shield-check
+            | Admin Dashboard
 
-          // Hero content
-          .hero-content
-            h1.hero-greeting Admin Dashboard
-            
-            .admin-role-badge
-              i.bi.bi-shield-check
-              | Super Admin Dashboard
+          p.hero-description Kelola sistem, event, dan konten platform secara menyeluruh
+      
+      .container
+        .quick-actions
+          a.action-btn.action-btn-info(href="/admin/matches")
+            i.bi.bi-calendar-check
+            span Jadwal
 
-            p.hero-description
-              i.bi.bi-speedometer2.me-2
-              | Kelola event, berita, jadwal, video, livestream, dan tiket dengan akses penuh.
+          a.action-btn.action-btn-success(href="/admin/events")
+            i.bi.bi-calendar-event
+            span Event
 
-            .hero-actions
-              a.hero-btn.hero-btn-primary(href="/")
-                i.bi.bi-house-door.me-2
-                | Lihat Website
-              
-              if currentUser && currentUser.role === 'admin'
-                a.hero-btn(href="/admin/subadmins")
-                  i.bi.bi-people-fill.me-2
-                  | Manage Subadmins
-              
-              if currentUser && currentUser.role === 'admin'
-                a.hero-btn.hero-btn-warning(href="/admin/sellers")
-                  i.bi.bi-shop.me-2
-                  | Manage Seller
+          a.action-btn.action-btn-warning(href="/admin/news")
+            i.bi.bi-newspaper
+            span Berita
 
+          a.action-btn.action-btn-info(href="/admin/videos")
+            i.bi.bi-play-btn
+            span Video
+
+          a.action-btn.action-btn-danger(href="/admin/livestreams")
+            i.bi.bi-broadcast
+            span Livestream
+          
+          a.action-btn.action-btn-info(href="/admin/standings")
+            i.bi.bi-list-ol
+            span Klasemen
+
+          if currentUser && currentUser.role === 'admin'
+            a.action-btn.action-btn-danger(href="/admin/subadmins")
+              i.bi.bi-people-fill
+              span Subadmin
+          
+          if currentUser && currentUser.role === 'admin'
+            a.action-btn.action-btn-warning(href="/admin/sellers")
+              i.bi.bi-shop
+              span Seller
+
+    .container
       // ========== FLASH MESSAGES ==========
       if flash && flash.success && flash.success.length
         .alert.alert-success(role="alert")
@@ -1108,264 +1004,183 @@ block content
           i.bi.bi-exclamation-triangle-fill
           span= flash.error[0]
 
-      // ========== STATS CARDS ==========
-      .row.g-3.g-lg-4.mb-4
-        .col-6.col-lg-3
-          .card.border-0.admin-stat-card
-            .card-body
-              .stat-icon-wrapper
-                i.stat-icon.bi.bi-dribbble
-              span.stat-label Cabang Olahraga
-              h3.stat-number= (stats && stats.sports) || 0
-        .col-6.col-lg-3
-          .card.border-0.admin-stat-card
-            .card-body
-              .stat-icon-wrapper
-                i.stat-icon.bi.bi-calendar-event
-              span.stat-label Total Event
-              h3.stat-number= (stats && stats.events) || 0
-        .col-6.col-lg-3
-          .card.border-0.admin-stat-card
-            .card-body
-              .stat-icon-wrapper
-                i.stat-icon.bi.bi-calendar-check
-              span.stat-label Event Mendatang
-              h3.stat-number= (stats && stats.upcomingEvents) || 0
-        .col-6.col-lg-3
-          .card.border-0.admin-stat-card
-            .card-body
-              .stat-icon-wrapper
-                i.stat-icon.bi.bi-newspaper
-              span.stat-label Berita Terpublikasi
-              h3.stat-number= (stats && stats.news) || 0
+      // Stats Overview Section
+      .stats-grid
+        .stat-card(style="animation-delay: 0.1s")
+          .stat-icon.stat-icon-sports
+            i.bi.bi-trophy
+          .stat-value= stats.sports || 0
+          .stat-label Cabang Olahraga
+          
+        .stat-card(style="animation-delay: 0.2s")
+          .stat-icon.stat-icon-events
+            i.bi.bi-calendar-event
+          .stat-value= stats.events || 0
+          .stat-label Event
 
-      // ========== MAIN CONTENT ==========
-      // Event & News top row
-      .row.g-4
-        .col-lg-6
-          .card.border-0.admin-content-card
-            .card-header.d-flex.justify-content-between.align-items-center
-              h5
-                i.bi.bi-calendar-event
-                | Event Terbaru
-              a(href=(currentUser && currentUser.role === 'admin') ? '/admin/events' : '/subadmin/events') Kelola Event
-            
-            .card-body
-              if recentEvents && recentEvents.length
-                .table-responsive
-                  table.table.admin-table.mb-0
-                    thead
-                      tr
-                        th(style="width: 40%") Judul Event
-                        th(style="width: 20%") Cabang
-                        th(style="width: 20%") Status
-                        th(style="width: 20%") Tanggal
-                    tbody
-                      each e in recentEvents
-                        tr
-                          td
-                            a(href=`/events/${e.slug || e.id}`)= e.title
-                          td
-                            span.text-muted= e.sport_name || '-'
-                          td
-                            if e.status === 'upcoming'
-                              span.badge.bg-warning.text-dark Upcoming
-                            else if e.status === 'ongoing'
-                              span.badge.bg-success Ongoing
-                            else
-                              span.badge.bg-secondary Finished
-                          td
-                            - const d = e.start_date ? new Date(e.start_date) : null
-                            if d
-                              span.small.text-muted= d.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
-                            else
-                              span.small.text-muted -
-              else
-                .empty-state
-                  .empty-state-icon
-                    i.bi.bi-calendar-x
-                  p Belum ada event tercatat.
+        .stat-card(style="animation-delay: 0.3s")
+          .stat-icon.stat-icon-matches
+            i.bi.bi-calendar-check
+          .stat-value= stats.matches || 0
+          .stat-label Pertandingan
 
-        .col-lg-6
-          .card.border-0.admin-content-card
-            .card-header.d-flex.justify-content-between.align-items-center
-              h5
+        .stat-card(style="animation-delay: 0.4s")
+          .stat-icon.stat-icon-videos
+            i.bi.bi-play-btn
+          .stat-value= stats.videos || 0
+          .stat-label Video
+
+      // ========== JADWAL MENDATANG (FULL WIDTH) ==========
+      .dashboard-section
+        .section-header
+          h2.section-title
+            i.bi.bi-calendar-event
+            | Jadwal Mendatang
+          a(href="/admin/matches") Kelola Jadwal
+
+        if upcomingMatches && upcomingMatches.length
+          .upcoming-grid
+            each match in upcomingMatches
+              - const startTime = match.start_time ? new Date(match.start_time) : (match.start_date ? new Date(match.start_date) : null)
+              .match-card
+                .match-card-top
+                  span.match-sport= match.sport_name || 'Match'
+                  if startTime
+                    span.match-date
+                      i.bi.bi-calendar.me-1
+                      = startTime.toLocaleDateString('id-ID')
+
+                h5.match-title= match.title || (match.home_team_name ? (match.home_team_name + ' vs ' + (match.away_team_name||'-')) : 'Match')
+
+                if startTime
+                  .match-meta
+                    i.bi.bi-clock
+                    = startTime.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' })
+
+                - const av = (typeof match.ticket_available !== 'undefined') ? Number(match.ticket_available) : null
+                if av === 0
+                  span.ticket-status.ticket-bad
+                    i.bi.bi-x-circle
+                    | Sold Out
+                else if av > 0
+                  span.ticket-status.ticket-ok
+                    i.bi.bi-ticket-perforated
+                    = av + ' tiket tersisa'
+                else
+                  span.ticket-status
+                    i.bi.bi-info-circle
+                    | Tidak ada info tiket
+        else
+          .empty-state
+            .empty-state-icon
+              i.bi.bi-calendar-x
+            p Tidak ada jadwal mendatang
+
+      // ========== EVENT & BERITA ==========
+      .dual-grid
+        // ===== EVENT =====
+        .dashboard-section
+          .section-header
+            h2.section-title
+              i.bi.bi-calendar-event
+              | Event Terbaru
+            a(href=(currentUser && currentUser.role === 'admin') ? '/admin/events' : '/subadmin/events') Kelola Event
+          
+          if recentEvents && recentEvents.length
+            ul.news-compact
+              each e in recentEvents
+                li
+                  a(href=`/events/${e.slug || e.id}`)
+                    = e.title
+                    if e.status_event === 'ongoing'
+                      span.event-badge.event-ongoing ONGOING
+                    else if e.status_event === 'upcoming'
+                      span.event-badge.event-upcoming UPCOMING
+                    else
+                      span.event-badge.event-ended ENDED
+
+                  small
+                    i.bi.bi-dribbble.me-1
+                    = e.sport_name || '-'
+                    |  • 
+                    - const d = e.start_date ? new Date(e.start_date) : null
+                    if d
+                      = d.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+                    else
+                      | -
+          else
+            .empty-state
+              .empty-state-icon
+                i.bi.bi-calendar-x
+              p Belum ada event tercatat
+
+        // ===== BERITA =====
+        .dashboard-section
+          .section-header
+            h2.section-title
+              i.bi.bi-newspaper
+              | Berita Terbaru
+            a(href=(currentUser && currentUser.role === 'admin') ? '/admin/news' : '/subadmin/news') Lihat Semua
+
+          if recentNews && recentNews.length
+            ul.news-compact
+              each n in recentNews
+                li
+                  a(href=`/news/${n.slug}`)= n.title
+                  small
+                    i.bi.bi-calendar.me-1
+                    if n.published_at
+                      - const dn = new Date(n.published_at)
+                      = dn.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+          else
+            .empty-state
+              .empty-state-icon
                 i.bi.bi-newspaper
-                | Berita Terbaru
-              a(href=(currentUser && currentUser.role === 'admin') ? '/admin/news' : '/subadmin/news') Lihat Semua
-            
-            .card-body
-              if recentNews && recentNews.length
-                .list-group.list-group-flush
-                  each n in recentNews
-                    a.list-group-item.news-list-item.d-flex.justify-content-between.align-items-start(href=`/news/${n.slug}`)
-                      .flex-grow-1
-                        if n.sport_name
-                          span.badge.mb-2= n.sport_name
-                        h6.mb-1= n.title
-                        if n.published_at
-                          - const dn = new Date(n.published_at)
-                          small.text-muted
-                            i.bi.bi-clock.me-1
-                            = dn.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
-                      i.bi.bi-chevron-right.text-muted
-              else
-                .empty-state
-                  .empty-state-icon
-                    i.bi.bi-newspaper
-                  p Belum ada berita terpublikasi.
+              p Belum ada berita terpublikasi
 
-      // Second row: Jadwal, Klasemen
-      .row.g-4.mt-3
-        .col-lg-6
-          .card.border-0.admin-content-card
-            .card-header.d-flex.justify-content-between.align-items-center
-              h5
-                i.bi.bi-clock.me-2
-                | Jadwal
-              a(href='/admin/matches') Kelola Jadwal
-            
-            .card-body
-              if upcomingMatches && upcomingMatches.length
-                .table-responsive
-                  table.table.admin-table.mb-0
-                    thead
-                      tr
-                        th(style="width: 35%") Match / Event
-                        th(style="width: 20%") Cabang
-                        th(style="width: 25%") Tanggal
-                        th(style="width: 20%") Ticket
-                    tbody
-                      each m in upcomingMatches
-                        - const st = m.start_time ? new Date(m.start_time) : (m.start_date ? new Date(m.start_date) : null)
-                        tr
-                          td
-                            b= m.title || (m.home_team_name ? (m.home_team_name + ' vs ' + (m.away_team_name||'-')) : 'Match')
-                          td= m.sport_name || '-'
-                          td
-                            if st
-                              span.small= st.toLocaleString('id-ID')
-                            else
-                              span.text-muted -
-                          td
-                            - const av = (typeof m.ticket_available !== 'undefined') ? Number(m.ticket_available) : null
-                            if av === 0
-                              span.badge.bg-danger.ticket-badge Sold out
-                            else if av > 0
-                              span.badge.bg-success.ticket-badge= av + ' left'
-                            else
-                              span.badge.bg-secondary.ticket-badge -
-              else
-                .empty-state
-                  .empty-state-icon
-                    i.bi.bi-calendar-x
-                  p Tidak ada jadwal.
+      // ==== VIDEO (FULL WIDTH, SCROLL) ====
+      .dashboard-section
+        .section-header
+          h2.section-title
+            i.bi.bi-play-btn
+            | Video Terbaru
+          a(href="/admin/videos") Kelola Video
 
-        .col-lg-6
-          .card.border-0.admin-content-card
-            .card-header.d-flex.justify-content-between.align-items-center
-              h5
-                i.bi.bi-list-ol.me-2
-                | Klasemen
-              a(href='/admin/standings') Kelola Klasemen
-            
-            .card-body
-              if standings && standings.length
-                .table-responsive
-                  table.table.admin-table.mb-0
-                    thead
-                      tr
-                        th(style="width: 40%") Tim
-                        th.text-center(style="width: 12%") PJ
-                        th.text-center(style="width: 12%") W
-                        th.text-center(style="width: 12%") D
-                        th.text-center(style="width: 12%") L
-                        th.text-end(style="width: 12%") PTS
-                    tbody
-                      each r in standings
-                        tr
-                          td
-                            strong= r.team
-                            if r.sport_name
-                              br
-                              small.text-muted= r.sport_name
-                          td.text-center= r.played || 0
-                          td.text-center= r.win || 0
-                          td.text-center= r.draw || 0
-                          td.text-center= r.loss || 0
-                          td.text-end= r.pts || 0
-              else
-                .empty-state
-                  .empty-state-icon
-                    i.bi.bi-bar-chart
-                  p Klasemen belum tersedia.
+        if recentVideos && recentVideos.length
+          .video-scroll
+            each v in recentVideos
+              a.video-card(href=`/videos/${v.id}`)
+                img(src=v.thumbnail_url)
+                .video-card-content
+                  span= v.title
+        else
+          .empty-state
+            p Belum ada video
 
-      // Third row: Video & Livestream
-      .row.g-4.mt-3
-        .col-lg-6
-          .card.border-0.admin-content-card
-            .card-header.d-flex.justify-content-between.align-items-center
-              h5
-                i.bi.bi-camera-reels.me-2
-                | Video
-              a(href=(currentUser && currentUser.role === 'admin') ? '/admin/videos' : '/subadmin/videos') Kelola Video
-            
-            .card-body
-              if recentVideos && recentVideos.length
-                .list-group.list-group-flush
-                  each v in recentVideos
-                    li.list-group-item.d-flex.justify-content-between.align-items-center
-                      .d-flex.align-items-center
-                        if v.thumbnail_url
-                          img.video-thumb.me-3(src=v.thumbnail_url alt=v.title)
-                        else
-                          .video-thumb.me-3.d-flex.align-items-center.justify-content-center.bg-light
-                            i.bi.bi-film.text-muted
-                        .flex-grow-1
-                          a.d-block.fw-semibold.text-decoration-none.text-dark(href=`/videos/${v.id}`)= v.title
-                          if v.sport_name
-                            small.text-muted= v.sport_name
-                      a.btn.btn-sm.btn-outline-primary(href=`/videos/${v.id}`)
-                        i.bi.bi-play-fill
-              else
-                .empty-state
-                  .empty-state-icon
-                    i.bi.bi-film
-                  p Belum ada video.
+      // ==== LIVESTREAM (FULL WIDTH, SCROLL JUGA) ====
+      .dashboard-section
+        .section-header
+          h2.section-title
+            i.bi.bi-broadcast
+            | Livestream Aktif
+          a(href="/admin/livestreams") Kelola Livestream
 
-        .col-lg-6
-          .card.border-0.admin-content-card
-            .card-header.d-flex.justify-content-between.align-items-center
-              h5
-                i.bi.bi-broadcast.me-2
-                | Livestream
-              a(href=(currentUser && currentUser.role === 'admin') ? '/admin/livestreams' : '/subadmin/livestreams') Kelola Livestream
-            
-            .card-body
-              if upcomingLivestreams && upcomingLivestreams.length
-                .list-group.list-group-flush
-                  each l in upcomingLivestreams
-                    li.list-group-item
-                      .d-flex.justify-content-between.align-items-start
-                        .flex-grow-1
-                          strong.d-block.mb-1= l.title
-                          small.text-muted.d-block.mb-2
-                            i.bi.bi-dribbble.me-1
-                            = l.sport_name || '-'
-                          small.text-muted
-                            i.bi.bi-clock.me-1
-                            = l.start_time ? new Date(l.start_time).toLocaleString('id-ID') : (l.created_at ? new Date(l.created_at).toLocaleString('id-ID') : '-')
-                        .ms-3
-                          a.btn.btn-sm.btn-outline-primary(href=`/livestreams/${l.id}`)
-                            i.bi.bi-eye-fill.me-1
-                            | Lihat
-              else
-                .empty-state
-                  .empty-state-icon
-                    i.bi.bi-broadcast
-                  p Belum ada livestream.
+        if upcomingLivestreams && upcomingLivestreams.length
+          .livestream-grid
+            each livestream in upcomingLivestreams
+              .live-card(class=livestream.is_live ? 'live-now' : '')
+                span.live-badge= livestream.is_live ? 'LIVE' : 'COMING'
+                h5= livestream.title
+                span.live-sport= livestream.sport_name
+                a.btn.btn-sm.btn-danger.mt-2(
+                  href=`/livestreams/${livestream.id}`
+                ) Tonton
+        else
+          .empty-state
+            p Tidak ada livestream aktif
 
-      // bottom quick links (no create)
+
+      // ========== QUICK LINKS ==========
       .mt-4
         .d-flex.flex-wrap.gap-2
           a.btn.btn-outline-secondary(href=(currentUser && currentUser.role === 'admin') ? '/admin/events' : '/subadmin/events')
@@ -1385,15 +1200,15 @@ block content
             | Kelola Livestream
           
           if currentUser && currentUser.role === 'admin'
-            a.btn.btn-outline-danger(href="/admin/subadmins")
+            a.btn.btn-outline-secondary(href="/admin/subadmins")
               i.bi.bi-people-fill.me-2
               | Manage Subadmins
 
-  // small JS for stat animate
+  // ========== JAVASCRIPT ==========
   script.
     (function(){
       // Animate stats counting
-      document.querySelectorAll('.stat-number').forEach(function(el){
+      document.querySelectorAll('.stat-value').forEach(function(el){
         var target = parseInt(el.textContent) || 0;
         if(target <= 0) return;
         el.textContent = '0';
@@ -1410,30 +1225,6 @@ block content
         }, 40);
       });
 
-      // Add glow effect to role badge
-      const roleBadge = document.querySelector('.admin-role-badge');
-      if (roleBadge) {
-        roleBadge.addEventListener('mouseenter', () => {
-          roleBadge.style.boxShadow = '0 8px 32px rgba(0, 149, 255, 0.3)';
-        });
-        
-        roleBadge.addEventListener('mouseleave', () => {
-          roleBadge.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2)';
-        });
-      }
-
-      // Add CSS for ripple animation (dihapus karena tidak diperlukan)
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes ripple {
-          to {
-            transform: translate(-50%, -50%) scale(15);
-            opacity: 0;
-          }
-        }
-      `;
-      document.head.appendChild(style);
-
       // Auto-dismiss alerts
       const alerts = document.querySelectorAll('.alert');
       alerts.forEach(alert => {
@@ -1447,5 +1238,4 @@ block content
           }, 300);
         }, 5000);
       });
-
     })();

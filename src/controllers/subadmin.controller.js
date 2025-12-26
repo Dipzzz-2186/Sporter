@@ -311,32 +311,38 @@ exports.renderDashboard = async (req, res) => {
     let upcomingLivestreams = [];
     try {
       if (req.session.user.role === 'admin') {
-        const [rows] = await db.query(
-          `
-      SELECT v.id, v.title, v.start_time, v.is_live, v.created_at, s.name AS sport_name
-      FROM videos v
-      LEFT JOIN sports s ON s.id = v.sport_id
-      WHERE v.type = 'livestream'
-      ORDER BY COALESCE(v.start_time, v.created_at) DESC
-      LIMIT 12
-      `
-        );
+        const [rows] = await db.query(`
+          SELECT
+            v.id,
+            v.title,
+            v.start_time,
+            v.is_live,
+            s.name AS sport_name
+          FROM videos v
+          LEFT JOIN sports s ON s.id = v.sport_id
+          WHERE v.type = 'livestream'
+            AND v.is_live = 1
+          ORDER BY v.start_time DESC
+          LIMIT 12
+        `);
         upcomingLivestreams = rows;
       } else {
-        // subadmin: only livestreams for assigned sports
         const placeholders = sportIds.map(() => '?').join(',');
-        const [rows] = await db.query(
-          `
-      SELECT v.id, v.title, v.start_time, v.is_live, v.created_at, s.name AS sport_name
-      FROM videos v
-      LEFT JOIN sports s ON s.id = v.sport_id
-      WHERE v.type = 'livestream'
-        AND s.id IN (${placeholders})
-      ORDER BY COALESCE(v.start_time, v.created_at) DESC
-      LIMIT 12
-      `,
-          [...sportIds]
-        );
+        const [rows] = await db.query(`
+          SELECT
+            v.id,
+            v.title,
+            v.start_time,
+            v.is_live,
+            s.name AS sport_name
+          FROM videos v
+          LEFT JOIN sports s ON s.id = v.sport_id
+          WHERE v.type = 'livestream'
+            AND v.is_live = 1
+            AND s.id IN (${placeholders})
+          ORDER BY v.start_time DESC
+          LIMIT 12
+        `, sportIds);
         upcomingLivestreams = rows;
       }
     } catch (e) {
@@ -585,13 +591,13 @@ exports.listMatches = async (req, res) => {
         `,
       [now, ...params]
     );
-    return res.render("subadmin/matches", {
-      title: "Kelola Pertandingan - Subadmin",
+    const isReadOnly = req.session.user.role === 'admin';
+    res.render('subadmin/matches', {
       matches,
       sports,
-      query: req.query
+      query: req.query,
+      isReadOnly
     });
-
   } catch (err) {
     console.error("listMatches error", err);
     req.flash("error", "Gagal memuat daftar pertandingan.");

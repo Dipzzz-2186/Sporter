@@ -529,7 +529,7 @@ block content
                   th Cabang
                   th Venue
                   th Tanggal
-                  th.text-end Aksi
+                  th.text-center Aksi
               tbody
                 each e in events
                   tr
@@ -553,6 +553,7 @@ block content
                           .event-row-info #{start}
                       else
                         span.text-muted -
+                    td
                       .action-buttons
                         a.btn.btn-sm.btn-outline-secondary(href=`/events/${e.slug || e.id}` target="_self" title="Lihat di Frontend")
                           i.bi.bi-box-arrow-up-right

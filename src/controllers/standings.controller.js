@@ -104,7 +104,7 @@ exports.listStandings = async (req, res) => {
       query: req.query,
       isPadel: false,
       mode,
-      isReadOnly: false
+      isReadOnly: req.session.user.role === 'admin'
     });
   }
 
@@ -123,13 +123,15 @@ exports.listStandings = async (req, res) => {
 
   const { rows } = await getStandings({ sportId, mode });
 
+  const isAdmin = req.session.user.role === 'admin';
+
   res.render('subadmin/standings', {
     standings: rows,
     sports,
     query: { sport_id: sportId, mode },
     isPadel,
     mode,
-    isReadOnly: false
+    isReadOnly: isAdmin   // 🔥 ADMIN READ ONLY
   });
 };
 

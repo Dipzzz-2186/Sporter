@@ -80,23 +80,24 @@ exports.renderDashboard = async (req, res) => {
 
     // Recent Events
     const [recentEvents] = await db.query(`
-      SELECT 
-        e.id, e.title, e.slug, e.start_date, e.end_date,
-        s.name AS sport_name,
-        CASE
-          WHEN e.start_date IS NULL THEN 'upcoming'
-          WHEN CURDATE() < DATE(e.start_date) THEN 'upcoming'
-          WHEN e.end_date IS NOT NULL AND CURDATE() > DATE(e.end_date) THEN 'completed'
-          WHEN e.end_date IS NULL AND CURDATE() > DATE(e.start_date) THEN 'completed'
-          ELSE 'ongoing'
-        END AS status
-      FROM events e
-      LEFT JOIN sports s ON s.id = e.sport_id
-      ORDER BY e.start_date DESC
-      LIMIT 6
-    `);
-
-
+    SELECT
+      e.id,
+      e.title,
+      e.slug,
+      e.start_date,
+      e.end_date,
+      s.name AS sport_name,
+      CASE
+        WHEN NOW() < e.start_date THEN 'upcoming'
+        WHEN e.end_date IS NOT NULL AND NOW() BETWEEN e.start_date AND e.end_date THEN 'ongoing'
+        WHEN e.end_date IS NULL AND DATE(NOW()) = DATE(e.start_date) THEN 'ongoing'
+        ELSE 'ended'
+      END AS status_event
+    FROM events e
+    LEFT JOIN sports s ON s.id = e.sport_id
+    ORDER BY e.start_date DESC
+    LIMIT 6
+  `);
     // Recent News
     const [recentNews] = await db.query(`
       SELECT n.id, n.title, n.slug, n.published_at, s.name AS sport_name
@@ -117,18 +118,20 @@ exports.renderDashboard = async (req, res) => {
     `);
 
     // Upcoming Livestream
-    const [upcomingLivestreams] = await db.query(`
-      SELECT v.id, v.title, v.start_time, v.is_live, s.name AS sport_name
-      FROM videos v
-      LEFT JOIN sports s ON s.id = v.sport_id
-      WHERE v.type = 'livestream'
-      ORDER BY 
-        v.is_live DESC,
-        v.start_time IS NULL,
-        v.start_time ASC
-      LIMIT 6
-    `);
-
+    const [liveLivestreams] = await db.query(`
+    SELECT
+      v.id,
+      v.title,
+      v.start_time,
+      v.is_live,
+      s.name AS sport_name
+    FROM videos v
+    LEFT JOIN sports s ON s.id = v.sport_id
+    WHERE v.type = 'livestream'
+      AND v.is_live = 1
+    ORDER BY v.start_time DESC
+    LIMIT 6
+  `);
 
     // Upcoming Matches
     const [upcomingMatches] = await db.query(`
@@ -151,7 +154,7 @@ exports.renderDashboard = async (req, res) => {
       recentEvents,
       recentNews,
       recentVideos,
-      upcomingLivestreams,
+      upcomingLivestreams: liveLivestreams,
       upcomingMatches,
       standings,
       currentUser: req.session.user
@@ -1076,108 +1079,6 @@ exports.listMatchesReadOnly = async (req, res) => {
   }
 };
 
-// ========== ADMIN READ-ONLY: STANDINGS ==========
-exports.listStandingsReadOnly = async (req, res) => {
-  try {
-    const [sports] = await db.query(
-      'SELECT id, name FROM sports ORDER BY name'
-    );
-
-    const qSport = req.query.sport_id
-      ? Number(req.query.sport_id)
-      : null;
-
-    if (!qSport) {
-      return res.render('standings/index', {
-        title: 'Klasemen',
-        standings: [],
-        sports,
-        query: req.query,
-        isPadel: false,
-        isReadOnly: true
-      });
-    }
-
-    const [[sport]] = await db.query(
-      'SELECT id, name FROM sports WHERE id = ?',
-      [qSport]
-    );
-
-    if (!sport) {
-      return res.render('standings/index', {
-        title: 'Klasemen',
-        standings: [],
-        sports,
-        query: req.query,
-        isPadel: false,
-        isReadOnly: true
-      });
-    }
-
-    const isPadel = sport.name.toLowerCase() === 'padel';
-    let rows = [];
-
-    if (isPadel) {
-      [rows] = await db.query(`
-        SELECT
-          s.id,
-          s.sport_id,
-          sp.name AS sport_name,
-          t.name AS team_name,
-          (
-            SELECT COUNT(*)
-            FROM matches m
-            WHERE m.sport_id = s.sport_id
-              AND s.team_id IN (m.home_team_id, m.away_team_id)
-          ) AS total_match,
-          s.win,
-          s.loss,
-          s.game_win,
-          s.game_loss,
-          (s.game_win - s.game_loss) AS game_diff,
-          s.pts
-        FROM standings s
-        JOIN teams t ON t.id = s.team_id
-        JOIN sports sp ON sp.id = s.sport_id
-        WHERE s.sport_id = ?
-        ORDER BY s.pts DESC, game_diff DESC, s.game_win DESC
-      `, [qSport]);
-    } else {
-      [rows] = await db.query(`
-        SELECT
-          s.id,
-          s.sport_id,
-          sp.name AS sport_name,
-          t.name AS team_name,
-          s.played,
-          s.win,
-          s.draw,
-          s.loss,
-          s.goals_for,
-          s.goals_against,
-          (s.goals_for - s.goals_against) AS goal_diff,
-          s.pts
-        FROM standings s
-        JOIN teams t ON t.id = s.team_id
-        JOIN sports sp ON sp.id = s.sport_id
-        WHERE s.sport_id = ?
-        ORDER BY s.pts DESC, goal_diff DESC, s.goals_for DESC
-      `, [qSport]);
-    }
-
-    return res.render('standings/index', {
-      title: 'Klasemen',
-      standings: rows,
-      sports,
-      query: req.query,
-      isPadel,
-      isReadOnly: true
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
-};
 exports.listVideosAsAdmin = async (req, res) => {
   try {
     const [videos] = await db.query(`
