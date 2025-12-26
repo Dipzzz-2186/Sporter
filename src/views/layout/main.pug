@@ -4,6 +4,7 @@ html(lang="id")
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title #{title || 'Sporter - Platform Olahraga Indonesia'}
+    link(rel="icon" type="image/png" href="/images/Logo.png")
     meta(name="description" content="Platform olahraga terlengkap di Indonesia - Cabang olahraga, event, berita, dan komunitas")
 
     // Bootstrap CSS
@@ -552,9 +553,9 @@ html(lang="id")
     // NAVBAR
     nav.sport-navbar.navbar.navbar-expand-lg
       .container
-        a.navbar-brand(href="/")
-          i.bi.bi-trophy-fill
-          | SPORTER
+        a.navbar-brand.d-flex.align-items-center.gap-2(href="/")
+          img(src="/images/logo.png" alt="SPORTER" style="height:34px; width:auto;")
+          span SPORT
         button.navbar-toggler(
           type="button",
           data-bs-toggle="collapse",
