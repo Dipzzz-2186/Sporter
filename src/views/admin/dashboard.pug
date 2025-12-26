@@ -684,6 +684,8 @@ block content
       max-width: 320px;
       height: 260px;
       scroll-snap-align: start;
+      position: relative;
+      overflow: hidden;
     }
 
     .video-card::before {
@@ -697,9 +699,10 @@ block content
     }
 
     .video-card:hover {
+      border-color: var(--primary);
       transform: translateY(-5px);
       box-shadow: var(--shadow-lg);
-      border-color: var(--primary);
+
     }
 
     .video-card img {
@@ -893,6 +896,7 @@ block content
       }
       
       .dashboard-section {
+        overflow: hidden;
         padding: 1.5rem;
       }
 
