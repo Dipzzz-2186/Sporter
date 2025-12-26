@@ -662,15 +662,15 @@ block content
       gap: 1.25rem;
       overflow-x: auto;
       padding-bottom: 1rem;
-      scroll-behavior: smooth;
+      scroll-behavior: auto;
     }
 
     .video-scroll::-webkit-scrollbar {
-      height: 8px;
+      height: 6px;
     }
 
     .video-scroll::-webkit-scrollbar-track {
-      background: var(--gray-100);
+      background: var(--gray-50);
       border-radius: 10px;
     }
 
@@ -684,23 +684,25 @@ block content
       max-width: 240px;
       background: white;
       border-radius: 16px;
-      box-shadow: var(--shadow-md);
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.08);
       overflow: hidden;
       text-decoration: none;
-      transition: all 0.3s ease;
-      border: 2px solid var(--gray-200);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid var(--gray-200);
+      flex-shrink: 0;
     }
 
     .video-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--primary-color);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.12);
     }
 
     .video-card img {
       width: 100%;
       height: 140px;
       object-fit: cover;
+      display: block;
+      background: var(--gray-100);
     }
 
     .video-card-content {
@@ -1041,7 +1043,7 @@ block content
         .video-scroll
           each video in recentVideos
             a.video-card(href=`/videos/${video.id}`)
-              img(src=video.thumbnail_url)
+              img(loading="lazy" src=video.thumbnail_url alt=video.title data-src=video.thumbnail_url)
               .video-card-content
                 span= video.title
       else

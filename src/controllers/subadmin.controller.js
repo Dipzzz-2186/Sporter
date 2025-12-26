@@ -297,7 +297,7 @@ exports.renderDashboard = async (req, res) => {
 
     const [recentVideos] = await db.query(
       `
-      SELECT v.id, v.title, v.thumbnail_url
+      SELECT v.id, v.title, v.thumbnail_url, v.url
       FROM videos v
       LEFT JOIN sports s ON s.id = v.sport_id
       WHERE v.type <> 'livestream' ${sportFilterSql}
@@ -306,6 +306,20 @@ exports.renderDashboard = async (req, res) => {
       `,
       [...sportIds]
     );
+
+    // Process recentVideos to add YouTube thumbnail if missing
+    const processedVideos = recentVideos.map(v => {
+      // If thumbnail_url exists and is not empty, use it
+      if (v.thumbnail_url && v.thumbnail_url.trim()) {
+        return v;
+      }
+      // Generate YouTube thumbnail from URL if not available
+      const ytThumbnail = getYouTubeThumbnail(v.url);
+      return {
+        ...v,
+        thumbnail_url: ytThumbnail || '/images/no-video-thumbnail.jpg' // fallback image
+      };
+    });
 
     // --- show ALL livestreams for allowed sports (admin = all) ---
     let upcomingLivestreams = [];
@@ -355,7 +369,7 @@ exports.renderDashboard = async (req, res) => {
       stats,
       upcomingMatches: mappedMatches,
       recentNews,
-      recentVideos,
+      recentVideos: processedVideos,
       upcomingLivestreams,
       assignedSports
     });
