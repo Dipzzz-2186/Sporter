@@ -1190,9 +1190,6 @@ block content
                     span.stream-status-badge(class=item.is_live ? 'live' : 'upcoming')
                       i.bi.bi-broadcast.me-1
                       = item.is_live ? 'LIVE' : 'UPCOMING'
-                    span.viewer-count-badge
-                      i.bi.bi-eye.me-1
-                      | #{item.concurrent_viewers || item.views}
                 
                 .stream-card-content
                   .stream-card-header
