@@ -13,18 +13,22 @@ function formatDate(date) {
 // List berita (layout ala portal)
 exports.renderNewsList = async (req, res) => {
   try {
-    // Ambil 12 berita terbaru  
-    const news = await News.getLatestNews(12);
+    // Ambil 20 berita terbaru (6 untuk hero, sisanya untuk grid bawah)
+    const news = await News.getLatestNews(20);
 
     const items = news.map((n) => ({
       ...n,
       published_at_formatted: formatDate(n.published_at),
     }));
 
-    const mainArticle = items[0] || null;
-    const sideTopArticle = items[1] || null;
-    const sideMiniArticles = items.slice(2, 6);   // 4 kecil
-    const otherArticles = items;         // sisanya buat grid bawah
+    // 6 berita terbaru untuk hero
+    const heroArticles = items.slice(0, 6);
+    const mainArticle = heroArticles[0] || null;
+    const sideTopArticle = heroArticles[1] || null;
+    const sideMiniArticles = heroArticles.slice(2, 6);
+
+    // Sisanya untuk bagian Berita Lainnya (hindari duplikasi)
+    const otherArticles = items.slice(6);
 
     res.render("news/index", {
       title: "Berita Olahraga - SPORTER",

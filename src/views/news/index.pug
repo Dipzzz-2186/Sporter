@@ -587,6 +587,16 @@ block content
       display: flex;
       flex-direction: column;
     }
+
+    /* Filtered results section */
+    .news-filtered-section {
+      padding: 3rem 0 5rem;
+      background: linear-gradient(135deg, #ffffff 0%, #f7fbff 100%);
+    }
+
+    .filtered-grid .col-md-6 {
+      display: flex;
+    }
     
     .news-card-meta {
       display: flex;
@@ -1148,12 +1158,26 @@ block content
                       span.news-card-readmore
                         | Baca Selengkapnya
                         i.bi.bi-arrow-right
-        else if !mainArticle && !sideTopArticle && (!sideMiniArticles || !sideMiniArticles.length)
+        else
           .empty-state
             .empty-state-icon
               i.bi.bi-inbox
             h3 Belum Ada Berita
             p Artikel berita akan ditambahkan secara berkala.
+
+  // ===== FILTERED RESULTS (client-rendered when a filter is active) =====
+  .news-filtered-section(style="display:none;")
+    .container
+      .section-header
+        .section-title-main
+          h2 Hasil Filter
+          p.section-subtitle Menampilkan hasil filter
+        span.section-badge
+          i.bi.bi-search.me-1
+          | 
+          span#filtered-count 0
+          |  Berita
+      .row.g-4.g-md-5.filtered-grid#filtered-grid
 
   // No Results State (hidden by default)
   #no-results-state.no-results-state(style="display: none;")
@@ -1208,73 +1232,138 @@ block content
         return mappedSports.some(sport => articleSportLower.includes(sport));
       }
       
-      // News filtering system - UPDATED untuk semua artikel
+      // News filtering system - render unified filtered layout when a specific sport is selected
       function initializeNewsFilter() {
         const filterButtons = document.querySelectorAll('.btn-news-filter');
-        const allNewsItems = document.querySelectorAll('.news-item');
+        const allNewsItems = Array.from(document.querySelectorAll('.news-item'));
         const noResultsState = document.getElementById('no-results-state');
         const filterMessage = document.getElementById('filter-message');
         const totalArticlesElement = document.getElementById('total-articles');
         const resetFilterBtn = document.getElementById('reset-filter');
-        
+        const heroSection = document.querySelector('.news-hero-section');
+        const otherSection = document.querySelector('.news-other-section');
+        const filteredSection = document.querySelector('.news-filtered-section');
+        const filteredGrid = document.getElementById('filtered-grid');
+        const filteredCountEl = document.getElementById('filtered-count');
+
+        function buildCardFromItem(item) {
+          const href = item.querySelector('a') ? item.querySelector('a').getAttribute('href') : '#';
+          const imgEl = item.querySelector('img');
+          const imgSrc = imgEl ? (imgEl.dataset && imgEl.dataset.src ? imgEl.dataset.src : imgEl.getAttribute('src')) : null;
+          const titleEl = item.querySelector('h2, h5, h6, .news-hero-card-title, .news-side-mini-title');
+          const title = titleEl ? titleEl.textContent.trim() : (item.querySelector('a') ? item.querySelector('a').textContent.trim() : 'Berita');
+          const excerptEl = item.querySelector('p, .news-main-excerpt, .news-side-top-excerpt');
+          const excerpt = excerptEl ? excerptEl.textContent.trim().substring(0, 120) + '...' : '';
+          const sportEl = item.querySelector('.news-card-sport, .news-main-sport-badge, .news-hero-card-badge, .news-side-mini-badge, .news-side-top-badge');
+          const sportText = sportEl ? sportEl.textContent.trim() : '';
+          const dateEl = item.querySelector('.news-card-date, .news-main-date');
+          const dateText = dateEl ? dateEl.textContent.trim() : '';
+
+          const col = document.createElement('div');
+          col.className = 'col-md-6 col-lg-3';
+
+          const link = document.createElement('a');
+          link.className = 'text-decoration-none';
+          link.href = href;
+
+          const card = document.createElement('div');
+          card.className = 'sporter-news-card';
+
+          const imgWrap = document.createElement('div');
+          imgWrap.className = 'news-card-image-wrapper';
+          if (imgSrc) {
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.alt = title;
+            img.loading = 'lazy';
+            imgWrap.appendChild(img);
+          }
+          card.appendChild(imgWrap);
+
+          const body = document.createElement('div');
+          body.className = 'card-body';
+
+          const meta = document.createElement('div');
+          meta.className = 'news-card-meta';
+          if (sportText) {
+            const spanSport = document.createElement('span');
+            spanSport.className = 'news-card-sport';
+            const i = document.createElement('i'); i.className = 'bi bi-trophy-fill me-1';
+            spanSport.appendChild(i);
+            spanSport.appendChild(document.createTextNode(sportText));
+            meta.appendChild(spanSport);
+          }
+          if (dateText) {
+            const spanDate = document.createElement('span');
+            spanDate.className = 'news-card-date';
+            const i2 = document.createElement('i'); i2.className = 'bi bi-clock me-1';
+            spanDate.appendChild(i2);
+            spanDate.appendChild(document.createTextNode(dateText));
+            meta.appendChild(spanDate);
+          }
+          body.appendChild(meta);
+
+          const h6 = document.createElement('h6'); h6.textContent = title; body.appendChild(h6);
+          if (excerpt) { const p = document.createElement('p'); p.textContent = excerpt; body.appendChild(p); }
+
+          const read = document.createElement('span');
+          read.className = 'news-card-readmore';
+          read.innerHTML = 'Baca Selengkapnya <i class="bi bi-arrow-right"></i>';
+          body.appendChild(read);
+
+          card.appendChild(body);
+          link.appendChild(card);
+          col.appendChild(link);
+          return col;
+        }
+
         function updateUI() {
           const activeButton = document.querySelector('.btn-news-filter.active');
           const activeSport = activeButton ? activeButton.getAttribute('data-sport') : 'all';
-          
-          let visibleCount = 0;
-          
-          // Filter semua artikel (termasuk hero section)
-          allNewsItems.forEach(item => {
-            const itemSport = item.getAttribute('data-sport');
-            const shouldShow = articleMatchesFilter(itemSport, activeSport);
-            
-            if (shouldShow) {
-              item.style.display = '';
-              item.style.opacity = '1';
-              item.style.transform = 'translateY(0)';
-              visibleCount++;
-            } else {
-              item.style.opacity = '0';
-              item.style.transform = 'translateY(20px)';
-              setTimeout(() => {
-                item.style.display = 'none';
-              }, 300);
-            }
-          });
-          
-          // Tampilkan atau sembunyikan "No Results" state
-          const heroSection = document.querySelector('.news-hero-section');
-          const otherSection = document.querySelector('.news-other-section');
-          const filterSection = document.querySelector('.news-filter-section');
-          
-          if (visibleCount === 0) {
-            // Sembunyikan semua section kecuali filter
-            if (heroSection) heroSection.style.display = 'none';
-            if (otherSection) otherSection.style.display = 'none';
-            noResultsState.style.display = 'block';
-          } else {
-            // Tampilkan section yang relevan
+
+          // If 'all', restore original layout
+          if (activeSport === 'all') {
+            if (filteredSection) filteredSection.style.display = 'none';
             if (heroSection) heroSection.style.display = '';
             if (otherSection) otherSection.style.display = '';
-            noResultsState.style.display = 'none';
+            if (noResultsState) noResultsState.style.display = 'none';
+            // show original items
+            allNewsItems.forEach(it => { it.style.display = ''; it.style.opacity = '1'; it.style.transform = 'translateY(0)'; });
+            if (filterMessage) filterMessage.textContent = 'Temukan berita berdasarkan cabang olahraga favorit Anda';
+            if (totalArticlesElement) totalArticlesElement.textContent = allNewsItems.length;
+            return;
           }
-          
-          // Update counter
-          if (totalArticlesElement) {
-            totalArticlesElement.textContent = visibleCount;
+
+          // Build filtered list
+          const matched = allNewsItems.filter(item => articleMatchesFilter(item.getAttribute('data-sport'), activeSport));
+
+          // hide original sections
+          if (heroSection) heroSection.style.display = 'none';
+          if (otherSection) otherSection.style.display = 'none';
+
+          // clear & render filtered grid
+          if (filteredGrid) {
+            filteredGrid.innerHTML = '';
+            matched.forEach(item => {
+              const node = buildCardFromItem(item);
+              filteredGrid.appendChild(node);
+            });
           }
-          
-          // Update filter message
-          if (filterMessage) {
-            if (activeSport === 'all') {
-              filterMessage.textContent = 'Temukan berita berdasarkan cabang olahraga favorit Anda';
-            } else {
-              const sportName = activeButton.querySelector('span').textContent;
-              filterMessage.textContent = `Menampilkan ${visibleCount} berita ${sportName.toLowerCase()}`;
-            }
+
+          if (filteredSection) filteredSection.style.display = matched.length ? '' : 'none';
+          if (filteredCountEl) filteredCountEl.textContent = matched.length;
+          if (totalArticlesElement) totalArticlesElement.textContent = matched.length;
+
+          if (noResultsState) {
+            noResultsState.style.display = matched.length ? 'none' : 'block';
+          }
+
+          if (filterMessage && activeButton) {
+            const sportName = activeButton.querySelector('span') ? activeButton.querySelector('span').textContent : activeSport;
+            filterMessage.textContent = `Menampilkan ${matched.length} berita ${sportName.toLowerCase()}`;
           }
         }
-        
+
         // Event listeners untuk filter buttons
         filterButtons.forEach(button => {
           button.addEventListener('click', function() {
@@ -1283,16 +1372,17 @@ block content
             updateUI();
           });
         });
-        
+
         // Reset filter button
         if (resetFilterBtn) {
           resetFilterBtn.addEventListener('click', function() {
             filterButtons.forEach(btn => btn.classList.remove('active'));
-            document.querySelector('.btn-news-filter[data-sport="all"]').classList.add('active');
+            const allBtn = document.querySelector('.btn-news-filter[data-sport="all"]');
+            if (allBtn) allBtn.classList.add('active');
             updateUI();
           });
         }
-        
+
         // Initialize
         updateUI();
       }
