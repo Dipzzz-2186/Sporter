@@ -10,17 +10,27 @@ function formatDate(date) {
   });
 }
 
+function applyComputedStatus(obj) {
+  if (!obj) return obj;
+  if (obj.computed_status) obj.status = obj.computed_status;
+  return obj;
+}
+
+
 // GET /events
 exports.listEvents = async (req, res) => {
   try {
     const events = await Event.getAllEvents();
 
-    const mapped = events.map((e) => ({
-      ...e,
-      start_date_formatted: formatDate(e.start_date),
-      end_date_formatted: formatDate(e.end_date),
-    }));
+    const mapped = events.map((e) => {
+      applyComputedStatus(e);
 
+      return {
+        ...e,
+        start_date_formatted: formatDate(e.start_date),
+        end_date_formatted: formatDate(e.end_date),
+      };
+    }); 
     res.render("events/index", {
       title: "Daftar Event Olahraga - Sporter",
       events: mapped,
@@ -43,6 +53,8 @@ exports.viewEvent = async (req, res) => {
         event: null,
       });
     }
+
+    applyComputedStatus(event);
 
     event.start_date_formatted = formatDate(event.start_date);
     event.end_date_formatted = formatDate(event.end_date);
