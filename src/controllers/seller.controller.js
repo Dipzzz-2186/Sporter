@@ -54,16 +54,27 @@ exports.dashboard = async (req, res) => {
         };
 
         // ===== RECENT MERCHANDISE =====
-        const [merchandises] = await db.query(
-            `
-      SELECT id, name, price, stock, status
-      FROM merchandises
-      WHERE seller_id = ?
-      ORDER BY created_at DESC
-      LIMIT 5
-      `,
-            [sellerId]
-        );
+        const [merchandises] = await db.query(`
+        SELECT 
+            m.id,
+            m.name,
+            m.price,
+            m.stock,
+            m.status,
+            s.name AS sport_name,
+            (
+            SELECT mi.image_url
+            FROM merchandise_images mi
+            WHERE mi.merchandise_id = m.id
+            ORDER BY mi.id ASC
+            LIMIT 1
+            ) AS image_url
+        FROM merchandises m
+        LEFT JOIN sports s ON s.id = m.sport_id
+        WHERE m.seller_id = ?
+        ORDER BY m.created_at DESC
+        LIMIT 5
+        `, [sellerId]);
 
         // ===== RECENT ORDERS =====
         const [orders] = await db.query(
@@ -103,12 +114,21 @@ exports.listMerchandise = async (req, res) => {
 
         const [rows] = await db.query(
             `
-      SELECT m.*, s.name AS sport_name
-      FROM merchandises m
-      LEFT JOIN sports s ON s.id = m.sport_id
-      WHERE m.seller_id = ?
-      ORDER BY m.created_at DESC
-      `,
+            SELECT
+            m.*,
+            s.name AS sport_name,
+            (
+                SELECT mi.image_url
+                FROM merchandise_images mi
+                WHERE mi.merchandise_id = m.id
+                ORDER BY mi.id ASC
+                LIMIT 1
+            ) AS image_url
+            FROM merchandises m
+            LEFT JOIN sports s ON s.id = m.sport_id
+            WHERE m.seller_id = ?
+            ORDER BY m.created_at DESC
+            `,
             [sellerId]
         );
 
