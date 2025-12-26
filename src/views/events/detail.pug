@@ -586,11 +586,7 @@ block content
                   i.bi.bi-share
                   span Bagikan Event
 
-                a.quick-action-btn(href="#")
-                  i.bi.bi-download
-                  span Unduh Jadwal
-
-                a.quick-action-btn(href="#")
+                a.quick-action-btn(href=`/events/${event.slug || event.id}/add-to-google` target="_blank")  
                   i.bi.bi-calendar-plus
                   span Tambah ke Kalender
 
