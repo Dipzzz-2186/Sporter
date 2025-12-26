@@ -1,6 +1,7 @@
 // src/controllers/admin.controller.js
 const db = require("../config/db");
 const bcrypt = require("bcryptjs"); // lebih stabil di Windows/dev
+const { getYouTubeThumbnail } = require('../utils/media.util');
 const SALT_ROUNDS = 12;
 
 /**
@@ -110,12 +111,18 @@ exports.renderDashboard = async (req, res) => {
 
     // Recent Videos
     const [recentVideos] = await db.query(`
-      SELECT id, title, thumbnail_url
+      SELECT id, title, thumbnail_url, url
       FROM videos
       WHERE type <> 'livestream'
       ORDER BY created_at DESC
       LIMIT 6
     `);
+
+    // Process recentVideos - only generate thumbnails if missing (optimized)
+    const processedVideos = recentVideos.map(v => ({
+      ...v,
+      thumbnail_url: v.thumbnail_url || getYouTubeThumbnail(v.url) || '/images/no-video-thumbnail.jpg'
+    }));
 
     // Upcoming Livestream
     const [liveLivestreams] = await db.query(`
@@ -153,7 +160,7 @@ exports.renderDashboard = async (req, res) => {
       stats,
       recentEvents,
       recentNews,
-      recentVideos,
+      recentVideos: processedVideos,
       upcomingLivestreams: liveLivestreams,
       upcomingMatches,
       standings,

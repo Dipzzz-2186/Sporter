@@ -1150,7 +1150,7 @@ block content
           .video-scroll
             each v in recentVideos
               a.video-card(href=`/videos/${v.id}`)
-                img(src=v.thumbnail_url)
+                img(loading="lazy" src=v.thumbnail_url alt=v.title data-src=v.thumbnail_url)
                 .video-card-content
                   span= v.title
         else
@@ -1238,4 +1238,21 @@ block content
           }, 300);
         }, 5000);
       });
+
+      // Optimasi lazy loading untuk video thumbnail
+      const videoImages = document.querySelectorAll('.video-card img[loading="lazy"]');
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              img.src = img.dataset.src;
+              img.removeAttribute('loading');
+              observer.unobserve(img);
+            }
+          });
+        }, { rootMargin: '50px' });
+        
+        videoImages.forEach(img => imageObserver.observe(img));
+      }
     })();
