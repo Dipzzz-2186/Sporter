@@ -80,11 +80,14 @@ exports.listLivestreams = async (req, res) => {
     const { checkYouTubeLive } = require('../utils/youtube.util');
 
     const [rows] = await db.query(`
-    SELECT *
-    FROM videos
-    WHERE type = 'livestream'
-    AND is_live = 1
-    ORDER BY created_at DESC
+    SELECT 
+    v.*,
+    s.name AS sport_name
+    FROM videos v
+    LEFT JOIN sports s ON s.id = v.sport_id
+    WHERE v.type = 'livestream'
+    AND v.is_live = 1
+    ORDER BY v.created_at DESC
     `);
 
     const livestreams = [];
@@ -108,6 +111,7 @@ exports.listLivestreams = async (req, res) => {
             // ✅ LIVE → tampilkan
             livestreams.push({
                 ...r,
+                sport_name: r.sport_name,
                 is_live: 1,
                 views: yt.views,
                 likes: yt.likes,

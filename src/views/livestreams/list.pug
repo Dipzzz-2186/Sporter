@@ -1194,9 +1194,8 @@ block content
                 .stream-card-content
                   .stream-card-header
                     span.stream-sport-badge
-                      i.bi.bi-trophy-fill
-                      = item.sport_name || 'Olahraga'
-                    h4.stream-card-title= item.title
+                      i.bi
+                      span.stream-sport-text= item.sport_name || 'Olahraga'
                   
                   .stream-card-meta
                     .stream-meta-item
@@ -1278,15 +1277,16 @@ block content
       
       // Apply icons to existing badges
       document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.stream-sport-badge i').forEach(function(icon) {
-          const badge = icon.closest('.stream-sport-badge');
-          if (badge) {
-            const sportName = badge.textContent.trim();
-            const iconClass = getSportIcon(sportName);
-            if (iconClass) {
-              icon.className = 'bi ' + iconClass;
-            }
-          }
+        document.querySelectorAll('.stream-sport-badge').forEach(badge => {
+          const textEl = badge.querySelector('.stream-sport-text');
+          const iconEl = badge.querySelector('i');
+
+          if (!textEl || !iconEl) return;
+
+          const sportName = textEl.textContent.trim();
+          const iconClass = getSportIcon(sportName);
+
+          iconEl.className = 'bi ' + iconClass;
         });
         
         // Intersection Observer for animations
