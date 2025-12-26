@@ -28,10 +28,127 @@ block content
       50% { transform: translateY(-10px); }
     }
     
+    /* ===== NEWS FILTER SECTION (DIPINDAHKAN KE ATAS HERO) ===== */
+    .news-filter-section {
+      background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
+      padding: 3rem 0;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .news-filter-container {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 149, 255, 0.1);
+    }
+    
+    .news-filter-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+    }
+    
+    .news-filter-header {
+      margin-bottom: 1.75rem;
+      text-align: center;
+    }
+    
+    .news-filter-header h4 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.4rem;
+      color: #0B1F3F;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+      line-height: 1;
+    }
+    
+    .news-filter-header p {
+      color: #5a6c7d;
+      font-size: 1.1rem;
+      margin: 0;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .news-filter-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+    
+    .btn-news-filter {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      font-weight: 700;
+      color: #4a5568;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      font-size: 1rem;
+      letter-spacing: 0.3px;
+    }
+    
+    .btn-news-filter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 1;
+    }
+    
+    .btn-news-filter span,
+    .btn-news-filter i {
+      position: relative;
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-news-filter:hover,
+    .btn-news-filter.active {
+      border-color: transparent;
+      color: white;
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 149, 255, 0.3);
+    }
+    
+    .btn-news-filter.active::before,
+    .btn-news-filter:hover::before {
+      opacity: 1;
+    }
+    
+    .btn-news-filter:hover i {
+      transform: scale(1.2) rotate(5deg);
+    }
+    
+    .btn-news-filter.active i {
+      transform: scale(1.1);
+    }
+    
     /* News Hero Section - Layout diperbaiki */
     .news-hero-section {
       background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-      padding: 3.5rem 0 2.5rem;
+      padding: 3.5rem 0 4rem;
       position: relative;
       overflow: hidden;
     }
@@ -83,7 +200,7 @@ block content
     }
     
     .news-main-image-wrapper {
-      height: 350px;
+      height: 380px;
       overflow: hidden;
       position: relative;
     }
@@ -110,7 +227,7 @@ block content
     }
     
     .news-main-content {
-      padding: 2rem;
+      padding: 2.5rem;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -122,48 +239,50 @@ block content
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 1rem;
     }
     
     .news-main-sport-badge {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       color: white !important;
-      padding: 0.5rem 1.25rem;
+      padding: 0.75rem 1.5rem;
       border-radius: 50px;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       letter-spacing: 0.5px;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
       border: none;
+      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.3);
     }
     
     .news-main-date {
       color: rgba(255, 255, 255, 0.7);
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      font-weight: 500;
     }
     
     .news-main-title {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.4rem;
+      font-size: 2.8rem;
       color: white;
-      line-height: 1.2;
+      line-height: 1.1;
       letter-spacing: 0.5px;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
       flex: 1;
     }
     
     .news-main-excerpt {
       color: rgba(255, 255, 255, 0.85);
-      font-size: 1.05rem;
-      line-height: 1.7;
-      margin-bottom: 1.5rem;
+      font-size: 1.15rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -172,53 +291,48 @@ block content
     
     .news-main-readmore {
       color: white;
-      font-weight: 600;
-      font-size: 0.95rem;
+      font-weight: 700;
+      font-size: 1rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
       transition: all 0.3s ease;
       align-self: flex-start;
       position: relative;
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    .news-main-readmore::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: white;
-      transition: width 0.3s ease;
-    }
-    
-    .news-main-card:hover .news-main-readmore::after {
-      width: 100%;
+    .news-main-readmore:hover {
+      background: rgba(255, 255, 255, 0.2);
+      gap: 1rem;
+      transform: translateX(5px);
     }
     
     /* Right Side Layout */
     .news-side-section {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 2rem;
       height: 100%;
     }
     
     /* Side Top Card - Layout lebih compact */
     .news-side-top-card {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      border-radius: 20px;
+      border-radius: 22px;
       overflow: hidden;
       position: relative;
-      height: 280px;
+      height: 320px;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 10px 30px rgba(0, 149, 255, 0.25);
+      box-shadow: 0 15px 40px rgba(0, 149, 255, 0.3);
     }
     
     .news-side-top-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 15px 40px rgba(0, 149, 255, 0.35);
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 20px 50px rgba(0, 149, 255, 0.4);
     }
     
     .news-side-top-image {
@@ -239,35 +353,37 @@ block content
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 2rem;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+      padding: 2.5rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 1rem;
     }
     
     .news-side-top-badge {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       color: #0095FF !important;
-      padding: 0.4rem 1rem;
+      padding: 0.6rem 1.25rem;
       border-radius: 50px;
-      font-weight: 700;
-      font-size: 0.8rem;
+      font-weight: 800;
+      font-size: 0.85rem;
       align-self: flex-start;
       border: none;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
     
     .news-side-top-title {
       color: white;
-      font-weight: 700;
-      font-size: 1.4rem;
-      line-height: 1.3;
+      font-weight: 800;
+      font-size: 1.6rem;
+      line-height: 1.2;
       margin: 0;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
     
     .news-side-top-excerpt {
-      color: rgba(255, 255, 255, 0.85);
-      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
       line-height: 1.6;
       margin: 0;
       display: -webkit-box;
@@ -280,23 +396,23 @@ block content
     .news-side-mini-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
+      gap: 1.25rem;
       flex: 1;
     }
     
     .news-side-mini-card {
       background: linear-gradient(135deg, #152844 0%, #1e3658 100%);
-      border-radius: 16px;
+      border-radius: 18px;
       overflow: hidden;
       position: relative;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-      height: 180px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      height: 200px;
     }
     
     .news-side-mini-card:hover {
-      transform: translateY(-5px) scale(1.03);
-      box-shadow: 0 10px 25px rgba(0, 149, 255, 0.25);
+      transform: translateY(-8px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(0, 149, 255, 0.3);
     }
     
     .news-side-mini-image {
@@ -317,162 +433,63 @@ block content
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 1.25rem;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+      padding: 1.5rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
     
     .news-side-mini-badge {
-      background: rgba(0, 149, 255, 0.2);
+      background: rgba(0, 149, 255, 0.25);
       color: white !important;
-      padding: 0.25rem 0.75rem;
+      padding: 0.4rem 1rem;
       border-radius: 50px;
-      font-size: 0.75rem;
-      font-weight: 600;
+      font-size: 0.8rem;
+      font-weight: 700;
       align-self: flex-start;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(10px);
     }
     
     .news-side-mini-title {
       color: white;
-      font-weight: 600;
-      font-size: 0.95rem;
+      font-weight: 700;
+      font-size: 1.1rem;
       line-height: 1.3;
       margin: 0;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
-    }
-    
-    /* ===== NEW: NEWS FILTER SECTION ===== */
-    .news-filter-section {
-      background: white;
-      padding: 2rem 0;
-      margin-bottom: 2rem;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .news-filter-container {
-      background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
-      border-radius: 20px;
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .news-filter-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
-    }
-    
-    .news-filter-header {
-      margin-bottom: 1.5rem;
-    }
-    
-    .news-filter-header h4 {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 2rem;
-      color: #0B1F3F;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.5rem;
-    }
-    
-    .news-filter-header p {
-      color: #5a6c7d;
-      font-size: 1rem;
-      margin: 0;
-    }
-    
-    .news-filter-buttons-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 0.75rem;
-    }
-    
-    .btn-news-filter {
-      background: white;
-      border: 2px solid #d0d0d0;
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-      font-weight: 600;
-      color: #5a6c7d;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    
-    .btn-news-filter::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 1;
-    }
-    
-    .btn-news-filter span,
-    .btn-news-filter i {
-      position: relative;
-      z-index: 2;
-    }
-    
-    .btn-news-filter:hover,
-    .btn-news-filter.active {
-      border-color: transparent;
-      color: white;
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.25);
-    }
-    
-    .btn-news-filter.active::before,
-    .btn-news-filter:hover::before {
-      opacity: 1;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     }
     
     /* Other News Section - Layout lebih baik */
     .news-other-section {
-      padding: 3.5rem 0 5rem;
-      background: white;
+      padding: 4rem 0 6rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
       position: relative;
     }
     
     .section-header {
-      margin-bottom: 2.5rem;
+      margin-bottom: 3rem;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid #e8edf2;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid #e2e8f0;
     }
     
     .section-title-main {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.5rem;
     }
     
     .section-title-main h2 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.8rem;
+      font-size: 3.2rem;
       color: #0B1F3F;
       letter-spacing: 0.5px;
       margin: 0;
@@ -481,27 +498,29 @@ block content
     
     .section-subtitle {
       color: #5a6c7d;
-      font-size: 1.05rem;
+      font-size: 1.15rem;
       margin: 0;
+      font-weight: 500;
     }
     
     .section-badge {
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       color: white !important;
-      padding: 0.75rem 1.5rem;
+      padding: 1rem 2rem;
       border-radius: 50px;
-      font-weight: 700;
-      font-size: 0.9rem;
+      font-weight: 800;
+      font-size: 1rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
       border: none;
+      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.25);
     }
     
-    /* News Card Grid - Layout baru */
+    /* News Card Grid - Layout DIPERBAIKI */
     .sporter-news-card {
-      border-radius: 20px;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 22px;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       border: 2px solid #e8edf2;
       overflow: hidden;
       position: relative;
@@ -509,6 +528,7 @@ block content
       height: 100%;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     }
     
     .sporter-news-card::before {
@@ -529,13 +549,13 @@ block content
     }
     
     .sporter-news-card:hover {
-      transform: translateY(-10px) scale(1.02);
-      box-shadow: 0 20px 50px rgba(0, 149, 255, 0.15);
+      transform: translateY(-15px) scale(1.03);
+      box-shadow: 0 25px 60px rgba(0, 149, 255, 0.2);
       border-color: transparent;
     }
     
     .news-card-image-wrapper {
-      height: 200px;
+      height: 240px;
       overflow: hidden;
       position: relative;
     }
@@ -546,8 +566,8 @@ block content
       bottom: 0;
       left: 0;
       right: 0;
-      height: 40%;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.2), transparent);
+      height: 50%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent);
     }
     
     .sporter-news-card img {
@@ -558,11 +578,11 @@ block content
     }
     
     .sporter-news-card:hover img {
-      transform: scale(1.1);
+      transform: scale(1.12);
     }
     
     .sporter-news-card .card-body {
-      padding: 1.75rem;
+      padding: 2rem;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -572,94 +592,92 @@ block content
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
     
     .news-card-sport {
-      background: rgba(0, 149, 255, 0.1);
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.15) 0%, rgba(52, 199, 255, 0.1) 100%);
       color: #0080e0 !important;
-      padding: 0.4rem 1rem;
+      padding: 0.6rem 1.25rem;
       border-radius: 50px;
-      font-weight: 700;
-      font-size: 0.8rem;
-      border: 1.5px solid rgba(0, 149, 255, 0.2);
+      font-weight: 800;
+      font-size: 0.85rem;
+      border: 2px solid rgba(0, 149, 255, 0.2);
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.6rem;
+      letter-spacing: 0.3px;
+      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.1);
     }
     
     .news-card-date {
-      color: #5a6c7d;
-      font-size: 0.85rem;
+      color: #718096;
+      font-size: 0.9rem;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.5rem;
+      font-weight: 600;
     }
     
     .sporter-news-card h6 {
       color: #0B1F3F;
-      font-weight: 700;
-      font-size: 1.2rem;
-      line-height: 1.4;
-      margin-bottom: 1rem;
+      font-weight: 800;
+      font-size: 1.4rem;
+      line-height: 1.3;
+      margin-bottom: 1.25rem;
       flex: 1;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      letter-spacing: -0.2px;
     }
     
     .sporter-news-card p {
       color: #5a6c7d;
-      font-size: 0.92rem;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 1.75rem;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      opacity: 0.9;
     }
     
     .news-card-readmore {
       color: #0095FF;
-      font-weight: 600;
-      font-size: 0.9rem;
+      font-weight: 700;
+      font-size: 0.95rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      transition: all 0.3s ease;
+      gap: 0.75rem;
+      transition: all 0.4s ease;
       align-self: flex-start;
       position: relative;
       margin-top: auto;
+      padding: 0.75rem 1.5rem;
+      background: rgba(0, 149, 255, 0.08);
+      border-radius: 12px;
+      border: 2px solid rgba(0, 149, 255, 0.15);
     }
     
-    .news-card-readmore::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: #0095FF;
-      transition: width 0.3s ease;
-    }
-    
-    .sporter-news-card:hover .news-card-readmore {
-      gap: 0.75rem;
-    }
-    
-    .sporter-news-card:hover .news-card-readmore::after {
-      width: 100%;
+    .news-card-readmore:hover {
+      background: rgba(0, 149, 255, 0.15);
+      color: #0077cc;
+      gap: 1rem;
+      transform: translateX(5px);
+      border-color: rgba(0, 149, 255, 0.3);
     }
     
     /* Empty State - Layout lebih baik */
     .empty-state {
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
       border: 2px dashed #d0d0d0;
-      border-radius: 20px;
-      padding: 4rem 2rem;
+      border-radius: 24px;
+      padding: 5rem 3rem;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -684,37 +702,37 @@ block content
     }
     
     .empty-state-icon {
-      width: 120px;
-      height: 120px;
+      width: 140px;
+      height: 140px;
       background: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.75rem;
+      margin: 0 auto 2rem;
       position: relative;
       z-index: 2;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
     }
     
     .empty-state-icon i {
-      font-size: 3.5rem;
+      font-size: 4rem;
       color: #adb5bd;
     }
     
     .empty-state h3 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       color: #0B1F3F;
       letter-spacing: 0.5px;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
       position: relative;
       z-index: 2;
     }
     
     .empty-state p {
       color: #5a6c7d;
-      font-size: 1.05rem;
+      font-size: 1.15rem;
       line-height: 1.6;
       position: relative;
       z-index: 2;
@@ -752,14 +770,71 @@ block content
       opacity: 0;
     }
     
+    /* No Results State */
+    .no-results-state {
+      text-align: center;
+      padding: 5rem 3rem;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 24px;
+      margin: 3rem auto;
+      max-width: 800px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    }
+    
+    .no-results-icon {
+      font-size: 5rem;
+      color: #adb5bd;
+      margin-bottom: 2rem;
+      opacity: 0.7;
+    }
+    
+    .no-results-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.8rem;
+      color: #0B1F3F;
+      margin-bottom: 1.5rem;
+    }
+    
+    .no-results-text {
+      color: #5a6c7d;
+      font-size: 1.2rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+    
+    .btn-reset-filter {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      color: white;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 10px 25px rgba(0, 149, 255, 0.3);
+    }
+    
+    .btn-reset-filter:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(0, 149, 255, 0.4);
+      gap: 1rem;
+    }
+    
     /* Responsive */
     @media (max-width: 1199px) {
       .news-main-title {
-        font-size: 2rem;
+        font-size: 2.4rem;
       }
       
       .news-side-top-title {
-        font-size: 1.2rem;
+        font-size: 1.4rem;
+      }
+      
+      .section-title-main h2 {
+        font-size: 2.8rem;
       }
     }
     
@@ -769,19 +844,19 @@ block content
       }
       
       .news-main-image-wrapper {
-        height: 300px;
+        height: 320px;
       }
       
       .news-main-title {
-        font-size: 1.8rem;
+        font-size: 2rem;
       }
       
       .news-main-content {
-        padding: 1.75rem;
+        padding: 2rem;
       }
       
       .news-side-top-card {
-        height: 250px;
+        height: 280px;
       }
       
       .news-side-mini-grid {
@@ -789,11 +864,11 @@ block content
       }
       
       .news-side-mini-card {
-        height: 160px;
+        height: 180px;
       }
       
       .section-title-main h2 {
-        font-size: 2.2rem;
+        font-size: 2.4rem;
       }
       
       .news-filter-buttons-grid {
@@ -801,7 +876,11 @@ block content
       }
       
       .news-card-image-wrapper {
-        height: 180px;
+        height: 200px;
+      }
+      
+      .sporter-news-card h6 {
+        font-size: 1.2rem;
       }
     }
     
@@ -811,11 +890,11 @@ block content
       }
       
       .news-main-image-wrapper {
-        height: 250px;
+        height: 280px;
       }
       
       .news-main-title {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
       }
       
       .news-main-excerpt {
@@ -823,19 +902,19 @@ block content
       }
       
       .news-main-content {
-        padding: 1.5rem;
+        padding: 1.75rem;
       }
       
       .news-side-top-card {
-        height: 220px;
+        height: 240px;
       }
       
       .news-side-top-overlay {
-        padding: 1.5rem;
+        padding: 2rem;
       }
       
       .news-side-mini-card {
-        height: 140px;
+        height: 160px;
       }
       
       .news-filter-buttons-grid {
@@ -845,19 +924,19 @@ block content
       .section-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 1rem;
+        gap: 1.5rem;
       }
       
       .section-title-main h2 {
-        font-size: 1.9rem;
+        font-size: 2.2rem;
       }
       
       .news-card-image-wrapper {
-        height: 160px;
+        height: 180px;
       }
       
       .sporter-news-card .card-body {
-        padding: 1.5rem;
+        padding: 1.75rem;
       }
       
       .sporter-news-card h6 {
@@ -869,13 +948,13 @@ block content
       .news-main-meta {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.5rem;
+        gap: 0.75rem;
       }
       
       .news-card-meta {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.5rem;
+        gap: 0.75rem;
       }
       
       .news-side-mini-grid {
@@ -886,8 +965,16 @@ block content
         grid-template-columns: 1fr;
       }
       
-      .news-stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .news-filter-container {
+        padding: 1.5rem;
+      }
+      
+      .news-filter-header h4 {
+        font-size: 2rem;
+      }
+      
+      .btn-news-filter {
+        padding: 1rem;
       }
     }
     
@@ -901,12 +988,46 @@ block content
     .sporter-news-card:nth-child(7) { animation-delay: 0.7s; }
     .sporter-news-card:nth-child(8) { animation-delay: 0.8s; }
 
+  // ===== NEWS FILTER SECTION (DIPINDAHKAN KE ATAS HERO) =====
+  .news-filter-section
+    .container
+      .news-filter-container
+        .news-filter-header
+          h4 Filter Berita
+          p#filter-message Temukan berita berdasarkan cabang olahraga favorit Anda
+        
+        .news-filter-buttons-grid
+          button.btn-news-filter.active(type="button" data-sport="all")
+            i.bi.bi-grid-fill
+            span Semua Berita
+          button.btn-news-filter(type="button" data-sport="golf")
+            i.bi.bi-flag-fill
+            span Golf
+          button.btn-news-filter(type="button" data-sport="run")
+            i.bi.bi-person-running
+            span Run
+          button.btn-news-filter(type="button" data-sport="tenis")
+            i.bi.bi-circle-half
+            span Tenis
+          button.btn-news-filter(type="button" data-sport="padel")
+            i.bi.bi-brightness-high-fill
+            span Padel
+          button.btn-news-filter(type="button" data-sport="badminton")
+            i.bi.bi-shuttle
+            span Badminton
+          button.btn-news-filter(type="button" data-sport="renang")
+            i.bi.bi-water
+            span Renang
+          button.btn-news-filter(type="button" data-sport="triathlon")
+            i.bi.bi-bicycle
+            span Triathlon
+
   // ===== HERO NEWS LAYOUT =====
   .news-hero-section
     .container
-      .row.g-4.g-lg-5
+      .row.g-5.g-lg-6
         // ===== LEFT: MAIN ARTICLE =====
-        .col-lg-7
+        .col-lg-7.news-item(data-sport=mainArticle ? mainArticle.sport_name.toLowerCase().replace(/ /g, '-') : '')
           if mainArticle
             a.text-decoration-none(href=`/news/${mainArticle.slug}`)
               .news-main-card
@@ -946,72 +1067,40 @@ block content
         .col-lg-5
           .news-side-section
             if sideTopArticle
-              a.text-decoration-none(href=`/news/${sideTopArticle.slug}`)
-                .news-side-top-card
-                  if sideTopArticle.thumbnail_url
-                    img.news-side-top-image(
-                      src=sideTopArticle.thumbnail_url,
-                      alt=sideTopArticle.title
-                      loading="lazy"
-                    )
-                  .news-side-top-overlay
-                    if sideTopArticle.sport_name
-                      span.badge.news-side-top-badge
-                        = sideTopArticle.sport_name
-                    h5.news-side-top-title= sideTopArticle.title
-                    if sideTopArticle.excerpt
-                      p.news-side-top-excerpt= sideTopArticle.excerpt.substring(0, 100) + '...'
+              .news-item(data-sport=sideTopArticle.sport_name.toLowerCase().replace(/ /g, '-'))
+                a.text-decoration-none(href=`/news/${sideTopArticle.slug}`)
+                  .news-side-top-card
+                    if sideTopArticle.thumbnail_url
+                      img.news-side-top-image(
+                        src=sideTopArticle.thumbnail_url,
+                        alt=sideTopArticle.title
+                        loading="lazy"
+                      )
+                    .news-side-top-overlay
+                      if sideTopArticle.sport_name
+                        span.badge.news-side-top-badge
+                          = sideTopArticle.sport_name
+                      h5.news-side-top-title= sideTopArticle.title
+                      if sideTopArticle.excerpt
+                        p.news-side-top-excerpt= sideTopArticle.excerpt.substring(0, 100) + '...'
 
             if sideMiniArticles && sideMiniArticles.length
               .news-side-mini-grid
                 each item, index in sideMiniArticles
-                  a.text-decoration-none(href=`/news/${item.slug}`)
-                    .news-side-mini-card
-                      if item.thumbnail_url
-                        img.news-side-mini-image(
-                          src=item.thumbnail_url, 
-                          alt=item.title
-                          loading="lazy"
-                        )
-                      .news-side-mini-overlay
-                        if item.sport_name
-                          span.badge.news-side-mini-badge
-                            = item.sport_name
-                        p.news-side-mini-title= item.title
-
-  // ===== NEWS FILTER SECTION =====
-  .news-filter-section
-    .container
-      .news-filter-container
-        .news-filter-header
-          h4 Filter Berita
-          p Temukan berita berdasarkan cabang olahraga favorit Anda
-        
-        .news-filter-buttons-grid
-          button.btn-news-filter.active(type="button" data-filter="all")
-            i.bi.bi-grid-fill
-            span Semua Berita
-          button.btn-news-filter(type="button" data-sport="golf")
-            i.bi.bi-flag-fill
-            span Golf
-          button.btn-news-filter(type="button" data-sport="run")
-            i.bi.bi-person-running
-            span Run
-          button.btn-news-filter(type="button" data-sport="tenis")
-            i.bi.bi-circle-half
-            span Tenis
-          button.btn-news-filter(type="button" data-sport="padel")
-            i.bi.bi-brightness-high-fill
-            span Padel
-          button.btn-news-filter(type="button" data-sport="badminton")
-            i.bi.bi-shuttle
-            span Badminton
-          button.btn-news-filter(type="button" data-sport="renang")
-            i.bi.bi-water
-            span Renang
-          button.btn-news-filter(type="button" data-sport="triathlon")
-            i.bi.bi-bicycle
-            span Triathlon
+                  .news-item(data-sport=item.sport_name ? item.sport_name.toLowerCase().replace(/ /g, '-') : '')
+                    a.text-decoration-none(href=`/news/${item.slug}`)
+                      .news-side-mini-card
+                        if item.thumbnail_url
+                          img.news-side-mini-image(
+                            src=item.thumbnail_url, 
+                            alt=item.title
+                            loading="lazy"
+                          )
+                        .news-side-mini-overlay
+                          if item.sport_name
+                            span.badge.news-side-mini-badge
+                              = item.sport_name
+                          p.news-side-mini-title= item.title
 
   // ===== OTHER NEWS GRID =====
   - const allArticles = otherArticles || []
@@ -1021,48 +1110,60 @@ block content
         .section-title-main
           h2 Berita Lainnya
           p.section-subtitle Kumpulan artikel terbaru dari berbagai cabang olahraga
-        if allArticles && allArticles.length
-          span.section-badge
-            i.bi.bi-newspaper.me-1
-            | #{allArticles.length} Berita
+        span.section-badge
+          i.bi.bi-newspaper.me-1
+          | 
+          span#total-articles #{allArticles.length + (mainArticle ? 1 : 0) + (sideTopArticle ? 1 : 0) + (sideMiniArticles ? sideMiniArticles.length : 0)}
+          |  Berita
       
-      if allArticles && allArticles.length
-        .row.g-4#news-grid
-          each item in allArticles
-            .col-md-6.col-lg-3.news-item(data-sport=item.sport_name ? item.sport_name.toLowerCase().replace(/ /g, '-') : '')
-              a.text-decoration-none(href=`/news/${item.slug}`)
-                .sporter-news-card
-                  .news-card-image-wrapper
-                    if item.thumbnail_url
-                      img(
-                        src=item.thumbnail_url, 
-                        alt=item.title
-                        loading="lazy"
-                      )
-                  .card-body
-                    .news-card-meta
-                      if item.sport_name
-                        span.news-card-sport
-                          i.bi.bi-trophy-fill.me-1
-                          = item.sport_name
-                      if item.published_at_formatted
-                        span.news-card-date
-                          i.bi.bi-clock.me-1
-                          = item.published_at_formatted
-                    h6= item.title
-                    if item.excerpt
-                      p= item.excerpt.substring(0, 100) + '...'
-                    else if item.content
-                      p= item.content.substring(0, 100) + '...'
-                    span.news-card-readmore
-                      | Baca Selengkapnya
-                      i.bi.bi-arrow-right
-      else
-        .empty-state
-          .empty-state-icon
-            i.bi.bi-inbox
-          h3 Belum Ada Berita Lainnya
-          p Artikel berita akan ditambahkan secara berkala.
+      #news-results
+        if allArticles && allArticles.length
+          .row.g-4.g-md-5#news-grid
+            each item in allArticles
+              .col-md-6.col-lg-3.news-item(data-sport=item.sport_name ? item.sport_name.toLowerCase().replace(/ /g, '-') : '')
+                a.text-decoration-none(href=`/news/${item.slug}`)
+                  .sporter-news-card
+                    .news-card-image-wrapper
+                      if item.thumbnail_url
+                        img(
+                          src=item.thumbnail_url, 
+                          alt=item.title
+                          loading="lazy"
+                        )
+                    .card-body
+                      .news-card-meta
+                        if item.sport_name
+                          span.news-card-sport
+                            i.bi.bi-trophy-fill.me-1
+                            = item.sport_name
+                        if item.published_at_formatted
+                          span.news-card-date
+                            i.bi.bi-clock.me-1
+                            = item.published_at_formatted
+                      h6= item.title
+                      if item.excerpt
+                        p= item.excerpt.substring(0, 120) + '...'
+                      else if item.content
+                        p= item.content.substring(0, 120) + '...'
+                      span.news-card-readmore
+                        | Baca Selengkapnya
+                        i.bi.bi-arrow-right
+        else if !mainArticle && !sideTopArticle && (!sideMiniArticles || !sideMiniArticles.length)
+          .empty-state
+            .empty-state-icon
+              i.bi.bi-inbox
+            h3 Belum Ada Berita
+            p Artikel berita akan ditambahkan secara berkala.
+
+  // No Results State (hidden by default)
+  #no-results-state.no-results-state(style="display: none;")
+    .no-results-icon
+      i.bi.bi-search
+    h2.no-results-title Tidak Ditemukan
+    p.no-results-text Tidak ada berita yang sesuai dengan filter yang dipilih.
+    button.btn.btn-reset-filter#reset-filter
+      i.bi.bi-arrow-clockwise.me-2
+      | Tampilkan Semua Berita
 
   //- Custom JavaScript
   script.
@@ -1083,6 +1184,119 @@ block content
         return icons[sportName] || 'bi-trophy-fill';
       }
       
+      // Helper untuk menentukan apakah artikel sesuai dengan filter
+      function articleMatchesFilter(articleSport, filterSport) {
+        if (!articleSport) return false;
+        
+        const sportMap = {
+          'golf': ['golf'],
+          'run': ['run', 'lari', 'marathon', 'sprint'],
+          'tenis': ['tenis', 'tennis'],
+          'padel': ['padel', 'padle'],
+          'badminton': ['badminton', 'bulu-tangkis'],
+          'renang': ['renang', 'swimming'],
+          'triathlon': ['triathlon', 'triatlon']
+        };
+        
+        if (filterSport === 'all') return true;
+        
+        const articleSportLower = articleSport.toLowerCase();
+        const mappedSports = sportMap[filterSport];
+        
+        if (!mappedSports) return articleSportLower.includes(filterSport);
+        
+        return mappedSports.some(sport => articleSportLower.includes(sport));
+      }
+      
+      // News filtering system - UPDATED untuk semua artikel
+      function initializeNewsFilter() {
+        const filterButtons = document.querySelectorAll('.btn-news-filter');
+        const allNewsItems = document.querySelectorAll('.news-item');
+        const noResultsState = document.getElementById('no-results-state');
+        const filterMessage = document.getElementById('filter-message');
+        const totalArticlesElement = document.getElementById('total-articles');
+        const resetFilterBtn = document.getElementById('reset-filter');
+        
+        function updateUI() {
+          const activeButton = document.querySelector('.btn-news-filter.active');
+          const activeSport = activeButton ? activeButton.getAttribute('data-sport') : 'all';
+          
+          let visibleCount = 0;
+          
+          // Filter semua artikel (termasuk hero section)
+          allNewsItems.forEach(item => {
+            const itemSport = item.getAttribute('data-sport');
+            const shouldShow = articleMatchesFilter(itemSport, activeSport);
+            
+            if (shouldShow) {
+              item.style.display = '';
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0)';
+              visibleCount++;
+            } else {
+              item.style.opacity = '0';
+              item.style.transform = 'translateY(20px)';
+              setTimeout(() => {
+                item.style.display = 'none';
+              }, 300);
+            }
+          });
+          
+          // Tampilkan atau sembunyikan "No Results" state
+          const heroSection = document.querySelector('.news-hero-section');
+          const otherSection = document.querySelector('.news-other-section');
+          const filterSection = document.querySelector('.news-filter-section');
+          
+          if (visibleCount === 0) {
+            // Sembunyikan semua section kecuali filter
+            if (heroSection) heroSection.style.display = 'none';
+            if (otherSection) otherSection.style.display = 'none';
+            noResultsState.style.display = 'block';
+          } else {
+            // Tampilkan section yang relevan
+            if (heroSection) heroSection.style.display = '';
+            if (otherSection) otherSection.style.display = '';
+            noResultsState.style.display = 'none';
+          }
+          
+          // Update counter
+          if (totalArticlesElement) {
+            totalArticlesElement.textContent = visibleCount;
+          }
+          
+          // Update filter message
+          if (filterMessage) {
+            if (activeSport === 'all') {
+              filterMessage.textContent = 'Temukan berita berdasarkan cabang olahraga favorit Anda';
+            } else {
+              const sportName = activeButton.querySelector('span').textContent;
+              filterMessage.textContent = `Menampilkan ${visibleCount} berita ${sportName.toLowerCase()}`;
+            }
+          }
+        }
+        
+        // Event listeners untuk filter buttons
+        filterButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            updateUI();
+          });
+        });
+        
+        // Reset filter button
+        if (resetFilterBtn) {
+          resetFilterBtn.addEventListener('click', function() {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.btn-news-filter[data-sport="all"]').classList.add('active');
+            updateUI();
+          });
+        }
+        
+        // Initialize
+        updateUI();
+      }
+      
       // Apply sport icons to filter buttons
       function applyFilterIcons() {
         document.querySelectorAll('.btn-news-filter').forEach(function(button) {
@@ -1095,179 +1309,6 @@ block content
             }
           }
         });
-      }
-      
-      // News filtering system
-      function initializeNewsFilter() {
-        const filterButtons = document.querySelectorAll('.btn-news-filter');
-        const newsItems = document.querySelectorAll('.news-item');
-        const heroItems = [];
-        const mainCol = document.querySelector('.news-main-card') ? document.querySelector('.news-main-card').closest('.col-lg-7') : null;
-        const topCol  = document.querySelector('.news-side-top-card') ? document.querySelector('.news-side-top-card').closest('.col-lg-5') : null;
-
-        if (mainCol) heroItems.push(mainCol);
-        if (topCol) heroItems.push(topCol);
-
-        document.querySelectorAll('.news-side-mini-card').forEach(card => {
-          const col = card.closest('.col-lg-5');
-          if (col) heroItems.push(col);
-        });
-
-
-        
-        function updateStats(filteredCount) {
-          // Update total news count
-          const totalNewsElement = document.getElementById('total-news');
-          if (totalNewsElement) {
-            animateCounter(totalNewsElement, filteredCount);
-          }
-          
-          // Update featured count
-          const featuredElement = document.getElementById('featured-count');
-          if (featuredElement) {
-            const featuredCount = document.querySelector('.news-main-card') && 
-                                 !document.querySelector('.news-main-card').closest('.col-lg-7').style.display.includes('none') ? 1 : 0;
-            animateCounter(featuredElement, featuredCount);
-          }
-          
-          // Update sports count
-          const sportsElement = document.getElementById('sports-count');
-          if (sportsElement) {
-            const visibleSports = new Set();
-            newsItems.forEach(item => {
-              if (!item.style.display.includes('none')) {
-                const sport = item.getAttribute('data-sport');
-                if (sport) visibleSports.add(sport);
-              }
-            });
-            animateCounter(sportsElement, Math.max(visibleSports.size, 1));
-          }
-        }
-        
-        function animateCounter(element, targetValue) {
-          const currentValue = parseInt(element.textContent) || 0;
-          if (currentValue === targetValue) return;
-          
-          const duration = 500;
-          const steps = 20;
-          const increment = (targetValue - currentValue) / steps;
-          let currentStep = 0;
-          
-          const timer = setInterval(() => {
-            currentStep++;
-            const newValue = Math.floor(currentValue + (increment * currentStep));
-            element.textContent = newValue;
-            
-            if (currentStep >= steps) {
-              clearInterval(timer);
-              element.textContent = targetValue;
-            }
-          }, duration / steps);
-        }
-        
-        function applyFilter() {
-          const activeButton = document.querySelector('.btn-news-filter.active');
-          const filter = activeButton ? activeButton.getAttribute('data-filter') : 'all';
-          const sport = activeButton ? activeButton.getAttribute('data-sport') : null;
-          const heroSection = document.querySelector('.news-hero-section');
-          
-          
-          if (heroSection) {
-            heroSection.style.display = (sport && sport !== 'all') ? 'none' : '';
-          }
-          let visibleCount = 0;
-          
-          // Filter news items
-          newsItems.forEach(function(item) {
-            const itemSport = item.getAttribute('data-sport');
-            const parentCol = item; // karena .news-item itu udah kolomnya
-
-            
-            let shouldShow = true;
-            
-            if (sport && sport !== 'all') {
-              if (sport === 'golf') {
-                shouldShow = itemSport && (itemSport.includes('golf') || itemSport.includes('golf'));
-              } else if (sport === 'run') {
-                shouldShow = itemSport && (itemSport.includes('run') || itemSport.includes('lari') || 
-                          itemSport.includes('marathon') || itemSport.includes('sprint'));
-              } else if (sport === 'tenis') {
-                shouldShow = itemSport && (itemSport.includes('tenis') || itemSport.includes('tennis'));
-              } else if (sport === 'padel') {
-                shouldShow = itemSport && (itemSport.includes('padel') || itemSport.includes('padle'));
-              } else if (sport === 'badminton') {
-                shouldShow = itemSport && (itemSport.includes('badminton') || itemSport.includes('bulu-tangkis'));
-              } else if (sport === 'renang') {
-                shouldShow = itemSport && (itemSport.includes('renang') || itemSport.includes('swimming'));
-              } else if (sport === 'triathlon') {
-                shouldShow = itemSport && (itemSport.includes('triathlon') || itemSport.includes('triatlon'));
-              } else {
-                shouldShow = itemSport && itemSport === sport;
-              }
-            }
-            
-            if (shouldShow) {
-              parentCol.style.display = '';
-              item.style.opacity = '1';
-              item.style.transform = 'translateY(0)';
-              visibleCount++;
-            } else {
-              item.style.opacity = '0';
-              item.style.transform = 'translateY(20px)';
-              setTimeout(() => {
-                parentCol.style.display = 'none';
-              }, 300);
-            }
-          });
-          
-          // Filter hero items (optional - you can choose to always show them or filter them too)
-          heroItems.forEach(function(heroItem, index) {
-            if (sport && sport !== 'all') {
-              // For now, keep hero items visible for all sports
-              heroItem.style.display = '';
-              visibleCount++;
-            } else {
-              heroItem.style.display = '';
-            }
-          });
-          
-          // Update stats
-          setTimeout(() => updateStats(visibleCount), 350);
-          
-          // Update section badge
-          const sectionBadge = document.querySelector('.section-badge span');
-          if (sectionBadge) {
-            sectionBadge.textContent = `${visibleCount} Berita`;
-          }
-          
-          // Update filter button text
-          const activeFilterBtn = document.querySelector('.btn-news-filter.active');
-          if (activeFilterBtn) {
-            const sportName = activeFilterBtn.querySelector('span').textContent;
-            const filterHeader = document.querySelector('.news-filter-header p');
-            if (filterHeader) {
-              if (sport === 'all') {
-                filterHeader.textContent = 'Temukan berita berdasarkan cabang olahraga favorit Anda';
-              } else {
-                filterHeader.textContent = `Menampilkan berita ${sportName.toLowerCase()}`;
-              }
-            }
-          }
-        }
-        
-        // Event listeners untuk filter
-        filterButtons.forEach(function(button) {
-          button.addEventListener('click', function() {
-            filterButtons.forEach(function(btn) {
-              btn.classList.remove('active');
-            });
-            this.classList.add('active');
-            applyFilter();
-          });
-        });
-        
-        // Initialize with default filter
-        applyFilter();
       }
       
       // Apply sport icons to news cards
@@ -1330,7 +1371,6 @@ block content
           });
           
           document.querySelectorAll('img[loading="lazy"]').forEach(img => {
-            // Convert src to data-src for lazy loading
             if (img.src && !img.dataset.src) {
               img.dataset.src = img.src;
               img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9"%3E%3C/svg%3E';
@@ -1355,13 +1395,7 @@ block content
             rootMargin: '0px 0px -100px 0px'
           });
           
-          // Observe news cards
-          document.querySelectorAll('.sporter-news-card').forEach(card => {
-            cardObserver.observe(card);
-          });
-          
-          // Observe side cards
-          document.querySelectorAll('.news-side-mini-card').forEach(card => {
+          document.querySelectorAll('.sporter-news-card, .news-side-mini-card').forEach(card => {
             cardObserver.observe(card);
           });
         }
@@ -1378,47 +1412,33 @@ block content
         initializeLazyLoading();
         initializeCardAnimations();
         
-        // Main card animation
-        const mainCard = document.querySelector('.news-main-card');
-        if (mainCard) {
-          setTimeout(() => {
+        // Animation for main cards
+        setTimeout(() => {
+          const mainCard = document.querySelector('.news-main-card');
+          if (mainCard) {
             mainCard.style.opacity = '1';
             mainCard.style.transform = 'translateX(0)';
-          }, 100);
-        }
+          }
+        }, 100);
         
-        // Side top card animation
-        const sideTopCard = document.querySelector('.news-side-top-card');
-        if (sideTopCard) {
-          setTimeout(() => {
+        setTimeout(() => {
+          const sideTopCard = document.querySelector('.news-side-top-card');
+          if (sideTopCard) {
             sideTopCard.style.opacity = '1';
             sideTopCard.style.transform = 'scale(1)';
-          }, 200);
-        }
-        
-        // Side mini cards animation
-        document.querySelectorAll('.news-side-mini-card').forEach((card, index) => {
-          setTimeout(() => {
-            card.style.opacity = '1';
-            card.style.transform = 'scale(1)';
-          }, 300 + (index * 100));
-        });
+          }
+        }, 200);
         
         // Add smooth hover effects
         document.querySelectorAll('.news-card-readmore, .news-main-readmore').forEach(link => {
           link.addEventListener('mouseenter', function() {
             const icon = this.querySelector('i');
-            if (icon) {
-              icon.style.transform = 'translateX(3px)';
-              icon.style.transition = 'transform 0.3s ease';
-            }
+            if (icon) icon.style.transform = 'translateX(5px)';
           });
           
           link.addEventListener('mouseleave', function() {
             const icon = this.querySelector('i');
-            if (icon) {
-              icon.style.transform = 'translateX(0)';
-            }
+            if (icon) icon.style.transform = 'translateX(0)';
           });
         });
         
@@ -1427,74 +1447,14 @@ block content
           button.addEventListener('mouseenter', function() {
             if (!this.classList.contains('active')) {
               const icon = this.querySelector('i');
-              if (icon) {
-                icon.style.transform = 'scale(1.2)';
-                icon.style.transition = 'transform 0.3s ease';
-              }
+              if (icon) icon.style.transform = 'scale(1.2) rotate(5deg)';
             }
           });
           
           button.addEventListener('mouseleave', function() {
             const icon = this.querySelector('i');
-            if (icon) {
-              icon.style.transform = 'scale(1)';
-            }
-          });
-        });
-        
-        // Add reading time estimation
-        document.querySelectorAll('.sporter-news-card').forEach(card => {
-          const textContent = card.textContent || '';
-          const wordCount = textContent.trim().split(/\s+/).length;
-          const readTime = Math.ceil(wordCount / 200);
-          
-          if (readTime > 0) {
-            const metaElement = card.querySelector('.news-card-meta');
-            if (metaElement) {
-              const readTimeElement = document.createElement('span');
-              readTimeElement.className = 'news-card-date';
-              readTimeElement.innerHTML = `<i class="bi bi-clock me-1"></i>${readTime} min baca`;
-              metaElement.appendChild(readTimeElement);
-            }
-          }
-        });
-        
-        // Add stats cards hover animation
-        document.querySelectorAll('.news-stats-card').forEach(card => {
-          card.addEventListener('mouseenter', function() {
-            const valueElement = this.querySelector('.news-stats-value');
-            if (valueElement) {
-              valueElement.style.transform = 'scale(1.1)';
-              valueElement.style.transition = 'transform 0.3s ease';
-            }
-          });
-          
-          card.addEventListener('mouseleave', function() {
-            const valueElement = this.querySelector('.news-stats-value');
-            if (valueElement) {
-              valueElement.style.transform = 'scale(1)';
-            }
-          });
-        });
-        
-        // Add filter animation when switching
-        let isFiltering = false;
-        document.querySelectorAll('.btn-news-filter').forEach(button => {
-          button.addEventListener('click', function() {
-            if (!isFiltering) {
-              isFiltering = true;
-              const newsGrid = document.getElementById('news-grid');
-              if (newsGrid) {
-                newsGrid.style.opacity = '0.5';
-                newsGrid.style.transition = 'opacity 0.3s ease';
-                
-                setTimeout(() => {
-                  newsGrid.style.opacity = '1';
-                  isFiltering = false;
-                }, 400);
-              }
-            }
+            if (icon) icon.style.transform = 'scale(1) rotate(0)';
           });
         });
       });
-    })(); 
+    })();
