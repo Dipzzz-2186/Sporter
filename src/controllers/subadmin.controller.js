@@ -1896,6 +1896,31 @@ exports.deleteTeamMember = async (req, res) => {
   }
 };
 
+exports.deleteTeam = async (req, res) => {
+  const teamId = Number(req.params.id);
+
+  try {
+    if (!teamId) {
+      req.flash('error', 'ID tim tidak valid');
+      return res.redirect('/subadmin/teams');
+    }
+
+    // cek akses
+    await assertCanAccessTeam(req, teamId);
+
+    // hapus berurutan biar aman
+    await db.query('DELETE FROM team_members WHERE team_id = ?', [teamId]);
+    await db.query('DELETE FROM teams WHERE id = ?', [teamId]);
+
+    req.flash('success', 'Tim berhasil dihapus');
+    return res.redirect('/subadmin/teams');
+
+  } catch (err) {
+    console.error('deleteTeam error:', err);
+    req.flash('error', err.message || 'Gagal menghapus tim');
+    return res.redirect('/subadmin/teams');
+  }
+};
 
 // ===============================
 // SUBADMIN – LIST TICKET ORDERS (PER USER)

@@ -669,6 +669,15 @@ block content
       }
     }
 
+    .btn-delete {
+      background: var(--danger-color);
+      color: white;
+      border: none;
+    }
+    .btn-delete:hover {
+      background: #e63b4a;
+    }
+
     @media (max-width: 576px) {
       .page-header {
         padding: 1.25rem;
@@ -838,6 +847,11 @@ block content
                           a.action-btn.btn-view(href=`/teams/${t.id}` target="_self")
                             i.bi.bi-eye
                             | Lihat
+                      
+                          form(method="POST", action=`/subadmin/teams/${t.id}/delete`, onsubmit="return confirm('Yakin hapus tim ini? Semua anggota ikut terhapus.')")
+                            button.action-btn.btn-delete(type="submit")
+                              i.bi.bi-trash
+                              | Hapus
           
           else
             .empty-state
