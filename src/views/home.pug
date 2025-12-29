@@ -10,6 +10,11 @@ block content
       padding: 2.5rem 0 2rem;
       animation: fadeIn 0.8s ease-out;
       margin-bottom: 1.5rem;
+      transition: all 0.4s ease;
+    }
+    
+    .sporter-hero:hover {
+      background: linear-gradient(135deg, #0B1F3F 0%, #1A3157 100%);
     }
     
     @media (min-width: 768px) {
@@ -36,6 +41,17 @@ block content
       position: absolute;
       border-radius: 50%;
       animation: float 8s ease-in-out infinite;
+      transition: all 0.5s ease;
+    }
+    
+    .sporter-hero:hover::before {
+      transform: scale(1.1) translate(-10px, -10px);
+      opacity: 0.9;
+    }
+    
+    .sporter-hero:hover::after {
+      transform: scale(1.1) translate(10px, 10px);
+      opacity: 0.9;
     }
     
     .sporter-hero::before {
@@ -109,6 +125,15 @@ block content
       backdrop-filter: blur(10px);
       animation: pulse 2s infinite;
       margin-bottom: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    
+    .hero-badge:hover {
+      background: rgba(0, 149, 255, 0.25) !important;
+      border-color: rgba(0, 149, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.3);
     }
     
     @media (min-width: 768px) {
@@ -135,6 +160,12 @@ block content
       margin: 1rem 0;
       font-weight: 800;
       animation: fadeInUp 0.8s ease-out 0.2s backwards;
+      transition: all 0.3s ease;
+    }
+    
+    .sporter-hero:hover h1 {
+      transform: translateY(-1px);
+      text-shadow: 0 5px 15px rgba(0, 149, 255, 0.2);
     }
     
     @media (min-width: 576px) {
@@ -168,6 +199,14 @@ block content
       background-clip: text;
       display: inline-block;
       position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .sporter-hero:hover .text-danger {
+      background: linear-gradient(135deg, #34C7FF 0%, #66D9FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     
     .sporter-hero .lead {
@@ -178,6 +217,12 @@ block content
       animation: fadeInUp 0.8s ease-out 0.4s backwards;
       max-width: 100%;
       padding: 0 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .sporter-hero:hover .lead {
+      color: rgba(255, 255, 255, 0.95) !important;
+      transform: translateY(-1px);
     }
     
     @media (min-width: 768px) {
@@ -225,6 +270,43 @@ block content
       gap: 0.5rem;
       width: 100%;
       white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    
+    .sporter-hero .btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+    
+    .sporter-hero .btn:focus:not(:active)::after {
+      animation: ripple 1s ease-out;
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+      }
+      20% {
+        transform: scale(25, 25);
+        opacity: 0.3;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(40, 40);
+      }
     }
     
     @media (min-width: 576px) {
@@ -237,6 +319,36 @@ block content
       background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
       border: none;
       box-shadow: 0 6px 20px rgba(0, 149, 255, 0.4);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .sporter-hero .btn-danger::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #34C7FF 0%, #66D9FF 100%);
+      border-radius: 12px;
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sporter-hero .btn-danger:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 25px rgba(0, 149, 255, 0.5);
+    }
+    
+    .sporter-hero .btn-danger:hover::before {
+      opacity: 1;
+    }
+    
+    .sporter-hero .btn-danger:active {
+      transform: translateY(-1px) scale(0.98);
+      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.4);
     }
     
     .sporter-hero .btn-outline-danger {
@@ -244,6 +356,37 @@ block content
       border: 2px solid rgba(255, 255, 255, 0.25);
       color: white;
       backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .sporter-hero .btn-outline-danger::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0, 149, 255, 0.1) 0%, rgba(52, 199, 255, 0.05) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .sporter-hero .btn-outline-danger:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.2);
+    }
+    
+    .sporter-hero .btn-outline-danger:hover::before {
+      opacity: 1;
+    }
+    
+    .sporter-hero .btn-outline-danger:active {
+      transform: translateY(-1px) scale(0.98);
+      box-shadow: 0 4px 15px rgba(0, 149, 255, 0.15);
     }
     
     .sporter-hero-illustration {
@@ -258,6 +401,15 @@ block content
       box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
       height: auto;
       text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    
+    .sporter-hero-illustration:hover {
+      transform: translateY(-5px) scale(1.02);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
     }
     
     @media (min-width: 768px) {
@@ -280,6 +432,16 @@ block content
       background-clip: text;
       animation: bounce 3s infinite;
       margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .sporter-hero-illustration:hover i {
+      animation: bounce 1s infinite;
+      transform: scale(1.1);
+      background: linear-gradient(135deg, #34C7FF 0%, #66D9FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     
     @media (min-width: 768px) {
@@ -300,6 +462,12 @@ block content
       text-align: center;
       margin: 0;
       line-height: 1.5;
+      transition: all 0.3s ease;
+    }
+    
+    .sporter-hero-illustration:hover p {
+      color: rgba(255, 255, 255, 0.9);
+      transform: translateY(-1px);
     }
     
     @media (min-width: 768px) {
@@ -315,6 +483,11 @@ block content
       padding: 2.5rem 0;
       position: relative;
       overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    
+    .stats-section:hover {
+      background: linear-gradient(135deg, #0B1F3F 0%, #1A3157 100%);
     }
     
     @media (min-width: 768px) {
@@ -329,6 +502,37 @@ block content
       position: relative;
       z-index: 2;
       margin-bottom: 2rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 1rem;
+      border-radius: 16px;
+    }
+    
+    .stat-item:hover {
+      transform: translateY(-8px) scale(1.05);
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .stat-item:hover .stat-icon {
+      transform: rotateY(180deg) scale(1.1);
+      background: rgba(0, 149, 255, 0.25);
+      border-color: rgba(0, 149, 255, 0.6);
+    }
+    
+    .stat-item:hover .stat-icon i {
+      color: #66D9FF;
+      transform: scale(1.2);
+    }
+    
+    .stat-item:hover .stat-number {
+      color: #66D9FF;
+      transform: scale(1.1);
+    }
+    
+    .stat-item:hover .stat-label {
+      color: white;
+      transform: translateY(2px);
     }
     
     .stat-icon {
@@ -341,6 +545,8 @@ block content
       justify-content: center;
       margin: 0 auto 1rem;
       border: 2px solid rgba(0, 149, 255, 0.3);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
     }
     
     @media (min-width: 768px) {
@@ -355,6 +561,7 @@ block content
     .stat-icon i {
       font-size: 1.8rem;
       color: #0095FF;
+      transition: all 0.3s ease;
     }
     
     @media (min-width: 768px) {
@@ -371,6 +578,7 @@ block content
       line-height: 1;
       font-family: 'Bebas Neue', cursive;
       letter-spacing: 1px;
+      transition: all 0.3s ease;
     }
     
     @media (min-width: 768px) {
@@ -384,6 +592,7 @@ block content
       color: rgba(255, 255, 255, 0.8);
       font-size: 0.9rem;
       font-weight: 500;
+      transition: all 0.3s ease;
     }
     
     /* Feature Section - Mobile Optimized */
@@ -391,6 +600,11 @@ block content
       background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
       padding: 3rem 0;
       position: relative;
+      transition: all 0.4s ease;
+    }
+    
+    #features:hover {
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
     }
     
     @media (min-width: 768px) {
@@ -404,6 +618,16 @@ block content
       text-align: center;
       margin-bottom: 2.5rem;
       padding: 0 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .section-title:hover {
+      transform: translateY(-3px);
+    }
+    
+    .section-title:hover h2 {
+      transform: scale(1.02);
     }
     
     @media (min-width: 768px) {
@@ -421,6 +645,11 @@ block content
       margin-bottom: 0.75rem;
       position: relative;
       display: inline-block;
+      transition: all 0.3s ease;
+    }
+    
+    .section-title:hover h2 {
+      text-shadow: 0 5px 15px rgba(11, 31, 63, 0.1);
     }
     
     @media (min-width: 768px) {
@@ -436,6 +665,12 @@ block content
       max-width: 100%;
       margin: 0 auto;
       line-height: 1.6;
+      transition: all 0.3s ease;
+    }
+    
+    .section-title:hover p {
+      color: #4a5a6a;
+      transform: translateY(2px);
     }
     
     @media (min-width: 768px) {
@@ -456,6 +691,52 @@ block content
       position: relative;
       overflow: hidden;
       margin-bottom: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .sporter-feature-card:hover {
+      transform: translateY(-12px) scale(1.03);
+      border-color: #0095FF;
+      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15), 0 0 0 1px rgba(0, 149, 255, 0.1);
+    }
+    
+    .sporter-feature-card:hover .feature-icon-wrapper {
+      transform: translateY(-5px) rotate(5deg);
+      background: linear-gradient(135deg, #e0f2ff 0%, #cce7ff 100%);
+      border-color: #0095FF;
+      box-shadow: 0 10px 20px rgba(0, 149, 255, 0.2);
+    }
+    
+    .sporter-feature-card:hover .feature-icon-wrapper i {
+      color: #34C7FF;
+      transform: scale(1.2);
+    }
+    
+    .sporter-feature-card:hover h5 {
+      color: #0095FF;
+      transform: translateY(-2px);
+    }
+    
+    .sporter-feature-card:hover p {
+      color: #4a5a6a;
+      transform: translateY(-1px);
+    }
+    
+    .sporter-feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .sporter-feature-card:hover::before {
+      transform: scaleX(1);
     }
     
     @media (min-width: 768px) {
@@ -525,6 +806,7 @@ block content
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: all 0.3s ease;
     }
     
     @media (min-width: 768px) {
@@ -541,6 +823,7 @@ block content
       font-size: 0.9rem;
       margin: 0;
       flex-grow: 1;
+      transition: all 0.3s ease;
     }
     
     @media (min-width: 768px) {
@@ -555,6 +838,11 @@ block content
       padding: 3rem 0;
       background: white;
       position: relative;
+      transition: all 0.4s ease;
+    }
+    
+    .events-section:hover {
+      background: #fafbfd;
     }
     
     @media (min-width: 768px) {
@@ -591,6 +879,28 @@ block content
       margin-bottom: 0.5rem;
       position: relative;
       padding-bottom: 0.75rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .section-header:hover h2 {
+      color: #0095FF;
+      transform: translateY(-2px);
+    }
+    
+    .section-header h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .section-header:hover h2::after {
+      width: 100px;
     }
     
     @media (min-width: 768px) {
@@ -606,6 +916,11 @@ block content
       font-size: 1rem;
       margin: 0;
       max-width: 100%;
+      transition: all 0.3s ease;
+    }
+    
+    .section-header:hover p {
+      color: #4a5a6a;
     }
     
     @media (min-width: 768px) {
@@ -629,6 +944,25 @@ block content
       color: #5a6c7d;
       align-self: flex-start;
       width: 100%;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    
+    .section-header .btn:hover {
+      border-color: #0095FF;
+      color: #0095FF;
+      background: rgba(0, 149, 255, 0.05);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 10px 20px rgba(0, 149, 255, 0.1);
+    }
+    
+    .section-header .btn:hover i {
+      transform: translateX(3px);
+    }
+    
+    .section-header .btn:active {
+      transform: translateY(-1px) scale(0.98);
     }
     
     @media (min-width: 576px) {
@@ -657,6 +991,46 @@ block content
       flex-direction: column;
       margin-bottom: 1.5rem;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+    }
+    
+    .sporter-event-card:hover {
+      transform: translateY(-12px) scale(1.03);
+      box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15);
+      border-color: #0095FF;
+    }
+    
+    .sporter-event-card:hover .event-title {
+      color: #0095FF;
+      transform: translateY(-2px);
+    }
+    
+    .sporter-event-card:hover .event-type-badge .badge {
+      background: linear-gradient(135deg, #34C7FF 0%, #66D9FF 100%) !important;
+      transform: scale(1.05);
+    }
+    
+    .sporter-event-card:hover .event-description {
+      color: #4a5a6a;
+      transform: translateY(-1px);
+    }
+    
+    .sporter-event-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #0095FF 0%, #34C7FF 100%);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 1;
+    }
+    
+    .sporter-event-card:hover::before {
+      transform: scaleX(1);
     }
     
     @media (min-width: 768px) {
@@ -664,12 +1038,6 @@ block content
         border-radius: 22px;
         margin-bottom: 0;
       }
-    }
-    
-    .sporter-event-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 15px 35px rgba(0, 149, 255, 0.15);
-      border-color: #0095FF;
     }
     
     @media (max-width: 768px) {
@@ -703,6 +1071,7 @@ block content
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      transition: all 0.3s ease;
     }
     
     @media (min-width: 768px) {
@@ -723,10 +1092,20 @@ block content
       padding: 0.5rem 1rem;
       font-size: 0.85rem;
       font-weight: 600;
+      transition: all 0.3s ease;
     }
     
     .event-type-badge .badge i {
       font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    
+    .event-type-badge:hover .badge {
+      transform: scale(1.05);
+    }
+    
+    .event-type-badge:hover .badge i {
+      transform: rotate(15deg);
     }
     
     /* Event Description */
@@ -740,6 +1119,7 @@ block content
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      transition: all 0.3s ease;
     }
     
     @media (min-width: 768px) {
@@ -774,6 +1154,9 @@ block content
       white-space: nowrap;
       height: 42px;
       border-width: 2px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
     }
     
     @media (min-width: 768px) {
@@ -794,8 +1177,12 @@ block content
       background: linear-gradient(135deg, #f8f9fa 0%, #f0f7ff 100%);
       border-color: #0095FF;
       color: #0095FF;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 149, 255, 0.1);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 149, 255, 0.15);
+    }
+    
+    .event-actions .btn-outline-danger:active {
+      transform: translateY(-1px) scale(0.98);
     }
     
     /* Tombol Tiket - Solid */
@@ -804,11 +1191,35 @@ block content
       border: none;
       box-shadow: 0 4px 15px rgba(0, 149, 255, 0.3);
       color: white;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .event-actions .btn-danger::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #34C7FF 0%, #66D9FF 100%);
+      border-radius: 8px;
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 0.3s ease;
     }
     
     .event-actions .btn-danger:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 149, 255, 0.4);
+    }
+    
+    .event-actions .btn-danger:hover::before {
+      opacity: 1;
+    }
+    
+    .event-actions .btn-danger:active {
+      transform: translateY(-1px) scale(0.98);
     }
     
     /* Empty State - Mobile Optimized */
@@ -822,6 +1233,42 @@ block content
       position: relative;
       overflow: hidden;
       margin: 0 1rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    
+    .empty-state:hover {
+      border-color: #0095FF;
+      background: linear-gradient(135deg, #f1f3f5 0%, #dee2e6 100%);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .empty-state:hover .empty-state-icon {
+      animation: bounce 1s infinite;
+      background: white;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .empty-state:hover .empty-state-icon i {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .empty-state:hover h3 {
+      color: #0095FF;
+      transform: translateY(-2px);
+    }
+    
+    .empty-state:hover p {
+      color: #4a5a6a;
+      transform: translateY(-1px);
+    }
+    
+    .empty-state:hover .btn {
+      transform: translateY(-3px) scale(1.05);
     }
     
     @media (min-width: 768px) {
@@ -845,6 +1292,7 @@ block content
       position: relative;
       z-index: 1;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
     }
     
     @media (min-width: 768px) {
@@ -861,6 +1309,7 @@ block content
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      transition: all 0.3s ease;
     }
     
     @media (min-width: 768px) {
@@ -877,6 +1326,7 @@ block content
       margin-bottom: 1rem;
       position: relative;
       z-index: 1;
+      transition: all 0.3s ease;
     }
     
     @media (min-width: 768px) {
@@ -894,6 +1344,7 @@ block content
       line-height: 1.5;
       position: relative;
       z-index: 1;
+      transition: all 0.3s ease;
     }
     
     @media (min-width: 768px) {
@@ -909,6 +1360,18 @@ block content
       border-radius: 12px;
       font-weight: 600;
       font-size: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .empty-state .btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 149, 255, 0.3);
+    }
+    
+    .empty-state .btn:active {
+      transform: translateY(-1px) scale(0.98);
     }
     
     /* Touch-friendly improvements */
@@ -916,18 +1379,24 @@ block content
       .sporter-feature-card,
       .sporter-event-card,
       .sporter-hero .btn,
-      .section-header .btn {
+      .section-header .btn,
+      .empty-state .btn,
+      .stat-item {
         transform: none !important;
         transition: none !important;
       }
       
       .sporter-hero .btn:active,
-      .sporter-event-card .btn:active {
+      .sporter-event-card .btn:active,
+      .section-header .btn:active,
+      .empty-state .btn:active {
         transform: scale(0.98) !important;
       }
       
       .sporter-feature-card:active,
-      .sporter-event-card:active {
+      .sporter-event-card:active,
+      .empty-state:active,
+      .stat-item:active {
         transform: translateY(-5px) scale(0.99) !important;
       }
       
@@ -954,7 +1423,11 @@ block content
     /* Improved tap targets for mobile */
     button,
     a.btn,
-    .card {
+    .card,
+    .hero-badge,
+    .stat-item,
+    .section-title,
+    .empty-state {
       cursor: pointer;
       -webkit-tap-highlight-color: rgba(0, 149, 255, 0.1);
     }
@@ -962,7 +1435,9 @@ block content
     /* Prevent text selection on buttons */
     .btn,
     .sporter-feature-card,
-    .sporter-event-card {
+    .sporter-event-card,
+    .hero-badge,
+    .stat-item {
       user-select: none;
       -webkit-user-select: none;
     }
@@ -989,6 +1464,38 @@ block content
         --bs-gutter-x: 1rem;
         --bs-gutter-y: 1rem;
       }
+    }
+    
+    /* Hover glow effect for containers */
+    .sporter-hero,
+    .stats-section,
+    #features,
+    .events-section {
+      position: relative;
+    }
+    
+    .sporter-hero::before,
+    .stats-section::before,
+    #features::before,
+    .events-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(0, 149, 255, 0.05) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .sporter-hero:hover::before,
+    .stats-section:hover::before,
+    #features:hover::before,
+    .events-section:hover::before {
+      opacity: 1;
     }
 
   // HERO SECTION - Mobile Optimized
@@ -1171,10 +1678,73 @@ block content
             i.bi.bi-bell-fill.me-2
             | Notifikasi Event
 
-  //- Mobile-Friendly JavaScript
+  //- Mobile-Friendly JavaScript dengan hover enhancement
   script.
     (function() {
       'use strict';
+      
+      // Enhanced hover effects with 3D transforms
+      const apply3DHoverEffects = () => {
+        const cards = document.querySelectorAll('.sporter-feature-card, .sporter-event-card');
+        
+        cards.forEach(card => {
+          card.addEventListener('mousemove', (e) => {
+            if (window.innerWidth >= 768) {
+              const cardRect = card.getBoundingClientRect();
+              const cardCenterX = cardRect.left + cardRect.width / 2;
+              const cardCenterY = cardRect.top + cardRect.height / 2;
+              
+              const mouseX = e.clientX - cardCenterX;
+              const mouseY = e.clientY - cardCenterY;
+              
+              const rotateY = mouseX / 20;
+              const rotateX = -mouseY / 20;
+              
+              card.style.transform = `translateY(-12px) scale(1.03) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+              card.style.transition = 'transform 0.1s ease';
+            }
+          });
+          
+          card.addEventListener('mouseleave', () => {
+            if (window.innerWidth >= 768) {
+              card.style.transform = 'translateY(0) scale(1) rotateX(0deg) rotateY(0deg)';
+              card.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            }
+          });
+        });
+        
+        // Enhanced button hover effects
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(btn => {
+          btn.addEventListener('mouseenter', () => {
+            if (window.innerWidth >= 768) {
+              btn.style.transform = 'translateY(-3px) scale(1.05)';
+            }
+          });
+          
+          btn.addEventListener('mouseleave', () => {
+            if (window.innerWidth >= 768) {
+              btn.style.transform = 'translateY(0) scale(1)';
+            }
+          });
+        });
+      };
+      
+      // Apply 3D hover effects only on desktop
+      if (window.innerWidth >= 768) {
+        apply3DHoverEffects();
+      }
+      
+      // Re-apply on resize
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          if (window.innerWidth >= 768) {
+            apply3DHoverEffects();
+          }
+        }, 250);
+      });
       
       // Detect touch device
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -1362,10 +1932,10 @@ block content
       handleResize();
       
       // Debounced resize handler
-      let resizeTimer;
+      let resizeTimer2;
       window.addEventListener('resize', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(handleResize, 250);
+        clearTimeout(resizeTimer2);
+        resizeTimer2 = setTimeout(handleResize, 250);
       });
       
       // Improve loading performance on mobile
@@ -1385,31 +1955,34 @@ block content
         }
       }
       
-      // Touch gesture for swipe (optional)
-      let touchStartX = 0;
-      let touchEndX = 0;
+      // Hover sound effect (optional)
+      const playHoverSound = () => {
+        // You can add a subtle hover sound effect here
+        // Example: new Audio('/sounds/hover.mp3').play();
+      };
       
-      document.addEventListener('touchstart', function(e) {
-        touchStartX = e.changedTouches[0].screenX;
-      }, { passive: true });
-      
-      document.addEventListener('touchend', function(e) {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-      }, { passive: true });
-      
-      function handleSwipe() {
-        const minSwipeDistance = 50;
-        const swipeDistance = touchEndX - touchStartX;
-        
-        if (Math.abs(swipeDistance) > minSwipeDistance) {
-          if (swipeDistance > 0) {
-            // Swipe right
-            console.log('Swiped right');
-          } else {
-            // Swipe left
-            console.log('Swiped left');
+      // Add hover sound to buttons (optional)
+      document.querySelectorAll('.btn, .sporter-feature-card, .sporter-event-card').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          if (window.innerWidth >= 768) {
+            // playHoverSound(); // Uncomment if you want sound effects
           }
-        }
-      }
+        });
+      });
+      
+      // Color shift on hover for main sections
+      const sections = document.querySelectorAll('.sporter-hero, .stats-section, #features, .events-section');
+      sections.forEach(section => {
+        section.addEventListener('mouseenter', () => {
+          if (window.innerWidth >= 768) {
+            section.style.filter = 'brightness(1.05)';
+          }
+        });
+        
+        section.addEventListener('mouseleave', () => {
+          if (window.innerWidth >= 768) {
+            section.style.filter = 'brightness(1)';
+          }
+        });
+      });
     })();
