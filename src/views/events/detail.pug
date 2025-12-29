@@ -364,7 +364,8 @@ block content
         pointer-events: none;
       }
 
-      .toast-item {
+      .toast-item,
+      .toast-action {
         min-width: 260px;
         max-width: 360px;
         background: rgba(17, 24, 39, 0.92);
@@ -379,6 +380,7 @@ block content
         transform: translateY(10px);
         opacity: 0;
         animation: toastIn .25s ease-out forwards;
+        pointer-events: auto;
       }
 
       .toast-item .ico {
@@ -412,6 +414,29 @@ block content
       @keyframes toastOut {
         to { transform: translateY(10px); opacity: 0; }
       }  
+
+      .toast-body {
+        flex: 1;
+      }
+
+      .toast-action {
+        margin-top: 8px;
+        background: rgba(255,255,255,.15);
+        border: 1px solid rgba(255,255,255,.25);
+        color: #fff;
+        font-size: .8rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: all .2s ease;
+      }
+
+      .toast-action:hover {
+        background: rgba(255,255,255,.25);
+        transform: translateX(2px);
+      }
+
     /* Responsive */
     @media (max-width: 991px) {
       .event-detail-header {
@@ -686,7 +711,7 @@ block content
 
       function toast(msg) { alert(msg); }
 
-      function showToast(type, title, subtitle) {
+      function showToast(type, title, subtitle, action) {
         const wrap = document.getElementById('toastWrap');
         if (!wrap) return;
 
@@ -702,21 +727,36 @@ block content
 
         el.innerHTML = `
           <i class="bi ${iconMap[type] || iconMap.info} ico"></i>
-          <div>
+          <div class="toast-body">
             <div class="txt">${title || ''}</div>
             ${subtitle ? `<div class="sub">${subtitle}</div>` : ''}
+            ${
+              action
+                ? `<button class="toast-action">${action.label}</button>`
+                : ''
+            }
           </div>
         `;
 
         wrap.appendChild(el);
+
+        // klik action
+        if (action) {
+          const btn = el.querySelector('.toast-action');
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            window.location.href = action.href;
+          });
+        }
 
         const remove = () => {
           el.style.animation = 'toastOut .2s ease-in forwards';
           setTimeout(() => el.remove(), 220);
         };
 
-        setTimeout(remove, 2200);
+        setTimeout(remove, 3500);
       }
+
 
 
       async function handleShareEvent() {
@@ -767,10 +807,27 @@ block content
             btn.innerHTML = '<i class="bi bi-bookmark-plus"></i><span>Simpan Event</span>';
           }
           if (data.favorited) {
-            showToast('success', 'Ditambahkan ke Favorit', 'Event tersimpan di halaman Favorites');
+            btn.innerHTML = '<i class="bi bi-bookmark-check-fill"></i><span>Tersimpan!</span>';
+
+            showToast(
+              'success',
+              'Ditambahkan ke Favorit',
+              'Event tersimpan di halaman Favorites',
+              {
+                label: 'Lihat',
+                href: '/me/favorites'
+              }
+            );
           } else {
-            showToast('info', 'Dihapus dari Favorit', 'Event tidak lagi ada di Favorites');
+            btn.innerHTML = '<i class="bi bi-bookmark-plus"></i><span>Simpan Event</span>';
+
+            showToast(
+              'info',
+              'Dihapus dari Favorit',
+              'Event tidak lagi ada di Favorites'
+            );
           }
+
 
           btn.disabled = false;
         } catch (e) {
