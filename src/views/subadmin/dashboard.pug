@@ -1021,7 +1021,7 @@ block content
         if upcomingLivestreams && upcomingLivestreams.length
           .livestream-grid
             each livestream in upcomingLivestreams
-              - const isLive = new Date(livestream.start_time || livestream.created_at) <= new Date()
+              - const isLive = livestream.is_live === 1
               .live-card(class=isLive ? 'live-now' : '')
                 span.live-badge= isLive ? 'LIVE' : 'COMING'
                 h5= livestream.title
