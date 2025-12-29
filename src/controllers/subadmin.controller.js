@@ -1623,20 +1623,30 @@ exports.deleteNews = async (req, res) => {
     return safeRedirectBack(req, res, '/subadmin/news');
   }
 };
-exports.ajaxCreateTeam = async (req, res) => {
-  try {
-    const { sport_id, name, short_name, city } = req.body;
 
-    const sportId = sport_id ? Number(sport_id) : null;
-    const teamName = (name || '').trim();
+
+exports.ajaxCreateTeam = async (req, res) => {
+  const conn = await db.getConnection();
+  try {
+    const { sport_id, name } = req.body;
+    const sportId = Number(sport_id);
+    const teamName = String(name || '').trim();
+
+    // penting: pastikan members kebaca sebagai array
+    const members = Array.isArray(req.body.members)
+      ? req.body.members.map(m => String(m).trim()).filter(Boolean)
+      : (req.body.members ? [String(req.body.members).trim()].filter(Boolean) : []);
 
     if (!sportId || !teamName) {
       return res.status(400).json({ ok: false, message: 'sport_id dan name wajib diisi' });
     }
+    if (!members.length) {
+      return res.status(400).json({ ok: false, message: 'Minimal 1 anggota tim' });
+    }
 
     // cek akses subadmin ke sport
     if (req.session.user.role === 'subadmin') {
-      const [rows] = await db.query(
+      const [rows] = await conn.query(
         'SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1',
         [req.session.user.id, sportId]
       );
@@ -1645,21 +1655,43 @@ exports.ajaxCreateTeam = async (req, res) => {
       }
     }
 
-    const [result] = await db.query(
-      `INSERT INTO teams (sport_id, name, short_name, city, created_at, updated_at)
-      VALUES (?, ?, ?, ?, NOW(), NOW())`,
-      [sportId, teamName, (short_name || null), (city || null)]
-    );
+    await conn.beginTransaction();
 
-    return res.json({
-      ok: true,
-      team: { id: result.insertId, name: teamName, sport_id: sportId }
-    });
+    // ✅ Insert team (team mode => is_individual = 0)
+    const [teamRes] = await conn.query(
+      `INSERT INTO teams (sport_id, name, is_individual, created_at, updated_at)
+       VALUES (?, ?, 0, NOW(), NOW())`,
+      [sportId, teamName]
+    );
+    const teamId = teamRes.insertId;
+
+    // ✅ Insert athletes + link ke team_members (team_id, athlete_id)
+    for (const memberName of members) {
+      const [athRes] = await conn.query(
+        `INSERT INTO athletes (sport_id, name, slug, member_type, created_at, updated_at)
+         VALUES (?, ?, NULL, 'team', NOW(), NOW())`,
+        [sportId, memberName]
+      );
+      const athleteId = athRes.insertId;
+      const finalSlug = `${generateSlug(memberName)}-${athleteId}`;
+
+      await conn.query(`UPDATE athletes SET slug=? WHERE id=?`, [finalSlug, athleteId]);
+      await conn.query(`INSERT INTO team_members (team_id, athlete_id) VALUES (?, ?)`, [teamId, athleteId]);
+    }
+
+    await conn.commit();
+
+    return res.json({ ok: true, team: { id: teamId, name: teamName, sport_id: sportId } });
   } catch (err) {
+    try { await conn.rollback(); } catch (_) {}
     console.error('ajaxCreateTeam error', err);
     return res.status(500).json({ ok: false, message: 'Server error' });
+  } finally {
+    conn.release();
   }
 };
+
+
 
 exports.ajaxCreateAthlete = async (req, res) => {
   try {

@@ -598,7 +598,7 @@ block content
 
       //- Form Card
       .form-card
-        form(method="POST" action="/subadmin/teams/create" id="createTeamForm")
+        form(id="createTeamForm")
           
           //- Section 1: Basic Info
           .form-section
@@ -711,6 +711,172 @@ block content
             a.btn.btn-back(href="javascript:void(0);" onclick="history.back()")
               i.bi.bi-arrow-left
               span Kembali ke Daftar
+
+  // =======================
+  // MODAL AFTER CREATE TEAM (IMPROVED)
+  // =======================
+  style.
+    .sporter-modal .modal-content{
+      border:0;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 25px 70px rgba(11,31,63,.25);
+    }
+    .sporter-modal .modal-hero{
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 55%, #0ea5e9 140%);
+      color:#fff;
+      padding:22px 22px 18px;
+      position:relative;
+    }
+    .sporter-modal .modal-hero::before{
+      content:'';
+      position:absolute;
+      top:-55%;
+      right:-20%;
+      width:320px;
+      height:320px;
+      background: radial-gradient(circle, rgba(52,199,255,.28) 0%, rgba(52,199,255,0) 70%);
+      border-radius:50%;
+    }
+    .sporter-modal .hero-row{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      position:relative;
+      z-index:1;
+    }
+    .sporter-modal .hero-icon{
+      width:48px;
+      height:48px;
+      border-radius:14px;
+      background: linear-gradient(135deg, rgba(255,255,255,.18) 0%, rgba(255,255,255,.08) 100%);
+      border: 1px solid rgba(255,255,255,.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+    }
+    .sporter-modal .hero-title{
+      font-family:'Bebas Neue', cursive;
+      letter-spacing:.6px;
+      font-size:1.6rem;
+      margin:0;
+      line-height:1.1;
+    }
+    .sporter-modal .hero-sub{
+      margin:4px 0 0;
+      opacity:.78;
+      font-size:.92rem;
+    }
+
+    .sporter-modal .modal-body{
+      padding:18px 22px 10px;
+    }
+    .sporter-modal .hint-card{
+      background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+      border:1px solid #e7eef6;
+      border-radius:16px;
+      padding:14px 14px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .sporter-modal .hint-ic{
+      width:36px;
+      height:36px;
+      border-radius:12px;
+      background: rgba(0,149,255,.10);
+      color:#0095FF;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+      font-size:18px;
+    }
+    .sporter-modal .hint-title{
+      font-weight:700;
+      color:#0B1F3F;
+      margin:0 0 2px;
+    }
+    .sporter-modal .hint-desc{
+      margin:0;
+      color:#5a6c7d;
+      font-size:.92rem;
+      line-height:1.4;
+    }
+
+    .sporter-modal .modal-footer{
+      border:0;
+      padding:14px 22px 20px;
+      gap:10px;
+    }
+    .sporter-modal .btn-soft{
+      background:#fff;
+      border:2px solid #e8e8e8;
+      color:#5a6c7d;
+      border-radius:14px;
+      padding:.85rem 1.15rem;
+      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      transition:.2s ease;
+    }
+    .sporter-modal .btn-soft:hover{
+      border-color:#0B1F3F;
+      color:#0B1F3F;
+      transform: translateY(-1px);
+    }
+    .sporter-modal .btn-primary2{
+      border:0;
+      border-radius:14px;
+      padding:.85rem 1.15rem;
+      font-weight:800;
+      color:#fff;
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      box-shadow:0 10px 22px rgba(0,149,255,.28);
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      transition:.2s ease;
+    }
+    .sporter-modal .btn-primary2:hover{
+      transform: translateY(-2px);
+      box-shadow:0 14px 30px rgba(0,149,255,.35);
+      color:#fff;
+    }
+
+  #afterCreateTeamModal.modal.fade.sporter-modal(tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+      .modal-content
+        .modal-hero
+          .d-flex.justify-content-end
+            button.btn-close.btn-close-white(type='button', data-bs-dismiss='modal', aria-label='Close')
+          .hero-row
+            .hero-icon
+              i.bi.bi-check2-circle
+            div
+              h5.hero-title Tim berhasil dibuat
+              p.hero-sub Data tim sudah tersimpan. Lanjutkan langkah berikutnya.
+
+        .modal-body
+          .hint-card
+            .hint-ic
+              i.bi.bi-people-fill
+            div
+              p.hint-title Mau langsung edit anggota?
+              p.hint-desc
+                | Kamu bisa atur anggota tim sekarang, atau lanjut buat match dulu (anggota bisa diedit nanti).
+
+        .modal-footer
+          button#btnSkipEdit.btn-soft(type='button')
+            i.bi.bi-trophy-fill
+            | Buat Match
+          button#btnEditMembers.btn-primary2(type='button')
+            i.bi.bi-people-fill
+            | Anggota Tim
+
+
 
   script.
     (function() {
@@ -942,50 +1108,94 @@ block content
       }
 
       if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
+          e.preventDefault(); // <-- wajib, biar ga submit normal
+
           const rule = getMemberRule();
-          if (!rule) {
-            e.preventDefault();
-            alert('Pilih cabang olahraga terlebih dahulu');
-            return;
-          }
+          if (!rule) return alert('Pilih cabang olahraga terlebih dahulu');
 
           const memberCount = membersContainer.querySelectorAll('.member-card').length;
-          
           if (memberCount < rule.min || memberCount > rule.max) {
-            e.preventDefault();
-            alert(`Jumlah anggota harus tepat antara ${rule.min} dan ${rule.max} orang untuk cabang ini`);
-            return;
+            return alert(`Jumlah anggota harus tepat antara ${rule.min} dan ${rule.max} orang untuk cabang ini`);
           }
 
           // Validate member names
           const memberInputs = membersContainer.querySelectorAll('.member-input');
-          let emptyNames = false;
-          
-          memberInputs.forEach(input => {
+          for (const input of memberInputs) {
             if (!input.value.trim()) {
-              emptyNames = true;
               input.style.border = '2px solid #ff4757';
-              setTimeout(() => {
-                input.style.border = '';
-              }, 2000);
+              setTimeout(() => (input.style.border = ''), 2000);
+              return alert('Semua nama anggota harus diisi');
             }
+          }
+
+          // Loading UI
+          const submitText = submitBtn.querySelector('span');
+          if (submitText) submitText.innerHTML = '<span class="loading-spinner me-2"></span>Menyimpan...';
+          submitBtn.disabled = true;
+
+          // ✅ INI YANG HILANG DI KODE LU
+          await submitCreateTeam();
+        });
+      }
+
+
+      // ========================================
+      // AJAX CREATE TEAM + AFTER ACTION
+      // ========================================
+      let createdTeamId = null;
+
+      async function submitCreateTeam() {
+        const submitText = submitBtn.querySelector('span');
+        submitBtn.disabled = true;
+        submitText.innerHTML = '<span class="loading-spinner me-2"></span>Menyimpan...';
+
+        const params = new URLSearchParams(new FormData(form)); // <-- ini bikin encoded
+
+        try {
+          const res = await fetch('/subadmin/teams/ajax-create', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            },
+            body: params.toString()
           });
-          
-          if (emptyNames) {
-            e.preventDefault();
-            alert('Semua nama anggota harus diisi');
+
+          const data = await res.json();
+
+          if (!data.ok) {
+            alert(data.message || 'Gagal membuat tim');
+            submitBtn.disabled = false;
+            submitText.textContent = 'Simpan Tim';
             return;
           }
 
-          // Show loading state
-          const submitText = submitBtn.querySelector('span');
-          if (submitText) {
-            submitText.innerHTML = '<span class="loading-spinner me-2"></span>Menyimpan...';
-            submitBtn.disabled = true;
-          }
-        });
+          createdTeamId = data.team.id;
+
+          const modal = new bootstrap.Modal(document.getElementById('afterCreateTeamModal'));
+          modal.show();
+
+        } catch (err) {
+          console.error(err);
+          alert('Terjadi kesalahan server');
+          submitBtn.disabled = false;
+          submitText.textContent = 'Simpan Tim';
+        }
       }
+
+
+      // BUTTON MODAL ACTIONS
+      document.getElementById('btnEditMembers')?.addEventListener('click', () => {
+        if (!createdTeamId) return;
+        window.location.href = `/subadmin/teams/${createdTeamId}/members`;
+      });
+
+      document.getElementById('btnSkipEdit')?.addEventListener('click', () => {
+        if (!createdTeamId) return;
+        window.location.href = `/subadmin/matches/create?team_id=${createdTeamId}`;
+      });
+
 
       // Initialize
       updateSportInfo();
