@@ -764,7 +764,7 @@ block content
     }
 
     .btn-action-delete:hover {
-      background: #ef4444;
+      background: #ef4444;  
       color: white;
       transform: translateY(-3px) rotate(-5deg);
       box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
@@ -897,6 +897,9 @@ block content
       border-width: 0.15rem;
     }
 
+    #toastTopCenter { pointer-events: none; }
+    #toastTopCenter .toast { pointer-events: auto; }
+
     /* ========== RESPONSIVE ========== */
     @media (max-width: 768px) {
       .matches-header h1 {
@@ -917,6 +920,8 @@ block content
       }
     }
 
+
+
     /* ================= MOBILE OPTIMIZATION ================= */
     @media (max-width: 768px) {
       .table-responsive {
@@ -935,6 +940,8 @@ block content
         vertical-align: middle;
       }
     }
+
+  #toastTopCenter.toast-container.position-fixed.top-0.start-50.translate-middle-x.p-3(style="z-index:9999;")
 
   .matches-page
     .container
@@ -1304,16 +1311,20 @@ block content
         script.
           // helper toast function
           function showToast(msg, type = 'success') {
+            const container = document.getElementById('toastTopCenter') || document.body;
+
             const el = document.createElement('div');
             el.className = `alert alert-${type}`;
-            el.style.position = 'fixed';
-            el.style.top = '20px';
-            el.style.right = '20px';
-            el.style.zIndex = 9999;
+            el.style.minWidth = '320px';
+            el.style.maxWidth = '560px';
+            el.style.boxShadow = '0 10px 30px rgba(0,0,0,.15)';
             el.innerText = msg;
-            document.body.appendChild(el);
+
+            container.appendChild(el);
             setTimeout(() => el.remove(), 2200);
           }
+
+
 
           function openScoreModal(btn) {
             const mode = btn.dataset.mode;
