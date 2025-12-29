@@ -48,12 +48,13 @@ exports.listVideos = async (req, res) => {
     for (const v of rows) {
         const ytId = extractYouTubeId(v.url);
 
-        let stats = { views: 0, likes: 0, comments: 0, duration: 0 };
-
-        if (ytId) {
-            const yt = await getYouTubeVideoStats(ytId);
-            if (yt) stats = yt;
-        }
+        let stats = {
+            views: v.views || 0,
+            likes: v.likes || 0,
+            comments: v.comments || 0,
+            duration: v.duration || 0,
+            publishedAt: v.published_at || null
+        };
 
         // Use YouTube `publishedAt` only (per request). If absent, leave null so template shows 'Tanggal tidak tersedia'.
         const publishedAtCandidate = stats.publishedAt || null;
