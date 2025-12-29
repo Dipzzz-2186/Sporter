@@ -1988,12 +1988,34 @@ exports.renderTicketOrders = async (req, res) => {
       params.push(match_id);
     }
 
-    const [sports] = await db.query(
-      `SELECT id, name FROM sports ORDER BY name`
-    );
+    const sports = await loadSportsList(req.session.user);
+
+    const isSingleSport =
+      req.session.user.role === 'subadmin' && sports.length === 1;
+
+    const defaultSportId = isSingleSport ? sports[0].id : null;
+
+    // ⛔ kalau subadmin single sport dan query kosong → paksa pakai sport itu
+    if (isSingleSport && !req.query.sport_id) {
+      req.query.sport_id = defaultSportId;
+    }
+
     let matchWhere = `WHERE t.holder_name IS NOT NULL`;
     let matchParams = [];
 
+    // 🔒 Subadmin: batasi ke sport yang dia miliki
+    if (user.role === 'subadmin') {
+      if (!allowedSports.length) {
+        // ❌ subadmin tanpa cabang → jangan tampilkan jadwal
+        matchWhere += ' AND 1 = 0';
+      } else {
+        const placeholders = allowedSports.map(() => '?').join(',');
+        matchWhere += ` AND m.sport_id IN (${placeholders})`;
+        matchParams.push(...allowedSports);
+      }
+    }
+
+    // 🎯 Filter sport dari dropdown
     if (sport_id) {
       matchWhere += ` AND m.sport_id = ?`;
       matchParams.push(sport_id);
@@ -2059,8 +2081,10 @@ exports.renderTicketOrders = async (req, res) => {
       orders,
       sports,
       matches,
-      selectedSport: sport_id || '',
-      selectedMatch: match_id || ''
+      selectedSport: req.query.sport_id || '',
+      selectedMatch: req.query.match_id || '',
+      isSingleSport,
+      defaultSportId
     });
   } catch (err) {
     console.error('renderTicketOrders error', err);

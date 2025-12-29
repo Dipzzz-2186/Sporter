@@ -591,18 +591,22 @@ block content
         .card-body
           form.filter-form(method="get")
             .row.g-3.align-items-end
-              .col-md-4
-                .mb-2
-                  label.form-label
-                    i.bi.bi-dribbble.me-1
-                    | Cabang Olahraga
-                  select.form-select(name="sport_id" onchange="this.form.submit()")
-                    option(value="") Semua Cabang
-                    each s in sports
-                      option(
-                        value=s.id
-                        selected=(String(selectedSport) === String(s.id))
-                      )= s.name
+              if !isSingleSport
+                .col-md-4
+                  .mb-2
+                    label.form-label
+                      i.bi.bi-dribbble.me-1
+                      | Cabang Olahraga
+                    select.form-select(name="sport_id" onchange="this.form.submit()")
+                      option(value="") Semua Cabang
+                      each s in sports
+                        option(
+                          value=s.id
+                          selected=(String(selectedSport) === String(s.id))
+                        )= s.name
+              else
+                //- hidden input supaya sport_id tetap terkirim
+                input(type="hidden" name="sport_id" value=defaultSportId)
               .col-md-4
                 .mb-2
                   label.form-label
@@ -624,7 +628,10 @@ block content
                   | Terapkan Filter
                 
                 if selectedSport || searchQuery || startDate || endDate
-                  a.btn-reset(href="/admin/ticket-orders")
+                  if isSingleSport
+                    a.btn-reset(href=`/subadmin/ticket-orders?sport_id=${defaultSportId}`)
+                  else
+                    a.btn-reset(href="/subadmin/ticket-orders")
                     i.bi.bi-x-lg.me-1
                     | Reset Filter
                 
