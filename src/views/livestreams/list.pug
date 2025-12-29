@@ -1160,7 +1160,7 @@ block content
         
         .streams-header-right
           .live-counter#live-count
-            i.bi.bi-broadcast.text-danger
+            i.bi.bi-broadcast
             span #{livestreams.filter(l => l.is_live).length || 0} Sedang Tayang
           
           .d-flex.align-items-center.gap-2
@@ -1170,7 +1170,7 @@ block content
       if livestreams.length === 0
         .stream-empty-state
           .stream-empty-state-icon
-            i.bi.bi-broadcast-slash-fill
+            i.bi.bi-broadcast-pin-fill
           h3 Belum Ada Siaran
           p
             | Siaran langsung akan segera tersedia di platform SPORTER.
@@ -1240,7 +1240,7 @@ block content
       .stats-grid
         .stats-card
           .stats-icon-wrapper
-            i.bi.bi-broadcast-pin-fill
+            i.bi.bi-broadcast
           .stats-value #{livestreams.filter(l => l.is_live).length || 0}
           .stats-label Sedang Tayang
         
