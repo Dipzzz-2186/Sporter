@@ -533,6 +533,30 @@ block content
                     h6 Tanggal
                     p Tanggal tidak tersedia
               
+              // Views
+              .info-item-detail
+                .info-icon-detail
+                  i.bi.bi-eye
+                .info-content-detail
+                  h6 Views
+                  p= (video.views || 0).toLocaleString('id-ID')
+
+              // Likes
+              .info-item-detail
+                .info-icon-detail
+                  i.bi.bi-hand-thumbs-up
+                .info-content-detail
+                  h6 Likes
+                  p= (video.likes || 0).toLocaleString('id-ID')
+
+              // Comments
+              .info-item-detail
+                .info-icon-detail
+                  i.bi.bi-chat-dots
+                .info-content-detail
+                  h6 Komentar
+                  p= (video.comments || 0).toLocaleString('id-ID')
+                  
               // Platform
               if video.platform
                 .info-item-detail

@@ -169,10 +169,21 @@ exports.viewVideo = async (req, res) => {
         const ytId = extractYouTubeId(video.url);
         if (ytId) {
             const yt = await getYouTubeVideoStats(ytId);
-            // prefer YouTube publishedAt, fall back to existing DB dates so template shows something
-            video.published_at = (yt && yt.publishedAt) || video.published_at || video.created_at || null;
+
+            video.published_at =
+                yt?.publishedAt ||
+                video.published_at ||
+                video.created_at ||
+                null;
+
+            // ✅ AMBIL DARI YOUTUBE
+            video.views = Number(yt?.views) || 0;
+            video.likes = Number(yt?.likes) || 0;
+            video.comments = Number(yt?.comments) || 0;
         } else {
-            video.published_at = video.published_at || video.created_at || null;
+            video.views = 0;
+            video.likes = 0;
+            video.comments = 0;
         }
     } catch (err) {
         console.error('Failed to fetch YT stats for viewVideo', err);
@@ -220,15 +231,35 @@ exports.viewLivestream = async (req, res) => {
     try {
         const { checkYouTubeLive } = require('../utils/youtube.util');
         const ytId = extractYouTubeId(livestream.url);
+
         if (ytId) {
             const yt = await checkYouTubeLive(ytId);
-            livestream.published_at = (yt && yt.publishedAt) || livestream.published_at || livestream.created_at || null;
+
+            livestream.published_at =
+                yt?.publishedAt ||
+                livestream.published_at ||
+                livestream.created_at ||
+                null;
+
+            // ✅ WAJIB SET STATS
+            livestream.views = Number(yt?.views) || 0;
+            livestream.likes = Number(yt?.likes) || 0;
+            livestream.comments = Number(yt?.comments) || 0;
+            livestream.concurrent_viewers = Number(yt?.concurrentViewers) || 0;
         } else {
-            livestream.published_at = livestream.published_at || livestream.created_at || null;
+            livestream.views = 0;
+            livestream.likes = 0;
+            livestream.comments = 0;
+            livestream.concurrent_viewers = 0;
         }
     } catch (err) {
         console.error('Failed to fetch YT live details for viewLivestream', err);
+
         livestream.published_at = livestream.published_at || livestream.created_at || null;
+        livestream.views = 0;
+        livestream.likes = 0;
+        livestream.comments = 0;
+        livestream.concurrent_viewers = 0;
     }
 
     res.render("livestreams/view", { livestream, embedUrl });

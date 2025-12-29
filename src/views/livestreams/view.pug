@@ -612,15 +612,45 @@ block content
               
               // Status
               .info-item-sidebar
-                .info-label Status
+                .info-label
+                  i.bi.bi-activity.me-1
+                  | Status
                 if livestream.is_live
                   span.status-badge.status-live
-                    i.bi.bi-broadcast
+                    i.bi.bi-broadcast.me-1
                     span SEDANG LIVE
                 else
                   span.status-badge.status-offline
-                    i.bi.bi-stop-circle
+                    i.bi.bi-stop-circle.me-1
                     span Tidak Live
+
+              // Views
+              .info-item-sidebar
+                .info-label
+                  i.bi.bi-eye-fill.me-1
+                  | Total Views
+                p.info-value
+                  i.bi.bi-eye.me-1.text-secondary
+                  = (livestream.views || 0).toLocaleString('id-ID')
+
+              // Concurrent Viewers (LIVE saja)
+              if livestream.is_live
+                .info-item-sidebar
+                  .info-label
+                    i.bi.bi-people-fill.me-1
+                    | Views Saat Ini
+                  p.info-value
+                    i.bi.bi-person-video3.me-1.text-secondary
+                    = (livestream.concurrent_viewers || 0).toLocaleString('id-ID')
+
+              // Likes
+              .info-item-sidebar
+                .info-label
+                  i.bi.bi-hand-thumbs-up-fill.me-1
+                  | Likes
+                p.info-value
+                  i.bi.bi-hand-thumbs-up.me-1.text-secondary
+                  = (livestream.likes || 0).toLocaleString('id-ID')
 
           // Share Card
           .sidebar-card.share-card
