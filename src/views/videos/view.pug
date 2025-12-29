@@ -516,14 +516,22 @@ block content
                     h6 Pertandingan
                     p= video.match_title
               
-              // Date
-              if video.start_time
+              // Date (prefer published_at from YouTube/DB, fallback to start_time)
+              - const viewDate = video.published_at || null
+              if viewDate
                 .info-item-detail
                   .info-icon-detail
                     i.bi.bi-calendar-date
                   .info-content-detail
                     h6 Tanggal
-                    p= new Date(video.start_time).toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                    p= new Date(viewDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+              else
+                .info-item-detail
+                  .info-icon-detail
+                    i.bi.bi-calendar-date
+                  .info-content-detail
+                    h6 Tanggal
+                    p Tanggal tidak tersedia
               
               // Platform
               if video.platform

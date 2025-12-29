@@ -1073,7 +1073,11 @@ block content
                     
                 .featured-detail-item
                   span.featured-detail-label Upload
-                  span.featured-detail-value= new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+                  - const featuredDate = featuredVideo.published_at || null
+                  if featuredDate
+                    span.featured-detail-value= new Date(featuredDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+                  else
+                    span.featured-detail-value Tanggal tidak tersedia
               
               button.btn.btn-primary.btn-lg.w-100(type="button")
                 i.bi.bi-play-circle-fill.me-2
@@ -1200,7 +1204,11 @@ block content
                     .video-card-meta
                       .video-meta-item
                         i.bi.bi-calendar-event
-                        span= new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+                        - const publishDate = v.published_at || null
+                        if publishDate
+                          span= new Date(publishDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+                        else
+                          span Tanggal tidak tersedia
                       .video-meta-item
                         i.bi.bi-clock
                         span #{v.duration} menit

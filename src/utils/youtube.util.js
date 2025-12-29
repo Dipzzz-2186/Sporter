@@ -39,6 +39,7 @@ async function checkYouTubeLive(videoId) {
         views: Number(item.statistics?.viewCount || 0),
         likes: Number(item.statistics?.likeCount || 0),
         comments: Number(item.statistics?.commentCount || 0),
+        publishedAt: item.snippet?.publishedAt || null,
         concurrentViewers: Number(
             item.liveStreamingDetails?.concurrentViewers || 0
         )
@@ -52,7 +53,7 @@ async function getYouTubeVideoStats(videoId) {
         'https://www.googleapis.com/youtube/v3/videos',
         {
             params: {
-                part: 'statistics,contentDetails',
+                part: 'statistics,contentDetails,snippet',
                 id: videoId,
                 key: API_KEY
             }
@@ -67,7 +68,8 @@ async function getYouTubeVideoStats(videoId) {
         views: Number(item.statistics?.viewCount || 0),
         likes: Number(item.statistics?.likeCount || 0),
         comments: Number(item.statistics?.commentCount || 0),
-        duration: parseISO8601Duration(item.contentDetails?.duration)
+        duration: parseISO8601Duration(item.contentDetails?.duration),
+        publishedAt: item.snippet?.publishedAt || null
     };
 }
 

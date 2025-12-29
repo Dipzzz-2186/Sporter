@@ -1073,15 +1073,18 @@ block content
               .featured-stream-overlay
                 h3.featured-stream-title= featuredStream.title
                 .featured-stream-meta
-                  span.featured-stream-info
-                    i.bi.bi-calendar-event
-                    = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })
-                  span.featured-stream-info
-                    i.bi.bi-clock
-                    = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})
-                  span.featured-stream-info
-                    i.bi.bi-people-fill
-                    | #{Math.floor(Math.random() * 10000) + 1000} Penonton
+                    - const featuredDate = featuredStream && (featuredStream.published_at) || null
+                    if featuredDate
+                      span.featured-stream-info
+                        i.bi.bi-calendar-event
+                        = new Date(featuredDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+                    else
+                      span.featured-stream-info
+                        i.bi.bi-calendar-event
+                        | Tanggal tidak tersedia
+                    span.featured-stream-info
+                      i.bi.bi-people-fill
+                      | #{Math.floor(Math.random() * 10000) + 1000} Penonton
             
             .featured-stream-content
               .featured-stream-details
@@ -1200,10 +1203,11 @@ block content
                   .stream-card-meta
                     .stream-meta-item
                       i.bi.bi-calendar-event
-                      span= new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
-                    .stream-meta-item
-                      i.bi.bi-clock
-                      span= new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})
+                      - const streamDate = item.published_at || null
+                      if streamDate
+                        span= new Date(streamDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+                      else
+                        span Tanggal tidak tersedia
                     .stream-meta-item
                       i.bi.bi-geo-alt
                       span= item.venue_name || 'Online'

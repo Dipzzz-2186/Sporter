@@ -55,6 +55,9 @@ exports.listVideos = async (req, res) => {
             if (yt) stats = yt;
         }
 
+        // Use YouTube `publishedAt` only (per request). If absent, leave null so template shows 'Tanggal tidak tersedia'.
+        const publishedAtCandidate = stats.publishedAt || null;
+
         videos.push({
             ...v,
             embed_url: parseYouTubeEmbed(v.url),
@@ -62,7 +65,8 @@ exports.listVideos = async (req, res) => {
             views: stats.views,
             likes: stats.likes,
             comments: stats.comments,
-            duration: stats.duration
+            duration: stats.duration,
+            published_at: publishedAtCandidate
         });
     }
 
@@ -109,6 +113,9 @@ exports.listLivestreams = async (req, res) => {
             }
 
             // ✅ LIVE → tampilkan
+            // Use YouTube publishedAt only for livestreams; if absent keep null
+            const publishedAtLive = yt.publishedAt || null;
+
             livestreams.push({
                 ...r,
                 sport_name: r.sport_name,
@@ -119,7 +126,8 @@ exports.listLivestreams = async (req, res) => {
                 concurrent_viewers: yt.concurrentViewers,
                 embedUrl: parseYouTubeEmbed(r.url),
                 thumbnail_url: r.thumbnail_url || getYouTubeThumbnail(r.url),
-                icon_class: getSportIconClass(r.sport_name)
+                icon_class: getSportIconClass(r.sport_name),
+                published_at: publishedAtLive
             });
 
         } catch (err) {
@@ -138,6 +146,7 @@ exports.listLivestreams = async (req, res) => {
 // =====================
 exports.viewVideo = async (req, res) => {
     const { id } = req.params;
+    const { getYouTubeVideoStats } = require('../utils/youtube.util');
 
     const [[video]] = await db.query(`
         SELECT v.*, s.name AS sport_name
@@ -153,6 +162,21 @@ exports.viewVideo = async (req, res) => {
     // viewVideo TIDAK BOLEH HANDLE LIVESTREAM
     if (video.type === 'livestream' && video.is_live === 1) {
         return res.redirect(`/livestreams/${video.id}`);
+    }
+
+    // Try to fetch YouTube stats for this video to obtain publishedAt
+    try {
+        const ytId = extractYouTubeId(video.url);
+        if (ytId) {
+            const yt = await getYouTubeVideoStats(ytId);
+            // prefer YouTube publishedAt, fall back to existing DB dates so template shows something
+            video.published_at = (yt && yt.publishedAt) || video.published_at || video.created_at || null;
+        } else {
+            video.published_at = video.published_at || video.created_at || null;
+        }
+    } catch (err) {
+        console.error('Failed to fetch YT stats for viewVideo', err);
+        video.published_at = video.published_at || video.created_at || null;
     }
 
     res.render('videos/view', {
@@ -192,5 +216,20 @@ exports.viewLivestream = async (req, res) => {
     if (livestream.is_live !== 1) {
         return res.redirect(`/videos/${livestream.id}`);
     }
+    // Try to fetch YouTube live details to get publishedAt if available
+    try {
+        const { checkYouTubeLive } = require('../utils/youtube.util');
+        const ytId = extractYouTubeId(livestream.url);
+        if (ytId) {
+            const yt = await checkYouTubeLive(ytId);
+            livestream.published_at = (yt && yt.publishedAt) || livestream.published_at || livestream.created_at || null;
+        } else {
+            livestream.published_at = livestream.published_at || livestream.created_at || null;
+        }
+    } catch (err) {
+        console.error('Failed to fetch YT live details for viewLivestream', err);
+        livestream.published_at = livestream.published_at || livestream.created_at || null;
+    }
+
     res.render("livestreams/view", { livestream, embedUrl });
 };
