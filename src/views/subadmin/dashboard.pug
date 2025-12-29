@@ -392,7 +392,27 @@ block content
       padding-bottom: 1rem;
       border-bottom: 2px solid var(--gray-200);
     }
-    
+
+    /* Section Header Action Button (Kelola / Lihat Semua) */
+    .section-header a {
+      color: var(--gray-600);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      background: rgba(0, 149, 255, 0.08);
+      border: 1px solid rgba(0, 149, 255, 0.15);
+    }
+
+    .section-header a:hover {
+      color: var(--primary);
+      background: rgba(0, 149, 255, 0.15);
+      border-color: rgba(0, 149, 255, 0.25);
+      transform: translateX(3px);
+    }
+
     .section-title {
       font-size: 1.5rem;
       font-weight: 700;
@@ -953,6 +973,7 @@ block content
         h2.section-title
           i.bi.bi-calendar-event
           | Jadwal Mendatang
+        a(href="/subadmin/matches") Kelola Jadwal
 
       if upcomingMatches && upcomingMatches.length
         .upcoming-grid
@@ -995,6 +1016,7 @@ block content
           h2.section-title
             i.bi.bi-broadcast
             | Livestream Aktif
+          a(href="/subadmin/livestreams") Kelola Livestream
 
         if upcomingLivestreams && upcomingLivestreams.length
           .livestream-grid
@@ -1018,6 +1040,7 @@ block content
           h2.section-title
             i.bi.bi-newspaper
             | Berita Terbaru
+          a(href="/subadmin/news") Lihat Semua
 
         if recentNews && recentNews.length
           ul.news-compact
@@ -1038,12 +1061,13 @@ block content
         h2.section-title
           i.bi.bi-play-btn
           | Video Terbaru
+        a(href="/subadmin/videos") Kelola Video
 
       if recentVideos && recentVideos.length
         .video-scroll
           each video in recentVideos
             a.video-card(href=`/videos/${video.id}`)
-              img(loading="lazy" src=video.thumbnail_url alt=video.title data-src=video.thumbnail_url)
+              img(loading="lazy" src=video.thumbnail_url alt=video.title)
               .video-card-content
                 span= video.title
       else
