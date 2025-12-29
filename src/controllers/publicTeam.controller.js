@@ -5,7 +5,6 @@ exports.show = async (req, res) => {
   const teamId = Number(rawId);
 
   try {
-    console.log('[publicTeam.show] hit:', { rawId, teamId, url: req.originalUrl });
 
     // validasi id (biar gak silent redirect)
     if (!Number.isInteger(teamId) || teamId <= 0) {
@@ -44,9 +43,6 @@ exports.show = async (req, res) => {
       WHERE tm.team_id = ?
       ORDER BY a.name
     `, [teamId]);
-
-
-    console.log('[publicTeam.show] loaded:', { team: team.name, members: members.length });
 
     return res.render('teams/show', {
       title: team.name,
