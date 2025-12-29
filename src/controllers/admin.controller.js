@@ -131,6 +131,8 @@ exports.renderDashboard = async (req, res) => {
       v.title,
       v.start_time,
       v.is_live,
+      v.thumbnail_url,
+      v.url,
       s.name AS sport_name
     FROM videos v
     LEFT JOIN sports s ON s.id = v.sport_id
@@ -139,6 +141,12 @@ exports.renderDashboard = async (req, res) => {
     ORDER BY v.start_time DESC
     LIMIT 6
   `);
+
+    // ensure thumbnail_url exists for livestreams (generate from YouTube URL if missing)
+    const processedLiveLivestreams = liveLivestreams.map(l => ({
+      ...l,
+      thumbnail_url: l.thumbnail_url && l.thumbnail_url.trim() ? l.thumbnail_url : (getYouTubeThumbnail(l.url) || '/images/no-video-thumbnail.jpg')
+    }));
 
     // Upcoming Matches
     const [upcomingMatches] = await db.query(`
@@ -161,7 +169,7 @@ exports.renderDashboard = async (req, res) => {
       recentEvents,
       recentNews,
       recentVideos: processedVideos,
-      upcomingLivestreams: liveLivestreams,
+      upcomingLivestreams: processedLiveLivestreams,
       upcomingMatches,
       standings,
       currentUser: req.session.user
