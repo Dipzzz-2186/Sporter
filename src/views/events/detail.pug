@@ -351,7 +351,67 @@ block content
       box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
       color: white;
     }
-    
+
+    /* Toast */
+      .toast-wrap {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+      }
+
+      .toast-item {
+        min-width: 260px;
+        max-width: 360px;
+        background: rgba(17, 24, 39, 0.92);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 14px;
+        padding: 12px 14px;
+        box-shadow: 0 12px 30px rgba(0,0,0,.25);
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        transform: translateY(10px);
+        opacity: 0;
+        animation: toastIn .25s ease-out forwards;
+      }
+
+      .toast-item .ico {
+        font-size: 1.1rem;
+        line-height: 1;
+        margin-top: 2px;
+        opacity: .95;
+      }
+
+      .toast-item .txt {
+        font-size: .95rem;
+        line-height: 1.35;
+        font-weight: 600;
+      }
+
+      .toast-item .sub {
+        margin-top: 2px;
+        font-size: .85rem;
+        opacity: .8;
+        font-weight: 500;
+      }
+
+      .toast-item.success { background: rgba(5, 150, 105, 0.92); }
+      .toast-item.info    { background: rgba(0, 149, 255, 0.92); }
+      .toast-item.warn    { background: rgba(245, 158, 11, 0.92); }
+      .toast-item.error   { background: rgba(220, 38, 38, 0.92); }
+
+      @keyframes toastIn {
+        to { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes toastOut {
+        to { transform: translateY(10px); opacity: 0; }
+      } 
     /* Responsive */
     @media (max-width: 991px) {
       .event-detail-header {
@@ -426,6 +486,7 @@ block content
       .not-found-title {
         font-size: 2rem;
       }
+
     }
 
   .event-detail-page
@@ -574,13 +635,19 @@ block content
                 span Aksi Cepat
 
               .quick-actions
-                button.quick-action-btn#btnSaveEvent(
-                  type="button"
+                a.quick-action-btn#btnSaveEvent(
+                  href="#"
                   data-event-id=event.id
-                  onclick="handleSaveEvent(this)"
+                  data-favorited=(isFavorited ? "1" : "0")
+                  onclick="handleSaveEvent(this); return false;"
                 )
-                  i.bi.bi-bookmark-plus
-                  span Simpan Event
+                  if isFavorited
+                    i.bi.bi-bookmark-check-fill
+                    span Tersimpan!
+                  else
+                    i.bi.bi-bookmark-plus
+                    span Simpan Event
+
 
                 button.quick-action-btn(type="button" onclick="handleShareEvent()")
                   i.bi.bi-share
@@ -589,6 +656,8 @@ block content
                 a.quick-action-btn(href=`/events/${event.slug || event.id}/add-to-google` target="_blank")  
                   i.bi.bi-calendar-plus
                   span Tambah ke Kalender
+  #toastWrap.toast-wrap
+                  
 
 
   script.
@@ -616,6 +685,39 @@ block content
       }
 
       function toast(msg) { alert(msg); }
+
+      function showToast(type, title, subtitle) {
+        const wrap = document.getElementById('toastWrap');
+        if (!wrap) return;
+
+        const el = document.createElement('div');
+        el.className = `toast-item ${type || 'info'}`;
+
+        const iconMap = {
+          success: 'bi-check-circle-fill',
+          info: 'bi-info-circle-fill',
+          warn: 'bi-exclamation-triangle-fill',
+          error: 'bi-x-circle-fill'
+        };
+
+        el.innerHTML = `
+          <i class="bi ${iconMap[type] || iconMap.info} ico"></i>
+          <div>
+            <div class="txt">${title || ''}</div>
+            ${subtitle ? `<div class="sub">${subtitle}</div>` : ''}
+          </div>
+        `;
+
+        wrap.appendChild(el);
+
+        const remove = () => {
+          el.style.animation = 'toastOut .2s ease-in forwards';
+          setTimeout(() => el.remove(), 220);
+        };
+
+        setTimeout(remove, 2200);
+      }
+
 
       async function handleShareEvent() {
         const title = '#{event ? event.title : ""}';
@@ -664,6 +766,12 @@ block content
           } else {
             btn.innerHTML = '<i class="bi bi-bookmark-plus"></i><span>Simpan Event</span>';
           }
+          if (data.favorited) {
+            showToast('success', 'Ditambahkan ke Favorit', 'Event tersimpan di halaman Favorites');
+          } else {
+            showToast('info', 'Dihapus dari Favorit', 'Event tidak lagi ada di Favorites');
+          }
+
           btn.disabled = false;
         } catch (e) {
           console.log('Save event error:', e);

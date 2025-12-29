@@ -1,4 +1,14 @@
 const Event = require("../models/event.model");
+const db = require("../config/db");
+
+function getCurrentUser(req, res) {
+  return (
+    req.user ||
+    res.locals.currentUser ||
+    (req.session && (req.session.user || req.session.currentUser)) ||
+    null
+  );
+}
 
 function formatDate(date) {
   if (!date) return null;
@@ -69,6 +79,7 @@ exports.viewEvent = async (req, res) => {
       return res.status(404).render("events/detail", {
         title: "Event Tidak Ditemukan - Sporter",
         event: null,
+        isFavorited: false,
       });
     }
 
@@ -77,15 +88,34 @@ exports.viewEvent = async (req, res) => {
     event.start_date_formatted = formatDate(event.start_date);
     event.end_date_formatted = formatDate(event.end_date);
 
+    // ✅ cek apakah event ini sudah difavorite user
+    const currentUser = getCurrentUser(req, res);
+    let isFavorited = false;
+
+    if (currentUser) {
+      const [rows] = await db.query(
+        `SELECT 1
+         FROM user_favorites
+         WHERE user_id = ?
+           AND entity_type = 'event'
+           AND entity_id = ?
+         LIMIT 1`,
+        [currentUser.id, event.id]
+      );
+      isFavorited = rows.length > 0;
+    }
+
     res.render("events/detail", {
       title: `${event.title} - Sporter`,
       event,
+      isFavorited, // ✅ kirim ke pug
     });
   } catch (err) {
     console.error("ERROR viewEvent:", err);
     res.status(500).send("Terjadi kesalahan server");
   }
 };
+
 
 exports.addToGoogleCalendar = async (req, res) => {
   try {
