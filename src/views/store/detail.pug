@@ -34,8 +34,17 @@ block content
 
     /* Product Detail Container */
     .product-detail-container {
+      
       padding: 2rem 0;
       animation: fadeIn 0.8s ease-out;
+    }
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     @keyframes fadeIn {
@@ -65,17 +74,16 @@ block content
     }
 
     /* Product Layout */
-    .product-detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      margin-bottom: 4rem;
+    .product-detail-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr; /* 2 kolom */
+      gap: 2rem;
     }
 
-    @media (max-width: 992px) {
+    @media (max-width: 576px) {
       .product-detail-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 1.5rem;
       }
     }
 
@@ -723,149 +731,148 @@ block content
 
   // Product Detail Container
   .product-detail-container
-    .container
-      // Breadcrumb
-      nav.breadcrumb-nav(aria-label="breadcrumb")
-        ol.breadcrumb
-          li.breadcrumb-item
-            a(href="/") Beranda
-          li.breadcrumb-item
-            a(href="/store") Store
-          if product.sport_name
+    .container-fluid
+      .px-3.px-lg-4
+        nav.breadcrumb-nav(aria-label="breadcrumb")
+          ol.breadcrumb
             li.breadcrumb-item
-              a(href=`/store?category=${product.sport_name.toLowerCase().replace(' ', '-')}`)= product.sport_name
-          li.breadcrumb-item.active(aria-current="page")= product.name
+              a(href="/") Beranda
+            li.breadcrumb-item
+              a(href="/store") Store
+            if product.sport_name
+              li.breadcrumb-item
+                a(href=`/store?category=${product.sport_name.toLowerCase().replace(' ', '-')}`)= product.sport_name
+            li.breadcrumb-item.active(aria-current="page")= product.name
 
-      // Product Grid
-      .product-detail-grid
-        // Product Gallery
-        .product-gallery
-          .main-image-container
-            .image-badge
-              i.bi.bi-trophy
-              span= product.sport_name || 'SPORTER'
+        // Product Grid (WAJIB masih di dalam .px-3)
+        .product-detail-grid
+          // LEFT: Gallery
+          .product-gallery
+            .main-image-container
+              .image-badge
+                i.bi.bi-trophy
+                span= product.sport_name || 'SPORTER'
 
-            if images && images.length
-              img.main-image(
-                src=images[0].image_url
-                alt=product.name
-                id="mainProductImage"
-              )
-            else
-              .main-image(style="display:flex;align-items:center;justify-content:center;")
-                i.bi.bi-image(style="font-size:6rem;color:var(--gray-300);")
-
-          // Thumbnail Gallery
-          if images && images.length > 1
-            .thumbnail-gallery(style="display:flex;gap:10px;flex-wrap:wrap;")
-              each img in images
-                img.thumbnail(
-                  src=img.image_url
+              if images && images.length
+                img.main-image(
+                  src=images[0].image_url
                   alt=product.name
-                  class=img.image_url === images[0].image_url ? 'active' : ''
-                  style="width:80px;height:80px;object-fit:cover;border-radius:10px;cursor:pointer;border:2px solid var(--gray-200);"
-                  onclick=`setMainImage('${img.image_url}', this)`
+                  id="mainProductImage"
                 )
+              else
+                .main-image(style="display:flex;align-items:center;justify-content:center;")
+                  i.bi.bi-image(style="font-size:6rem;color:var(--gray-300);")
 
-        // Product Info
-        .product-info
-          .product-category
-            i.bi.bi-trophy
-            = product.sport_name || 'Semua Cabang Olahraga'
+            // Thumbnail Gallery (WAJIB di dalam .product-gallery)
+            if images && images.length > 1
+              .thumbnail-gallery(style="display:flex;gap:10px;flex-wrap:wrap;")
+                each img in images
+                  img.thumbnail(
+                    src=img.image_url
+                    alt=product.name
+                    class=img.image_url === images[0].image_url ? 'active' : ''
+                    style="width:80px;height:80px;object-fit:cover;border-radius:10px;cursor:pointer;border:2px solid var(--gray-200);"
+                    onclick=`setMainImage('${img.image_url}', this)`
+                  )
+
+          // RIGHT: Info (WAJIB masih di dalam .product-detail-grid)
+          .product-info
+            .product-category
+              i.bi.bi-trophy
+              = product.sport_name || 'Semua Cabang Olahraga'
+
+            h1.product-title= product.name
+
+            .product-seller
+              .seller-avatar= product.seller_name ? product.seller_name.charAt(0).toUpperCase() : 'S'
+              .seller-info
+                h5= product.seller_name || 'Sporter Official'
+                p
+                  i.bi.bi-shop
+                  | Seller Terverifikasi
+                  span.seller-rating
+                    i.bi.bi-star-fill
+                    i.bi.bi-star-fill
+                    i.bi.bi-star-fill
+                    i.bi.bi-star-fill
+                    i.bi.bi-star-half
+                    span.ms-1 (4.5)
+
+            .product-price-section
+              .current-price Rp #{Number(product.price).toLocaleString('id-ID')}
+              .price-label
+                i.bi.bi-tag
+                | Harga Satuan
+                if product.original_price && product.original_price > product.price
+                  span.original-price Rp #{Number(product.original_price).toLocaleString('id-ID')}
+
+            .stock-status(class=product.stock < 10 ? 'stock-low' : product.stock === 0 ? 'stock-out' : '')
+              .stock-icon
+                if product.stock > 10
+                  i.bi.bi-check-lg
+                else if product.stock > 0
+                  i.bi.bi-exclamation-triangle
+                else
+                  i.bi.bi-x-lg
+              .stock-info
+                if product.stock > 10
+                  h6 Stok Tersedia
+                  p #{product.stock} unit tersedia. Siap dikirim.
+                else if product.stock > 0
+                  h6 Stok Menipis
+                  p Hanya #{product.stock} unit tersisa. Segera beli!
+                else
+                  h6 Stok Habis
+                  p Produk sedang tidak tersedia.
+
+            // Action Buttons (taruh tetap di dalam .product-info)
+            if !currentUser
+              .login-required
+                h5
+                  i.bi.bi-lock
+                  | Login Diperlukan
+                p.mb-3 Login untuk menambahkan produk ini ke keranjang belanja.
+                a.btn.btn-warning(href=`/login?next=/store/${product.id}` style="background: var(--gradient-accent); border: none;")
+                  i.bi.bi-box-arrow-in-right.me-2
+                  | Login ke Akun Anda
+            else if currentUser.role !== 'user'
+              .login-required
+                h5
+                  i.bi.bi-info-circle
+                  | Hanya untuk User
+                p.mb-3 Hanya pengguna dengan role user yang dapat membeli produk.
+                a.btn.btn-primary(href="/" style="background: var(--gradient-primary); border: none;")
+                  i.bi.bi-arrow-left.me-2
+                  | Kembali ke Beranda
           
-          h1.product-title= product.name
-          
-          .product-seller
-            .seller-avatar= product.seller_name ? product.seller_name.charAt(0).toUpperCase() : 'S'
-            .seller-info
-              h5= product.seller_name || 'Sporter Official'
-              p
-                i.bi.bi-shop
-                | Seller Terverifikasi
-                span.seller-rating
-                  i.bi.bi-star-fill
-                  i.bi.bi-star-fill
-                  i.bi.bi-star-fill
-                  i.bi.bi-star-fill
-                  i.bi.bi-star-half
-                  span.ms-1 (4.5)
-          
-          .product-price-section
-            .current-price Rp #{Number(product.price).toLocaleString('id-ID')}
-            .price-label
-              i.bi.bi-tag
-              | Harga Satuan
-              if product.original_price && product.original_price > product.price
-                span.original-price Rp #{Number(product.original_price).toLocaleString('id-ID')}
-          
-          .stock-status(class=product.stock < 10 ? 'stock-low' : product.stock === 0 ? 'stock-out' : '')
-            .stock-icon
-              if product.stock > 10
-                i.bi.bi-check-lg
-              else if product.stock > 0
-                i.bi.bi-exclamation-triangle
-              else
-                i.bi.bi-x-lg
-            .stock-info
-              if product.stock > 10
-                h6 Stok Tersedia
-                p #{product.stock} unit tersedia. Siap dikirim.
-              else if product.stock > 0
-                h6 Stok Menipis
-                p Hanya #{product.stock} unit tersisa. Segera beli!
-              else
-                h6 Stok Habis
-                p Produk sedang tidak tersedia.
-          
-          // Action Buttons
-          if !currentUser
-            .login-required
-              h5
-                i.bi.bi-lock
-                | Login Diperlukan
-              p.mb-3 Login untuk menambahkan produk ini ke keranjang belanja.
-              a.btn.btn-warning(href=`/login?next=/store/${product.id}` style="background: var(--gradient-accent); border: none;")
-                i.bi.bi-box-arrow-in-right.me-2
-                | Login ke Akun Anda
-          
-          else if currentUser.role !== 'user'
-            .login-required
-              h5
-                i.bi.bi-info-circle
-                | Hanya untuk User
-              p.mb-3 Hanya pengguna dengan role user yang dapat membeli produk.
-              a.btn.btn-primary(href="/" style="background: var(--gradient-primary); border: none;")
-                i.bi.bi-arrow-left.me-2
-                | Kembali ke Beranda
-          
-          else
-            .quantity-selector
-              .quantity-label
-                i.bi.bi-cart-plus
-                | Jumlah Pembelian
-              .quantity-controls
-                button.qty-btn(type="button" onclick="decreaseQuantity()") -
-                input.qty-input(type="number" name="qty" min="1" max=product.stock value="1" id="quantityInput" oninput="validateQuantity()")
-                button.qty-btn(type="button" onclick="increaseQuantity()") +
-              .max-stock
-                i.bi.bi-info-circle.me-1
-                | Maksimal #{product.stock} unit
-            
-            .action-buttons
-              form(method="post" action="/cart/add" id="addToCartForm")
-                input(type="hidden" name="merchandise_id" value=product.id)
-                input(type="hidden" name="qty" id="cartQuantity" value="1")
-                button.btn-add-to-cart(type="submit" id="addToCartBtn" class=product.stock === 0 ? 'disabled' : '')
+            else
+              .quantity-selector
+                .quantity-label
                   i.bi.bi-cart-plus
-                  | Tambah ke Keranjang
-            
-              a.btn-buy-now(href="#" onclick="buyNow()")
-                i.bi.bi-bag-check
-                | Beli Sekarang
-            
-              button.btn-wishlist(type="button" onclick="toggleWishlist()" id="wishlistBtn")
-                i.bi.bi-heart
-                span Tambah ke Wishlist
+                  | Jumlah Pembelian
+                .quantity-controls
+                  button.qty-btn(type="button" onclick="decreaseQuantity()") -
+                  input.qty-input(type="number" name="qty" min="1" max=product.stock value="1" id="quantityInput" oninput="validateQuantity()")
+                  button.qty-btn(type="button" onclick="increaseQuantity()") +
+                .max-stock
+                  i.bi.bi-info-circle.me-1
+                  | Maksimal #{product.stock} unit
+              
+              .action-buttons
+                form(method="post" action="/cart/add" id="addToCartForm")
+                  input(type="hidden" name="merchandise_id" value=product.id)
+                  input(type="hidden" name="qty" id="cartQuantity" value="1")
+                  button.btn-add-to-cart(type="submit" id="addToCartBtn" class=product.stock === 0 ? 'disabled' : '')
+                    i.bi.bi-cart-plus
+                    | Tambah ke Keranjang
+              
+                a.btn-buy-now(href="#" onclick="buyNow()")
+                  i.bi.bi-bag-check
+                  | Beli Sekarang
+              
+                button.btn-wishlist(type="button" onclick="toggleWishlist()" id="wishlistBtn")
+                  i.bi.bi-heart
+                  span Tambah ke Wishlist
 
       // Product Details Tabs
       .product-details-tabs
