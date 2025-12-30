@@ -44,6 +44,7 @@ exports.renderNewsList = async (req, res) => {
 };
 
 // Detail artikel (tidak berubah)
+// Detail artikel (FIX: tambah relatedArticles)
 exports.renderNewsDetail = async (req, res) => {
   try {
     const slug = req.params.slug;
@@ -55,12 +56,26 @@ exports.renderNewsDetail = async (req, res) => {
 
     article.published_at_formatted = formatDate(article.published_at);
 
+    // ambil berita lainnya
+    const latest = await News.getLatestNews(12);
+
+    const relatedArticles = latest
+      .filter(n => n.slug !== article.slug)  // exclude berita ini
+      .slice(0, 6)
+      .map(n => ({
+        ...n,
+        published_at_formatted: formatDate(n.published_at),
+      }));
+
     res.render("news/detail", {
       title: article.title + " - SPORTER",
       article,
+      relatedArticles, // <-- INI PENTING
+      currentUrl: req.protocol + "://" + req.get("host") + req.originalUrl, // optional buat share
     });
   } catch (err) {
     console.error("ERROR renderNewsDetail:", err);
     res.status(500).send("Terjadi kesalahan server");
   }
 };
+
