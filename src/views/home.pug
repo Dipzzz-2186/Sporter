@@ -403,6 +403,8 @@ block content
       text-align: center;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
+      max-width: 500px;
+      margin: 0 auto;
     }
     
     .sporter-hero-illustration:hover {
@@ -416,6 +418,8 @@ block content
       .sporter-hero-illustration {
         padding: 2.5rem 2rem;
         border-radius: 25px;
+        margin: 0;
+        max-width: 100%;
       }
     }
     
@@ -1081,7 +1085,7 @@ block content
       }
     }
     
-    /* Badge 67vent */
+    /* Badge event */
     .event-type-badge {
       margin-bottom: 1rem;
     }
@@ -1502,24 +1506,25 @@ block content
   .sporter-hero
     .container
       .row.align-items-center
-        .col-lg-6.hero-content.order-lg-1.order-2
-          span.badge.hero-badge
-            i.bi.bi-flag-fill.me-2
-            | Platform Olahraga #1 Indonesia
-          h1.fw-bold.mb-3.mb-md-4
-            | Jadwal, Skor, dan Berita 
-            span.text-danger Terupdate
-          p.lead.mb-4.mb-md-5
-            | SPORTER menghadirkan informasi olahraga Indonesia yang lengkap dan terintegrasi. Dapatkan informasi event, jadwal pertandingan, skor live, klasemen, livestream, dan tiket dalam satu platform yang modern dan mudah digunakan.
-          .hero-buttons
-            a.btn.btn-danger.btn-lg.mb-2.mb-md-0.me-md-3(href="/sports")
-              i.bi.bi-collection-play.me-2
-              | Jelajahi Cabang Olahraga
-            a.btn.btn-outline-danger.btn-lg(href="#features")
-              i.bi.bi-eye.me-2
-              | Lihat Fitur Lengkap
+        .col-lg-6.order-lg-1.order-2.mb-lg-0.mb-4
+          .hero-content
+            span.badge.hero-badge
+              i.bi.bi-flag-fill.me-2
+              | Platform Olahraga #1 Indonesia
+            h1.fw-bold.mb-3.mb-md-4
+              | Jadwal, Skor, dan Berita 
+              span.text-danger Terupdate
+            p.lead.mb-4.mb-md-5
+              | SPORTER menghadirkan informasi olahraga Indonesia yang lengkap dan terintegrasi. Dapatkan informasi event, jadwal pertandingan, skor live, klasemen, livestream, dan tiket dalam satu platform yang modern dan mudah digunakan.
+            .hero-buttons
+              a.btn.btn-danger.btn-lg.mb-2.mb-md-0.me-md-3(href="/sports")
+                i.bi.bi-collection-play.me-2
+                | Jelajahi Cabang Olahraga
+              a.btn.btn-outline-danger.btn-lg(href="#features")
+                i.bi.bi-eye.me-2
+                | Lihat Fitur Lengkap
         
-        .col-lg-6.order-lg-2.order-1.mb-4.mb-lg-0
+        .col-lg-6.order-lg-2.order-1
           .sporter-hero-illustration
             i.bi.bi-trophy-fill
             p.mb-0
@@ -1638,17 +1643,17 @@ block content
       if latestEvents && latestEvents.length
         .row.g-4.gy-5
           each e in latestEvents
-            .col-12.col-sm-6.col-lg-3
+            .col-12.col-sm-6.col-lg-4.col-xl-3
               .card.border-1.sporter-event-card
                 .card-body.d-flex.flex-column
-                  // Judul event
-                  h5.event-title.mb-3= e.title || 'Nama Event'
-                  
                   // Badge khusus "67vent" dari gambar
                   .event-type-badge.mb-3
                     span.badge.bg-primary.text-white.rounded-pill
                       i.bi.bi-trophy.me-1
                       | 67vent
+                  
+                  // Judul event
+                  h5.event-title.mb-3= e.title || 'Nama Event'
                   
                   // Deskripsi singkat
                   .event-description.mb-4
@@ -1664,7 +1669,11 @@ block content
                         a.btn.btn-outline-danger.w-100(href=`/events/${e.slug || e.id}`)
                           i.bi.bi-info-circle.me-1
                           span Detail
-      
+                      .col-6
+                        a.btn.btn-danger.w-100(href=`/events/${e.slug || e.id}/tickets`)
+                          i.bi.bi-ticket-perforated.me-1
+                          span Tiket
+
       else
         .empty-state
           .empty-state-icon
