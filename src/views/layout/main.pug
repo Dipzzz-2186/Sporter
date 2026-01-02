@@ -42,6 +42,84 @@ html(lang="id")
         --sport-blue: #0095FF;
       }
       
+      /* === Chatbot Floating Widget === */
+      #openChatBtn {
+        padding: 0;
+        font-size: 24px;
+        cursor: pointer;
+        background: linear-gradient(45deg, #007bff, #00c6ff);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        position: fixed;
+        bottom: 20px;
+        left: 20px; /* ⬅️ PINDAH KE KIRI */
+        z-index: 1002;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      #chatContainer {
+        display: none;
+        position: fixed;
+        bottom: 90px;
+        left: 20px; /* ⬅️ PINDAH KE KIRI */
+        width: 35vw;
+        height: 70vh;
+        max-width: 600px;
+        max-height: 800px;
+        min-width: 320px;
+        min-height: 400px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        flex-direction: column;
+        z-index: 1000;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+
+      #chatContainer.visible {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      #loadingIndicator {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 1001;
+        font-weight: 600;
+      }
+
+      #chatIframe {
+        border: 0;
+        width: 100%;
+        height: 100%;
+        flex-grow: 1;
+        visibility: hidden;
+      }
+
+      @media (max-width: 767px) {
+        #chatContainer {
+          width: 100vw;
+          height: 100vh;
+          left: 0;
+          bottom: 0;
+          border-radius: 0;
+        }
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -797,6 +875,22 @@ html(lang="id")
             span.d-none.d-md-inline  | 
             | Made with passion for Indonesian sports
 
+    // === CHATBOT FLOATING ===
+    button#openChatBtn(type="button")
+      i.bi.bi-chat-dots-fill
+
+    #chatContainer
+      #loadingIndicator Loading Chatbot...
+      iframe#chatIframe(
+        src="about:blank"
+        sandbox="allow-scripts allow-same-origin allow-popups"
+        referrerpolicy="strict-origin"
+        title="NusaBot Chatbot"
+        loading="lazy"
+        allow="autoplay"
+        
+      )
+
     // Scroll to Top Button
     button.scroll-top-btn#scrollTopBtn(aria-label="Scroll to top")
       i.bi.bi-arrow-up
@@ -879,5 +973,49 @@ html(lang="id")
         }
       });
 
+    script.
+      (function () {
+        const openBtn = document.getElementById('openChatBtn');
+        const chatContainer = document.getElementById('chatContainer');
+        const chatIframe = document.getElementById('chatIframe');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        const iframeSrc = 'https://bot.nusantara-ai.id/iframe-bot?key-id=d62f7145-a583-45af-96fb-9725cee58299';
+        let isChatOpen = false;
+
+        openBtn.addEventListener('click', function () {
+          isChatOpen = !isChatOpen;
+
+          if (isChatOpen) {
+            loadingIndicator.style.display = 'flex';
+            chatIframe.style.visibility = 'hidden';
+
+            if (!chatIframe.src || chatIframe.src === 'about:blank') {
+              chatIframe.src = iframeSrc;
+            }
+
+            chatContainer.classList.add('visible');
+            openBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+          } else {
+            chatContainer.classList.remove('visible');
+
+            setTimeout(() => {
+              chatIframe.src = 'about:blank';
+              chatIframe.style.visibility = 'hidden';
+              loadingIndicator.style.display = 'none';
+            }, 300);
+
+            openBtn.innerHTML = '<i class="bi bi-chat-dots-fill"></i>';
+          }
+        });
+
+        chatIframe.addEventListener('load', function () {
+          if (isChatOpen && chatIframe.src !== 'about:blank') {
+            loadingIndicator.style.display = 'none';
+            chatIframe.style.visibility = 'visible';
+          }
+        });
+      })();
+      
     // App JS eksternal (kalau ada)
     script(src="/js/app.js")
