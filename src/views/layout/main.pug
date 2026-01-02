@@ -55,19 +55,24 @@ html(lang="id")
         height: 60px;
         position: fixed;
         bottom: 20px;
-        left: 20px; /* ⬅️ PINDAH KE KIRI */
+        left: 20px;
         z-index: 1002;
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      #openChatBtn:hover {
+        transform: scale(1.05);
       }
 
       #chatContainer {
         display: none;
         position: fixed;
         bottom: 90px;
-        left: 20px; /* ⬅️ PINDAH KE KIRI */
+        left: 20px;
         width: 35vw;
         height: 70vh;
         max-width: 600px;
@@ -110,13 +115,66 @@ html(lang="id")
         visibility: hidden;
       }
 
+      /* RESPONSIVE DESIGN FOR MOBILE */
       @media (max-width: 767px) {
+        #openChatBtn {
+          width: 56px;
+          height: 56px;
+          bottom: 16px;
+          left: 16px;
+          font-size: 22px;
+        }
+
         #chatContainer {
-          width: 100vw;
-          height: 100vh;
-          left: 0;
-          bottom: 0;
-          border-radius: 0;
+          width: calc(100vw - 32px);
+          height: 75vh;
+          max-height: 650px;
+          bottom: 80px;
+          left: 50%;
+          transform: translateX(-50%) translateY(20px) scale(0.95);
+          border-radius: 16px;
+        }
+
+        #chatContainer.visible {
+          transform: translateX(-50%) translateY(0) scale(1);
+        }
+
+        /* Untuk landscape mode di mobile */
+        @media (max-height: 600px) and (orientation: landscape) {
+          #chatContainer {
+            height: 85vh;
+            bottom: 60px;
+            max-height: 500px;
+          }
+        }
+      }
+
+      /* Untuk tablet (768px - 991px) */
+      @media (min-width: 768px) and (max-width: 991px) {
+        #chatContainer {
+          width: 50vw;
+          height: 65vh;
+          left: 20px;
+          bottom: 85px;
+        }
+      }
+
+      /* Untuk layar sangat kecil (di bawah 360px) */
+      @media (max-width: 359px) {
+        #openChatBtn {
+          width: 50px;
+          height: 50px;
+          bottom: 12px;
+          left: 12px;
+          font-size: 20px;
+        }
+
+        #chatContainer {
+          width: calc(100vw - 24px);
+          height: 70vh;
+          max-height: 600px;
+          bottom: 70px;
+          border-radius: 12px;
         }
       }
 
@@ -888,7 +946,6 @@ html(lang="id")
         title="NusaBot Chatbot"
         loading="lazy"
         allow="autoplay"
-        
       )
 
     // Scroll to Top Button
@@ -983,6 +1040,25 @@ html(lang="id")
         const iframeSrc = 'https://bot.nusantara-ai.id/iframe-bot?key-id=d62f7145-a583-45af-96fb-9725cee58299';
         let isChatOpen = false;
 
+        // Fungsi untuk menyesuaikan ukuran chat di mobile
+        function adjustChatForMobile() {
+          if (window.innerWidth <= 767) {
+            const isLandscape = window.innerWidth > window.innerHeight;
+            
+            if (isLandscape) {
+              // Landscape mode
+              chatContainer.style.height = '85vh';
+              chatContainer.style.maxHeight = '500px';
+              chatContainer.style.bottom = '60px';
+            } else {
+              // Portrait mode
+              chatContainer.style.height = '75vh';
+              chatContainer.style.maxHeight = '650px';
+              chatContainer.style.bottom = '80px';
+            }
+          }
+        }
+
         openBtn.addEventListener('click', function () {
           isChatOpen = !isChatOpen;
 
@@ -994,18 +1070,28 @@ html(lang="id")
               chatIframe.src = iframeSrc;
             }
 
+            // Sesuaikan ukuran untuk mobile sebelum menampilkan
+            adjustChatForMobile();
+            
             chatContainer.classList.add('visible');
             openBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+            
+            // Tambahkan class untuk mencegah scroll body saat chat terbuka di mobile
+            if (window.innerWidth <= 767) {
+              document.body.style.overflow = 'hidden';
+            }
           } else {
             chatContainer.classList.remove('visible');
-
+            openBtn.innerHTML = '<i class="bi bi-chat-dots-fill"></i>';
+            
+            // Kembalikan scroll body
+            document.body.style.overflow = '';
+            
             setTimeout(() => {
               chatIframe.src = 'about:blank';
               chatIframe.style.visibility = 'hidden';
               loadingIndicator.style.display = 'none';
             }, 300);
-
-            openBtn.innerHTML = '<i class="bi bi-chat-dots-fill"></i>';
           }
         });
 
@@ -1013,6 +1099,25 @@ html(lang="id")
           if (isChatOpen && chatIframe.src !== 'about:blank') {
             loadingIndicator.style.display = 'none';
             chatIframe.style.visibility = 'visible';
+          }
+        });
+
+        // Handle window resize dan orientation change
+        window.addEventListener('resize', adjustChatForMobile);
+        window.addEventListener('orientationchange', function() {
+          // Delay sedikit untuk memastikan orientasi sudah berubah
+          setTimeout(adjustChatForMobile, 100);
+        });
+
+        // Close chat ketika klik di luar container (untuk mobile)
+        document.addEventListener('click', function(event) {
+          if (isChatOpen && window.innerWidth <= 767) {
+            const isClickInsideChat = chatContainer.contains(event.target);
+            const isClickOnOpenBtn = openBtn.contains(event.target);
+            
+            if (!isClickInsideChat && !isClickOnOpenBtn) {
+              openBtn.click(); // Trigger close
+            }
           }
         });
       })();
