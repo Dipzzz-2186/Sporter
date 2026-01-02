@@ -57,7 +57,10 @@ async function getStandings({ sportId, mode }) {
       ORDER BY
         s.win DESC,
         set_diff DESC,
-        score_diff DESC
+        score_diff DESC,
+        s.score_for DESC,
+        t.name ASC,
+        s.team_id ASC 
     `, [sportId]);
 
   // =========================

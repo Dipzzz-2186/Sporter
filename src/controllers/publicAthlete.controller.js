@@ -70,33 +70,28 @@ exports.show = async (req, res) => {
     let stats = { match_played: 0, match_won: 0, match_lost: 0 };
     let rank = Number(athlete.rank_pos || 1);
 
-    if (teamId) {
-      const [[stat]] = await db.query(`
-        SELECT
-          COALESCE(played, 0) AS match_played,
-          COALESCE(win, 0)    AS match_won,
-          COALESCE(loss, 0)   AS match_lost,
-          COALESCE(pts, 0)    AS pts
-        FROM standings
-        WHERE sport_id = ? AND team_id = ?
-        LIMIT 1
-      `, [athlete.sport_id, teamId]);
+      if (teamId) {
+      // tentuin mode dulu (WAJIB sebelum dipakai query)
+      const isIndividual = isIndividualAthlete ? 1 : 0;
 
-      stats = {
-        match_played: Number(stat?.match_played || 0),
-        match_won: Number(stat?.match_won || 0),
-        match_lost: Number(stat?.match_lost || 0),
-      };
+      const [rows] = await db.query(`
+        SELECT s.team_id
+        FROM standings s
+        JOIN teams t ON t.id = s.team_id
+        WHERE s.sport_id = ?
+          AND COALESCE(t.is_individual,0) = ?
+        ORDER BY
+          s.win DESC,
+          (s.set_win - s.set_loss) DESC,
+          (s.score_for - s.score_against) DESC,
+          s.team_id ASC
+      `, [athlete.sport_id, isIndividual]);
 
-      const [[rankRow]] = await db.query(`
-        SELECT COUNT(*) + 1 AS rank_pos
-        FROM standings s2
-        WHERE s2.sport_id = ?
-          AND s2.pts > COALESCE(?, 0)
-      `, [athlete.sport_id, stat?.pts || 0]);
-
-      rank = Number(rankRow?.rank_pos || 1);
+      const idx = rows.findIndex(r => Number(r.team_id) === Number(teamId));
+      rank = idx >= 0 ? idx + 1 : rank;
+        
     }
+
 
     const effectiveness =
       (stats.match_won + stats.match_lost) > 0
