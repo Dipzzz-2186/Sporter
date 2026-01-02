@@ -1225,7 +1225,10 @@ block content
     .event-actions .btn-danger:active {
       transform: translateY(-1px) scale(0.98);
     }
-    
+
+    .sporter-blue{
+      color: dodgerblue !important;
+    }
     /* Empty State - Mobile Optimized */
     .empty-state {
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -1568,7 +1571,7 @@ block content
       .section-title
         h2.fw-bold.mb-3.mb-md-4
           | Fitur Utama 
-          span.text-danger SPORTER
+          span.sporter-blue SPORTER
         p.text-secondary
           | Semua yang Anda butuhkan untuk mengikuti perkembangan olahraga Indonesia tersedia dalam satu platform yang terintegrasi.
       
@@ -1669,10 +1672,6 @@ block content
                         a.btn.btn-outline-danger.w-100(href=`/events/${e.slug || e.id}`)
                           i.bi.bi-info-circle.me-1
                           span Detail
-                      .col-6
-                        a.btn.btn-danger.w-100(href=`/events/${e.slug || e.id}/tickets`)
-                          i.bi.bi-ticket-perforated.me-1
-                          span Tiket
 
       else
         .empty-state
