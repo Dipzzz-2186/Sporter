@@ -1160,7 +1160,7 @@ block content
         
         .streams-header-right
           .live-counter#live-count
-            i.bi.bi-broadcast
+            i.bi.bi-broadcast-pin
             span #{livestreams.filter(l => l.is_live).length || 0} Sedang Tayang
           
           .d-flex.align-items-center.gap-2
@@ -1240,7 +1240,7 @@ block content
       .stats-grid
         .stats-card
           .stats-icon-wrapper
-            i.bi.bi-broadcast
+            i.bi.bi-broadcast-pin
           .stats-value #{livestreams.filter(l => l.is_live).length || 0}
           .stats-label Sedang Tayang
         
