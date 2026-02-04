@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const subadminCtrl = require('../controllers/subadmin.controller');
 const standingsCtrl = require('../controllers/standings.controller');
-const { requireLogin, requireAdminOrSubadmin } = require('../middlewares/auth.middleware');
+const { requireLogin, requireAdminOrSubadmin, requireSubadmin } = require('../middlewares/auth.middleware');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
@@ -61,7 +61,7 @@ const uploadAthletePhoto = multer({
 router.use(requireLogin, requireAdminOrSubadmin, attachAllowedSports);
 
 // dashboard
-router.get('/', requireLogin, requireAdminOrSubadmin, subadminCtrl.renderDashboard);
+router.get('/', requireLogin, requireSubadmin, subadminCtrl.renderDashboard);
 
 // Events
 router.get('/events/create', requireLogin, requireAdminOrSubadmin, subadminCtrl.renderCreateEvent);

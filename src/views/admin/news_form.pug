@@ -2,7 +2,7 @@ extends ../layout/main
 
 block content
   style.
-    /* News Form Page Styles - Mengikuti style create video */
+    /* News Form Page Styles */
     .news-form-page {
       background: linear-gradient(135deg, #f5f8fa 0%, #e9eef3 100%);
       min-height: 100vh;
@@ -60,40 +60,6 @@ block content
       margin: 0;
       position: relative;
       z-index: 2;
-    }
-    
-    /* Flash Messages */
-    .alert {
-      border-radius: 12px;
-      border: none;
-      padding: 1rem 1.25rem;
-      margin-bottom: 2rem;
-      animation: slideInDown 0.4s ease-out;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    }
-    
-    @keyframes slideInDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .alert-danger {
-      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-      color: #991b1b;
-      border-left: 4px solid #dc2626;
-    }
-    
-    .alert-success {
-      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-      color: #065f46;
-      border-left: 4px solid #059669;
-    }
-    
-    .alert i {
-      font-size: 1.2rem;
     }
     
     /* Form Card */
@@ -171,6 +137,7 @@ block content
       border-radius: 8px;
       font-weight: 600;
       border: 1px solid #d6edff;
+      margin-left: auto;
     }
     
     .badge-required {
@@ -208,49 +175,8 @@ block content
     }
     
     textarea.form-control {
+      min-height: 120px;
       resize: vertical;
-    }
-    
-    /* File Upload Styling */
-    .file-upload-wrapper {
-      position: relative;
-    }
-    
-    .file-upload-preview {
-      margin-top: 1rem;
-      border: 2px dashed #e8edf2;
-      border-radius: 12px;
-      padding: 1.5rem;
-      text-align: center;
-      background: #f8f9fa;
-      transition: all 0.3s ease;
-    }
-    
-    .file-upload-preview:hover {
-      border-color: #0095FF;
-      background: white;
-    }
-    
-    .file-upload-preview img {
-      max-width: 100%;
-      max-height: 200px;
-      border-radius: 8px;
-      object-fit: cover;
-      margin-bottom: 1rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    
-    .file-upload-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      color: #5a6c7d;
-    }
-    
-    .file-upload-placeholder i {
-      font-size: 3rem;
-      color: #0095FF;
     }
     
     /* Help Text */
@@ -266,6 +192,177 @@ block content
     .form-text i {
       color: #0095FF;
       font-size: 0.9rem;
+    }
+    
+    /* File Upload Styling */
+    .file-upload-area {
+      border: 2px dashed #e8edf2;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      background: #f8f9fa;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.75rem;
+    }
+    
+    .file-upload-area:hover {
+      border-color: #0095FF;
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+    }
+    
+    .file-upload-area.dragover {
+      border-color: #0095FF;
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      transform: translateY(-2px);
+    }
+    
+    .file-upload-icon {
+      font-size: 3rem;
+      color: #5a6c7d;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .file-upload-area:hover .file-upload-icon {
+      color: #0095FF;
+      transform: scale(1.1);
+    }
+    
+    .file-upload-input {
+      display: none;
+    }
+    
+    /* Thumbnail Preview */
+    .thumbnail-preview-container {
+      position: relative;
+      margin-top: 1rem;
+    }
+    
+    .thumbnail-preview {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid #e8edf2;
+      transition: all 0.3s ease;
+    }
+    
+    .thumbnail-actions {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .thumbnail-btn {
+      background: rgba(11, 31, 63, 0.8);
+      color: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .thumbnail-btn:hover {
+      background: #0095FF;
+      transform: scale(1.1);
+    }
+    
+    /* Status Toggle */
+    .status-toggle-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    
+    .status-toggle {
+      position: relative;
+      flex: 1;
+    }
+    
+    .status-toggle input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+    }
+    
+    .status-toggle-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.2rem;
+      background: #f8f9fa;
+      border: 2px solid #e8edf2;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    
+    .status-toggle-label:hover {
+      background: white;
+      border-color: #c9d6e4;
+    }
+    
+    .status-toggle input[type="radio"]:checked + .status-toggle-label {
+      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
+      border-color: #0095FF;
+      box-shadow: 0 4px 12px rgba(0, 149, 255, 0.15);
+    }
+    
+    .status-icon {
+      font-size: 1.5rem;
+      color: #5a6c7d;
+      transition: all 0.3s ease;
+    }
+    
+    .status-toggle input[type="radio"]:checked + .status-toggle-label .status-icon {
+      color: #0095FF;
+    }
+    
+    .status-draft .status-icon {
+      color: #5a6c7d;
+    }
+    
+    .status-published .status-icon {
+      color: #10b981;
+    }
+    
+    /* Slug Preview */
+    .slug-preview {
+      background: #f8f9fa;
+      border: 2px solid #e8edf2;
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      margin-top: 0.75rem;
+      display: none;
+      font-size: 0.9rem;
+      color: #5a6c7d;
+    }
+    
+    .slug-preview.active {
+      display: block;
+      animation: fadeInUp 0.3s ease-out;
+    }
+    
+    .slug-preview-label {
+      font-weight: 600;
+      color: #0B1F3F;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .slug-preview-value {
+      word-break: break-all;
     }
     
     /* Action Buttons */
@@ -325,52 +422,18 @@ block content
     
     /* Character Counter */
     .char-counter {
-      text-align: right;
-      font-size: 0.85rem;
       color: #5a6c7d;
-      margin-top: 0.25rem;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      text-align: right;
     }
     
     .char-counter.warning {
-      color: #dc2626;
+      color: #f59e0b;
     }
     
-    /* Date Input Styling */
-    .date-input-group {
-      position: relative;
-    }
-    
-    .date-input-group i {
-      position: absolute;
-      right: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
+    .char-counter.danger {
       color: #0095FF;
-      font-size: 1rem;
-      pointer-events: none;
-    }
-    
-    /* Status Badge */
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-    
-    .status-draft {
-      background: linear-gradient(135deg, #f0f8ff 0%, #e0f2ff 100%);
-      color: #0095FF;
-      border: 1px solid #d6edff;
-    }
-    
-    .status-published {
-      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-      color: #059669;
-      border: 1px solid #a7f3d0;
     }
     
     /* Responsive */
@@ -385,6 +448,10 @@ block content
       
       .news-form-card {
         padding: 2rem;
+      }
+      
+      .status-toggle-group {
+        flex-direction: column;
       }
     }
     
@@ -429,10 +496,6 @@ block content
       .btn-back {
         width: 100%;
       }
-      
-      .file-upload-preview {
-        padding: 1rem;
-      }
     }
 
   - const isEdit = mode === 'edit';
@@ -444,23 +507,25 @@ block content
       .news-form-header
         h1
           i.bi.bi-newspaper
-          | #{isEdit ? 'Edit Berita' : 'Buat Berita'}
+          = isEdit ? 'Edit Berita' : 'Buat Berita'
         p
           i.bi.bi-info-circle.me-2
-          | Tulis dan kelola artikel berita olahraga untuk SPORTER.
+          | Tulis dan kelola artikel berita olahraga untuk SPORTER
 
       //- Flash Messages
       if flash && flash.error && flash.error.length
-        .alert.alert-danger(role="alert")
-          i.bi.bi-exclamation-triangle-fill.me-2
-          each msg in flash.error
-            div= msg
+        each msg in flash.error
+          .alert.alert-danger.alert-dismissible.fade.show.mb-3(role="alert" style="border-radius: 12px; border: none;")
+            i.bi.bi-exclamation-triangle-fill.me-2
+            = msg
+            button.btn-close(type="button" data-bs-dismiss="alert")
       
       if flash && flash.success && flash.success.length
-        .alert.alert-success(role="alert")
-          i.bi.bi-check-circle-fill.me-2
-          each msg in flash.success
-            div= msg
+        each msg in flash.success
+          .alert.alert-success.alert-dismissible.fade.show.mb-3(role="alert" style="border-radius: 12px; border: none;")
+            i.bi.bi-check-circle-fill.me-2
+            = msg
+            button.btn-close(type="button" data-bs-dismiss="alert")
 
       //- Form Card
       .news-form-card
@@ -472,380 +537,520 @@ block content
           //- Section 1: Basic Information
           .news-form-section
             .section-title
-              i.bi.bi-info-circle-fill
+              i.bi.bi-card-heading
               | Informasi Dasar
-            .section-description
-              | Isi judul dan identifikasi unik berita.
             
-            .row.g-3
-              .col-md-8
-                .mb-3
-                  label.form-label(for="title")
-                    i.bi.bi-card-heading
-                    | Judul Berita
-                    span.badge.badge-required Wajib
-                  input.form-control#title(
-                    type="text"
-                    name="title"
-                    required
-                    placeholder="Masukkan judul berita yang menarik"
-                    value=articleSafe.title || ''
-                  )
-                  .char-counter#titleCounter
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Buat judul yang menarik dan informatif
-              
-              .col-md-4
-                .mb-3
-                  label.form-label(for="slug")
-                    i.bi.bi-link
-                    | Slug URL
-                    span.badge Opsional
-                  input.form-control#slug(
-                    type="text"
-                    name="slug"
-                    placeholder="otomatis dari judul jika dikosongkan"
-                    value=articleSafe.slug || ''
-                  )
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Kosongkan untuk generate otomatis dari judul
+            .mb-4
+              label.form-label(for="title")
+                i.bi.bi-text-left
+                | Judul Berita
+                span.badge.badge-required Wajib
+              input.form-control#title(
+                type="text"
+                name="title"
+                required
+                value=articleSafe.title || ''
+                placeholder="Masukkan judul berita yang menarik dan deskriptif"
+                maxlength="200"
+              )
+              .char-counter#title-counter 0 / 200 karakter
+            
+            .mb-4
+              label.form-label(for="slug")
+                i.bi.bi-link
+                | Slug URL
+                span.badge Opsional
+              input.form-control#slug(
+                type="text"
+                name="slug"
+                value=articleSafe.slug || ''
+                placeholder="otomatis-dari-judul"
+              )
+              .slug-preview#slug-preview
+                .slug-preview-label
+                  i.bi.bi-eye-fill
+                  | Preview URL:
+                .slug-preview-value
+              small.form-text
+                i.bi.bi-info-circle
+                | Kosongkan untuk generate otomatis dari judul
+            
+            .mb-4
+              label.form-label
+                i.bi.bi-megaphone
+                | Ringkasan Berita
+                span.badge Wajib
+              textarea.form-control#excerpt(
+                name="excerpt"
+                rows="3"
+                placeholder="Ringkasan singkat yang akan ditampilkan di halaman utama..."
+                required
+              )= articleSafe.excerpt || ''
 
           //- Section 2: Categorization
           .news-form-section
             .section-title
-              i.bi.bi-tags-fill
+              i.bi.bi-tag
               | Kategorisasi
-            .section-description
-              | Tentukan kategori dan status berita.
             
             .row.g-3
-              .col-md-4
+              .col-md-6
                 .mb-3
                   label.form-label(for="sport_id")
                     i.bi.bi-trophy
                     | Cabang Olahraga
                     span.badge.badge-required Wajib
-                  select.form-select#sport_id(name="sport_id" required)
-                    option(value="") -- Pilih Cabang --
-                    if sports && sports.length
-                      each s in sports
-                        option(
-                          value=s.id
-                          selected=(articleSafe.sport_id && articleSafe.sport_id === s.id)
-                        )= s.name
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Pilih cabang olahraga terkait berita
-              
-              .col-md-4
-                .mb-3
-                  label.form-label(for="event_id")
-                    i.bi.bi-calendar-event
-                    | Event Terkait
-                    span.badge Opsional
-                  select.form-select#event_id(name="event_id")
-                    option(value="") -- Tanpa Event --
-                    if events && events.length
-                      each e in events
-                        option(
-                          value=e.id
-                          selected=(articleSafe.event_id && articleSafe.event_id === e.id)
-                        )= e.title
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Hubungkan dengan event jika ada
-              
-              .col-md-4
-                .mb-3
-                  label.form-label(for="status")
-                    i.bi.bi-hourglass-split
-                    | Status
-                    span.badge.badge-required Wajib
-                  select.form-select#status(name="status")
-                    - const currentStatus = articleSafe.status || 'draft';
-                    option(value="draft" selected=(currentStatus === 'draft')) Draft
-                    option(value="published" selected=(currentStatus === 'published')) Published
-                  .mt-2
-                    if currentStatus === 'draft'
-                      span.status-badge.status-draft
-                        i.bi.bi-pencil-square
-                        | Draft
-                    else
-                      span.status-badge.status-published
-                        i.bi.bi-check-circle
-                        | Published
+                  select.form-select#sport_id(
+                    name="sport_id"
+                    required
+                    disabled=(defaultSportId)
+                  )
+                    option(value="" disabled selected) -- Pilih Cabang --
+                    each s in sports
+                      option(
+                        value=s.id
+                        selected=(
+                          (isEdit && Number(articleSafe.sport_id) === Number(s.id)) ||
+                          (!isEdit && defaultSportId && Number(defaultSportId) === Number(s.id))
+                        )
+                      )= s.name 
+                  if defaultSportId
+                    input(type="hidden" name="sport_id" value=defaultSportId)
 
-          //- Section 3: Media & Excerpt
+                  small.form-text
+                    i.bi.bi-info-circle
+                    | Pilih cabang olahraga yang terkait dengan berita ini
+              
+          //- Section 3: Thumbnail & Publishing
           .news-form-section
             .section-title
               i.bi.bi-image
-              | Media & Ringkasan
-            .section-description
-              | Unggah thumbnail dan buat ringkasan berita.
+              | Media & Publikasi
             
             .row.g-3
-              .col-md-4
+              .col-md-6
                 .mb-3
-                  .date-input-group
-                    label.form-label(for="published_at")
-                      i.bi.bi-calendar
-                      | Tanggal Publish
-                      span.badge Opsional
-                    input.form-control#published_at(
-                      type="date"
-                      name="published_at"
-                      value=articleSafe.published_at ? String(articleSafe.published_at).slice(0,10) : ''
-                    )
-                    i.bi.bi-calendar-event
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Atur tanggal publish (kosongkan untuk sekarang)
-
-              .col-md-4
-                .mb-3.file-upload-wrapper
                   label.form-label(for="thumbnail")
-                    i.bi.bi-image-fill
+                    i.bi.bi-image
                     | Thumbnail Berita
-                    span.badge.badge-required Wajib
-                  input.form-control#thumbnail(
-                    type="file"
-                    name="thumbnail"
-                    accept="image/*"
+                    span.badge Wajib
+
+                  // ✅ Preview container SELALU ADA (awal hidden kalau belum ada gambar)
+                  .thumbnail-preview-container#thumb-container(style= articleSafe.thumbnail_url ? '' : 'display:none;')
+                    img.thumbnail-preview#thumbnail-preview-img(
+                      src=articleSafe.thumbnail_url || ''
+                      alt=articleSafe.title || 'Thumbnail'
+                    )
+                    .thumbnail-actions
+                      button.thumbnail-btn(type="button" id="btn-remove-thumb" title="Hapus thumbnail")
+                        i.bi.bi-trash
+                      button.thumbnail-btn#btn-open-thumb(
+                        type="button"
+                        title="Lihat full size"
+                      )
+                        i.bi.bi-arrows-fullscreen
+
+                  .file-upload-area#file-upload-area(
+                    onclick="document.getElementById('thumbnail').click()"
+                  )
+                    input.form-control#thumbnail.file-upload-input(
+                      type="file"
+                      name="thumbnail"
+                      accept="image/*"
+                      required=!isEdit
+                    )
+                    i.bi.bi-cloud-arrow-up.file-upload-icon
+                    h5.mb-2(style="color: #0B1F3F;") Upload Thumbnail
+                    p.text-muted.mb-2 Klik atau drag & drop gambar disini
+                    small.form-text
+                      i.bi.bi-info-circle
+                      | Format: JPG, PNG, WebP (max 3MB). Rekomendasi: 1200×630px
+
+                                
+              .col-md-6
+                .mb-3
+                  label.form-label
+                    i.bi.bi-clock
+                    | Jadwal Publikasi
+                    span.badge Opsional
+                  - let pubValue = '';
+                  - if (articleSafe.published_at) { pubValue = String(articleSafe.published_at).slice(0,10); }
+                  input.form-control#published_at(
+                    type="date"
+                    name="published_at"
+                    value=pubValue
                   )
                   small.form-text
                     i.bi.bi-info-circle
-                    | Format: JPG/PNG, maks 3MB
-                  
-                  .file-upload-preview#thumbnailPreview
-                    if articleSafe.thumbnail_url
-                      img(
-                        src=articleSafe.thumbnail_url,
-                        alt=articleSafe.title || 'Thumbnail'
-                      )
-                      p.text-muted.mb-0
-                        i.bi.bi-check-circle-fill.text-success.me-1
-                        | Thumbnail sudah diunggah
-                    else
-                      .file-upload-placeholder
-                        i.bi.bi-image
-                        p.mb-0
-                          | Klik untuk mengunggah thumbnail
-                          br
-                          small Format: JPG/PNG, maks 3MB
-
-              .col-md-4
+                    | Atur tanggal publish, kosongkan untuk menggunakan tanggal sekarang
+                
                 .mb-3
-                  label.form-label(for="excerpt")
-                    i.bi.bi-card-text
-                    | Excerpt / Ringkasan
+                  label.form-label
+                    i.bi.bi-globe
+                    | Status Berita
                     span.badge.badge-required Wajib
-                  textarea.form-control#excerpt(
-                    name="excerpt"
-                    rows="3"
-                    placeholder="Ringkasan singkat berita untuk preview..."
-                  )= articleSafe.excerpt || ''
-                  .char-counter#excerptCounter
-                  small.form-text
-                    i.bi.bi-info-circle
-                    | Ringkasan akan ditampilkan di halaman daftar berita
+                  - const currentStatus = articleSafe.status || 'draft';
+                  .status-toggle-group
+                    .status-toggle
+                      input#status-draft(
+                        type="radio"
+                        name="status"
+                        value="draft"
+                        checked=(currentStatus === 'draft')
+                      )
+                      label.status-toggle-label(for="status-draft")
+                        i.bi.bi-pencil-fill.status-icon.status-draft
+                        span Draft
+                        small.text-muted Disimpan sebagai draft
+                    
+                    .status-toggle
+                      input#status-published(
+                        type="radio"
+                        name="status"
+                        value="published"
+                        checked=(currentStatus === 'published')
+                      )
+                      label.status-toggle-label(for="status-published")
+                        i.bi.bi-send-check-fill.status-icon.status-published
+                        span Published
+                        small.text-muted Siap ditampilkan ke publik
 
           //- Section 4: Content
           .news-form-section
             .section-title
-              i.bi.bi-text-paragraph
-              | Konten Lengkap
-            .section-description
-              | Tulis konten berita lengkap dengan editor.
+              i.bi.bi-file-text
+              | Konten Berita
             
             .mb-3
+              label.form-label(for="content")
+                i.bi.bi-pencil-square
+                | Konten Lengkap
+                span.badge.badge-required Wajib
               textarea.form-control#content(
                 name="content"
-                rows="8"
-                placeholder="Tulis konten berita lengkap di sini..."
+                rows="12"
+                placeholder="Tulis konten berita Anda disini..."
               )= articleSafe.content || ''
-              .char-counter#contentCounter
-              small.form-text
-                i.bi.bi-lightbulb
-                | Gunakan format HTML atau Markdown untuk styling teks
+              
+              .d-flex.justify-content-between.mt-2
+                small.form-text
+                  i.bi.bi-lightbulb
+                  | Gunakan format HTML untuk styling yang lebih kaya
+                .char-counter#content-counter 0 karakter
 
-          //- Action Buttons
+          //- Hidden Fields and Actions
           .form-actions
-            button.btn.btn-submit(type="submit")
+            button.btn.btn-submit(type="submit" id="submit-btn")
               if isEdit
                 i.bi.bi-save-fill
-                span Simpan Perubahan
+                | Simpan Perubahan
               else
                 i.bi.bi-plus-circle-fill
-                span Simpan Berita
+                | Simpan Berita
             
-            a.btn.btn-back(href="/admin/news")
+            a.btn.btn-back(href="javascript:void(0);" onclick="history.back()")
               i.bi.bi-arrow-left
-              span Kembali ke Daftar
+              | Kembali ke Daftar
+  // ===== Thumbnail Preview Modal =====
+  .modal.fade#thumbPreviewModal(tabindex="-1" aria-hidden="true")
+    .modal-dialog.modal-dialog-centered.modal-lg
+      .modal-content(style="border-radius:16px; overflow:hidden;")
+        .modal-header
+          h5.modal-title Preview Thumbnail
+          button.btn-close(type="button" data-bs-dismiss="modal")
+        .modal-body.p-0
+          img#thumb-modal-img(
+            src=""
+            style="width:100%; max-height:80vh; object-fit:contain; background:#000;"
+          )
 
-  //- Custom JavaScript
   script.
     (function() {
-      //- Auto-dismiss alerts
-      var alerts = document.querySelectorAll('.alert');
-      alerts.forEach(function(alert) {
-        setTimeout(function() {
-          alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-          alert.style.opacity = '0';
-          alert.style.transform = 'translateY(-12px)';
-          setTimeout(() => alert.remove(), 450);
-        }, 4500);
-      });
-
-      //- Auto generate slug from title
-      var titleInput = document.getElementById('title');
-      var slugInput = document.getElementById('slug');
+      // Auto generate slug from title
+      const titleInput = document.getElementById('title');
+      const slugInput = document.getElementById('slug');
+      const slugPreview = document.getElementById('slug-preview');
+      const slugPreviewValue = slugPreview.querySelector('.slug-preview-value');
+      
+      function generateSlug(text) {
+        return text
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .trim();
+      }
+      
+      function updateSlugPreview() {
+        const slug = slugInput.value || generateSlug(titleInput.value);
+        const baseUrl = window.location.origin;
+        slugPreviewValue.innerHTML = `${baseUrl}/news/${slug}`;
+        slugPreview.classList.add('active');
+      }
       
       if (titleInput && slugInput) {
         titleInput.addEventListener('input', function() {
-          if (!slugInput.value) {
-            var text = this.value.toLowerCase()
-              .replace(/[^a-z0-9\s-]/g, '')
-              .replace(/\s+/g, '-')
-              .replace(/-+/g, '-')
-              .trim();
-            slugInput.value = text;
-          }
-        });
-      }
-
-      //- Form submission loading state
-      var form = document.querySelector('form');
-      if (form) {
-        form.addEventListener('submit', function(e) {
-          var btn = form.querySelector('.btn-submit');
-          if (btn) {
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + 
-                           (#{isEdit} ? 'Menyimpan...' : 'Membuat...');
-            btn.disabled = true;
-          }
-        });
-      }
-
-      //- Character counters
-      function setupCharCounter(inputId, counterId, maxLength) {
-        var input = document.getElementById(inputId);
-        var counter = document.getElementById(counterId);
-        
-        if (input && counter) {
-          function updateCounter() {
-            var length = input.value.length;
-            counter.textContent = length + ' / ' + maxLength + ' karakter';
-            
-            if (length > maxLength * 0.9) {
-              counter.classList.add('warning');
-              counter.style.color = '#dc2626';
-            } else {
-              counter.classList.remove('warning');
-              counter.style.color = '#5a6c7d';
-            }
-            
-            if (length > maxLength) {
-              input.value = input.value.substring(0, maxLength);
-              updateCounter();
-            }
+          // Update character counter for title
+          const counter = document.getElementById('title-counter');
+          const length = this.value.length;
+          counter.textContent = `${length} / 200 karakter`;
+          
+          if (length > 180) {
+            counter.classList.add('warning');
+            counter.classList.remove('danger');
+          } else if (length > 190) {
+            counter.classList.add('danger');
+            counter.classList.remove('warning');
+          } else {
+            counter.classList.remove('warning', 'danger');
           }
           
-          input.addEventListener('input', updateCounter);
-          updateCounter();
+          // Auto generate slug if slug field is empty
+          if (!slugInput.value) {
+            updateSlugPreview();
+          }
+        });
+        
+        slugInput.addEventListener('input', function() {
+          if (this.value) {
+            updateSlugPreview();
+          } else {
+            slugPreview.classList.remove('active');
+          }
+        });
+        
+        // Initialize slug preview if there's existing value
+        if (slugInput.value) {
+          updateSlugPreview();
         }
       }
-
-      //- Setup counters for each field
-      setupCharCounter('title', 'titleCounter', 200);
-      setupCharCounter('excerpt', 'excerptCounter', 300);
-      setupCharCounter('content', 'contentCounter', 10000);
-
-      //- Thumbnail preview
-      var thumbnailInput = document.getElementById('thumbnail');
-      var thumbnailPreview = document.getElementById('thumbnailPreview');
       
-      if (thumbnailInput && thumbnailPreview) {
-        thumbnailInput.addEventListener('change', function(e) {
-          var file = e.target.files[0];
-          if (file) {
-            var reader = new FileReader();
-            
-            reader.onload = function(e) {
-              thumbnailPreview.innerHTML = `
-                <img src="${e.target.result}" alt="Preview" class="img-fluid">
-                <p class="text-muted mb-0 mt-2">
-                  <i class="bi bi-check-circle-fill text-success me-1"></i>
-                  Thumbnail siap diunggah
-                </p>
-              `;
-            };
-            
-            reader.readAsDataURL(file);
-          } else {
-            if (!#{articleSafe.thumbnail_url ? true : false}) {
-              thumbnailPreview.innerHTML = `
-                <div class="file-upload-placeholder">
-                  <i class="bi bi-image"></i>
-                  <p class="mb-0">
-                    Klik untuk mengunggah thumbnail<br>
-                    <small>Format: JPG/PNG, maks 3MB</small>
-                  </p>
-                </div>
-              `;
-            }
-          }
-        });
-      }
-
-      //- File size validation
-      if (thumbnailInput) {
-        thumbnailInput.addEventListener('change', function(e) {
-          var file = e.target.files[0];
-          var maxSize = 3 * 1024 * 1024; // 3MB
+      // Content character counter
+      const contentInput = document.getElementById('content');
+      if (contentInput) {
+        const contentCounter = document.getElementById('content-counter');
+        
+        contentInput.addEventListener('input', function() {
+          const length = this.value.length;
+          contentCounter.textContent = `${length.toLocaleString()} karakter`;
           
-          if (file && file.size > maxSize) {
-            alert('Ukuran file terlalu besar! Maksimal 3MB.');
-            this.value = '';
-            thumbnailPreview.innerHTML = `
-              <div class="file-upload-placeholder">
-                <i class="bi bi-exclamation-triangle-fill text-danger"></i>
-                <p class="mb-0 text-danger">
-                  File terlalu besar!<br>
-                  <small>Maksimal 3MB</small>
-                </p>
-              </div>
-            `;
-          }
-        });
-      }
-
-      //- Auto focus on title
-      if (titleInput) {
-        titleInput.focus();
-      }
-
-      //- Auto set publish date to today if empty
-      var publishDateInput = document.getElementById('published_at');
-      if (publishDateInput && !publishDateInput.value) {
-        var today = new Date().toISOString().slice(0, 10);
-        publishDateInput.value = today;
-      }
-
-      //- Status selector styling
-      var statusSelect = document.getElementById('status');
-      var statusBadge = document.querySelector('.status-badge');
-      
-      if (statusSelect && statusBadge) {
-        statusSelect.addEventListener('change', function() {
-          if (this.value === 'draft') {
-            statusBadge.className = 'status-badge status-draft';
-            statusBadge.innerHTML = '<i class="bi bi-pencil-square"></i> Draft';
+          if (length > 10000) {
+            contentCounter.classList.add('warning');
           } else {
-            statusBadge.className = 'status-badge status-published';
-            statusBadge.innerHTML = '<i class="bi bi-check-circle"></i> Published';
+            contentCounter.classList.remove('warning');
+          }
+        });
+        
+        // Initialize counter
+        contentCounter.textContent = `${contentInput.value.length.toLocaleString()} karakter`;
+      }
+      
+      // File upload handling
+      const fileUploadArea = document.getElementById('file-upload-area');
+      const thumbnailInput = document.getElementById('thumbnail');
+      const thumbContainer = document.getElementById('thumb-container');
+      const thumbImg = document.getElementById('thumbnail-preview-img');
+      const btnRemove = document.getElementById('btn-remove-thumb');
+      const btnOpen = document.getElementById('btn-open-thumb');
+
+            // ✅ FIX PREVIEW THUMBNAIL (tanpa ubah yang lain)
+            function showThumb(src) {
+              if (thumbImg) thumbImg.src = src;
+              if (btnOpen) btnOpen.style.display = '';
+              if (thumbContainer) thumbContainer.style.display = '';
+              if (fileUploadArea) fileUploadArea.style.display = 'none';
+              if (thumbnailInput) thumbnailInput.required = false;
+            }
+
+            function hideThumb() {
+              if (thumbImg) thumbImg.src = '';
+              if (btnOpen) btnOpen.style.display = 'none';
+              if (thumbContainer) thumbContainer.style.display = 'none';
+              if (fileUploadArea) fileUploadArea.style.display = 'block';
+              if (thumbnailInput) {
+                thumbnailInput.value = '';
+                thumbnailInput.required = true; // 🔥 INI KUNCI
+              }
+            }
+
+            // klik tombol remove (kalau ada)
+            if (btnRemove) {
+              btnRemove.addEventListener('click', function() {
+                if (confirm('Hapus thumbnail ini?')) hideThumb();
+              });
+            }
+
+            // saat pilih file -> tampilkan preview
+            if (thumbnailInput) {
+              thumbnailInput.addEventListener('change', function(e) {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+
+                // Validate file size (3MB)
+                if (file.size > 3 * 1024 * 1024) {
+                  alert('Ukuran file terlalu besar! Maksimal 3MB.');
+                  hideThumb();
+                  return;
+                }
+
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+                if (!validTypes.includes(file.type)) {
+                  alert('Format file tidak didukung! Gunakan JPG, PNG, atau WebP.');
+                  hideThumb();
+                  return;
+                }
+
+                const src = URL.createObjectURL(file);
+                showThumb(src);
+              });
+            }
+
+            // init: kalau edit dan sudah ada thumbnail, sembunyikan upload area
+            if (thumbImg && thumbImg.src && thumbImg.src.trim() !== '' && thumbImg.src !== window.location.href) {
+              if (fileUploadArea) fileUploadArea.style.display = 'none';
+              if (thumbContainer) thumbContainer.style.display = '';
+            }
+
+      function handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fileUploadArea.classList.remove('dragover');
+
+        const file = e.dataTransfer.files && e.dataTransfer.files[0];
+        if (!file) return;
+
+        // validasi size
+        if (file.size > 3 * 1024 * 1024) {
+          alert('Ukuran file terlalu besar! Maksimal 3MB.');
+          return;
+        }
+
+        // validasi tipe
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+        if (!validTypes.includes(file.type)) {
+          alert('Format file tidak didukung!');
+          return;
+        }
+
+        const src = URL.createObjectURL(file);
+        showThumb(src);
+      }
+      
+      function handleDragOver(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fileUploadArea.classList.add('dragover');
+      }
+      
+      function handleDragLeave(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fileUploadArea.classList.remove('dragover');
+      }
+      
+      // Initialize file upload handlers
+      if (fileUploadArea && thumbnailInput) {
+        fileUploadArea.addEventListener('dragover', handleDragOver);
+        fileUploadArea.addEventListener('dragleave', handleDragLeave);
+        fileUploadArea.addEventListener('drop', handleDrop);
+      }
+      
+      // Auto fill published_at if empty and status is published
+      const statusPublished = document.getElementById('status-published');
+      const publishedAtInput = document.getElementById('published_at');
+      
+      if (statusPublished && publishedAtInput) {
+        statusPublished.addEventListener('change', function() {
+          if (this.checked && !publishedAtInput.value) {
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            publishedAtInput.value = formattedDate;
           }
         });
       }
+      const modalImg = document.getElementById('thumb-modal-img');
+      const thumbModalEl = document.getElementById('thumbPreviewModal');
+      let thumbModal = null;
+
+      if (btnOpen && modalImg && thumbModalEl) {
+        btnOpen.addEventListener('click', function () {
+          if (!thumbImg || !thumbImg.src) return;
+
+          if (!thumbModal) {
+            thumbModal = new bootstrap.Modal(thumbModalEl);
+          }
+
+          modalImg.src = thumbImg.src;
+          thumbModal.show();
+        });
+      }
+
+
+      if (thumbModalEl) {
+        thumbModalEl.addEventListener('hidden.bs.modal', function () {
+          if (modalImg) modalImg.src = '';
+        });
+      }
+
+      // Form submission handling
+      const form = document.querySelector('form');
+      const submitBtn = document.getElementById('submit-btn');
+      
+      if (form && submitBtn) {
+        form.addEventListener('submit', function(e) {
+          // Validate required fields
+          const title = document.getElementById('title').value.trim();
+          const sportId = document.getElementById('sport_id').value;
+          const content = document.getElementById('content').value.trim();
+          
+          if (!title || !sportId || !content) {
+            e.preventDefault();
+            alert('Harap isi semua field yang wajib diisi!');
+            return;
+          }
+          
+          // Show loading state
+          const originalText = submitBtn.innerHTML;
+          submitBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            ${isEdit ? 'Menyimpan perubahan...' : 'Menyimpan berita...'}
+          `;
+          submitBtn.disabled = true;
+          
+          // Re-enable button after 5 seconds (in case of error)
+          setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+          }, 5000);
+        });
+      }
+      
+      // Auto-dismiss alerts
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        setTimeout(() => {
+          const bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        }, 5000);
+      });
+      
+      // Initialize form with existing data
+      document.addEventListener('DOMContentLoaded', function() {
+        // If thumbnail exists, hide upload area
+        if (thumbImg && thumbImg.src && thumbImg.src.trim() !== '' && thumbImg.src !== window.location.href) {
+          fileUploadArea.style.display = 'none';
+        } else {
+          fileUploadArea.style.display = 'block';
+        }
+        
+        // Update counters
+        if (titleInput) {
+          titleInput.dispatchEvent(new Event('input'));
+        }
+        
+        if (contentInput) {
+          contentInput.dispatchEvent(new Event('input'));
+        }
+      });
     })();

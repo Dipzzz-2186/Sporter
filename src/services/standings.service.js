@@ -21,9 +21,11 @@ async function getStandings({ sportId, mode }) {
   // =========================
   if (isPadel && mode === 'individual') {
     [rows] = await db.query(`
+    SELECT *
+    FROM (
       SELECT
         s.id,
-        s.team_id AS team_id,               -- ✅ penting biar konsisten
+        s.team_id,
         t.name AS team_name,
         a.slug AS athlete_slug,
         sp.name AS sport_name,
@@ -35,6 +37,7 @@ async function getStandings({ sportId, mode }) {
           WHERE mp.team_id = s.team_id
             AND m.sport_id = s.sport_id
             AND m.match_mode = 'individual'
+            AND m.status IN ('live','finished')
         ) AS total_match,
 
         s.win,
@@ -52,20 +55,21 @@ async function getStandings({ sportId, mode }) {
       JOIN teams t ON t.id = s.team_id AND COALESCE(t.is_individual,0) = 1
       JOIN athletes a ON a.individual_team_id = t.id
       JOIN sports sp ON sp.id = s.sport_id
-
       WHERE s.sport_id = ?
-      ORDER BY
-        s.win DESC,
-        set_diff DESC,
-        score_diff DESC,
-        s.score_for DESC,
-        t.name ASC,
-        s.team_id ASC 
-    `, [sportId]);
+    ) x
+    WHERE x.total_match > 0
+    ORDER BY
+      x.win DESC,
+      x.set_diff DESC,
+      x.score_diff DESC,
+      x.score_for DESC,
+      x.team_name ASC,
+      x.team_id ASC
+  `, [sportId]);
 
-  // =========================
-  // PADEL - TEAM MODE
-  // =========================
+    // =========================
+    // PADEL - TEAM MODE
+    // =========================
   } else if (isPadel) {
     [rows] = await db.query(`
       SELECT
@@ -79,7 +83,8 @@ async function getStandings({ sportId, mode }) {
           FROM matches m
           WHERE m.sport_id = s.sport_id
             AND (m.home_team_id = t.id OR m.away_team_id = t.id)
-            AND COALESCE(m.match_mode, 'team') = 'team'
+            AND m.status IN ('live','finished')
+            AND COALESCE(m.match_mode,'team') = 'team'
         ) AS total_match,
 
         s.win,
@@ -106,34 +111,30 @@ async function getStandings({ sportId, mode }) {
         score_diff DESC
     `, [sportId]);
 
-  // =========================
-  // GENERIC (NON-PADEL)
-  // =========================
+    // =========================
+    // GENERIC (NON-PADEL)
+    // =========================
   } else {
     [rows] = await db.query(`
-      SELECT
-        s.id,
-        s.team_id AS team_id,               -- ✅ FIX UTAMA (buat link /teams/:id)
-        t.name AS team_name,
-        sp.name AS sport_name,
-        s.played,
-        s.win,
-        s.draw,
-        s.loss,
-        s.goals_for,
-        s.goals_against,
-        (s.goals_for - s.goals_against) AS goal_diff,
-        s.pts
-
-      FROM standings s
-      JOIN teams t ON t.id = s.team_id
-      JOIN sports sp ON sp.id = s.sport_id
-
-      WHERE s.sport_id = ?
-        AND COALESCE(t.is_individual,0) = 0  -- ✅ optional safety: standings team mode
-
-      ORDER BY s.pts DESC, goal_diff DESC, s.win DESC
-    `, [sportId]);
+    SELECT
+      s.id,
+      s.team_id,
+      t.name AS team_name,
+      sp.name AS sport_name,
+      s.played,
+      s.win,
+      s.draw,
+      s.loss,
+      s.goals_for,
+      s.goals_against,
+      (s.goals_for - s.goals_against) AS goal_diff,
+      s.pts
+    FROM standings s
+    JOIN teams t ON t.id = s.team_id
+    JOIN sports sp ON sp.id = s.sport_id
+    WHERE s.sport_id = ?
+    ORDER BY s.pts DESC, goal_diff DESC, s.win DESC
+  `, [sportId]);
   }
 
   return { isPadel, rows };

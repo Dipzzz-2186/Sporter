@@ -31,7 +31,7 @@ function pad(n) { return String(n).padStart(2, '0'); }
 
 function toICSDate(dateStr, timeStr) {
   // kalau timeStr null, set default 09:00
-  const t = timeStr ? timeStr.slice(0,5) : '09:00';
+  const t = timeStr ? timeStr.slice(0, 5) : '09:00';
   const d = new Date(`${dateStr}T${t}:00`);
   // pakai UTC biar konsisten
   return (
@@ -58,7 +58,7 @@ exports.listEvents = async (req, res) => {
         start_date_formatted: formatDate(e.start_date),
         end_date_formatted: formatDate(e.end_date),
       };
-    }); 
+    });
     res.render("events/index", {
       title: "Daftar Event Olahraga - Sporter",
       events: mapped,

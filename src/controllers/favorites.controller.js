@@ -69,7 +69,12 @@ exports.myFavoritesPage = async (req, res) => {
         e.id AS event_id,
         e.title,
         e.slug,
-        e.status,
+        CASE
+          WHEN e.start_date IS NULL THEN 'upcoming'
+          WHEN CURDATE() < DATE(e.start_date) THEN 'upcoming'
+          WHEN e.end_date IS NOT NULL AND CURDATE() > DATE(e.end_date) THEN 'finished'
+          ELSE 'ongoing'
+        END AS status,
         e.start_date,
         e.end_date
       FROM user_favorites uf
@@ -84,10 +89,10 @@ exports.myFavoritesPage = async (req, res) => {
     const formatted = items.map(it => ({
       ...it,
       start_date_formatted: it.start_date
-        ? new Date(it.start_date).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+        ? new Date(it.start_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
         : null,
       end_date_formatted: it.end_date
-        ? new Date(it.end_date).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+        ? new Date(it.end_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
         : null,
       favorited_at_formatted: it.favorited_at
         ? new Date(it.favorited_at).toLocaleString('id-ID')
@@ -99,11 +104,11 @@ exports.myFavoritesPage = async (req, res) => {
       events: formatted
     });
   } catch (err) {
-  console.error('myFavoritesPage error:', err);
-  return res.render('favorites/index', {
-    title: 'Disimpan (Favorites)',
-    events: []
-  });
+    console.error('myFavoritesPage error:', err);
+    return res.render('favorites/index', {
+      title: 'Disimpan (Favorites)',
+      events: []
+    });
   }
 };
 

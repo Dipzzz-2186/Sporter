@@ -92,7 +92,7 @@ exports.renderRegister = (req, res) => {
   if (req.session.user) return res.redirect("/");
 
   res.render("auth/register", {
-    title: "Register - SPORTER",
+    title: "Register - SPORTS",
     old: {
       name: req.query.name || "",
       email: req.query.email || "",
@@ -106,7 +106,7 @@ exports.handleRegister = async (req, res) => {
 
   if (!name || !email || !password || !confirm_password) {
     req.flash("error", "Semua field wajib diisi.");
-    return res.redirect(`/register?name=${encodeURIComponent(name||"")}&email=${encodeURIComponent(email||"")}`);
+    return res.redirect(`/register?name=${encodeURIComponent(name || "")}&email=${encodeURIComponent(email || "")}`);
   }
 
   if (password.length < 6) {

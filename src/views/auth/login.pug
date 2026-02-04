@@ -3,7 +3,7 @@ html(lang="id")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Login Page - SPORTER
+    title Login Page - Asthapora
     link(rel="icon" type="image/png" href="/images/Logo.png")
     
     // Bootstrap
@@ -29,6 +29,11 @@ html(lang="id")
     )
     
     style.
+      html, body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden !important;
+      }
       * {
         margin: 0;
         padding: 0;
@@ -71,6 +76,26 @@ html(lang="id")
         animation: float 10s ease-in-out infinite reverse;
       }
       
+      body::before,
+      body::after {
+        pointer-events: none;
+        max-width: 100vw;
+        max-height: 100vh;
+        overflow: hidden;
+      }
+
+      @media (max-width: 768px) {
+        body::before {
+          width: 400px;
+          height: 400px;
+        }
+
+        body::after {
+          width: 300px;
+          height: 300px;
+        }
+      }
+
       @keyframes float {
         0%, 100% {
           transform: translate(0, 0) scale(1);
@@ -84,12 +109,19 @@ html(lang="id")
       .login-container {
         width: 100%;
         max-width: 480px;
+        overflow-x: hidden;
         padding: 2rem;
         position: relative;
         z-index: 2;
         animation: fadeInUp 0.8s ease-out;
       }
       
+      @media (max-width: 768px) {
+        .login-container {
+          max-width: 100%;
+          padding: 1rem;
+        }
+      }
       @keyframes fadeInUp {
         from {
           opacity: 0;
@@ -380,6 +412,7 @@ html(lang="id")
         top: 2rem;
         left: 2rem;
         z-index: 10;
+        max-width: calc(100vw - 2rem);
       }
       
       .back-home a {
@@ -470,7 +503,7 @@ html(lang="id")
       .login-logo
         .logo-icon
           i.bi.bi-shield-lock-fill
-        .logo-text SPORTER
+        .logo-text Asthapora
       
       //- Login Card
       .card.login-card.border-0
@@ -502,7 +535,7 @@ html(lang="id")
               input#email.form-control(
                 type="email", 
                 name="email", 
-                placeholder="admin@sporter.id",
+                placeholder="admin@asthapora.id",
                 required, 
                 value=old && old.email ? old.email : ''
               )

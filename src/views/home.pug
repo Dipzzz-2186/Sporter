@@ -1571,7 +1571,7 @@ block content
       .section-title
         h2.fw-bold.mb-3.mb-md-4
           | Fitur Utama 
-          span.sporter-blue SPORTER
+          span.sporter-blue Asthapora
         p.text-secondary
           | Semua yang Anda butuhkan untuk mengikuti perkembangan olahraga Indonesia tersedia dalam satu platform yang terintegrasi.
       
@@ -1649,11 +1649,10 @@ block content
             .col-12.col-sm-6.col-lg-4.col-xl-3
               .card.border-1.sporter-event-card
                 .card-body.d-flex.flex-column
-                  // Badge khusus "67vent" dari gambar
                   .event-type-badge.mb-3
                     span.badge.bg-primary.text-white.rounded-pill
                       i.bi.bi-trophy.me-1
-                      | 67vent
+                      = e.sport_name || 'Olahraga'
                   
                   // Judul event
                   h5.event-title.mb-3= e.title || 'Nama Event'

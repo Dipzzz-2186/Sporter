@@ -4,11 +4,13 @@ exports.updateAthlete = async (req, res) => {
   try {
     const id = req.params.id;
 
-    // ambil data lama (buat redirect + optional delete foto lama kalau mau)
     const old = await athleteModel.findById(id);
     if (!old) {
+      if (req.headers.accept?.includes('application/json')) {
+        return res.status(404).json({ ok: false, message: 'Atlet tidak ditemukan' });
+      }
       req.flash?.('error', 'Atlet tidak ditemukan');
-      return res.redirect('back');
+      return res.redirect(`/athletes/${old.slug}`);
     }
 
     const payload = {
@@ -25,26 +27,38 @@ exports.updateAthlete = async (req, res) => {
     };
 
     if (!payload.name) {
+      if (req.headers.accept?.includes('application/json')) {
+        return res.status(400).json({ ok: false, message: 'Nama wajib diisi' });
+      }
       req.flash?.('error', 'Nama wajib diisi');
-      return res.redirect('back');
+      return res.redirect(`/athletes/${old.slug}`);
     }
 
-    // kalau ada upload foto
     if (req.file) {
       payload.photo_url = `/uploads/athletes/${req.file.filename}`;
     }
 
     await athleteModel.updateById(id, payload);
 
-    req.flash?.('success', 'Profil atlet berhasil diupdate');
+    // =========================
+    // ✅ KUNCI UTAMA DI SINI
+    // =========================
+    if (req.headers.accept?.includes('application/json')) {
+      return res.json({ ok: true });
+    }
 
-    // redirect balik ke halaman athlete show (pakai slug lama / baru)
-    const slug = old.slug; // kalau kamu punya field slug
-    if (slug) return res.redirect(`/athletes/${slug}?edit=1`);
-    return res.redirect('back');
+    // fallback (submit biasa, NON modal)
+    req.flash?.('success', 'Profil atlet berhasil diupdate');
+    return res.redirect(`/athletes/${old.slug}`);
+
   } catch (err) {
     console.error(err);
+
+    if (req.headers.accept?.includes('application/json')) {
+      return res.status(500).json({ ok: false, message: 'Gagal update atlet' });
+    }
+
     req.flash?.('error', 'Gagal update atlet');
-    return res.redirect('back');
+    return res.redirect(`/athletes/${old.slug}`);
   }
 };

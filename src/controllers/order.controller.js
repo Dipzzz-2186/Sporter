@@ -69,7 +69,7 @@ exports.saveTicketHolders = async (req, res) => {
         await conn.commit();
 
         req.flash('success', 'Tiket berhasil dikonfirmasi.');
-        return res.redirect('/sports');
+        return res.redirect('/profile/tickets');
 
     } catch (err) {
         await conn.rollback();

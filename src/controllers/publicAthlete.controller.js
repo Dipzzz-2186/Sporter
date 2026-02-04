@@ -27,7 +27,7 @@ exports.show = async (req, res) => {
     // =========================
     // A) CARI TEAM DARI team_members
     // =========================
-    const [[teamRow]] = await db.query(`
+    const [[teamRow]] = await db.query(`  
       SELECT t.id, t.name, t.sport_id, t.is_individual
       FROM team_members tm
       JOIN teams t ON t.id = tm.team_id
@@ -70,28 +70,84 @@ exports.show = async (req, res) => {
     let stats = { match_played: 0, match_won: 0, match_lost: 0 };
     let rank = Number(athlete.rank_pos || 1);
 
-      if (teamId) {
-      // tentuin mode dulu (WAJIB sebelum dipakai query)
+    // =========================
+    // D) HITUNG RANK SESUAI MODE
+    // =========================
+    if (teamId) {
       const isIndividual = isIndividualAthlete ? 1 : 0;
 
-      const [rows] = await db.query(`
-        SELECT s.team_id
+      // stats tetap dari standings
+      const [[stat]] = await db.query(`
+    SELECT played, win, loss
+    FROM standings
+    WHERE sport_id = ?
+      AND team_id = ?
+  `, [athlete.sport_id, teamId]);
+
+      stats = {
+        match_played: Number(stat?.played || 0),
+        match_won: Number(stat?.win || 0),
+        match_lost: Number(stat?.loss || 0),
+      };
+
+      let rows = [];
+
+      if (isIndividual) {
+        // =========================
+        // 🧍‍♂️ INDIVIDUAL RANKING
+        // =========================
+        [rows] = await db.query(`
+      SELECT x.team_id
+      FROM (
+        SELECT
+          s.team_id,
+          (
+            SELECT COUNT(*)
+            FROM match_participants mp
+            JOIN matches m ON m.id = mp.match_id
+            WHERE mp.team_id = s.team_id
+              AND m.sport_id = s.sport_id
+              AND m.match_mode = 'individual'
+              AND m.status IN ('live','finished')
+          ) AS total_match,
+          s.win,
+          (s.set_win - s.set_loss) AS set_diff,
+          (s.score_for - s.score_against) AS score_diff
         FROM standings s
         JOIN teams t ON t.id = s.team_id
         WHERE s.sport_id = ?
-          AND COALESCE(t.is_individual,0) = ?
-        ORDER BY
-          s.win DESC,
-          (s.set_win - s.set_loss) DESC,
-          (s.score_for - s.score_against) DESC,
-          s.team_id ASC
-      `, [athlete.sport_id, isIndividual]);
+          AND t.is_individual = 1
+      ) x
+      WHERE x.total_match > 0
+      ORDER BY
+        x.win DESC,
+        x.set_diff DESC,
+        x.score_diff DESC,
+        x.team_id ASC
+    `, [athlete.sport_id]);
+
+      } else {
+        // =========================
+        // 👥 TEAM RANKING (INI FIX)
+        // =========================
+        [rows] = await db.query(`
+      SELECT s.team_id
+      FROM standings s
+      JOIN teams t ON t.id = s.team_id
+      WHERE s.sport_id = ?
+        AND COALESCE(t.is_individual,0) = 0
+        AND s.played > 0
+      ORDER BY
+        s.win DESC,
+        (s.set_win - s.set_loss) DESC,
+        (s.score_for - s.score_against) DESC,
+        s.team_id ASC
+    `, [athlete.sport_id]);
+      }
 
       const idx = rows.findIndex(r => Number(r.team_id) === Number(teamId));
       rank = idx >= 0 ? idx + 1 : rank;
-        
     }
-
 
     const effectiveness =
       (stats.match_won + stats.match_lost) > 0

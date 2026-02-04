@@ -130,7 +130,19 @@ block content
       box-shadow: 0 8px 25px rgba(0, 149, 255, 0.4);
       color: white;
     }
-    
+    .news-table thead th {
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%) !important;
+      color: #fff !important;
+    }
+
+    .news-table.table-hover > tbody > tr:hover {
+      background: linear-gradient(
+        90deg,
+        rgba(0,149,255,.06) 0%,
+        rgba(52,199,255,.06) 100%
+      ) !important;
+    }
+
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -543,74 +555,43 @@ block content
             table.table.table-hover.mb-0.news-table
               thead
                 tr
-                  th Thumbnail
                   th ID
-                  th Judul Berita
                   th Cabang
-                  th Event
+                  th Judul
+                  th Ringkasan
+                  th Tgl Publish
                   th Status
-                  th Diterbitkan
-                  th.text-end Aksi
+                  th.text-center Aksi
               tbody
                 each n in news
                   tr
                     td
-                      if n.thumbnail_url
-                        img.news-thumbnail(
-                          src=n.thumbnail_url,
-                          alt=n.title,
-                          onerror="this.src='https://via.placeholder.com/60x60?text=No+Image'"
-                        )
-                      else
-                        img.news-thumbnail(
-                          src="https://via.placeholder.com/60x60?text=No+Image",
-                          alt="No Thumbnail"
-                        )
-                    td
                       span.badge.bg-light.text-dark= n.id
+                    td
+                      if n.sport_name
+                        span.badge.bg-white.text-danger= n.sport_name
+                      else
+                        span.text-muted -
                     td
                       .news-row-title= n.title
                       if n.slug
-                        .news-row-slug= n.slug
+                        .news-meta
+                          small= n.slug
+                    td
                       if n.excerpt
-                        small.text-muted.d-block.mt-1
-                          i.bi.bi-quote.me-1
-                          | #{n.excerpt.length > 100 ? n.excerpt.substring(0, 100) + '...' : n.excerpt}
-                    td
-                      .news-row-info= n.sport_name || '-'
-                    td
-                      .news-row-info= n.event_title || '-'
-                    td
-                      if n.status === 'published'
-                        span.badge.bg-success-subtle.text-success Published
-                      else if n.status === 'draft'
-                        span.badge.bg-secondary-subtle.text-secondary Draft
-                      else
-                        span.badge.bg-warning-subtle.text-warning= n.status
-                    td
-                      if n.published_at
-                        - const pubDate = new Date(n.published_at);
-                        - const now = new Date();
-                        - const timeDiff = now - pubDate;
-                        - const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-                        
-                        .news-row-info
-                          = pubDate.toLocaleDateString('id-ID')
-                        small.text-muted
-                          if daysDiff === 0
-                            i.bi.bi-clock.me-1
-                            | Hari ini
-                          else if daysDiff === 1
-                            i.bi.bi-clock-history.me-1
-                            | Kemarin
-                          else if daysDiff < 7
-                            i.bi.bi-calendar-week.me-1
-                            | #{daysDiff} hari lalu
-                          else
-                            i.bi.bi-calendar-date.me-1
-                            | #{Math.floor(daysDiff/7)} minggu lalu
+                        .news-excerpt= n.excerpt.length > 120 ? n.excerpt.slice(0,120) + '...' : n.excerpt
                       else
                         span.text-muted -
+                    td
+                      if n.published_at
+                        = new Date(n.published_at).toLocaleString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+                      else
+                        span.text-muted -
+                    td
+                      if n.status === 'published'
+                        span.badge.bg-success.text-white Published
+                      else
+                        span.badge.bg-secondary.text-white= n.status || 'draft'
                     td.text-end
                       .action-buttons
                         if n.slug

@@ -17,10 +17,14 @@ exports.getFeaturedEvents = async () => {
 // Event terbaru (untuk list di home)
 exports.getLatestEvents = async () => {
   const [rows] = await db.query(
-    `SELECT e.id, e.title, e.slug, e.start_date, e.end_date,
-            e.description, v.name AS venue_name
+    `SELECT 
+        e.id, e.title, e.slug, e.start_date, e.end_date,
+        e.description,
+        v.name AS venue_name,
+        s.name AS sport_name
      FROM events e
      LEFT JOIN venues v ON v.id = e.venue_id
+     LEFT JOIN sports s ON s.id = e.sport_id
      ORDER BY e.start_date DESC
      LIMIT 8`
   );

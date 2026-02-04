@@ -1122,29 +1122,54 @@ exports.updateMatch = async (req, res) => {
     return res.redirect("/subadmin/matches");
   }
 };
-
-
 exports.deleteMatch = async (req, res) => {
+  const conn = await db.getConnection();
   try {
-    const id = Number(req.params.id);
-    if (!id) {
-      req.flash("error", "ID pertandingan tidak valid.");
-      return res.redirect("/subadmin/matches");
-    }
+    const matchId = Number(req.params.id);
+    if (!matchId) throw new Error('ID tidak valid');
 
-    // opsional: cek sport/akses dulu kalau mau ekstra aman
-    await db.query("DELETE FROM matches WHERE id = ?", [id]);
+    await conn.beginTransaction();
 
-    req.flash("success", "Pertandingan berhasil dihapus.");
-    return res.redirect("/subadmin/matches");
+    // 🔥 TIKET (PALING DALAM)
+    await conn.query(`
+      DELETE t FROM tickets t
+      JOIN order_items oi ON oi.id = t.order_item_id
+      JOIN ticket_types tt ON tt.id = oi.ticket_type_id
+      WHERE tt.match_id = ?
+    `, [matchId]);
+
+    await conn.query(`
+      DELETE oi FROM order_items oi
+      JOIN ticket_types tt ON tt.id = oi.ticket_type_id
+      WHERE tt.match_id = ?
+    `, [matchId]);
+
+    await conn.query(`DELETE FROM ticket_types WHERE match_id = ?`, [matchId]);
+
+    // 🔥 MATCH DATA
+    await conn.query(`DELETE FROM match_scores WHERE match_id = ?`, [matchId]);
+    await conn.query(`DELETE FROM match_participants WHERE match_id = ?`, [matchId]);
+    await conn.query(`DELETE FROM videos WHERE match_id = ?`, [matchId]);
+
+    // optional: standings cleanup
+    await conn.query(`DELETE FROM standings WHERE team_id IS NULL AND sport_id IS NOT NULL`);
+
+    // 🔥 BARU HAPUS MATCH
+    await conn.query(`DELETE FROM matches WHERE id = ?`, [matchId]);
+
+    await conn.commit();
+    req.flash('success', 'Pertandingan berhasil dihapus.');
+    res.redirect('/subadmin/matches');
+
   } catch (err) {
-    console.error("deleteMatch error", err);
-    req.flash("error", "Gagal menghapus pertandingan.");
-    return res.redirect("/subadmin/matches");
+    await conn.rollback();
+    console.error('deleteMatch error:', err);
+    req.flash('error', 'Gagal menghapus pertandingan (data masih dipakai).');
+    res.redirect('/subadmin/matches');
+  } finally {
+    conn.release();
   }
 };
-
-
 
 /* -------------------------
    MATCH SCORES
@@ -1455,33 +1480,45 @@ exports.listNews = async (req, res) => {
   try {
     const sportIds = Array.isArray(req.allowedSports) ? req.allowedSports : [];
 
-    // Jika admin: boleh lihat semua (termasuk global null)
     if (req.session.user.role === 'admin') {
-      const [news] = await db.query(
-        `SELECT n.id, n.title, n.slug, n.status, n.published_at, s.name as sport_name
-         FROM news_articles n
-         LEFT JOIN sports s ON s.id = n.sport_id
-         ORDER BY n.published_at DESC, n.created_at DESC
-         LIMIT 100`
-      );
+      const [news] = await db.query(`
+        SELECT
+          n.id,
+          n.title,
+          n.slug,
+          n.excerpt,
+          n.status,
+          n.published_at,
+          s.name AS sport_name
+        FROM news_articles n
+        LEFT JOIN sports s ON s.id = n.sport_id
+        ORDER BY n.published_at DESC, n.created_at DESC
+        LIMIT 100
+      `);
       return res.render('subadmin/news', { title: 'Berita - SubAdmin', news });
     }
 
-    // subadmin: hanya sport yang di-assign
     if (!sportIds.length) {
       return res.render('subadmin/news', { title: 'Berita - SubAdmin', news: [] });
     }
 
     const placeholders = sportIds.map(() => '?').join(',');
-    const sql = `
-      SELECT n.id, n.title, n.slug, n.status, n.published_at, s.name as sport_name
+    const [news] = await db.query(`
+      SELECT
+        n.id,
+        n.title,
+        n.slug,
+        n.excerpt,
+        n.status,
+        n.published_at,
+        s.name AS sport_name
       FROM news_articles n
       LEFT JOIN sports s ON s.id = n.sport_id
       WHERE n.sport_id IN (${placeholders})
       ORDER BY n.published_at DESC, n.created_at DESC
       LIMIT 100
-    `;
-    const [news] = await db.query(sql, sportIds);
+    `, sportIds);
+
     return res.render('subadmin/news', { title: 'Berita - SubAdmin', news });
   } catch (err) {
     console.error('subadmin.listNews error', err);
@@ -1683,7 +1720,7 @@ exports.ajaxCreateTeam = async (req, res) => {
 
     return res.json({ ok: true, team: { id: teamId, name: teamName, sport_id: sportId } });
   } catch (err) {
-    try { await conn.rollback(); } catch (_) {}
+    try { await conn.rollback(); } catch (_) { }
     console.error('ajaxCreateTeam error', err);
     return res.status(500).json({ ok: false, message: 'Server error' });
   } finally {
@@ -2081,8 +2118,9 @@ exports.renderTicketOrders = async (req, res) => {
     const [orders] = await db.query(
       `
       SELECT
-        u.id   AS user_id,
-        u.name AS user_name,
+        u.id    AS user_id,
+        u.name  AS user_name,
+        u.email AS user_email,
 
         GROUP_CONCAT(DISTINCT s.name ORDER BY s.name SEPARATOR ', ') AS sport_name,
 

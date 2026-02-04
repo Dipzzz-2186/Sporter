@@ -78,7 +78,7 @@ exports.listStandings = async (req, res) => {
 
   // ✅ WAJIB: ambil sports
   const sports = await getAvailableSports(req);
-  
+
   if (
     req.session.user.role === 'subadmin' &&
     sports.length === 1 &&
@@ -475,6 +475,13 @@ exports.submitIndividualScore = async (req, res) => {
     // after insert match_games
     const homeSet = home_score > away_score ? 1 : 0;
     const awaySet = home_score < away_score ? 1 : 0;
+    // 🔥 PASTIKAN STANDINGS INDIVIDUAL ADA SEBELUM UPDATE
+    await conn.query(`
+      INSERT IGNORE INTO standings (sport_id, team_id)
+      SELECT ?, team_id
+      FROM match_participants
+      WHERE match_id = ?
+    `, [match.sport_id, matchId]);
 
     await conn.query(`
   UPDATE standings

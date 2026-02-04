@@ -629,45 +629,6 @@ block content
                 )
                   i.bi.bi-whatsapp
 
-                button.share-btn.share-btn-copy(
-                  onclick="copyArticleLink()",
-                  title="Salin Link",
-                  id="copyArticleLinkBtn"
-                )
-                  i.bi.bi-link-45deg
-
-          // (Optional) Related bawah masih boleh dipertahankan kalau mau
-          if relatedArticles && relatedArticles.length
-            .related-news
-              h3.related-title
-                i.bi.bi-newspaper
-                span Berita Terkait
-
-              .row.g-3
-                each related in relatedArticles.slice(0, 3)
-                  .col-md-4
-                    a.related-card(href=`/news/${related.slug || related.id}`)
-                      if related.thumbnail_url
-                        img(
-                          src=related.thumbnail_url,
-                          alt=related.title,
-                          onerror="this.src='https://via.placeholder.com/300x180?text=No+Image'"
-                        )
-                      else
-                        .bg-light.d-flex.align-items-center.justify-content-center(style="height: 180px;")
-                          i.bi.bi-newspaper.text-muted(style="font-size: 2rem;")
-                      .related-card-body
-                        h4.related-card-title= related.title
-                        .related-card-meta
-                          if related.sport_name
-                            span.related-card-sport
-                              i.bi.bi-trophy-fill.me-1
-                              = related.sport_name
-                          if related.published_at_formatted
-                            span.related-card-date
-                              i.bi.bi-calendar-event.me-1
-                              = related.published_at_formatted
-
         // RIGHT - Sidebar Berita Lainnya
         .col-lg-4
           .news-sidebar

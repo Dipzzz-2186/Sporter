@@ -10,727 +10,662 @@ block content
   - const winRate = stats && stats.match_played > 0 ? ((stats.match_won / stats.match_played) * 100).toFixed(1) : 0;
   
   style.
-    /* Professional Athlete Profile */
-    .athlete-profile-page {
-      background: #f5f7fa;
-      min-height: 100vh;
+    .athlete-page { 
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
+      min-height: 100vh; 
+      padding: 0; 
     }
     
-    /* Hero Section */
-    .athlete-hero {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    /* Header Container - FIXED SEJAJAR */
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    
+    /* Header Section */
+    .header-section {
+      background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%);
+      padding: 2.5rem 0 3rem;
       position: relative;
       overflow: hidden;
-      padding: 0;
     }
-    
-    .athlete-hero::before {
+    .header-section::before {
       content: '';
       position: absolute;
-      top: -30%;
+      top: -50%;
       right: -10%;
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(0, 122, 255, 0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(0, 149, 255, 0.15) 0%, transparent 70%);
       border-radius: 50%;
-      pointer-events: none;
     }
     
-    .hero-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 0;
+    /* Back Button */
+    .btn-back-athlete {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: white;
+      font-weight: 600;
+      padding: 0.6rem 1.5rem;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      text-decoration: none;
+    }
+    .btn-back-athlete:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    /* Header Content Grid - SEJAJAR */
+    .header-grid {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 2.5rem;
+      align-items: center;
       position: relative;
       z-index: 2;
     }
     
-    /* Back Button */
-    .btn-back-hero {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.875rem;
-      transition: all 0.2s ease;
-      text-decoration: none;
-      margin-bottom: 2rem;
-    }
-    
-    .btn-back-hero:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateX(-3px);
-      color: white;
-    }
-    
-    /* Hero Grid */
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 200px 1fr 100px;
-      gap: 2rem;
-      align-items: start;
-      padding-bottom: 2rem;
-    }
-    
-    /* Avatar */
-    .athlete-avatar-container {
-      position: relative;
-    }
-    
-    .athlete-avatar {
-      width: 200px;
-      height: 200px;
-      border-radius: 16px;
-      object-fit: cover;
-      border: 4px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      background: rgba(255, 255, 255, 0.05);
-    }
-    
-    .avatar-placeholder {
-      width: 200px;
-      height: 200px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 4px solid rgba(255, 255, 255, 0.2);
+    /* Rank Badge */
+    .rank-badge {
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .rank-badge::before {
+      content: 'RANK';
+      position: absolute;
+      top: 8px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #0B1F3F;
+      letter-spacing: 1px;
+    }
+    .rank-number {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 3rem;
+      line-height: 1;
+      color: #0B1F3F;
+      font-weight: 900;
+      margin-top: 15px;
     }
     
-    .avatar-placeholder i {
-      font-size: 5rem;
-      color: rgba(255, 255, 255, 0.3);
+    /* Avatar */
+    .athlete-avatar {
+      width: 200px;
+      height: 200px;
+      border-radius: 20px;
+      object-fit: cover;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    }
+    .avatar-placeholder {
+      width: 200px;
+      height: 200px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     
-    /* Hero Content */
-    .hero-content {
-      padding-top: 1rem;
+    /* Center Content - SEJAJAR */
+    .center-content {
+      padding: 0 1rem;
     }
-    
     .athlete-name {
+      font-weight: 900;
       font-size: 2.5rem;
-      font-weight: 800;
-      color: white;
-      margin-bottom: 1rem;
-      letter-spacing: -0.8px;
+      margin: 0 0 1rem 0;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
       line-height: 1.2;
     }
     
-    /* Meta Info */
-    .athlete-meta {
+    /* Meta Badges */
+    .meta-badges {
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
       margin-bottom: 1.5rem;
     }
-    
     .meta-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       padding: 0.5rem 1rem;
-      background: rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      color: white;
-      font-size: 0.875rem;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      font-size: 0.9rem;
       font-weight: 600;
-      transition: all 0.2s ease;
+      color: #fff;
+      transition: all 0.3s ease;
+      white-space: nowrap;
     }
-    
     .meta-badge:hover {
-      background: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.25);
       transform: translateY(-2px);
     }
-    
     .meta-badge i {
-      font-size: 1rem;
-      opacity: 0.9;
+      font-size: 1.1rem;
     }
     
-    .meta-badge a {
-      color: white;
-      text-decoration: underline;
-    }
-    
-    /* Info Grid */
-    .info-grid {
+    /* Quick Stats - SEJAJAR */
+    .quick-stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
-      margin-top: 1.5rem;
+      margin-top: 1rem;
     }
-    
-    .info-card {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
-      transition: all 0.2s ease;
-    }
-    
-    .info-card:hover {
+    .quick-stat-card {
       background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 1.25rem;
+      transition: all 0.3s ease;
+    }
+    .quick-stat-card:hover {
+      background: rgba(255, 255, 255, 0.18);
       transform: translateY(-2px);
     }
-    
-    .info-row {
+    .quick-stat-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: white;
+      color: #fff;
     }
-    
-    .info-row:not(:last-child) {
+    .quick-stat-row:not(:last-child) {
       margin-bottom: 0.75rem;
       padding-bottom: 0.75rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
-    .info-label {
-      font-size: 0.8125rem;
-      opacity: 0.8;
+    .quick-stat-label {
+      font-size: 0.85rem;
+      opacity: 0.85;
       font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      white-space: nowrap;
     }
-    
-    .info-value {
+    .quick-stat-value {
       font-weight: 700;
-      font-size: 0.9375rem;
+      font-size: 1rem;
       text-align: right;
-    }
-    
-    /* Rank Badge */
-    .rank-badge {
-      width: 100px;
-      height: 100px;
-      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
-      position: relative;
-    }
-    
-    .rank-label {
-      font-size: 0.625rem;
-      font-weight: 700;
-      color: #1a1a2e;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 0.25rem;
-    }
-    
-    .rank-number {
-      font-size: 2.5rem;
-      font-weight: 900;
-      color: #1a1a2e;
-      line-height: 1;
+      min-width: 80px;
     }
     
     /* Edit Button */
-    .btn-edit-profile {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: white;
-      padding: 0.5rem 1.25rem;
-      border-radius: 8px;
+    .btn-edit-athlete {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
       font-weight: 600;
-      font-size: 0.875rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      transition: all 0.2s ease;
-      margin-top: 1rem;
     }
-    
-    .btn-edit-profile:hover {
-      background: rgba(255, 255, 255, 0.25);
-      border-color: rgba(255, 255, 255, 0.35);
-      color: white;
+    .btn-edit-athlete:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.4);
+      color: #fff;
       transform: translateY(-2px);
     }
     
-    /* Stats Section */
+    /* Stats Grid - SEJAJAR dengan Header Container */
     .stats-section {
-      background: white;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+      background: transparent;
+      padding: 2.5rem 0;
       position: relative;
-      z-index: 3;
     }
-    
     .stats-container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 2.5rem 1.5rem;
+      padding: 0 1.5rem;
     }
-    
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1.5rem;
     }
-    
     .stat-card {
-      background: white;
-      border: 1px solid #e8ecef;
-      border-radius: 12px;
-      padding: 1.75rem 1.25rem;
-      text-align: center;
+      background: #fff;
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid #f0f0f0;
       transition: all 0.3s ease;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       position: relative;
       overflow: hidden;
     }
-    
     .stat-card::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #007aff 0%, #0051d5 100%);
+      height: 4px;
+      background: linear-gradient(90deg, #0B1F3F, #0095ff);
     }
-    
     .stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-      border-color: rgba(0, 122, 255, 0.3);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
     }
-    
     .stat-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #007aff 0%, #0051d5 100%);
-      border-radius: 12px;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%);
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 1rem;
-      color: white;
+      color: #fff;
       font-size: 1.5rem;
     }
-    
     .stat-label {
-      font-size: 0.75rem;
+      color: #6c757d;
       font-weight: 600;
-      color: #6b7280;
+      font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 0.5rem;
     }
-    
     .stat-value {
-      font-size: 2rem;
       font-weight: 900;
-      color: #1a1a2e;
+      font-size: 2.2rem;
+      color: #0B1F3F;
       line-height: 1;
       margin-bottom: 0.25rem;
     }
-    
     .stat-subtext {
       font-size: 0.75rem;
-      color: #9ca3af;
+      color: #6c757d;
       margin-top: 0.5rem;
+      font-weight: 500;
     }
     
-    /* Content Section */
-    .content-section {
-      background: #f5f7fa;
-      padding: 2.5rem 0 4rem;
-    }
-    
+    /* Content Container - SEJAJAR dengan Header */
     .content-container {
       max-width: 1200px;
-      margin: 0 auto;
+      margin: 0 auto 5rem;
       padding: 0 1.5rem;
     }
-    
     .content-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
+      gap: 2rem;
     }
-    
     .content-card {
-      background: white;
-      border: 1px solid #e8ecef;
-      border-radius: 12px;
-      padding: 1.75rem;
+      background: #fff;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid #f0f0f0;
       transition: all 0.3s ease;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
     }
-    
     .content-card:hover {
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-      transform: translateY(-2px);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
     }
-    
-    .card-header {
+    .card-header-custom {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 1rem;
       margin-bottom: 1.5rem;
       padding-bottom: 1rem;
-      border-bottom: 2px solid #f3f4f6;
+      border-bottom: 2px solid #f0f0f0;
     }
-    
     .card-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #007aff 0%, #0051d5 100%);
-      border-radius: 10px;
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 1.25rem;
+      color: #fff;
+      font-size: 1.3rem;
     }
-    
     .card-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #1a1a2e;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: #0B1F3F;
       margin: 0;
-      letter-spacing: -0.3px;
     }
     
-    /* Bio */
+    /* Bio Section */
     .bio-text {
-      font-size: 0.9375rem;
-      line-height: 1.7;
-      color: #374151;
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #495057;
       margin-bottom: 0;
     }
     
     /* Info Badges */
-    .info-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-    
     .info-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      font-size: 0.875rem;
+      padding: 0.4rem 1rem;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+      border: 1px solid #dee2e6;
       font-weight: 600;
-      color: #374151;
+      font-size: 0.9rem;
+      color: #495057;
     }
-    
     .info-badge i {
-      color: #007aff;
+      margin-right: 0.5rem;
+      color: #0B1F3F;
     }
     
-    /* Tables */
-    .table-responsive {
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #e8ecef;
+    /* Points History Card */
+    .points-history-card {
+      grid-column: span 2;
+      margin-top: 1rem;
     }
     
+    /* Table Styling */
     .custom-table {
       width: 100%;
       margin: 0;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
     }
-    
     .custom-table thead th {
-      background: #f8f9fa;
-      color: #6b7280;
+      background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%);
+      color: #fff;
       border: none;
-      padding: 0.875rem 1rem;
-      font-size: 0.75rem;
+      padding: 1rem 1rem;
+      font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       font-weight: 700;
+      white-space: nowrap;
       text-align: left;
-      border-bottom: 2px solid #e8ecef;
     }
-    
+    .custom-table thead th:first-child {
+      border-top-left-radius: 12px;
+    }
+    .custom-table thead th:last-child {
+      border-top-right-radius: 12px;
+    }
     .custom-table tbody td {
-      padding: 1rem;
-      border-bottom: 1px solid #f3f4f6;
-      color: #374151;
-      font-size: 0.875rem;
+      padding: 1rem 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: middle;
+      color: #495057;
+      font-size: 0.9rem;
     }
-    
     .custom-table tbody tr:hover {
       background: #f8f9fa;
     }
-    
     .custom-table tbody tr:last-child td {
       border-bottom: none;
     }
     
-    /* Full Width Card */
-    .card-full {
-      grid-column: span 2;
-    }
-    
     /* Modal */
-    .modal-content {
-      border-radius: 16px;
+    .modal-content-fixed {
+      border-radius: 20px;
       border: none;
-      overflow: hidden;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
     }
-    
-    .modal-header {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      color: white;
-      border: none;
-      padding: 1.5rem;
-    }
-    
-    .modal-body {
-      padding: 1.75rem;
-      max-height: 70vh;
+    .modal-body-scrollable {
+      padding: 2rem;
       overflow-y: auto;
+      flex: 1 1 auto;
+      max-height: calc(85vh - 180px);
     }
-    
-    .modal-footer {
-      padding: 1.25rem 1.75rem;
+    .modal-footer-sticky {
+      padding: 1.5rem 2rem;
       background: #f8f9fa;
-      border-top: 1px solid #e8ecef;
-    }
-    
-    .form-label {
-      font-weight: 600;
-      font-size: 0.875rem;
-      color: #374151;
-      margin-bottom: 0.5rem;
-    }
-    
-    .form-control {
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      padding: 0.625rem 0.875rem;
-      font-size: 0.9375rem;
-      transition: all 0.2s ease;
-    }
-    
-    .form-control:focus {
-      border-color: #007aff;
-      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
-    }
-    
-    /* Badges */
-    .badge {
-      padding: 0.375rem 0.75rem;
-      font-weight: 600;
-      font-size: 0.75rem;
-      border-radius: 6px;
+      border-top: 2px solid #dee2e6;
+      flex-shrink: 0;
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     }
     
     /* Responsive */
-    @media (max-width: 991px) {
-      .hero-grid {
+    @media (max-width: 1200px) {
+      .header-grid {
+        grid-template-columns: auto 1fr;
+        gap: 1.5rem;
+      }
+      .header-grid .avatar-container {
+        grid-column: span 2;
+        justify-self: center;
+        margin-top: 1.5rem;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .header-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
         text-align: center;
       }
-      
-      .athlete-avatar-container,
       .rank-badge {
         margin: 0 auto;
       }
-      
-      .athlete-meta {
+      .center-content {
+        text-align: center;
+        padding: 0;
+      }
+      .meta-badges {
         justify-content: center;
       }
-      
+      .header-grid .avatar-container {
+        grid-column: auto;
+        margin-top: 0;
+        order: 3;
+      }
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
       }
-      
       .content-grid {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
       }
-      
-      .card-full {
+      .points-history-card {
         grid-column: span 1;
       }
     }
-    
-    @media (max-width: 767px) {
+    .header-section::before {
+      pointer-events: none;
+    }
+    @media (max-width: 768px) {
+      .header-section {
+        padding: 2rem 0;
+      }
       .athlete-name {
         font-size: 2rem;
       }
-      
-      .athlete-avatar,
-      .avatar-placeholder {
+      .athlete-avatar, .avatar-placeholder {
         width: 150px;
         height: 150px;
       }
-      
       .rank-badge {
         width: 80px;
         height: 80px;
       }
-      
       .rank-number {
-        font-size: 2rem;
+        font-size: 2.2rem;
       }
-      
-      .info-grid {
+      .quick-stats-grid {
         grid-template-columns: 1fr;
       }
-      
       .stats-grid {
         grid-template-columns: 1fr;
+        padding: 0 1rem;
       }
-      
+      .stat-card {
+        padding: 1.5rem;
+      }
       .stat-value {
-        font-size: 1.75rem;
+        font-size: 1.8rem;
       }
     }
     
-    @media (max-width: 575px) {
-      .hero-container,
+    @media (max-width: 576px) {
+      .athlete-name {
+        font-size: 1.8rem;
+      }
+      .content-card {
+        padding: 1.5rem;
+      }
+      .card-title {
+        font-size: 1.3rem;
+      }
+      .meta-badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+      }
+      .header-container,
       .stats-container,
       .content-container {
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-      
-      .athlete-name {
-        font-size: 1.75rem;
-      }
-      
-      .content-card {
-        padding: 1.25rem;
-      }
-      
-      .card-title {
-        font-size: 1.125rem;
+        padding: 0 1rem;
       }
     }
 
-  .athlete-profile-page
-    //- Hero Section
-    .athlete-hero
-      .hero-container
-        //- Back Button
-        a.btn-back-hero(href=backUrl)
+  .athlete-page
+    //- Header Section - SEJAJAR dengan Container yang sama
+    .header-section
+      .header-container
+        //- Tombol Kembali (arahin ke team berdasarkan team_members -> teamId dari controller)
+        a.btn-back-athlete(href=backUrl)
           i.bi.bi-arrow-left
           | Kembali
         
-        //- Hero Grid
-        .hero-grid
-          //- Avatar
-          .athlete-avatar-container
-            if photo
-              img.athlete-avatar(src=photo, alt=athlete.name)
-            else
-              .avatar-placeholder
-                i.bi.bi-person-circle
+        //- Header Grid SEJAJAR
+        .header-grid
+          //- Rank Badge (Kiri)
+          .rank-container
+            .rank-badge
+              .rank-number #{rank || '-'}
           
-          //- Hero Content
-          .hero-content
+          //- Center Content (Tengah)
+          .center-content
             h1.athlete-name= athlete.name
             
-            .athlete-meta
+            .meta-badges
               .meta-badge
                 i.bi.bi-flag-fill
                 span= athlete.country_code || 'N/A'
-              
               .meta-badge
                 i.bi.bi-trophy-fill
                 span #{athlete.points || 0} Points
-              
               if athlete.playing_position
                 .meta-badge
                   i.bi.bi-diagram-3-fill
                   span= athlete.playing_position
-              
               if athlete.paired_with_name
                 .meta-badge
                   i.bi.bi-people-fill
-                  span Partner: 
+                  span
+                    | Partner: 
                     if athlete.paired_with_slug
-                      a(href=`/athletes/${athlete.paired_with_slug}`)= athlete.paired_with_name
+                      a.text-white.text-decoration-underline(href=`/athletes/${athlete.paired_with_slug}`)= athlete.paired_with_name
                     else
                       | #{athlete.paired_with_name}
             
-            .info-grid
-              .info-card
-                .info-row
-                  span.info-label
-                    i.bi.bi-calendar3
+            .quick-stats-grid
+              .quick-stat-card
+                .quick-stat-row
+                  span.quick-stat-label
+                    i.bi.bi-calendar3.me-2
                     | Born
-                  span.info-value= athlete.born_in || '-'
-                .info-row
-                  span.info-label
-                    i.bi.bi-person-badge
+                  span.quick-stat-value= athlete.born_in || '-'
+                .quick-stat-row
+                  span.quick-stat-label
+                    i.bi.bi-person-badge.me-2
                     | Coach
-                  span.info-value= athlete.coach || '-'
+                  span.quick-stat-value= athlete.coach || '-'
               
-              .info-card
-                .info-row
-                  span.info-label
-                    i.bi.bi-rulers
+              .quick-stat-card
+                .quick-stat-row
+                  span.quick-stat-label
+                    i.bi.bi-rulers.me-2
                     | Height
-                  span.info-value= athlete.height_cm ? `${athlete.height_cm} cm` : '-'
-                .info-row
-                  span.info-label
-                    i.bi.bi-star-fill
+                  span.quick-stat-value= athlete.height_cm ? `${athlete.height_cm} cm` : '-'
+                .quick-stat-row
+                  span.quick-stat-label
+                    i.bi.bi-star-fill.me-2
                     | Best Rank
-                  span.info-value= athlete.best_rank || '-'
+                  span.quick-stat-value= athlete.best_rank || '-'
             
             if isSubadmin
-              button.btn.btn-edit-profile(
+              button.btn.btn-edit-athlete(
                 type="button"
                 data-bs-toggle="modal"
                 data-bs-target="#editAthleteModal"
               )
-                i.bi.bi-pencil-square
+                i.bi.bi-pencil-square.me-2
                 | Edit Profile
           
-          //- Rank Badge
-          .rank-badge
-            span.rank-label Rank
-            .rank-number #{rank || '-'}
+          //- Avatar (Kanan)
+          .avatar-container
+            if photo
+              img.athlete-avatar(src=photo, alt=athlete.name)
+            else
+              .avatar-placeholder
+                i.bi.bi-person-circle(style='font-size: 5rem; opacity: 0.5; color: rgba(255,255,255,0.6);')
     
-    //- Stats Section
+    //- Stats Grid - SEJAJAR dengan Container yang sama
     .stats-section
       .stats-container
         .stats-grid
           .stat-card
             .stat-icon
               i.bi.bi-controller
-            .stat-label Matches
+            .stat-label Matches Played
             .stat-value= stats.match_played || 0
           
           .stat-card
             .stat-icon
               i.bi.bi-trophy-fill
-            .stat-label Wins
+            .stat-label Matches Won
             .stat-value= stats.match_won || 0
             .stat-subtext Win Rate: #{winRate}%
           
           .stat-card
             .stat-icon
               i.bi.bi-x-circle
-            .stat-label Losses
+            .stat-label Matches Lost
             .stat-value= stats.match_lost || 0
           
           .stat-card
@@ -739,149 +674,150 @@ block content
             .stat-label Effectiveness
             .stat-value #{eff}%
     
-    //- Content Section
-    .content-section
-      .content-container
-        .content-grid
-          //- Profile Card
-          .content-card
-            .card-header
-              .card-icon
-                i.bi.bi-person-lines-fill
-              h2.card-title Player Profile
-            
-            if athlete.bio
-              p.bio-text= athlete.bio
-            else
-              p.bio-text.text-muted.fst-italic No biography available yet.
-            
-            hr.my-3
-            
-            .info-badges
-              .info-badge
-                i.bi.bi-trophy
-                span #{athlete.titles || 0} Titles
-              .info-badge
-                i.bi.bi-award
-                span #{athlete.race || 'N/A'}
+    //- Content Section - SEJAJAR dengan Container yang sama
+    .content-container
+      .content-grid
+        //- Player Profile Card
+        .content-card
+          .card-header-custom
+            .card-icon
+              i.bi.bi-person-lines-fill
+            h2.card-title Player Profile
           
-          //- Points Breakdown Card
-          .content-card
-            .card-header
-              .card-icon
-                i.bi.bi-bar-chart-fill
-              h2.card-title Points Breakdown
-            
-            if pointsByTournament && pointsByTournament.length
-              .table-responsive
-                table.custom-table
-                  thead
-                    tr
-                      th Tournament
-                      th Category
-                      th.text-center Points
-                      th.text-center Last Event
-                  tbody
-                    each r in pointsByTournament
-                      tr
-                        td
-                          strong= r.tournament
-                        td
-                          span.badge.bg-light.text-dark= r.category || '-'
-                        td.text-center
-                          span.fw-bold.text-primary= r.total_points
-                        td.text-center.small.text-muted
-                          = r.last_event ? new Date(r.last_event).toLocaleDateString('id-ID') : '-'
-            else
-              p.text-muted.mb-0.fst-italic No tournament points data available.
+          if athlete.bio
+            p.bio-text= athlete.bio
+          else
+            p.bio-text.text-muted.fst-italic No biography available yet.
           
-          //- Points History Card
-          .content-card.card-full
-            .card-header
-              .card-icon
-                i.bi.bi-clock-history
-              h2.card-title Points History
-            
-            if pointsBreakdown && pointsBreakdown.length
-              .table-responsive
-                table.custom-table
-                  thead
+          hr.my-4
+          
+          .d-flex.flex-wrap.gap-2
+            .info-badge
+              i.bi.bi-trophy
+              span #{athlete.titles || 0} Titles
+            .info-badge
+              i.bi.bi-award
+              span #{athlete.race || 'N/A'}
+        
+        //- Points Breakdown Card
+        .content-card
+          .card-header-custom
+            .card-icon
+              i.bi.bi-bar-chart-fill
+            h2.card-title Points Breakdown
+          
+          if pointsByTournament && pointsByTournament.length
+            .table-responsive
+              table.custom-table
+                thead
+                  tr
+                    th Tournament
+                    th Category
+                    th.text-center Total Points
+                    th.text-center Last Event
+                tbody
+                  each r in pointsByTournament
                     tr
-                      th Date
-                      th Tournament
-                      th Category
-                      th Round
-                      th.text-center Points
-                  tbody
-                    each r in pointsBreakdown
-                      tr
-                        td.small
-                          i.bi.bi-calendar-event.me-2
-                          = r.event_date ? new Date(r.event_date).toLocaleDateString('id-ID') : '-'
-                        td
-                          strong= r.tournament
-                        td
-                          span.badge.bg-light.text-dark= r.category || '-'
-                        td= r.round_name || '-'
-                        td.text-center
-                          span.badge.bg-primary= r.points
-            else
-              p.text-muted.mb-0.fst-italic No points history available.
+                      td
+                        strong= r.tournament
+                      td
+                        span.badge.bg-light.text-dark= r.category || '-'
+                      td.text-center
+                        span.fw-bold.text-primary= r.total_points
+                      td.text-center.text-muted.small
+                        = r.last_event ? new Date(r.last_event).toLocaleDateString('id-ID') : '-'
+          else
+            p.text-muted.mb-0.fst-italic No tournament points data available.
+      
+      //- Points History Card
+      .content-card.points-history-card
+        .card-header-custom
+          .card-icon
+            i.bi.bi-clock-history
+          h2.card-title Points History
+        
+        if pointsBreakdown && pointsBreakdown.length
+          .table-responsive
+            table.custom-table
+              thead
+                tr
+                  th Date
+                  th Tournament
+                  th Category
+                  th Round
+                  th.text-center Points
+              tbody
+                each r in pointsBreakdown
+                  tr
+                    td.small.text-muted
+                      i.bi.bi-calendar-event.me-2
+                      = r.event_date ? new Date(r.event_date).toLocaleDateString('id-ID') : '-'
+                    td
+                      strong= r.tournament
+                    td
+                      span.badge.bg-light.text-dark= r.category || '-'
+                    td= r.round_name || '-'
+                    td.text-center
+                      span.badge.bg-primary.px-3.py-2= r.points
+        else
+          p.text-muted.mb-0.fst-italic No points history available.
 
     //- Edit Modal
     if isSubadmin
-      .modal.fade#editAthleteModal(tabindex="-1")
+      .modal.fade#editAthleteModal(tabindex="-1" aria-hidden="true")
         .modal-dialog.modal-lg
-          .modal-content
-            form(method="POST" action=`/subadmin/athletes/${athlete.id}` enctype="multipart/form-data")
-              .modal-header
+          .modal-content.modal-content-fixed
+            form(method="POST" action=`/subadmin/athletes/${athlete.id}` enctype="multipart/form-data" style="display: flex; flex-direction: column; height: 100%;")
+              .modal-header(style="background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%); color: #fff; border-radius: 20px 20px 0 0; flex-shrink: 0;")
                 h5.modal-title
                   i.bi.bi-pencil-square.me-2
                   | Edit Athlete Profile
-                button.btn-close.btn-close-white(type="button" data-bs-dismiss="modal")
+                button.btn-close.btn-close-white(type="button" data-bs-dismiss="modal" aria-label="Close")
               
-              .modal-body
+              .modal-body.modal-body-scrollable
                 .row.g-3
                   .col-md-6
-                    label.form-label Name *
-                    input.form-control(type="text" name="name" required value=athlete.name)
+                    label.form-label.fw-semibold Name *
+                    input.form-control(type="text" name="name" required value=athlete.name style="border-radius: 10px;")
                   .col-md-6
-                    label.form-label Country Code
-                    input.form-control(type="text" name="country_code" value=(athlete.country_code || ''))
-                  
+                    label.form-label.fw-semibold Country Code
+                    input.form-control(type="text" name="country_code" value=(athlete.country_code || '') placeholder="ID / US / ..." style="border-radius: 10px;")
+
                   .col-md-6
-                    label.form-label Position
-                    input.form-control(type="text" name="playing_position" value=(athlete.playing_position || ''))
+                    label.form-label.fw-semibold Position
+                    input.form-control(type="text" name="playing_position" value=(athlete.playing_position || '') style="border-radius: 10px;")
                   .col-md-6
-                    label.form-label Coach
-                    input.form-control(type="text" name="coach" value=(athlete.coach || ''))
-                  
+                    label.form-label.fw-semibold Coach
+                    input.form-control(type="text" name="coach" value=(athlete.coach || '') style="border-radius: 10px;")
+
                   .col-md-6
-                    label.form-label Born in
-                    input.form-control(type="text" name="born_in" value=(athlete.born_in || ''))
+                    label.form-label.fw-semibold Born in
+                    input.form-control(type="text" name="born_in" value=(athlete.born_in || '') style="border-radius: 10px;")
                   .col-md-6
-                    label.form-label Height (cm)
-                    input.form-control(type="number" name="height_cm" value=(athlete.height_cm || ''))
-                  
+                    label.form-label.fw-semibold Height (cm)
+                    input.form-control(type="number" name="height_cm" min="0" value=(athlete.height_cm || '') style="border-radius: 10px;")
+
                   .col-md-12
-                    label.form-label Biography
-                    textarea.form-control(name="bio" rows="4")= athlete.bio || ''
-                  
+                    label.form-label.fw-semibold Biography
+                    textarea.form-control(name="bio" rows="4" style="border-radius: 10px;")= athlete.bio || ''
+
                   .col-md-6
-                    label.form-label Titles
-                    input.form-control(type="number" name="titles" value=(athlete.titles || 0))
+                    label.form-label.fw-semibold Titles
+                    input.form-control(type="number" name="titles" min="0" value=(athlete.titles || 0) style="border-radius: 10px;")
                   .col-md-6
-                    label.form-label Race
-                    input.form-control(type="text" name="race" value=(athlete.race || ''))
-                  
+                    label.form-label.fw-semibold Race
+                    input.form-control(type="text" name="race" value=(athlete.race || '') style="border-radius: 10px;")
+
                   .col-md-12
-                    label.form-label Athlete Photo
-                    input.form-control(type="file" name="photo" accept="image/*")
+                    label.form-label.fw-semibold Athlete Photo
+                    input.form-control(type="file" name="photo" accept="image/*" style="border-radius: 10px;")
                     if athlete.photo_url
-                      small.text-muted.d-block.mt-2 Current: #{athlete.photo_url}
-              
-              .modal-footer
-                button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Cancel
-                button.btn.btn-primary(type="submit")
+                      small.text-muted.d-block.mt-2
+                        i.bi.bi-image.me-1
+                        | Current photo: #{athlete.photo_url}
+
+              .modal-footer.modal-footer-sticky
+                button.btn.btn-secondary(type="button" data-bs-dismiss="modal" style="border-radius: 10px; padding: 0.6rem 1.5rem;") Cancel
+                button.btn.btn-primary(type="submit" style="border-radius: 10px; padding: 0.6rem 1.5rem; background: linear-gradient(135deg, #0B1F3F 0%, #1a3a5c 100%); border: none;")
                   i.bi.bi-check-circle.me-2
                   | Save Changes

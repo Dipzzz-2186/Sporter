@@ -579,11 +579,12 @@ block content
               label.form-label
                 i.bi.bi-megaphone
                 | Ringkasan Berita
-                span.badge Opsional
+                span.badge Wajib
               textarea.form-control#excerpt(
                 name="excerpt"
                 rows="3"
                 placeholder="Ringkasan singkat yang akan ditampilkan di halaman utama..."
+                required
               )= articleSafe.excerpt || ''
 
           //- Section 2: Categorization
@@ -632,7 +633,7 @@ block content
                   label.form-label(for="thumbnail")
                     i.bi.bi-image
                     | Thumbnail Berita
-                    span.badge Opsional
+                    span.badge Wajib
 
                   // ✅ Preview container SELALU ADA (awal hidden kalau belum ada gambar)
                   .thumbnail-preview-container#thumb-container(style= articleSafe.thumbnail_url ? '' : 'display:none;')
@@ -643,7 +644,10 @@ block content
                     .thumbnail-actions
                       button.thumbnail-btn(type="button" id="btn-remove-thumb" title="Hapus thumbnail")
                         i.bi.bi-trash
-                      a.thumbnail-btn#btn-open-thumb(href=articleSafe.thumbnail_url || '#' target="_blank" title="Lihat full size" style=articleSafe.thumbnail_url ? '' : 'display:none;')
+                      button.thumbnail-btn#btn-open-thumb(
+                        type="button"
+                        title="Lihat full size"
+                      )
                         i.bi.bi-arrows-fullscreen
 
                   .file-upload-area#file-upload-area(
@@ -653,6 +657,7 @@ block content
                       type="file"
                       name="thumbnail"
                       accept="image/*"
+                      required=!isEdit
                     )
                     i.bi.bi-cloud-arrow-up.file-upload-icon
                     h5.mb-2(style="color: #0B1F3F;") Upload Thumbnail
@@ -746,6 +751,18 @@ block content
             a.btn.btn-back(href="javascript:void(0);" onclick="history.back()")
               i.bi.bi-arrow-left
               | Kembali ke Daftar
+  // ===== Thumbnail Preview Modal =====
+  .modal.fade#thumbPreviewModal(tabindex="-1" aria-hidden="true")
+    .modal-dialog.modal-dialog-centered.modal-lg
+      .modal-content(style="border-radius:16px; overflow:hidden;")
+        .modal-header
+          h5.modal-title Preview Thumbnail
+          button.btn-close(type="button" data-bs-dismiss="modal")
+        .modal-body.p-0
+          img#thumb-modal-img(
+            src=""
+            style="width:100%; max-height:80vh; object-fit:contain; background:#000;"
+          )
 
   script.
     (function() {
@@ -839,12 +856,10 @@ block content
             // ✅ FIX PREVIEW THUMBNAIL (tanpa ubah yang lain)
             function showThumb(src) {
               if (thumbImg) thumbImg.src = src;
-              if (btnOpen) {
-                btnOpen.href = src;
-                btnOpen.style.display = '';
-              }
+              if (btnOpen) btnOpen.style.display = '';
               if (thumbContainer) thumbContainer.style.display = '';
               if (fileUploadArea) fileUploadArea.style.display = 'none';
+              if (thumbnailInput) thumbnailInput.required = false;
             }
 
             function hideThumb() {
@@ -852,7 +867,10 @@ block content
               if (btnOpen) btnOpen.style.display = 'none';
               if (thumbContainer) thumbContainer.style.display = 'none';
               if (fileUploadArea) fileUploadArea.style.display = 'block';
-              if (thumbnailInput) thumbnailInput.value = '';
+              if (thumbnailInput) {
+                thumbnailInput.value = '';
+                thumbnailInput.required = true; // 🔥 INI KUNCI
+              }
             }
 
             // klik tombol remove (kalau ada)
@@ -894,6 +912,30 @@ block content
               if (thumbContainer) thumbContainer.style.display = '';
             }
 
+      function handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fileUploadArea.classList.remove('dragover');
+
+        const file = e.dataTransfer.files && e.dataTransfer.files[0];
+        if (!file) return;
+
+        // validasi size
+        if (file.size > 3 * 1024 * 1024) {
+          alert('Ukuran file terlalu besar! Maksimal 3MB.');
+          return;
+        }
+
+        // validasi tipe
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+        if (!validTypes.includes(file.type)) {
+          alert('Format file tidak didukung!');
+          return;
+        }
+
+        const src = URL.createObjectURL(file);
+        showThumb(src);
+      }
       
       function handleDragOver(e) {
         e.preventDefault();
@@ -905,71 +947,6 @@ block content
         e.preventDefault();
         e.stopPropagation();
         fileUploadArea.classList.remove('dragover');
-      }
-      
-      function handleDrop(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        fileUploadArea.classList.remove('dragover');
-        
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-          thumbnailInput.files = files;
-          handleFileSelect({ target: thumbnailInput });
-        }
-      }
-      
-      function handleFileSelect(e) {
-        const file = e.target.files[0];
-        if (file) {
-          // Validate file size (3MB)
-          if (file.size > 3 * 1024 * 1024) {
-            alert('Ukuran file terlalu besar! Maksimal 3MB.');
-            thumbnailInput.value = '';
-            return;
-          }
-          
-          // Validate file type
-          const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-          if (!validTypes.includes(file.type)) {
-            alert('Format file tidak didukung! Gunakan JPG, PNG, atau WebP.');
-            thumbnailInput.value = '';
-            return;
-          }
-          
-          // Show preview
-          const reader = new FileReader();
-          reader.onload = function(event) {
-            if (!thumbnailPreviewImg) {
-              // Create preview if doesn't exist
-              const container = document.querySelector('.thumbnail-preview-container');
-              if (container) {
-                const img = document.createElement('img');
-                img.id = 'thumbnail-preview-img';
-                img.className = 'thumbnail-preview';
-                img.src = event.target.result;
-                img.alt = 'Preview thumbnail';
-                container.insertBefore(img, container.firstChild);
-              }
-            } else {
-              thumbnailPreviewImg.src = event.target.result;
-            }
-            
-            // Hide upload area
-            fileUploadArea.style.display = 'none';
-          };
-          reader.readAsDataURL(file);
-        }
-      }
-      
-      function removeThumbnail() {
-        if (confirm('Hapus thumbnail ini?')) {
-          thumbnailInput.value = '';
-          if (thumbnailPreviewImg) {
-            thumbnailPreviewImg.remove();
-          }
-          fileUploadArea.style.display = 'block';
-        }
       }
       
       // Initialize file upload handlers
@@ -992,7 +969,30 @@ block content
           }
         });
       }
-      
+      const modalImg = document.getElementById('thumb-modal-img');
+      const thumbModalEl = document.getElementById('thumbPreviewModal');
+      let thumbModal = null;
+
+      if (btnOpen && modalImg && thumbModalEl) {
+        btnOpen.addEventListener('click', function () {
+          if (!thumbImg || !thumbImg.src) return;
+
+          if (!thumbModal) {
+            thumbModal = new bootstrap.Modal(thumbModalEl);
+          }
+
+          modalImg.src = thumbImg.src;
+          thumbModal.show();
+        });
+      }
+
+
+      if (thumbModalEl) {
+        thumbModalEl.addEventListener('hidden.bs.modal', function () {
+          if (modalImg) modalImg.src = '';
+        });
+      }
+
       // Form submission handling
       const form = document.querySelector('form');
       const submitBtn = document.getElementById('submit-btn');
@@ -1038,8 +1038,10 @@ block content
       // Initialize form with existing data
       document.addEventListener('DOMContentLoaded', function() {
         // If thumbnail exists, hide upload area
-        if (thumbnailPreviewImg) {
+        if (thumbImg && thumbImg.src && thumbImg.src.trim() !== '' && thumbImg.src !== window.location.href) {
           fileUploadArea.style.display = 'none';
+        } else {
+          fileUploadArea.style.display = 'block';
         }
         
         // Update counters

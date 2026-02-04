@@ -108,10 +108,10 @@ exports.myTicketsPage = async (req, res) => {
 
   const [rows] = await db.query(`
     SELECT
-      m.id            AS match_id,
-      m.title         AS match_title,
+      m.id AS match_id,
+      m.title AS match_title,
       m.start_time,
-      t.id            AS ticket_id,
+      t.id AS ticket_id,
       t.ticket_code,
       t.holder_name,
       tt.price
@@ -121,6 +121,8 @@ exports.myTicketsPage = async (req, res) => {
     JOIN ticket_types tt ON tt.id = oi.ticket_type_id
     JOIN matches m       ON m.id = tt.match_id
     WHERE o.user_id = ?
+      AND t.holder_name IS NOT NULL
+      AND t.holder_name <> ''
     ORDER BY m.start_time DESC, t.id ASC
   `, [userId]);
 

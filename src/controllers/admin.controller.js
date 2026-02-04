@@ -628,15 +628,19 @@ function makeSlug(str = "") {
 // List semua berita
 exports.listNews = async (req, res) => {
   try {
-    const [rows] = await db.query(
-      `SELECT n.id, n.title, n.slug, n.status, n.published_at,
-              s.name AS sport_name,
-              e.title AS event_title
-       FROM news_articles n
-       LEFT JOIN sports s ON s.id = n.sport_id
-       LEFT JOIN events e ON e.id = n.event_id
-       ORDER BY n.published_at DESC, n.created_at DESC`
-    );
+    const [rows] = await db.query(`
+      SELECT
+        n.id,
+        n.title,
+        n.slug,
+        n.excerpt,           -- 🔥 WAJIB
+        n.status,
+        n.published_at,
+        s.name AS sport_name
+      FROM news_articles n
+      LEFT JOIN sports s ON s.id = n.sport_id
+      ORDER BY n.published_at DESC, n.created_at DESC
+    `);
 
     return res.render("admin/news", {
       title: "Kelola Berita - SPORTER",

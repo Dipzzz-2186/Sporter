@@ -630,15 +630,13 @@ block content
                 if selectedSport || searchQuery || startDate || endDate
                   if isSingleSport
                     a.btn-reset(href=`/subadmin/ticket-orders?sport_id=${defaultSportId}`)
+                      i.bi.bi-x-lg.me-1
+                      | Reset
                   else
                     a.btn-reset(href="/subadmin/ticket-orders")
-                    i.bi.bi-x-lg.me-1
-                    | Reset Filter
-                
-                button.export-btn(type="button" onclick="exportToExcel()")
-                  i.bi.bi-file-earmark-excel.me-1
-                  | Export
-
+                      i.bi.bi-x-lg.me-1
+                      | Reset
+              
       //- Tickets Table
       if orders && orders.length > 0
         .tickets-table-card
@@ -662,7 +660,6 @@ block content
                     
                     td
                       .fw-bold.text-dark= order.sport_name
-                      small.text-muted= order.event_name || 'Event'
                     
                     td
                       .fw-bold.text-dark= order.user_name

@@ -55,24 +55,19 @@ html(lang="id")
         height: 60px;
         position: fixed;
         bottom: 20px;
-        left: 20px;
+        left: 20px; /* ⬅️ PINDAH KE KIRI */
         z-index: 1002;
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-      }
-
-      #openChatBtn:hover {
-        transform: scale(1.05);
       }
 
       #chatContainer {
         display: none;
         position: fixed;
         bottom: 90px;
-        left: 20px;
+        left: 20px; /* ⬅️ PINDAH KE KIRI */
         width: 35vw;
         height: 70vh;
         max-width: 600px;
@@ -96,6 +91,33 @@ html(lang="id")
         transform: translateY(0);
       }
 
+      /* === Chat Header (Close Button di DALAM container) === */
+      #chatHeader {
+        height: 52px;
+        background: #000841ff;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 14px;
+        z-index: 2;
+        flex-shrink: 0;
+      }
+
+      #chatHeader .chat-title {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      #closeChatBtn {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 6px;
+      }
+
       #loadingIndicator {
         position: absolute;
         inset: 0;
@@ -115,66 +137,17 @@ html(lang="id")
         visibility: hidden;
       }
 
-      /* RESPONSIVE DESIGN FOR MOBILE */
       @media (max-width: 767px) {
+        #chatContainer {
+          width: 100vw;
+          height: 100vh;
+          left: 0;
+          bottom: 0;
+          border-radius: 0;
+        }
+        #chatContainer.visible + #openChatBtn,
         #openChatBtn {
-          width: 56px;
-          height: 56px;
-          bottom: 16px;
-          left: 16px;
-          font-size: 22px;
-        }
-
-        #chatContainer {
-          width: calc(100vw - 32px);
-          height: 75vh;
-          max-height: 650px;
-          bottom: 80px;
-          left: 50%;
-          transform: translateX(-50%) translateY(20px) scale(0.95);
-          border-radius: 16px;
-        }
-
-        #chatContainer.visible {
-          transform: translateX(-50%) translateY(0) scale(1);
-        }
-
-        /* Untuk landscape mode di mobile */
-        @media (max-height: 600px) and (orientation: landscape) {
-          #chatContainer {
-            height: 85vh;
-            bottom: 60px;
-            max-height: 500px;
-          }
-        }
-      }
-
-      /* Untuk tablet (768px - 991px) */
-      @media (min-width: 768px) and (max-width: 991px) {
-        #chatContainer {
-          width: 50vw;
-          height: 65vh;
-          left: 20px;
-          bottom: 85px;
-        }
-      }
-
-      /* Untuk layar sangat kecil (di bawah 360px) */
-      @media (max-width: 359px) {
-        #openChatBtn {
-          width: 50px;
-          height: 50px;
-          bottom: 12px;
-          left: 12px;
-          font-size: 20px;
-        }
-
-        #chatContainer {
-          width: calc(100vw - 24px);
-          height: 70vh;
-          max-height: 600px;
-          bottom: 70px;
-          border-radius: 12px;
+          z-index: 900;
         }
       }
 
@@ -690,8 +663,8 @@ html(lang="id")
     nav.sport-navbar.navbar.navbar-expand-lg
       .container
         a.navbar-brand.d-flex.align-items-center.gap-2(href="/")
-          img(src="/images/Logo.png" alt="SPORTER" style="height:34px; width:auto;")
-          span SPORTS
+          img(src="/images/Logo.png" alt="Asthapora" style="height:34px; width:auto;")
+          span Asthapora
         button.navbar-toggler(
           type="button",
           data-bs-toggle="collapse",
@@ -850,7 +823,7 @@ html(lang="id")
           .col-lg-4.col-md-6
             .footer-brand
               i.bi.bi-trophy-fill.me-2
-              | SPORTER
+              | Asthapora
             p.mb-3.text-white-50
               | Platform olahraga terlengkap di Indonesia. Temukan berbagai cabang olahraga, event menarik, dan bergabung dengan komunitas atlet.
             .stats-badge
@@ -909,13 +882,13 @@ html(lang="id")
             h5.text-white.fw-bold.mb-3 Kontak
             ul.footer-links
               li
-                a(href="mailto:info@sporter.id")
+                a(href="mailto:info@Asthapora.id")
                   i.bi.bi-envelope-fill
-                  | info@sporter.id
+                  | info@asthapora.id
               li
                 a(href="https://wa.me/6281805251569?text=Halo%20admin,%20saya%20ingin%20bertanya")
                   i.bi.bi-telephone-fill
-                  | Admin Sports
+                  | Admin Asthapora
               li
                 a(href="#")
                   i.bi.bi-geo-alt-fill
@@ -926,7 +899,7 @@ html(lang="id")
         .footer-bottom
           p.mb-0
             | © 2025 
-            strong SPORTER
+            strong Asthapora
             |  — Platform Olahraga Indonesia 
             i.bi.bi-heart-fill
             br.d-md-none
@@ -938,7 +911,14 @@ html(lang="id")
       i.bi.bi-chat-dots-fill
 
     #chatContainer
+      // === CHAT HEADER (KHUSUS MOBILE & DESKTOP) ===
+      #chatHeader
+        span.chat-title Sport Bot Chat
+        button#closeChatBtn(type="button" aria-label="Tutup chat")
+          i.bi.bi-x-lg
+
       #loadingIndicator Loading Chatbot...
+
       iframe#chatIframe(
         src="about:blank"
         sandbox="allow-scripts allow-same-origin allow-popups"
@@ -1033,67 +1013,53 @@ html(lang="id")
     script.
       (function () {
         const openBtn = document.getElementById('openChatBtn');
+        const closeBtn = document.getElementById('closeChatBtn');
         const chatContainer = document.getElementById('chatContainer');
         const chatIframe = document.getElementById('chatIframe');
         const loadingIndicator = document.getElementById('loadingIndicator');
 
-        const iframeSrc = 'https://bot.nusantara-ai.id/iframe-bot?key-id=d62f7145-a583-45af-96fb-9725cee58299';
+        const iframeSrc = 'https://bot.nusantara-ai.id/iframe-bot?key-id=7ad3cb11-cde1-4fb8-a730-70a709668fd2';
         let isChatOpen = false;
 
-        // Fungsi untuk menyesuaikan ukuran chat di mobile
-        function adjustChatForMobile() {
-          if (window.innerWidth <= 767) {
-            const isLandscape = window.innerWidth > window.innerHeight;
-            
-            if (isLandscape) {
-              // Landscape mode
-              chatContainer.style.height = '85vh';
-              chatContainer.style.maxHeight = '500px';
-              chatContainer.style.bottom = '60px';
-            } else {
-              // Portrait mode
-              chatContainer.style.height = '75vh';
-              chatContainer.style.maxHeight = '650px';
-              chatContainer.style.bottom = '80px';
-            }
+        function openChat() {
+          isChatOpen = true;
+          loadingIndicator.style.display = 'flex';
+          chatIframe.style.visibility = 'hidden';
+
+          if (!chatIframe.src || chatIframe.src === 'about:blank') {
+            chatIframe.src = iframeSrc;
+          }
+
+          chatContainer.classList.add('visible');
+          openBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+
+          // mobile UX
+          if (window.innerWidth < 768) {
+            openBtn.style.display = 'none';
           }
         }
 
-        openBtn.addEventListener('click', function () {
-          isChatOpen = !isChatOpen;
+        function closeChat() {
+          isChatOpen = false;
+          chatContainer.classList.remove('visible');
 
-          if (isChatOpen) {
-            loadingIndicator.style.display = 'flex';
+          setTimeout(() => {
+            chatIframe.src = 'about:blank';
             chatIframe.style.visibility = 'hidden';
+            loadingIndicator.style.display = 'none';
+          }, 300);
 
-            if (!chatIframe.src || chatIframe.src === 'about:blank') {
-              chatIframe.src = iframeSrc;
-            }
+          openBtn.innerHTML = '<i class="bi bi-chat-dots-fill"></i>';
+          openBtn.style.display = 'flex';
+        }
 
-            // Sesuaikan ukuran untuk mobile sebelum menampilkan
-            adjustChatForMobile();
-            
-            chatContainer.classList.add('visible');
-            openBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
-            
-            // Tambahkan class untuk mencegah scroll body saat chat terbuka di mobile
-            if (window.innerWidth <= 767) {
-              document.body.style.overflow = 'hidden';
-            }
-          } else {
-            chatContainer.classList.remove('visible');
-            openBtn.innerHTML = '<i class="bi bi-chat-dots-fill"></i>';
-            
-            // Kembalikan scroll body
-            document.body.style.overflow = '';
-            
-            setTimeout(() => {
-              chatIframe.src = 'about:blank';
-              chatIframe.style.visibility = 'hidden';
-              loadingIndicator.style.display = 'none';
-            }, 300);
-          }
+        openBtn.addEventListener('click', function () {
+          isChatOpen ? closeChat() : openChat();
         });
+
+        if (closeBtn) {
+          closeBtn.addEventListener('click', closeChat);
+        }
 
         chatIframe.addEventListener('load', function () {
           if (isChatOpen && chatIframe.src !== 'about:blank') {
@@ -1101,26 +1067,7 @@ html(lang="id")
             chatIframe.style.visibility = 'visible';
           }
         });
-
-        // Handle window resize dan orientation change
-        window.addEventListener('resize', adjustChatForMobile);
-        window.addEventListener('orientationchange', function() {
-          // Delay sedikit untuk memastikan orientasi sudah berubah
-          setTimeout(adjustChatForMobile, 100);
-        });
-
-        // Close chat ketika klik di luar container (untuk mobile)
-        document.addEventListener('click', function(event) {
-          if (isChatOpen && window.innerWidth <= 767) {
-            const isClickInsideChat = chatContainer.contains(event.target);
-            const isClickOnOpenBtn = openBtn.contains(event.target);
-            
-            if (!isClickInsideChat && !isClickOnOpenBtn) {
-              openBtn.click(); // Trigger close
-            }
-          }
-        });
       })();
-      
+
     // App JS eksternal (kalau ada)
     script(src="/js/app.js")
