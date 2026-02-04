@@ -1149,6 +1149,9 @@ block content
           button.btn-stream-filter(type="button" data-sport="triathlon")
             i.bi.bi-bicycle
             span Triathlon
+          button.btn-stream-filter(type="button" data-sport="roller")
+            i.bi.bi-disc
+            span Sepatu Roda
 
   // STREAMS GRID
   .streams-section
@@ -1275,6 +1278,9 @@ block content
           'Triathlon': 'bi-bicycle',
           'Tenis': 'bi-circle-half',
           'Renang': 'bi-water',
+          'Sepatu Roda': 'bi-disc',
+          'Roller': 'bi-disc',
+          'Inline Skate': 'bi-disc',
         };
         return icons[sportName] || 'bi-trophy-fill';
       }
@@ -1411,8 +1417,14 @@ block content
               visibleBySport = sportName.includes('renang') || sportName.includes('swimming');
             } else if (sport === 'triathlon') {
               visibleBySport = sportName.includes('triathlon') || sportName.includes('triatlon');
+            }else if (sport === 'roller') {
+              visibleBySport =
+                sportName.includes('sepatu roda') ||
+                sportName.includes('roller') ||
+                sportName.includes('inline skate') ||
+                sportName.includes('skate');
             }
-            
+                        
             if (visibleByStatus && visibleBySport) {
               if (col) col.style.display = '';
               card.style.opacity = '1';
