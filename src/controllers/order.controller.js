@@ -16,7 +16,7 @@ exports.renderOrderDetail = async (req, res) => {
     if (!order) return res.status(404).send('Order tidak ditemukan');
 
     const [tickets] = await db.query(
-        `SELECT t.id, t.ticket_code, t.holder_name
+        `SELECT t.id, t.ticket_code, t.holder_name, t.holder_phone
      FROM tickets t
      JOIN order_items oi ON oi.id = t.order_item_id
      WHERE oi.order_id = ?`,
@@ -45,10 +45,11 @@ exports.saveTicketHolders = async (req, res) => {
 
         // simpan nama
         for (const t of names) {
-            if (!t.name || !t.ticket_id) continue;
+            if (!t.name || !t.phone || !t.ticket_id) continue;
+
             await conn.query(
-                'UPDATE tickets SET holder_name = ? WHERE id = ?',
-                [t.name.trim(), t.ticket_id]
+                'UPDATE tickets SET holder_name = ?, holder_phone = ? WHERE id = ?',
+                [t.name.trim(), t.phone.trim(), t.ticket_id]
             );
         }
 

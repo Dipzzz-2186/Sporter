@@ -445,13 +445,13 @@ block content
           - subtotal += Number(r.price)
           - animationDelay += 0.05
           
-          .ticket-item(style=`animation-delay: ${animationDelay}s`)
-            .ticket-info
-              .ticket-icon
-                i.bi.bi-ticket-perforated-fill
-              .ticket-details
-                .ticket-label Pemegang Tiket
-                p.ticket-holder= r.holder_name || 'Tidak ada nama'
+            .ticket-details
+              .ticket-label Pemegang Tiket
+              p.ticket-holder= r.holder_name || 'Tidak ada nama'
+              if r.holder_phone
+                small.text-muted
+                  i.bi.bi-telephone-fill.me-1
+                  | #{r.holder_phone}
             .ticket-price
               | Rp. #{Number(r.price).toLocaleString('id-ID')}
         

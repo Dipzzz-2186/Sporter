@@ -49,6 +49,16 @@ block content
                         style="border: 2px solid #dee2e6;"
                       )
 
+                      // No Telepon
+                      input.form-control.form-control-lg.shadow-sm.mt-2(
+                        type="tel"
+                        name=`names[${i}][phone]`
+                        value=t.holder_phone || ''
+                        placeholder="Masukkan no. telepon (WA / HP aktif)"
+                        required
+                        style="border: 2px solid #dee2e6;"
+                      )
+                      
                       input(
                         type="hidden"
                         name=`names[${i}][ticket_id]`

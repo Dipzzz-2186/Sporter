@@ -114,6 +114,7 @@ exports.myTicketsPage = async (req, res) => {
       t.id AS ticket_id,
       t.ticket_code,
       t.holder_name,
+      t.holder_phone, 
       tt.price
     FROM orders o
     JOIN order_items oi ON oi.order_id = o.id
