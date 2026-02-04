@@ -696,12 +696,16 @@ block content
       overflow: hidden;
       margin-bottom: 1.5rem;
       cursor: pointer;
+      display: block;
+      text-decoration: none;
+      color: inherit;
     }
     
     .sporter-feature-card:hover {
       transform: translateY(-12px) scale(1.03);
       border-color: #0095FF;
       box-shadow: 0 20px 40px rgba(0, 149, 255, 0.15), 0 0 0 1px rgba(0, 149, 255, 0.1);
+      text-decoration: none;
     }
     
     .sporter-feature-card:hover .feature-icon-wrapper {
@@ -1518,7 +1522,7 @@ block content
               | Jadwal, Skor, dan Berita 
               span.text-danger Terupdate
             p.lead.mb-4.mb-md-5
-              | SPORTER menghadirkan informasi olahraga Indonesia yang lengkap dan terintegrasi. Dapatkan informasi event, jadwal pertandingan, skor live, klasemen, livestream, dan tiket dalam satu platform yang modern dan mudah digunakan.
+              | Asthapora menghadirkan informasi olahraga Indonesia yang lengkap dan terintegrasi. Dapatkan informasi event, jadwal pertandingan, skor live, klasemen, livestream, dan tiket dalam satu platform yang modern dan mudah digunakan.
             .hero-buttons
               a.btn.btn-danger.btn-lg.mb-2.mb-md-0.me-md-3(href="/sports")
                 i.bi.bi-collection-play.me-2
@@ -1577,16 +1581,16 @@ block content
       
       .row.g-4.gy-5
         .col-12.col-sm-6.col-lg-4
-          .card.border-0.shadow-sm.sporter-feature-card
+          a.card.border-0.shadow-sm.sporter-feature-card(href="/events" aria-label="Jadwal & Event")
             .card-body
               .feature-icon-wrapper
                 i.bi.bi-calendar-event
-              h5.fw-semibold Jadwal & Event
+              h5.fw-semibold Event
               p
                 | Akses jadwal lengkap event olahraga nasional dan internasional dengan notifikasi real-time.
         
         .col-12.col-sm-6.col-lg-4
-          .card.border-0.shadow-sm.sporter-feature-card
+          a.card.border-0.shadow-sm.sporter-feature-card(href="/standings?sport_id=3" aria-label="Skor & Klasemen")
             .card-body
               .feature-icon-wrapper
                 i.bi.bi-clipboard2-data
@@ -1595,7 +1599,7 @@ block content
                 | Pantau skor langsung, statistik pertandingan, dan klasemen yang diperbarui otomatis.
         
         .col-12.col-sm-6.col-lg-4
-          .card.border-0.shadow-sm.sporter-feature-card
+          a.card.border-0.shadow-sm.sporter-feature-card(href="/livestreams" aria-label="Livestream & Video")
             .card-body
               .feature-icon-wrapper
                 i.bi.bi-broadcast
@@ -1604,7 +1608,7 @@ block content
                 | Nikmati siaran langsung pertandingan dan rekaman highlights dalam kualitas terbaik.
         
         .col-12.col-sm-6.col-lg-4
-          .card.border-0.shadow-sm.sporter-feature-card
+          a.card.border-0.shadow-sm.sporter-feature-card(href="/sports/padel" aria-label="Pembelian Tiket")
             .card-body
               .feature-icon-wrapper
                 i.bi.bi-ticket-perforated
@@ -1613,7 +1617,7 @@ block content
                 | Beli tiket event olahraga secara online dengan proses yang aman, cepat, dan mudah.
         
         .col-12.col-sm-6.col-lg-4
-          .card.border-0.shadow-sm.sporter-feature-card
+          a.card.border-0.shadow-sm.sporter-feature-card(href="/news" aria-label="Berita Olahraga")
             .card-body
               .feature-icon-wrapper
                 i.bi.bi-newspaper
@@ -1622,7 +1626,7 @@ block content
                 | Dapatkan berita terkini, analisis mendalam, dan update dari berbagai cabang olahraga.
         
         .col-12.col-sm-6.col-lg-4
-          .card.border-0.shadow-sm.sporter-feature-card
+          a.card.border-0.shadow-sm.sporter-feature-card
             .card-body
               .feature-icon-wrapper
                 i.bi.bi-people-fill
