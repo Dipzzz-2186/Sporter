@@ -69,6 +69,8 @@ block content
     .video-player-container {
       padding: 0 2rem;
       margin-bottom: 2rem;
+      position: relative;
+      z-index: 1;
     }
     
     .video-player-wrapper {
@@ -78,6 +80,7 @@ block content
       overflow: hidden;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
       transition: all 0.3s ease;
+      z-index: 1;
     }
     
     .video-player-wrapper:hover {
@@ -97,15 +100,18 @@ block content
     .media-stage {
       position: relative;
       padding-bottom: 12px;
+      isolation: isolate;
+      overflow: visible;
     }
 
     .stage-actions {
       position: absolute;
       top: 12px;
       right: 12px;
-      z-index: 20;
+      z-index: 1000;
       display: flex;
       gap: 8px;
+      pointer-events: auto;
     }
 
     .btn-stage-fs {
@@ -571,9 +577,9 @@ block content
             // Video Title
             h1.video-title= video.title
             
-            .media-stage
+            .media-stage#videoStage
               .stage-actions
-                button.btn-stage-fs(type="button")
+                button#videoFsBtn.btn-stage-fs(type="button")
                   i.bi.bi-arrows-fullscreen
                   span Fullscreen
 
@@ -820,7 +826,8 @@ block content
       });
 
       // Auto play video if it's a livestream
-      if #{isLiveNow}
+      const isLiveNow = #{isLiveNow ? 'true' : 'false'};
+      if (isLiveNow) {
         const liveVideo = document.querySelector('.video-player');
         if (liveVideo) {
           setTimeout(() => {
@@ -835,11 +842,12 @@ block content
       });
 
       // Fullscreen for stage (video + ticker)
-      const stage = document.querySelector('.media-stage');
-      const fsBtn = document.querySelector('.btn-stage-fs');
-      if (stage && fsBtn && document.fullscreenEnabled) {
-        fsBtn.addEventListener('click', async () => {
+      const stage = document.getElementById('videoStage');
+      const fsBtn = document.getElementById('videoFsBtn');
+      if (stage && fsBtn) {
+        const toggleFs = async () => {
           try {
+            if (!document.fullscreenEnabled) return;
             if (!document.fullscreenElement) {
               await stage.requestFullscreen();
             } else {
@@ -848,6 +856,11 @@ block content
           } catch (e) {
             console.log('Fullscreen error:', e);
           }
+        };
+
+        fsBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          toggleFs();
         });
 
         document.addEventListener('fullscreenchange', () => {
