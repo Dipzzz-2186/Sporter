@@ -1,7 +1,7 @@
 // src/utils/media.util.js
 'use strict';
 
-// returns embed URL (https://www.youtube.com/embed/ID) or null
+// returns embed URL (https://www.youtube.com/embed/ID?fs=0) or null
 function parseYouTubeEmbed(input) {
     if (!input) return null;
 
@@ -26,7 +26,7 @@ function parseYouTubeEmbed(input) {
         // youtu.be short link: https://youtu.be/ID
         if (host.includes('youtu.be')) {
             const id = path.replace(/^\//, '').split('/')[0];
-            if (id) return `https://www.youtube.com/embed/${id}`;
+            if (id) return `https://www.youtube.com/embed/${id}?fs=0`;
             return null;
         }
 
@@ -35,29 +35,29 @@ function parseYouTubeEmbed(input) {
             // support /live/VIDEO_ID
             if (path.startsWith('/live/')) {
                 const id = path.split('/')[2];
-                if (id) return `https://www.youtube.com/embed/${id}`;
+                if (id) return `https://www.youtube.com/embed/${id}?fs=0`;
             }
 
             // support embed path
             if (path.startsWith('/embed/')) {
                 const id = path.split('/')[2];
-                if (id) return `https://www.youtube.com/embed/${id}`;
+                if (id) return `https://www.youtube.com/embed/${id}?fs=0`;
             }
 
             // support watch?v=ID
             const v = u.searchParams.get('v');
-            if (v) return `https://www.youtube.com/embed/${v}`;
+            if (v) return `https://www.youtube.com/embed/${v}?fs=0`;
 
             // older /v/ID
             const parts = path.split('/').filter(Boolean);
             const vIdx = parts.indexOf('v');
-            if (vIdx !== -1 && parts[vIdx + 1]) return `https://www.youtube.com/embed/${parts[vIdx + 1]}`;
+            if (vIdx !== -1 && parts[vIdx + 1]) return `https://www.youtube.com/embed/${parts[vIdx + 1]}?fs=0`;
         }
     } catch (e) {
         // fallback regex extraction
         const re = /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/i;
         const m = input.match(re);
-        if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`;
+        if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}?fs=0`;
     }
 
     return null;

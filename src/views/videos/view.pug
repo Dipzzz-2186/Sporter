@@ -92,6 +92,67 @@ block content
       border: none;
       display: block;
     }
+
+    /* Fullscreen Stage */
+    .media-stage {
+      position: relative;
+      padding-bottom: 12px;
+    }
+
+    .stage-actions {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-stage-fs {
+      border: none;
+      background: rgba(11, 31, 63, 0.8);
+      color: #fff;
+      padding: 0.55rem 0.8rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-stage-fs:hover {
+      background: rgba(0, 149, 255, 0.95);
+      transform: translateY(-1px);
+    }
+
+    .media-stage.is-fullscreen {
+      background: #000;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .media-stage.is-fullscreen .video-player-container {
+      padding: 0;
+    }
+
+    .media-stage.is-fullscreen .video-player {
+      width: 100vw;
+      height: 100vh;
+      min-height: 100vh;
+    }
+
+    .media-stage.is-fullscreen .news-ticker {
+      margin: 0;
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 64px;
+      z-index: 25;
+    }
     
     /* Warning Alert */
     .embed-warning {
@@ -339,6 +400,90 @@ block content
       color: #5a6c7d;
     }
     
+    /* News Ticker */
+    .news-ticker {
+      margin: 1.25rem 2rem 0;
+      background: linear-gradient(135deg, #0B1F3F 0%, #152844 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    .ticker-label {
+      background: linear-gradient(135deg, #0095FF 0%, #34C7FF 100%);
+      color: #fff;
+      padding: 0.65rem 1rem;
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+
+    .ticker-body {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: tickerMove 28s linear infinite;
+    }
+
+    .ticker-group {
+      display: flex;
+    }
+
+    .ticker-item {
+      color: rgba(255, 255, 255, 0.95);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.65rem 1.25rem;
+      white-space: nowrap;
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      transition: color 0.2s ease;
+    }
+
+    .ticker-item:hover {
+      color: #34C7FF;
+    }
+
+    .news-ticker:hover .ticker-track {
+      animation-play-state: paused;
+    }
+
+    @keyframes tickerMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @media (max-width: 991px) {
+      .news-ticker {
+        margin: 1rem 1.5rem 0;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .news-ticker {
+        margin: 1rem 1rem 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+      }
+
+      .ticker-label {
+        justify-content: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      }
+    }
     /* Responsive */
     @media (max-width: 991px) {
       .video-title {
@@ -426,28 +571,49 @@ block content
             // Video Title
             h1.video-title= video.title
             
-            // Video Player
-            .video-player-container
-              if embedUrl
-                .video-player-wrapper
-                  iframe.video-player(
-                    src=embedUrl,
-                    allowfullscreen,
-                    frameborder="0",
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
-                    loading="lazy",
-                    title=video.title
-                  )
-              else
-                .embed-warning
-                  p.mb-2
-                    i.bi.bi-exclamation-triangle-fill.me-2
-                    strong Video tidak dapat di-embed
-                  p.mb-0
-                    a(href=video.url target="_blank" rel="noopener noreferrer")
-                      i.bi.bi-box-arrow-up-right
-                      span Buka langsung di #{video.platform || 'platform asli'}
-            
+            .media-stage
+              .stage-actions
+                button.btn-stage-fs(type="button")
+                  i.bi.bi-arrows-fullscreen
+                  span Fullscreen
+
+              // Video Player
+              .video-player-container
+                if embedUrl
+                  .video-player-wrapper
+                    iframe.video-player(
+                      src=embedUrl,
+                      allowfullscreen,
+                      frameborder="0",
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+                      loading="lazy",
+                      title=video.title
+                    )
+                else
+                  .embed-warning
+                    p.mb-2
+                      i.bi.bi-exclamation-triangle-fill.me-2
+                      strong Video tidak dapat di-embed
+                    p.mb-0
+                      a(href=video.url target="_blank" rel="noopener noreferrer")
+                        i.bi.bi-box-arrow-up-right
+                        span Buka langsung di #{video.platform || 'platform asli'}
+              
+              if newsTicker && newsTicker.length
+                .news-ticker
+                  .ticker-label
+                    i.bi.bi-newspaper
+                    span Berita Terkini
+                  .ticker-body
+                    .ticker-track
+                      .ticker-group
+                        each item in newsTicker
+                          a.ticker-item(href=`/news/${item.slug}`)
+                            = item.title
+                      .ticker-group
+                        each item in newsTicker
+                          a.ticker-item(href=`/news/${item.slug}`)
+                            = item.title
             // Video Description
             if video.description
               .video-description
@@ -667,4 +833,26 @@ block content
       window.addEventListener('load', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
+
+      // Fullscreen for stage (video + ticker)
+      const stage = document.querySelector('.media-stage');
+      const fsBtn = document.querySelector('.btn-stage-fs');
+      if (stage && fsBtn && document.fullscreenEnabled) {
+        fsBtn.addEventListener('click', async () => {
+          try {
+            if (!document.fullscreenElement) {
+              await stage.requestFullscreen();
+            } else {
+              await document.exitFullscreen();
+            }
+          } catch (e) {
+            console.log('Fullscreen error:', e);
+          }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+          stage.classList.toggle('is-fullscreen', !!document.fullscreenElement);
+        });
+      }
     })();
+

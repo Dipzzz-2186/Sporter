@@ -1,5 +1,6 @@
 // src/controllers/media.controller.js
 const db = require("../config/db");
+const News = require("../models/news.model");
 const {
     parseYouTubeEmbed,
     extractYouTubeId,
@@ -190,10 +191,18 @@ exports.viewVideo = async (req, res) => {
         video.published_at = video.published_at || video.created_at || null;
     }
 
+    let newsTicker = [];
+    try {
+        newsTicker = await News.getLatestNews(10);
+    } catch (err) {
+        console.error('Failed to load news ticker for viewVideo', err);
+        newsTicker = [];
+    }
     res.render('videos/view', {
         video,
         embedUrl: parseYouTubeEmbed(video.url),
-        isLiveNow: false // ⛔ SELALU FALSE
+        isLiveNow: false,
+        newsTicker
     });
 };
 
@@ -262,5 +271,19 @@ exports.viewLivestream = async (req, res) => {
         livestream.concurrent_viewers = 0;
     }
 
-    res.render("livestreams/view", { livestream, embedUrl });
+    let newsTicker = [];
+    try {
+        newsTicker = await News.getLatestNews(10);
+    } catch (err) {
+        console.error('Failed to load news ticker for viewLivestream', err);
+        newsTicker = [];
+    }
+    res.render("livestreams/view", { livestream, embedUrl, newsTicker });
 };
+
+
+
+
+
+
+
