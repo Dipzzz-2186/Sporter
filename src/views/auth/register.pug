@@ -535,6 +535,8 @@ html(lang="id")
           
           //- Register Form
           form(method="POST", action="/register")
+            if next
+              input(type="hidden" name="next" value=next)
             .mb-3
               label.form-label(for="name")
                 i.bi.bi-person-fill
@@ -591,7 +593,8 @@ html(lang="id")
           .login-link
             p
               | Sudah punya akun? 
-              a(href="/login")
+              - const loginUrl = next ? `/login?next=${encodeURIComponent(next)}` : "/login";
+              a(href=loginUrl)
                 i.bi.bi-box-arrow-in-right
                 span Masuk di sini
     

@@ -528,6 +528,8 @@ html(lang="id")
           
           //- Login Form
           form(method="POST", action="/login")
+            if next
+              input(type="hidden" name="next" value=next)
             .mb-3
               label.form-label(for="email")
                 i.bi.bi-envelope-fill
@@ -556,7 +558,8 @@ html(lang="id")
               span Masuk
 
             .mt-3
-              a.btn-register(href="/register")
+              - const registerUrl = next ? `/register?next=${encodeURIComponent(next)}` : "/register";
+              a.btn-register(href=registerUrl)
                 i.bi.bi-person-plus-fill
                 span Register
     //- Bootstrap JS

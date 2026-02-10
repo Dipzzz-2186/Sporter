@@ -768,7 +768,7 @@ html(lang="id")
             // ==== Auth menu (Login / User dropdown) ====
             if !currentUser
               li.nav-item
-                a.nav-link(href="/login")
+                a.nav-link(href=`/login?next=${encodeURIComponent(currentUrl || currentPath || '/')}`)
                   i.bi.bi-box-arrow-in-right.me-2
                   | Login
             else

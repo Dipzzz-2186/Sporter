@@ -53,6 +53,7 @@ app.use((req, res, next) => {
 });
 app.use((req, res, next) => {
   res.locals.currentPath = req.path;
+  res.locals.currentUrl = req.originalUrl;
   res.locals.currentUser = req.session?.user || null;
   next();
 });
