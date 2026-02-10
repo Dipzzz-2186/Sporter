@@ -759,37 +759,48 @@ block content
             this.style.transition = 'all 0.3s ease';
           });
         });
-        document.querySelectorAll('.action-buttons button').forEach(btn => {
-          btn.addEventListener('click', () => {
-            document.getElementById('standingId').value = btn.dataset.id;
-            document.getElementById('gameWin').value = 0;
-            document.getElementById('gameLoss').value = 0;
+        function bindStandingsActions() {
+          document.querySelectorAll('.action-buttons button').forEach(btn => {
+            if (btn.dataset.bound === '1') return;
+            btn.dataset.bound = '1';
+            btn.addEventListener('click', () => {
+              document.getElementById('standingId').value = btn.dataset.id;
+              document.getElementById('gameWin').value = 0;
+              document.getElementById('gameLoss').value = 0;
 
-            new bootstrap.Modal(document.getElementById('scoreModal')).show();
+              new bootstrap.Modal(document.getElementById('scoreModal')).show();
+            });
           });
-        });
+        }
 
-        document.getElementById('saveScore').addEventListener('click', () => {
-          const id = document.getElementById('standingId').value;
-          const gw = Number(document.getElementById('gameWin').value);
-          const gl = Number(document.getElementById('gameLoss').value);
+        bindStandingsActions();
 
-          if (gw === gl) {
-            alert('Game menang dan kalah tidak boleh sama');
-            return;
-          }
+        var saveScoreBtn = document.getElementById('saveScore');
+        if (saveScoreBtn) {
+          saveScoreBtn.addEventListener('click', () => {
+            const id = document.getElementById('standingId').value;
+            const gw = Number(document.getElementById('gameWin').value);
+            const gl = Number(document.getElementById('gameLoss').value);
 
-          const action = gw > gl ? 'win' : 'loss';
-          fetch(
-            `/subadmin/standings/${id}/submit?game_win=${gw}&game_loss=${gl}&result=${action}&sport_id=${window.CURRENT_SPORT_ID}`
-          )
-          .then(res => res.json())
-          .then(() => {
-            // versi simpel
-            location.reload();
+            if (gw === gl) {
+              alert('Game menang dan kalah tidak boleh sama');
+              return;
+            }
 
-            // versi proper (advanced):
-            // update row DOM + re-sort table tanpa reload
+            const action = gw > gl ? 'win' : 'loss';
+            fetch(
+              `/subadmin/standings/${id}/submit?game_win=${gw}&game_loss=${gl}&result=${action}&sport_id=${window.CURRENT_SPORT_ID}`
+            )
+            .then(res => res.json())
+            .then(() => {
+              // versi simpel
+              location.reload();
+
+              // versi proper (advanced):
+              // update row DOM + re-sort table tanpa reload
+            });
           });
-        });
+        }
+
+        window.bindStandingsActions = bindStandingsActions;
       })();

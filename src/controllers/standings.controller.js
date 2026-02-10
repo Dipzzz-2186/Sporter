@@ -37,7 +37,7 @@ function isValidPadelSet(homeScore, awayScore) {
 
   // menang di 6 harus selisih 2 (6–4, 6–3, dst)
   if (max === 6) {
-    return diff === 2;
+    return diff >= 2;
   }
 
   // menang di 7:
@@ -48,6 +48,49 @@ function isValidPadelSet(homeScore, awayScore) {
   }
 
   return false;
+}
+
+function isValidPadelLiveScore(homeScore, awayScore) {
+  if (!Number.isInteger(homeScore) || !Number.isInteger(awayScore)) return false;
+  if (homeScore < 0 || awayScore < 0) return false;
+  if (homeScore > 7 || awayScore > 7) return false;
+
+  const max = Math.max(homeScore, awayScore);
+  if (max === 7) {
+    const min = Math.min(homeScore, awayScore);
+    const diff = max - min;
+    return min >= 5 && (diff === 1 || diff === 2);
+  }
+
+  return true;
+}
+
+async function updateMatchLiveScore(matchId, homeScore, awayScore) {
+  const [[match]] = await db.query(
+    'SELECT id, status, is_finished FROM matches WHERE id = ? LIMIT 1',
+    [matchId]
+  );
+
+  if (!match) return { ok: false, code: 404, message: 'Match tidak ditemukan' };
+  if (Number(match.is_finished) === 1) {
+    return { ok: false, code: 400, message: 'Match sudah selesai' };
+  }
+
+  await db.query(
+    `UPDATE matches
+     SET home_score = ?, away_score = ?, updated_at = NOW()
+     WHERE id = ?`,
+    [homeScore, awayScore, matchId]
+  );
+
+  if (String(match.status) === 'scheduled') {
+    await db.query(
+      `UPDATE matches SET status = 'live', updated_at = NOW() WHERE id = ?`,
+      [matchId]
+    );
+  }
+
+  return { ok: true };
 }
 
 async function getAvailableSports(req) {
@@ -380,6 +423,12 @@ exports.submitPadelMatchScore = async (req, res) => {
   WHERE sport_id = ? AND team_id = ?
 `, [awaySet, homeSet, awaySet, homeSet, away_score, home_score, match.sport_id, awayTeamId]);
 
+    // reset live score set berjalan setelah set disimpan
+    await conn.query(
+      `UPDATE matches SET home_score = 0, away_score = 0, updated_at = NOW() WHERE id = ?`,
+      [matchId]
+    );
+
     // hitung jumlah set dimenangkan masing2 setelah insert
     const [wins] = await conn.query(`
       SELECT winner, COUNT(*) total
@@ -507,6 +556,12 @@ exports.submitIndividualScore = async (req, res) => {
   WHERE sport_id = ? AND team_id = ?
 `, [awaySet, homeSet, awaySet, homeSet, away_score, home_score, match.sport_id, awayTeamId]);
 
+    // reset live score set berjalan setelah set disimpan
+    await conn.query(
+      `UPDATE matches SET home_score = 0, away_score = 0, updated_at = NOW() WHERE id = ?`,
+      [matchId]
+    );
+
     const [wins] = await conn.query(`
       SELECT winner, COUNT(*) total
       FROM match_games
@@ -549,3 +604,38 @@ exports.submitIndividualScore = async (req, res) => {
     conn.release();
   }
 };
+
+
+exports.submitPadelLiveScore = async (req, res) => {
+  const matchId = Number(req.params.id);
+  let { home_score, away_score } = req.body;
+
+  home_score = Number(home_score);
+  away_score = Number(away_score);
+
+  if (!Number.isInteger(matchId)) {
+    return res.status(400).json({ success: false, message: 'Match tidak valid' });
+  }
+
+  if (!isValidPadelLiveScore(home_score, away_score)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Skor live tidak valid (0-7 saja)'
+    });
+  }
+
+  const result = await updateMatchLiveScore(matchId, home_score, away_score);
+  if (!result.ok) {
+    return res.status(result.code || 400).json({
+      success: false,
+      message: result.message || 'Gagal simpan live score'
+    });
+  }
+
+  return res.json({ success: true });
+};
+
+exports.submitPadelLiveScoreIndividual = async (req, res) => {
+  return exports.submitPadelLiveScore(req, res);
+};
+

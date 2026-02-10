@@ -587,7 +587,14 @@ exports.listMatches = async (req, res) => {
           m.start_time,
           m.end_time,
           m.status,
-          m.is_finished,        -- 🔥 TAMBAH INI
+          m.home_score,
+          m.away_score,
+          m.is_finished,        -- TAMBAH INI
+          (
+            SELECT COUNT(*)
+            FROM match_games mg
+            WHERE mg.match_id = m.id
+          ) AS set_played,
           m.match_mode,
           s.name AS sport_name,
           v.name AS venue_name,
@@ -628,6 +635,7 @@ exports.listMatches = async (req, res) => {
     return res.redirect("/subadmin");
   }
 };
+
 
 exports.renderCreateMatch = async (req, res) => {
   try {
@@ -2602,3 +2610,4 @@ exports.getAthleteJson = async (req, res) => {
     return res.status(500).json({ ok: false, message: 'Server error' });
   }
 };
+

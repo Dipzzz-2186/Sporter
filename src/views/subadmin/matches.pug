@@ -800,6 +800,47 @@ block content
       color: #64748b;
     }
 
+    /* ========== PADEL SCORE CONTROLS ========== */
+    .score-input {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .score-input-field {
+      text-align: center;
+      font-weight: 700;
+      font-size: 1rem;
+      max-width: 90px;
+    }
+
+    .btn-score {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      background: #f8fafc;
+      color: #0B1F3F;
+      font-weight: 800;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .btn-score:hover {
+      border-color: #0095FF;
+      color: #0095FF;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 149, 255, 0.15);
+    }
+
+    .btn-score:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
     /* ========== EMPTY STATE ========== */
     .empty-state {
       text-align: center;
@@ -1020,160 +1061,7 @@ block content
                   | Terapkan
 
       //- Matches Table
-      if matches && matches.length
-        .card.matches-table-card.border-0
-          .card-body
-            .table-responsive
-              table.table.matches-table.mb-0
-                thead
-                  tr
-                    th
-                      i.bi.bi-hash.me-1
-                      | NO
-                    th
-                      i.bi.bi-dribbble.me-1
-                      | Cabang
-                    th
-                      i.bi.bi-card-heading.me-1
-                      | Judul Pertandingan
-                    th
-                      i.bi.bi-people-fill.me-1
-                      | Peserta / Tim
-                    th
-                      i.bi.bi-clock.me-1
-                      | Waktu
-                    th
-                      i.bi.bi-geo-alt.me-1
-                      | Venue
-                    th
-                      i.bi.bi-info-circle.me-1
-                      | Status
-                    if !isReadOnly
-                      th.text-end
-                        i.bi.bi-gear.me-1
-                        | Aksi
-
-                tbody
-                  each m, i in matches
-                    tr
-                      td
-                        - const total = matches.length;
-                        - const isOldest = query && query.order === 'oldest';
-                        .match-id= isOldest ? (i + 1) : (total - i)
-
-                      td
-                        if m.sport_name
-                          .sport-badge
-                            i.bi.bi-trophy
-                            span= m.sport_name
-                        else
-                          span.text-muted -
-
-                      td
-                        .match-title= m.title || 'Tanpa judul'
-                        if m.event_title
-                          .match-event
-                            i.bi.bi-calendar-event.me-1
-                            = m.event_title
-
-                      td
-                        - const isIndividual = (m.match_mode || '').toLowerCase() === 'individual';
-                        - const fallbackNames = [m.home_team_name, m.away_team_name].filter(Boolean).join(', ');
-                        if isIndividual
-                          .match-teams
-                            i.bi.bi-person-fill.me-2.text-muted
-                            span= m.participants_names || fallbackNames || '-'
-                        else if m.home_team_name || m.away_team_name
-                          .match-teams
-                            span= m.home_team_name || '-'
-                            .vs-badge VS
-                            span= m.away_team_name || '-'
-                        else
-                          span.text-muted -
-
-                      td
-                        - const startStr = m.start_time ? new Date(m.start_time).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
-                        - const endStr = m.end_time ? new Date(m.end_time).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
-                        if startStr
-                          .match-time
-                            strong= startStr
-                            if endStr
-                              small
-                                i.bi.bi-arrow-right.me-1
-                                = endStr
-                        else
-                          span.text-muted Belum diatur
-
-                      td
-                        if m.venue_name
-                          span
-                            i.bi.bi-geo-alt-fill.me-1.text-primary
-                            = m.venue_name
-                        else
-                          span.text-muted -
-
-                      td
-                        if m.status === 'scheduled'
-                          .status-badge.status-scheduled
-                            i.bi.bi-calendar-check
-                            | Dijadwalkan
-                        else if m.status === 'live'
-                          .status-badge.status-ongoing
-                            i.bi.bi-broadcast
-                            | Mulai
-                        else if m.status === 'finished'
-                          .status-badge.status-finished
-                            i.bi.bi-check-circle
-                            | Selesai
-                        else
-                          .status-badge= m.status || 'N/A'
-
-                      if !isReadOnly
-                        td
-                          .action-buttons
-                            .action-main
-                              if m.sport_name && m.sport_name.toLowerCase() === 'padel'
-                                if Number(m.is_finished) === 1
-                                  span.status-badge.status-finished
-                                    i.bi.bi-check-circle
-                                    | BO3 Selesai
-                                else if Number(m.is_started) === 1
-                                  button.btn.btn-sm.btn-primary(
-                                    type="button"
-                                    data-match-id=m.id
-                                    data-mode=(m.match_mode || '').toLowerCase()
-                                    data-participants=(m.participants_names || '')
-                                    data-home=(m.home_team_name || '')
-                                    data-away=(m.away_team_name || '')
-                                    onclick="openScoreModal(this)"
-                                  )
-                                    i.bi.bi-pencil-square.me-1
-                                    | Input Set
-                                else
-                                  button.btn.btn-sm.btn-secondary(disabled)
-                                    i.bi.bi-clock-fill.me-1
-                                    | Belum Mulai
-
-                            .action-icons
-                              a.btn.btn-action.btn-action-edit(href=`/subadmin/matches/${m.id}/edit`)
-                                i.bi.bi-pencil-fill
-                              form.d-inline(method="post" action=`/subadmin/matches/${m.id}/delete`)
-                                button.btn.btn-action.btn-action-delete(type="submit")
-                                  i.bi.bi-trash-fill
-
-      else
-        //- Empty State
-        .empty-state
-          .empty-state-icon
-            i.bi.bi-calendar-x
-          h4 Belum Ada Pertandingan
-          p
-            | Tambahkan pertandingan pertama untuk cabang olahraga yang kamu pegang.
-            br
-            | Mulai jadwalkan pertandingan sekarang!
-          a.btn-add-match(href="/subadmin/matches/create")
-            i.bi.bi-plus-circle
-            span Tambah Pertandingan Pertama
+      include ./_matches_table.pug
 
       //- Modals
       if !isReadOnly
@@ -1195,15 +1083,24 @@ block content
                     data-bs-target="#guideModal"
                   ) Lihat panduan
                 input(type="hidden" id="matchId")
+                .mb-2
+                  span.badge.bg-primary-subtle.text-primary#currentSetLabel
                 .mb-3
                   label.form-label#homeLabel
-                  input.form-control(type="number" id="homeScore" min="0" max="7")
+                  .score-input
+                    button.btn-score(type="button" data-target="homeScore" data-delta="-1") -
+                    input.form-control.score-input-field(type="number" id="homeScore" min="0" max="7")
+                    button.btn-score(type="button" data-target="homeScore" data-delta="1") +
                 .mb-3
                   label.form-label#awayLabel
-                  input.form-control(type="number" id="awayScore" min="0" max="7")
+                  .score-input
+                    button.btn-score(type="button" data-target="awayScore" data-delta="-1") -
+                    input.form-control.score-input-field(type="number" id="awayScore" min="0" max="7")
+                    button.btn-score(type="button" data-target="awayScore" data-delta="1") +
               .modal-footer
                 button.btn.btn-secondary(data-bs-dismiss='modal') Batal
-                button.btn.btn-primary(type="button" onclick="submitPadelScore()") Simpan
+                button.btn.btn-outline-primary(type="button" onclick="submitPadelLiveScore()") Simpan Live
+                button.btn.btn-primary(type="button" onclick="submitPadelScore()") Simpan Set
 
         #guideModal.modal.fade(tabindex='-1')
           .modal-dialog.modal-lg.modal-dialog-centered
@@ -1247,39 +1144,30 @@ block content
       if !isReadOnly
         script.
           (function () {
-            // Auto dismiss alerts after 5 seconds
-            var alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function (alert) {
-              setTimeout(function () {
-                alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                alert.style.opacity = '0';
-                alert.style.transform = 'translateY(-20px)';
-                setTimeout(function () {
-                  alert.remove();
-                }, 500);
-              }, 5000);
-            });
-
-            // Confirm delete with better UX
-            var deleteForms = document.querySelectorAll('form[action*="/delete"]');
-            deleteForms.forEach(function (form) {
-              form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                var btn = form.querySelector('button[type="submit"]');
-                var confirmed = confirm(
-                  '⚠️ Yakin ingin menghapus pertandingan ini?\n\nData yang sudah dihapus tidak dapat dikembalikan.'
-                );
-                if (confirmed) {
-                  btn.innerHTML =
-                    '<span class="spinner-border spinner-border-sm"></span>';
-                  btn.disabled = true;
-                  form.submit();
-                }
+            function bindDeleteConfirm() {
+              var deleteForms = document.querySelectorAll('form[action*="/delete"]');
+              deleteForms.forEach(function (form) {
+                if (form.dataset.bound === '1') return;
+                form.dataset.bound = '1';
+                form.addEventListener('submit', function (e) {
+                  e.preventDefault();
+                  var btn = form.querySelector('button[type="submit"]');
+                  var confirmed = confirm(
+                    '⚠️ Yakin ingin menghapus pertandingan ini?\n\nData yang sudah dihapus tidak dapat dikembalikan.'
+                  );
+                  if (confirmed) {
+                    btn.innerHTML =
+                      '<span class="spinner-border spinner-border-sm"></span>';
+                    btn.disabled = true;
+                    form.submit();
+                  }
+                });
               });
-            });
+            }
 
-            // Intersection Observer for table rows
-            if ('IntersectionObserver' in window) {
+            function animateRows() {
+              if (!('IntersectionObserver' in window)) return;
+
               var observer = new IntersectionObserver(
                 function (entries) {
                   entries.forEach(function (entry, index) {
@@ -1306,6 +1194,26 @@ block content
                   observer.observe(row);
                 });
             }
+
+            // Auto dismiss alerts after 5 seconds
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function (alert) {
+              setTimeout(function () {
+                alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+                setTimeout(function () {
+                  alert.remove();
+                }, 500);
+              }, 5000);
+            });
+
+            window.bindMatchesTableHandlers = function () {
+              bindDeleteConfirm();
+              animateRows();
+            };
+
+            window.bindMatchesTableHandlers();
           })();
 
         script.
@@ -1324,11 +1232,57 @@ block content
             setTimeout(() => el.remove(), 2200);
           }
 
+          function clampScore(value) {
+            if (Number.isNaN(value)) return 0;
+            return Math.min(7, Math.max(0, value));
+          }
 
+          function isValidSetScore(home, away) {
+            if (!Number.isInteger(home) || !Number.isInteger(away)) return false;
+            if (home < 0 || away < 0) return false;
+            if (home === away) return false;
+            if (home > 7 || away > 7) return false;
+
+            const max = Math.max(home, away);
+            const min = Math.min(home, away);
+            const diff = max - min;
+
+            if (max === 6) {
+              return diff >= 2;
+            }
+
+            if (max === 7) {
+              return (min >= 5) && (diff === 1 || diff === 2);
+            }
+
+            return false;
+          }
+
+          function updateSetButtonState() {
+            const btnSet = document.querySelector(
+              '#padelScoreModal .btn-primary'
+            );
+            if (!btnSet) return;
+            const home = Number(document.getElementById('homeScore').value);
+            const away = Number(document.getElementById('awayScore').value);
+            btnSet.disabled = !isValidSetScore(home, away);
+          }
+
+          function setScoreInput(id, value) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.value = clampScore(value);
+          }
 
           function openScoreModal(btn) {
             const mode = btn.dataset.mode;
             document.getElementById('matchId').value = btn.dataset.matchId;
+            const setNo = Number(btn.dataset.setNo || 1);
+            const setLabel = document.getElementById('currentSetLabel');
+            if (setLabel) {
+              const safeSetNo = Math.min(3, Math.max(1, setNo));
+              setLabel.innerText = `Set ${safeSetNo}`;
+            }
 
             if (mode === 'individual') {
               const names = (btn.dataset.participants || '').split(' vs ');
@@ -1346,11 +1300,142 @@ block content
               document.getElementById('padelScoreModal').dataset.mode = 'team';
             }
 
-            document.getElementById('homeScore').value = 0;
-            document.getElementById('awayScore').value = 0;
+            const liveHome = Number(btn.dataset.liveHome || 0);
+            const liveAway = Number(btn.dataset.liveAway || 0);
+            setScoreInput('homeScore', liveHome);
+            setScoreInput('awayScore', liveAway);
+            updateSetButtonState();
             new bootstrap.Modal(
               document.getElementById('padelScoreModal')
             ).show();
+          }
+
+          document.querySelectorAll('.btn-score').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const target = btn.dataset.target;
+              const delta = Number(btn.dataset.delta || 0);
+              const input = document.getElementById(target);
+              if (!input) return;
+              const current = Number(input.value || 0);
+              const otherId = target === 'homeScore' ? 'awayScore' : 'homeScore';
+              const otherVal = Number((document.getElementById(otherId) || {}).value || 0);
+              const nextVal = current + delta;
+
+              // aturan: ke angka 7 hanya boleh kalau lawan 5 atau 6
+              if (nextVal === 7 && otherVal < 5) {
+                alert('Skor 7 hanya boleh jika lawan sudah 5 atau 6 (7–5 / 7–6).');
+                return;
+              }
+
+              setScoreInput(target, nextVal);
+              updateSetButtonState();
+            });
+          });
+
+          ['homeScore', 'awayScore'].forEach((id) => {
+            const input = document.getElementById(id);
+            if (input) {
+              input.addEventListener('input', updateSetButtonState);
+              input.addEventListener('change', updateSetButtonState);
+            }
+          });
+
+          async function submitPadelLiveScore() {
+            const modal = document.getElementById('padelScoreModal');
+            const mode = modal.dataset.mode;
+            const matchId = document.getElementById('matchId').value;
+            const home = Number(document.getElementById('homeScore').value);
+            const away = Number(document.getElementById('awayScore').value);
+
+            if (!Number.isInteger(home) || !Number.isInteger(away)) {
+              alert('Isi skor live yang valid');
+              return;
+            }
+
+            if (home < 0 || away < 0) {
+              alert('Skor live tidak boleh negatif');
+              return;
+            }
+
+            const max = Math.max(home, away);
+            if (max > 7) {
+              alert('Skor live maksimal 7');
+              return;
+            }
+
+            if (max === 7) {
+              const min = Math.min(home, away);
+              const diff = max - min;
+              if (min < 5 || !(diff === 1 || diff === 2)) {
+                alert('Skor 7 hanya boleh 7–5 atau 7–6');
+                return;
+              }
+            }
+
+            if (max === 6 && home !== 6 && away !== 6) {
+              alert('Skor live maksimal 6 (kecuali tie-break)');
+              return;
+            }
+
+            const url =
+              mode === 'individual'
+                ? `/subadmin/matches/${matchId}/submit-individual-live-score`
+                : `/subadmin/matches/${matchId}/submit-live-score`;
+
+            const btnSave = document.querySelector(
+              '#padelScoreModal .btn-outline-primary'
+            );
+            if (btnSave) {
+              btnSave.disabled = true;
+              btnSave.dataset.orig = btnSave.innerHTML;
+              btnSave.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2"></span>Simpan Live';
+            }
+
+            try {
+              const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  home_score: home,
+                  away_score: away,
+                }),
+              });
+
+              let data;
+              try {
+                data = await res.json();
+              } catch (e) {
+                data = null;
+              }
+
+              if (btnSave) {
+                btnSave.disabled = false;
+                btnSave.innerHTML = btnSave.dataset.orig || 'Simpan Live';
+              }
+
+              if (!res.ok || !data || data.success === false) {
+                alert((data && data.message) || 'Gagal menyimpan live score');
+                return;
+              }
+
+              const actionBtn = document.querySelector(
+                `button[data-match-id="${matchId}"]`
+              );
+              if (actionBtn) {
+                actionBtn.dataset.liveHome = String(home);
+                actionBtn.dataset.liveAway = String(away);
+              }
+
+              showToast('Live score tersimpan', 'success');
+            } catch (err) {
+              console.error(err);
+              if (btnSave) {
+                btnSave.disabled = false;
+                btnSave.innerHTML = btnSave.dataset.orig || 'Simpan Live';
+              }
+              alert('Terjadi kesalahan, coba lagi.');
+            }
           }
 
           async function submitPadelScore() {
@@ -1379,8 +1464,8 @@ block content
             const min = Math.min(home, away);
             const diff = max - min;
 
-            if (max === 6 && diff !== 2) {
-              alert('Skor 6 harus selisih 2 (contoh: 6–4)');
+            if (max === 6 && diff < 2) {
+              alert('Skor 6 harus selisih minimal 2 (contoh: 6–4)');
               return;
             }
 
@@ -1455,6 +1540,12 @@ block content
                 }
                 showToast('Match selesai (BO3)', 'success');
               } else {
+                if (actionBtn) {
+                  const nextSet = Math.min(3, (Number(actionBtn.dataset.setNo || 1) + 1));
+                  actionBtn.dataset.setNo = String(nextSet);
+                  actionBtn.dataset.liveHome = '0';
+                  actionBtn.dataset.liveAway = '0';
+                }
                 showToast(
                   'Skor tersimpan — lanjut set berikutnya',
                   'success'
@@ -1469,3 +1560,9 @@ block content
               alert('Terjadi kesalahan, coba lagi.');
             }
           }
+
+
+
+
+
+

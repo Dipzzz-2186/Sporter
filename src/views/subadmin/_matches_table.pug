@@ -1,0 +1,160 @@
+//- subadmin/_matches_table.pug
+
+//- Matches Table
+if matches && matches.length
+  .card.matches-table-card.border-0
+    .card-body
+      .table-responsive
+        table.table.matches-table.mb-0
+          thead
+            tr
+              th
+                i.bi.bi-hash.me-1
+                | NO
+              th
+                i.bi.bi-dribbble.me-1
+                | Cabang
+              th
+                i.bi.bi-card-heading.me-1
+                | Judul Pertandingan
+              th
+                i.bi.bi-people-fill.me-1
+                | Peserta / Tim
+              th
+                i.bi.bi-clock.me-1
+                | Waktu
+              th
+                i.bi.bi-geo-alt.me-1
+                | Venue
+              th
+                i.bi.bi-info-circle.me-1
+                | Status
+              if !isReadOnly
+                th.text-end
+                  i.bi.bi-gear.me-1
+                  | Aksi
+
+          tbody
+            each m, i in matches
+              tr(data-match-id=m.id)
+                td
+                  - const total = matches.length;
+                  - const isOldest = query && query.order === 'oldest';
+                  .match-id= isOldest ? (i + 1) : (total - i)
+
+                td
+                  if m.sport_name
+                    .sport-badge
+                      i.bi.bi-trophy
+                      span= m.sport_name
+                  else
+                    span.text-muted -
+
+                td
+                  .match-title= m.title || 'Tanpa judul'
+                  if m.event_title
+                    .match-event
+                      i.bi.bi-calendar-event.me-1
+                      = m.event_title
+
+                td
+                  - const isIndividual = (m.match_mode || '').toLowerCase() === 'individual';
+                  - const fallbackNames = [m.home_team_name, m.away_team_name].filter(Boolean).join(', ');
+                  if isIndividual
+                    .match-teams
+                      i.bi.bi-person-fill.me-2.text-muted
+                      span= m.participants_names || fallbackNames || '-'
+                  else if m.home_team_name || m.away_team_name
+                    .match-teams
+                      span= m.home_team_name || '-'
+                      .vs-badge VS
+                      span= m.away_team_name || '-'
+                  else
+                    span.text-muted -
+
+                td
+                  - const startStr = m.start_time ? new Date(m.start_time).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
+                  - const endStr = m.end_time ? new Date(m.end_time).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
+                  if startStr
+                    .match-time
+                      strong= startStr
+                      if endStr
+                        small
+                          i.bi.bi-arrow-right.me-1
+                          = endStr
+                  else
+                    span.text-muted Belum diatur
+
+                td
+                  if m.venue_name
+                    span
+                      i.bi.bi-geo-alt-fill.me-1.text-primary
+                      = m.venue_name
+                  else
+                    span.text-muted -
+
+                td
+                  if m.status === 'scheduled'
+                    .status-badge.status-scheduled
+                      i.bi.bi-calendar-check
+                      | Dijadwalkan
+                  else if m.status === 'live'
+                    .status-badge.status-ongoing
+                      i.bi.bi-broadcast
+                      | Mulai
+                  else if m.status === 'finished'
+                    .status-badge.status-finished
+                      i.bi.bi-check-circle
+                      | Selesai
+                  else
+                    .status-badge= m.status || 'N/A'
+
+                if !isReadOnly
+                  td
+                    .action-buttons
+                      .action-main
+                        if m.sport_name && m.sport_name.toLowerCase() === 'padel'
+                          if Number(m.is_finished) === 1
+                            span.status-badge.status-finished
+                              i.bi.bi-check-circle
+                              | BO3 Selesai
+                          else if Number(m.is_started) === 1
+                            button.btn.btn-sm.btn-primary(
+                              type="button"
+                              data-match-id=m.id
+                              data-mode=(m.match_mode || '').toLowerCase()
+                              data-participants=(m.participants_names || '')
+                              data-home=(m.home_team_name || '')
+                              data-away=(m.away_team_name || '')
+                              data-set-no=(Number(m.set_played || 0) + 1)
+                              data-live-home=(m.home_score != null ? m.home_score : 0)
+                              data-live-away=(m.away_score != null ? m.away_score : 0)
+                              onclick="openScoreModal(this)"
+                            )
+                              i.bi.bi-pencil-square.me-1
+                              | Input Set
+                          else
+                            button.btn.btn-sm.btn-secondary(disabled)
+                              i.bi.bi-clock-fill.me-1
+                              | Belum Mulai
+
+                      .action-icons
+                        a.btn.btn-action.btn-action-edit(href=`/subadmin/matches/${m.id}/edit`)
+                          i.bi.bi-pencil-fill
+                        form.d-inline(method="post" action=`/subadmin/matches/${m.id}/delete`)
+                          button.btn.btn-action.btn-action-delete(type="submit")
+                            i.bi.bi-trash-fill
+
+else
+  //- Empty State
+  .empty-state
+    .empty-state-icon
+      i.bi.bi-calendar-x
+    h4 Belum Ada Pertandingan
+    p
+      | Tambahkan pertandingan pertama untuk cabang olahraga yang kamu pegang.
+      br
+      | Mulai jadwalkan pertandingan sekarang!
+    a.btn-add-match(href="/subadmin/matches/create")
+      i.bi.bi-plus-circle
+      span Tambah Pertandingan Pertama

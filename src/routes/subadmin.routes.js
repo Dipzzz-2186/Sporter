@@ -93,6 +93,12 @@ router.post(
   requireAdminOrSubadmin,
   standingsCtrl.submitIndividualScore
 );
+router.post(
+  '/matches/:id/submit-individual-live-score',
+  requireLogin,
+  requireAdminOrSubadmin,
+  standingsCtrl.submitPadelLiveScoreIndividual
+);
 
 // Videos & Livestreams
 router.get('/videos/create', requireLogin, requireAdminOrSubadmin, subadminCtrl.renderCreateVideo);
@@ -130,6 +136,12 @@ router.post(
   requireLogin,
   requireAdminOrSubadmin,
   standingsCtrl.submitPadelMatchScore
+);
+router.post(
+  '/matches/:id/submit-live-score',
+  requireLogin,
+  requireAdminOrSubadmin,
+  standingsCtrl.submitPadelLiveScore
 );
 
 // Teams management

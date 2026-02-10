@@ -671,6 +671,7 @@ block content
       letter-spacing: 0.5px;
       text-transform: uppercase;
     }
+
     
     .match-info {
       display: flex;
@@ -1229,7 +1230,7 @@ block content
                 h3.match-title= m.title
                 .match-status
                   i.bi.bi-record-circle-fill
-                  span Dijadwalkan
+                  span Status
               
               .match-info
                 .match-info-item
@@ -1298,6 +1299,7 @@ block content
       'use strict';
       
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
       
       // Smooth scroll
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
