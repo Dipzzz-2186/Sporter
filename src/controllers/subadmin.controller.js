@@ -1700,19 +1700,23 @@ exports.deleteNews = async (req, res) => {
 exports.ajaxCreateTeam = async (req, res) => {
   const conn = await db.getConnection();
   try {
-    const { sport_id, name } = req.body;
+    const { sport_id, name, member_passwords = [] } = req.body;
     const sportId = Number(sport_id);
     const teamName = String(name || '').trim();
 
     // penting: pastikan members kebaca sebagai array
     const members = Array.isArray(req.body.members)
-      ? req.body.members.map(m => String(m).trim()).filter(Boolean)
-      : (req.body.members ? [String(req.body.members).trim()].filter(Boolean) : []);
+      ? req.body.members.map(m => String(m))
+      : (req.body.members ? [String(req.body.members)] : []);
+    const passwords = Array.isArray(member_passwords)
+      ? member_passwords.map(p => String(p))
+      : (member_passwords ? [String(member_passwords)] : []);
 
     if (!sportId || !teamName) {
       return res.status(400).json({ ok: false, message: 'sport_id dan name wajib diisi' });
     }
-    if (!members.length) {
+    const memberNames = members.map(m => String(m || '').trim()).filter(Boolean);
+    if (!memberNames.length) {
       return res.status(400).json({ ok: false, message: 'Minimal 1 anggota tim' });
     }
 
@@ -1738,7 +1742,12 @@ exports.ajaxCreateTeam = async (req, res) => {
     const teamId = teamRes.insertId;
 
     // ✅ Insert athletes + link ke team_members (team_id, athlete_id)
-    for (const memberName of members) {
+    for (let i = 0; i < memberNames.length; i++) {
+      const memberName = memberNames[i];
+      const memberPassword = String(passwords[i] || '').trim();
+      if (!memberPassword) {
+        return res.status(400).json({ ok: false, message: 'Password wajib untuk semua anggota tim' });
+      }
       const [athRes] = await conn.query(
         `INSERT INTO athletes (sport_id, name, slug, member_type, created_at, updated_at)
          VALUES (?, ?, NULL, 'team', NOW(), NOW())`,
@@ -1749,6 +1758,7 @@ exports.ajaxCreateTeam = async (req, res) => {
 
       await conn.query(`UPDATE athletes SET slug=? WHERE id=?`, [finalSlug, athleteId]);
       await conn.query(`INSERT INTO team_members (team_id, athlete_id) VALUES (?, ?)`, [teamId, athleteId]);
+      await createAthleteAccount(conn, { name: memberName, password: memberPassword, athleteId });
     }
 
     await conn.commit();
@@ -1979,10 +1989,6 @@ exports.addTeamMember = async (req, res) => {
       req.flash('error', 'Nama anggota wajib diisi.');
       return res.redirect(`/subadmin/teams/${teamId}/members`);
     }
-    if (!password) {
-      req.flash('error', 'Password wajib untuk akun athlete.');
-      return res.redirect(`/subadmin/teams/${teamId}/members`);
-    }
 
     const [[team]] = await conn.query(
       'SELECT id, sport_id FROM teams WHERE id = ? LIMIT 1',
@@ -2017,7 +2023,9 @@ exports.addTeamMember = async (req, res) => {
       [teamId, athleteId, position || null, number || null, birth_date]
     );
 
-    await createAthleteAccount(conn, { name, password, athleteId });
+    if (password) {
+      await createAthleteAccount(conn, { name, password, athleteId });
+    }
 
     await conn.commit();
 
@@ -2310,7 +2318,7 @@ exports.renderCreateTeam = async (req, res) => {
 exports.createTeam = async (req, res) => {
   const conn = await db.getConnection();
   try {
-    const { sport_id, name, short_name, city, members = [] } = req.body;
+    const { sport_id, name, short_name, city, members = [], member_passwords = [] } = req.body;
     const sportId = Number(sport_id);
     const teamName = String(name || '').trim();
 
@@ -2332,10 +2340,20 @@ exports.createTeam = async (req, res) => {
 
     // 2️⃣ insert anggota (jika ada)
     const memberNames = Array.isArray(members)
-      ? members.map(m => String(m).trim()).filter(Boolean)
-      : [];
+      ? members.map(m => String(m))
+      : (members ? [String(members)] : []);
+    const memberPasswords = Array.isArray(member_passwords)
+      ? member_passwords.map(p => String(p))
+      : (member_passwords ? [String(member_passwords)] : []);
 
-    for (const memberName of memberNames) {
+    for (let i = 0; i < memberNames.length; i++) {
+      const memberName = String(memberNames[i] || '').trim();
+      if (!memberName) continue;
+      const memberPassword = String(memberPasswords[i] || '').trim();
+      if (!memberPassword) {
+        throw new Error('Password wajib diisi untuk semua anggota tim.');
+      }
+
       const [athIns] = await conn.query(
         `INSERT INTO athletes (sport_id, name, slug, member_type, created_at, updated_at)
         VALUES (?, ?, NULL, 'team', NOW(), NOW())`,
@@ -2355,6 +2373,8 @@ exports.createTeam = async (req, res) => {
         VALUES (?, ?)`,
         [teamId, athleteId]
       );
+
+      await createAthleteAccount(conn, { name: memberName, password: memberPassword, athleteId });
     }
 
 
@@ -2365,7 +2385,7 @@ exports.createTeam = async (req, res) => {
   } catch (err) {
     await conn.rollback();
     console.error('createTeam error', err);
-    req.flash('error', 'Gagal membuat tim.');
+    req.flash('error', err.message || 'Gagal membuat tim.');
     return res.redirect('/subadmin/teams/create');
   } finally {
     conn.release();

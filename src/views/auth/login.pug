@@ -557,11 +557,7 @@ html(lang="id")
               i.bi.bi-box-arrow-in-right
               span Masuk
 
-            .mt-3
-              - const registerUrl = next ? `/register?next=${encodeURIComponent(next)}` : "/register";
-              a.btn-register(href=registerUrl)
-                i.bi.bi-person-plus-fill
-                span Register
+            //- Register disabled
     //- Bootstrap JS
     script(
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

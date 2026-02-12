@@ -263,6 +263,21 @@ block content
       color: #0B1F3F;
       background: transparent;
     }
+    .member-fields {
+      flex: 1;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .member-password {
+      flex: 1;
+      min-width: 200px;
+      border: none;
+      outline: none;
+      font-size: 0.95rem;
+      color: #0B1F3F;
+      background: transparent;
+    }
     
     .member-input::placeholder {
       color: #94a3b8;
@@ -1003,13 +1018,23 @@ block content
         memberIndex.className = 'member-index';
         memberIndex.textContent = index;
         
+        const memberFields = document.createElement('div');
+        memberFields.className = 'member-fields';
+
         const memberInput = document.createElement('input');
         memberInput.className = 'member-input';
         memberInput.type = 'text';
         memberInput.name = 'members[]';
         memberInput.placeholder = `Nama anggota ${index}`;
         memberInput.required = true;
-        
+
+        const memberPassword = document.createElement('input');
+        memberPassword.className = 'member-password';
+        memberPassword.type = 'password';
+        memberPassword.name = 'member_passwords[]';
+        memberPassword.placeholder = 'Password (wajib)';
+        memberPassword.required = true;
+
         const removeBtn = document.createElement('button');
         removeBtn.className = 'btn-remove-member';
         removeBtn.type = 'button';
@@ -1023,7 +1048,9 @@ block content
         });
         
         memberCard.appendChild(memberIndex);
-        memberCard.appendChild(memberInput);
+        memberFields.appendChild(memberInput);
+        memberFields.appendChild(memberPassword);
+        memberCard.appendChild(memberFields);
         memberCard.appendChild(removeBtn);
         
         return memberCard;
@@ -1119,13 +1146,21 @@ block content
             return alert(`Jumlah anggota harus tepat antara ${rule.min} dan ${rule.max} orang untuk cabang ini`);
           }
 
-          // Validate member names
+          // Validate member names & passwords
           const memberInputs = membersContainer.querySelectorAll('.member-input');
           for (const input of memberInputs) {
             if (!input.value.trim()) {
               input.style.border = '2px solid #ff4757';
               setTimeout(() => (input.style.border = ''), 2000);
               return alert('Semua nama anggota harus diisi');
+            }
+          }
+          const memberPassInputs = membersContainer.querySelectorAll('.member-password');
+          for (const input of memberPassInputs) {
+            if (!input.value.trim()) {
+              input.style.border = '2px solid #ff4757';
+              setTimeout(() => (input.style.border = ''), 2000);
+              return alert('Password untuk semua anggota wajib diisi');
             }
           }
 
