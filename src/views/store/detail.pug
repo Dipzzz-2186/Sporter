@@ -835,12 +835,12 @@ block content
                 a.btn.btn-warning(href=`/login?next=/store/${product.id}` style="background: var(--gradient-accent); border: none;")
                   i.bi.bi-box-arrow-in-right.me-2
                   | Login ke Akun Anda
-            else if currentUser.role !== 'user'
+            else if currentUser.role !== 'user' && currentUser.role !== 'athlete'
               .login-required
                 h5
                   i.bi.bi-info-circle
-                  | Hanya untuk User
-                p.mb-3 Hanya pengguna dengan role user yang dapat membeli produk.
+                  | Akses Terbatas
+                p.mb-3 Hanya akun dengan role user atau athlete yang dapat membeli produk.
                 a.btn.btn-primary(href="/" style="background: var(--gradient-primary); border: none;")
                   i.bi.bi-arrow-left.me-2
                   | Kembali ke Beranda

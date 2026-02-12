@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const db = require('../config/db'); // sesuaikan kalau db path beda
+const athleteModel = require('../models/athlete.model');
 
 function getCurrentUser(req, res) {
   return (
@@ -14,9 +15,15 @@ exports.profilePage = async (req, res) => {
   const currentUser = getCurrentUser(req, res);
   if (!currentUser) return res.redirect('/login');
 
+  let athlete = null;
+  if (currentUser.role === 'athlete' && currentUser.athlete_id) {
+    athlete = await athleteModel.findById(currentUser.athlete_id);
+  }
+
   res.render('profile/index', {
     title: 'Profile',
     user: currentUser,
+    athlete,
     query: req.query || {},
     messages: {
       error: req.flash ? req.flash('error') : null,
@@ -136,4 +143,72 @@ exports.myTicketsPage = async (req, res) => {
       success: req.flash ? req.flash('success') : null
     }
   });
+};
+
+exports.updateAthleteProfile = async (req, res) => {
+  const currentUser = getCurrentUser(req, res);
+  if (!currentUser) return res.redirect('/login');
+  if (currentUser.role !== 'athlete' || !currentUser.athlete_id) {
+    req.flash('error', 'Akses ditolak.');
+    return res.redirect('/profile');
+  }
+
+  try {
+    const athleteId = currentUser.athlete_id;
+    const payload = {
+      name: (req.body.name || '').trim(),
+      country_code: (req.body.country_code || '').trim() || null,
+      playing_position: (req.body.playing_position || '').trim() || null,
+      coach: (req.body.coach || '').trim() || null,
+      born_in: (req.body.born_in || '').trim() || null,
+      height_cm: req.body.height_cm ? Number(req.body.height_cm) : null,
+      bio: (req.body.bio || '').trim() || null,
+      titles: req.body.titles ? Number(req.body.titles) : 0,
+      race: (req.body.race || '').trim() || null,
+      best_rank: (req.body.best_rank || '').trim() || null,
+    };
+
+    if (!payload.name) {
+      req.flash('error', 'Nama wajib diisi.');
+      return res.redirect('/profile');
+    }
+
+    if (req.file) {
+      payload.photo_url = `/uploads/athletes/${req.file.filename}`;
+    }
+
+    const conn = await db.getConnection();
+    try {
+      await conn.beginTransaction();
+
+      const fields = [];
+      const values = [];
+      for (const [k, v] of Object.entries(payload)) {
+        fields.push(`${k} = ?`);
+        values.push(v);
+      }
+      values.push(athleteId);
+      await conn.query(`UPDATE athletes SET ${fields.join(', ')} WHERE id = ?`, values);
+
+      await conn.query(
+        'UPDATE users SET name = ?, updated_at = NOW() WHERE id = ?',
+        [payload.name, currentUser.id]
+      );
+
+      await conn.commit();
+    } catch (err) {
+      await conn.rollback();
+      throw err;
+    } finally {
+      conn.release();
+    }
+
+    req.session.user.name = payload.name;
+    req.flash('success', 'Profil athlete berhasil diperbarui.');
+    return res.redirect('/profile');
+  } catch (err) {
+    console.error('updateAthleteProfile error:', err);
+    req.flash('error', 'Gagal memperbarui profil athlete.');
+    return res.redirect('/profile');
+  }
 };

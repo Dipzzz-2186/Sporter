@@ -696,6 +696,10 @@ block content
               input.form-control#ath_name(type="text" placeholder="Contoh: Budi" required)
 
             .mb-3
+              label.form-label(for="ath_password") Password Akun
+              input.form-control#ath_password(type="password" placeholder="Password untuk login" required)
+
+            .mb-3
               label.form-label(for="ath_number") Nomor (opsional)
               input.form-control#ath_number(type="text" placeholder="10")
 
@@ -1372,12 +1376,15 @@ block content
         saveAthBtn.addEventListener('click', async function() {
           var sport_id = document.getElementById('ath_sport_id') ? document.getElementById('ath_sport_id').value : '';
           var name = document.getElementById('ath_name') ? document.getElementById('ath_name').value : '';
+          var password = document.getElementById('ath_password') ? document.getElementById('ath_password').value : '';
           var number = document.getElementById('ath_number') ? document.getElementById('ath_number').value : '';
           var position = document.getElementById('ath_position') ? document.getElementById('ath_position').value : '';
 
           name = name.trim();
+          password = password.trim();
           if (!sport_id) return showAthError('Pilih cabang olahraga dulu.');
           if (!name) return showAthError('Nama pemain wajib diisi.');
+          if (!password) return showAthError('Password wajib diisi.');
 
           saveAthBtn.disabled = true;
           saveAthBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
@@ -1389,6 +1396,7 @@ block content
               body: JSON.stringify({ 
                 sport_id: sport_id, 
                 name: name, 
+                password: password,
                 number: number, 
                 position: position 
               })
@@ -1434,6 +1442,7 @@ block content
 
             // Clear form
             document.getElementById('ath_name').value = '';
+            document.getElementById('ath_password').value = '';
             document.getElementById('ath_number').value = '';
             document.getElementById('ath_position').value = '';
 

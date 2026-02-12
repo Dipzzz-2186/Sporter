@@ -3,15 +3,23 @@ const db = require("../config/db");
 
 exports.getByEmail = async (email) => {
   const [rows] = await db.query(
-    "SELECT id, name, email, password_hash, role FROM users WHERE email = ? LIMIT 1",
+    "SELECT id, name, email, password_hash, role, athlete_id FROM users WHERE email = ? LIMIT 1",
     [email]
+  );
+  return rows[0] || null;
+};
+
+exports.getByAthleteName = async (name) => {
+  const [rows] = await db.query(
+    "SELECT id, name, email, password_hash, role, athlete_id FROM users WHERE name = ? AND role = 'athlete' LIMIT 1",
+    [name]
   );
   return rows[0] || null;
 };
 
 exports.getById = async (id) => {
   const [rows] = await db.query(
-    "SELECT id, email, role FROM users WHERE id = ? LIMIT 1",
+    "SELECT id, email, role, athlete_id FROM users WHERE id = ? LIMIT 1",
     [id]
   );
   return rows[0] || null;

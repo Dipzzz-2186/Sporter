@@ -56,7 +56,8 @@ function requireAdminOrSeller(req, res, next) {
 }
 
 function requireUser(req, res, next) {
-  if (!req.session.user || req.session.user.role !== "user") {
+  const role = req.session?.user?.role;
+  if (!role || (role !== "user" && role !== "athlete")) {
     return res.redirect("/login?next=" + encodeURIComponent(req.originalUrl));
   }
   next();

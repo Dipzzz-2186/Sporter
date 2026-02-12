@@ -1,6 +1,7 @@
 // src/controllers/subadmin.controller.js
 const db = require('../config/db');
 const slugify = require('slugify');
+const bcrypt = require('bcryptjs');
 const {
   parseYouTubeEmbed,
   extractYouTubeId,
@@ -37,6 +38,32 @@ function safeRedirectBack(req, res, fallback = '/subadmin') {
     return res.redirect(ref);
   }
   return res.redirect(fallback);
+}
+
+async function createAthleteAccount(conn, { name, password, athleteId }) {
+  const raw = String(password || '').trim();
+  if (!raw) {
+    throw new Error('Password wajib diisi untuk akun athlete.');
+  }
+
+  const [existing] = await conn.query(
+    "SELECT id FROM users WHERE name = ? AND role = 'athlete' LIMIT 1",
+    [name]
+  );
+  if (existing.length) {
+    throw new Error('Nama sudah dipakai untuk akun athlete. Gunakan nama yang berbeda.');
+  }
+
+  const email = `athlete-${athleteId}@sporter.local`;
+  const password_hash = await bcrypt.hash(raw, 10);
+
+  await conn.query(
+    `INSERT INTO users (name, email, password_hash, role, athlete_id, created_at, updated_at)
+     VALUES (?, ?, ?, 'athlete', ?, NOW(), NOW())`,
+    [name, email, password_hash, athleteId]
+  );
+
+  return email;
 }
 
 // ---- DB schema helpers (biar code aman walau kolom/tabel baru belum ada)
@@ -1739,20 +1766,23 @@ exports.ajaxCreateTeam = async (req, res) => {
 
 
 exports.ajaxCreateAthlete = async (req, res) => {
+  const conn = await db.getConnection();
   try {
     const sportId = Number(req.body.sport_id);
     const name = String(req.body.name || '').trim();
     const number = String(req.body.number || '').trim();
     const position = String(req.body.position || '').trim();
-    const slug = generateSlug(name); // ✅ GENERATE SLUG
-
+    const password = String(req.body.password || '').trim();
     if (!sportId || !name) {
       return res.status(400).json({ ok: false, message: 'Sport & nama wajib' });
+    }
+    if (!password) {
+      return res.status(400).json({ ok: false, message: 'Password wajib untuk akun athlete' });
     }
 
     // Cek akses subadmin ke sport
     if (req.session.user.role === 'subadmin') {
-      const [rows] = await db.query(
+      const [rows] = await conn.query(
         'SELECT 1 FROM user_sports WHERE user_id=? AND sport_id=? LIMIT 1',
         [req.session.user.id, sportId]
       );
@@ -1763,31 +1793,39 @@ exports.ajaxCreateAthlete = async (req, res) => {
 
     const hasMemberType = await columnExists('athletes', 'member_type');
 
-    const [r] = await db.query(
+    await conn.beginTransaction();
+
+    const [r] = await conn.query(
       hasMemberType
         ? `INSERT INTO athletes (sport_id, name, slug, number, position, member_type, created_at, updated_at)
-           VALUES (?, ?, ?, ?, ?, 'individual', NOW(), NOW())`
+           VALUES (?, ?, NULL, ?, ?, 'individual', NOW(), NOW())`
         : `INSERT INTO athletes (sport_id, name, slug, number, position, created_at, updated_at)
-           VALUES (?, ?, ?, ?, ?, NOW(), NOW())`,
-      [sportId, name, slug, number || null, position || null]
+           VALUES (?, ?, NULL, ?, ?, NOW(), NOW())`,
+      [sportId, name, number || null, position || null]
     );
     const athleteId = r.insertId;
+    const finalSlug = `${generateSlug(name)}-${athleteId}`;
+    await conn.query(`UPDATE athletes SET slug = ? WHERE id = ?`, [finalSlug, athleteId]);
 
     // 🔥 BUAT TEAM INDIVIDUAL
-    const [t] = await db.query(
+    const [t] = await conn.query(
       `INSERT INTO teams (sport_id, name, is_individual, created_at, updated_at)
    VALUES (?, ?, 1, NOW(), NOW())`,
       [sportId, name]
     );
-    await db.query(
+    await conn.query(
       `UPDATE athletes
    SET individual_team_id = ?
    WHERE id = ?`,
       [t.insertId, athleteId]
     );
 
+    await createAthleteAccount(conn, { name, password, athleteId });
+
     const teamId = t.insertId;
     const insertedId = r.insertId;
+
+    await conn.commit();
 
     return res.json({
       ok: true,
@@ -1797,16 +1835,16 @@ exports.ajaxCreateAthlete = async (req, res) => {
         sport_id: sportId,
         teamId: teamId, // ✅ KIRIM TEAM ID JUGA
         name,
-        slug,  // ✅ KIRIM SLUG KE FRONTEND
+        slug: finalSlug,  // ✅ KIRIM SLUG KE FRONTEND
         number: number || null,
         position: position || null,
         member_type: 'individual'
       }
     });
   } catch (e) {
+    try { await conn.rollback(); } catch (_) {}
     console.error('Error creating athlete:', e);
 
-    // Handle duplicate slug
     if (e.code === 'ER_DUP_ENTRY') {
       return res.status(400).json({
         ok: false,
@@ -1816,8 +1854,10 @@ exports.ajaxCreateAthlete = async (req, res) => {
 
     return res.status(500).json({
       ok: false,
-      message: 'Server error: ' + e.message
+      message: e.message || 'Server error'
     });
+  } finally {
+    conn.release();
   }
 };
 
@@ -1926,19 +1966,25 @@ exports.renderTeamMembers = async (req, res) => {
 
 // POST /subadmin/teams/:id/members
 exports.addTeamMember = async (req, res) => {
+  const conn = await db.getConnection();
   try {
     const teamId = Number(req.params.id);
     const name = String(req.body.name || '').trim();
     const position = String(req.body.position || '').trim();
     const number = String(req.body.number || '').trim();
     const birth_date = req.body.birth_date || null;
+    const password = String(req.body.password || '').trim();
 
     if (!teamId || !name) {
       req.flash('error', 'Nama anggota wajib diisi.');
       return res.redirect(`/subadmin/teams/${teamId}/members`);
     }
+    if (!password) {
+      req.flash('error', 'Password wajib untuk akun athlete.');
+      return res.redirect(`/subadmin/teams/${teamId}/members`);
+    }
 
-    const [[team]] = await db.query(
+    const [[team]] = await conn.query(
       'SELECT id, sport_id FROM teams WHERE id = ? LIMIT 1',
       [teamId]
     );
@@ -1947,8 +1993,10 @@ exports.addTeamMember = async (req, res) => {
       return res.redirect('/subadmin/teams');
     }
 
+    await conn.beginTransaction();
+
     // 1️⃣ insert athlete
-    const [ins] = await db.query(
+    const [ins] = await conn.query(
       `INSERT INTO athletes (sport_id, name, slug, member_type, created_at, updated_at)
       VALUES (?, ?, NULL, 'team', NOW(), NOW())`,
       [team.sport_id, name]
@@ -1957,25 +2005,31 @@ exports.addTeamMember = async (req, res) => {
     const athleteId = ins.insertId;
     const finalSlug = `${generateSlug(name)}-${athleteId}`;
 
-    await db.query(
+    await conn.query(
       `UPDATE athletes SET slug = ? WHERE id = ?`,
       [finalSlug, athleteId]
     );
 
-
     // 2️⃣ link ke team_members
-    await db.query(
+    await conn.query(
       `INSERT INTO team_members (team_id, athlete_id, position, number, birth_date)
        VALUES (?, ?, ?, ?, ?)`,
       [teamId, athleteId, position || null, number || null, birth_date]
     );
 
+    await createAthleteAccount(conn, { name, password, athleteId });
+
+    await conn.commit();
+
     req.flash('success', 'Anggota berhasil ditambahkan.');
     return res.redirect(`/subadmin/teams/${teamId}/members`);
   } catch (err) {
+    try { await conn.rollback(); } catch (_) {}
     console.error('addTeamMember error', err);
-    req.flash('error', 'Gagal menambahkan anggota.');
+    req.flash('error', err.message || 'Gagal menambahkan anggota.');
     return res.redirect(`/subadmin/teams/${req.params.id}/members`);
+  } finally {
+    conn.release();
   }
 };
 

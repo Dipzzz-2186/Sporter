@@ -23,6 +23,9 @@ exports.renderLogin = (req, res) => {
     if (req.session.user.role === "seller") {
       return res.redirect("/seller");
     }
+    if (req.session.user.role === "athlete") {
+      return res.redirect("/profile");
+    }
     const safeNext = getSafeNextUrl(req.query.next);
     return res.redirect(safeNext || "/");
   }
@@ -40,14 +43,18 @@ exports.renderLogin = (req, res) => {
 // ===========================
 exports.handleLogin = async (req, res) => {
   const { email, password } = req.body;
+  const identifier = String(email || "").trim();
 
-  if (!email || !password) {
+  if (!identifier || !password) {
     req.flash("error", "Email dan password wajib diisi.");
     return res.redirect("/login");
   }
 
   try {
-    const user = await User.getByEmail(email);
+    let user = await User.getByEmail(identifier);
+    if (!user) {
+      user = await User.getByAthleteName(identifier);
+    }
 
     if (!user) {
       req.flash("error", "Email atau password salah.");
@@ -66,6 +73,7 @@ exports.handleLogin = async (req, res) => {
       email: user.email,
       role: user.role,
       name: user.name || null,
+      athlete_id: user.athlete_id || null,
     };
 
     req.flash("success", `Selamat datang, ${user.name || user.email}!`);
@@ -81,6 +89,9 @@ exports.handleLogin = async (req, res) => {
 
     if (user.role === "seller") {
       return res.redirect("/seller");
+    }
+    if (user.role === "athlete") {
+      return res.redirect("/profile");
     }
 
     // user biasa
@@ -141,7 +152,6 @@ exports.handleRegister = async (req, res) => {
 
     const password_hash = await bcrypt.hash(password, 10);
 
-    // role default user (biar aman)
     await User.createUser({ name, email, password_hash, role: "user" });
 
     req.flash("success", "Register berhasil. Silakan login.");

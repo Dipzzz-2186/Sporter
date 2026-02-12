@@ -511,7 +511,7 @@ html(lang="id")
           h1.login-title
             | Login 
           p.login-subtitle
-            | Masuk sebagai user untuk mendapatkan lebih banyak akses.
+            | Masuk sebagai user atau athlete untuk mendapatkan lebih banyak akses.
           
           //- Flash Messages
           if flash && flash.error && flash.error.length
@@ -533,12 +533,12 @@ html(lang="id")
             .mb-3
               label.form-label(for="email")
                 i.bi.bi-envelope-fill
-                | Email
+                | Email / Nama
               input#email.form-control(
-                type="email", 
-                name="email", 
-                placeholder="admin@asthapora.id",
-                required, 
+                type="text",
+                name="email",
+                placeholder="email atau nama atlet",
+                required,
                 value=old && old.email ? old.email : ''
               )
             

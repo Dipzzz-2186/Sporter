@@ -44,6 +44,7 @@ block content
       font-weight: 700;
       letter-spacing: 1px;
       flex-shrink: 0;
+      object-fit: cover;
     }
     .profile-name {
       font-family: 'Bebas Neue', cursive;
@@ -206,7 +207,10 @@ block content
             .profile-header
               .d-flex.align-items-center.gap-3.position-relative(style="z-index:2;")
                 - const initials = (user && user.name) ? user.name.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join('') : 'U';
-                .avatar= initials
+                if user && user.role === 'athlete' && athlete && athlete.photo_url
+                  img.avatar(src=athlete.photo_url alt=(athlete.name || 'Athlete'))
+                else
+                  .avatar= initials
                 div
                   h1.profile-name= (user && user.name) ? user.name : 'User'
                   p.profile-sub.mb-0
@@ -235,6 +239,56 @@ block content
                 .info-content
                   p.info-title Terakhir Update
                   p.info-val= (user && user.updated_at) ? user.updated_at : '—'
+
+            if user && user.role === 'athlete'
+              .profile-body
+                h5.section-title Edit Profil Athlete
+                form(method="POST" action="/profile/athlete" enctype="multipart/form-data")
+                  .row.g-3
+                    .col-md-6
+                      label.form-label.fw-semibold Nama *
+                      input.form-control(type="text" name="name" required value=(athlete && athlete.name ? athlete.name : (user && user.name ? user.name : '')))
+
+                    .col-md-6
+                      label.form-label.fw-semibold Country Code
+                      input.form-control(type="text" name="country_code" value=(athlete && athlete.country_code ? athlete.country_code : '') placeholder="ID / US / ...")
+
+                    .col-md-6
+                      label.form-label.fw-semibold Position
+                      input.form-control(type="text" name="playing_position" value=(athlete && athlete.playing_position ? athlete.playing_position : ''))
+
+                    .col-md-6
+                      label.form-label.fw-semibold Coach
+                      input.form-control(type="text" name="coach" value=(athlete && athlete.coach ? athlete.coach : ''))
+
+                    .col-md-6
+                      label.form-label.fw-semibold Born in
+                      input.form-control(type="text" name="born_in" value=(athlete && athlete.born_in ? athlete.born_in : ''))
+
+                    .col-md-6
+                      label.form-label.fw-semibold Height (cm)
+                      input.form-control(type="number" min="0" name="height_cm" value=(athlete && athlete.height_cm ? athlete.height_cm : ''))
+
+                    .col-md-12
+                      label.form-label.fw-semibold Biography
+                      textarea.form-control(name="bio" rows="4")= (athlete && athlete.bio ? athlete.bio : '')
+
+                    .col-md-6
+                      label.form-label.fw-semibold Titles
+                      input.form-control(type="number" min="0" name="titles" value=(athlete && (athlete.titles || athlete.titles === 0) ? athlete.titles : 0))
+
+                    .col-md-6
+                      label.form-label.fw-semibold Race
+                      input.form-control(type="text" name="race" value=(athlete && athlete.race ? athlete.race : ''))
+
+                    .col-md-12
+                      label.form-label.fw-semibold Foto Profil
+                      input.form-control(type="file" name="photo" accept="image/*")
+                      if athlete && athlete.photo_url
+                        small.text-muted.d-block.mt-2 Current photo: #{athlete.photo_url}
+
+                  .d-flex.justify-content-end.mt-3
+                    button.btn.btn-primary(type="submit") Simpan Perubahan
 
         .col-lg-4
           .profile-card
@@ -265,3 +319,4 @@ block content
                     i.bi.bi-box-arrow-right
                     span Logout
                   i.bi.bi-chevron-right
+
